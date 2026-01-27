@@ -1,0 +1,136 @@
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body{
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #dbeafe, #eef2ff);
+}
+
+
+
+
+.header{
+  padding: 30px;
+  text-align: center;
+  color: #fff;
+  
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, .3);
+  
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+}
+
+.thead{
+  margin: 20px;
+  font-size: 2rem;
+  letter-spacing: 2.2px;
+}
+
+.namhoc{
+  margin-top: -20px;
+  padding: 6px 14px;
+  font-size: 25px;
+  font-weight: 400;
+  letter-spacing: .7px;
+  opacity: .9;
+}
+
+
+
+
+
+
+.menu{
+  width: fit-content;
+  margin: -25px auto 100px;
+  padding: 8px;
+  background: rgba(255, 255, 255, .2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, .5);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, .15);
+}
+
+
+.menu a{
+  display: inline-block;
+  padding: 10px 20px;
+  text-decoration: none;
+  font-weight: bold;
+  color: #2b4ead;
+  border-radius: 40px;
+  
+  transition:
+  background .15s ease,
+  box-shadow .15s ease,
+  color .15s ease,
+  transform .15s ease;
+}
+
+
+.menu a:hover{
+  background: rgba(255, 255, 255, .85);
+  color: #334881;
+  
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .1);
+  transform: scale(1.1);
+}
+
+
+
+.menu a.active{
+  background: rgba(255, 255, 255, .85);
+  color: #334881;
+  
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .1);
+  transform: scale(1.05);
+}
+
+
+
+
+
+.menu:hover a.active:not(:hover){
+  background: transparent;
+  color: #2b4ead;
+  
+  box-shadow: none;
+  transform: scale(1);
+}
+
+
+
+/* LAP & DESKTOP MÀN THẤP */
+@media (max-height: 820px) {
+  
+  .header {
+    padding: 14px 20px 12px;
+    border-bottom-left-radius: 28px;
+    border-bottom-right-radius: 28px;
+  }
+  
+  .thead {
+    font-size: 1.4rem;
+    margin: 0;
+  }
+  
+  .namhoc {
+    font-size: 14px;
+    margin-top: 4px;
+    padding: 4px 10px;
+  }
+  
+  .menu {
+    margin: -18px auto 18px;
+    padding: 6px;
+  }
+  
+  .menu a {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
