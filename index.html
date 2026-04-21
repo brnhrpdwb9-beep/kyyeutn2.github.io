@@ -2012,23 +2012,23 @@
 
   <script>
     const initialSchedule = [
-      { date: "20/04", phase: "Chốt nền HSA", physics: ["HSA: Động học", "HSA: Động lực học", "60 đề: 1, 2, 3"], english: ["Đề 1, 2, 3"], review: ["20 phút cuối ngày ghi sổ lỗi ngay từ đầu"], note: "Ngày mở máy, quan trọng nhất là vào guồng và không phí thời gian vào việc làm note đẹp." },
-      { date: "21/04", phase: "Chốt nền HSA", physics: ["HSA: Công và năng lượng", "HSA: Động lượng và va chạm", "60 đề: 4, 5, 6"], english: ["Đề 4, 5, 6"], review: ["Xem lại lỗi 20/04"], note: "Giữ nhịp đều, chưa cần tăng tốc kiểu anh hùng bàn phím." },
-      { date: "22/04", phase: "Chốt nền HSA", physics: ["HSA: Chuyển động tròn", "HSA: Dao động", "60 đề: 7, 8, 9"], english: ["Đề 7, 8, 9, 10"], review: ["Redo vài câu sai tiêu biểu 20-21/04"], note: "Ngày khá nặng. Không chép note như đang thi thư pháp." },
-      { date: "23/04", phase: "Chốt nền HSA", physics: ["HSA: Sóng", "HSA: Điện tích điện trường", "60 đề: 10, 11, 12"], english: ["Topic 1, 2, 3, 4"], review: ["20 phút cuối ngày"], note: "Bắt đầu vào chuỗi topic Anh." },
-      { date: "24/04", phase: "Chốt nền HSA", physics: ["HSA: Mạch điện", "HSA: Nhiệt", "60 đề: 13, 14, 15"], english: ["Topic 5, 6, 7, 8"], review: ["Xem lại lỗi 22-23/04"], note: "Làm chắc, không lướt qua cho có cảm giác chăm chỉ." },
+      { date: "20/04", phase: "Chốt nền HSA", physics: ["HSA: Động học", "HSA: Động lực học", "Bắc Trung Nam Đề 1, 2, 3"], english: ["Đề 1, 2, 3"], review: ["20 phút cuối ngày ghi sổ lỗi ngay từ đầu"], note: "Ngày mở máy, quan trọng nhất là vào guồng và không phí thời gian vào việc làm note đẹp." },
+      { date: "21/04", phase: "Chốt nền HSA", physics: ["HSA: Công và năng lượng", "HSA: Động lượng và va chạm", "Bắc Trung Nam Đề 4, 5, 6"], english: ["Đề 4, 5, 6"], review: ["Xem lại lỗi 20/04"], note: "Giữ nhịp đều, chưa cần tăng tốc kiểu anh hùng bàn phím." },
+      { date: "22/04", phase: "Chốt nền HSA", physics: ["HSA: Chuyển động tròn", "HSA: Dao động", "Bắc Trung Nam Đề 7, 8, 9"], english: ["Đề 7, 8, 9, 10"], review: ["Redo vài câu sai tiêu biểu 20-21/04"], note: "Ngày khá nặng. Không chép note như đang thi thư pháp." },
+      { date: "23/04", phase: "Chốt nền HSA", physics: ["HSA: Sóng", "HSA: Điện tích điện trường", "Bắc Trung Nam Đề 10, 11, 12"], english: ["Topic 1, 2, 3, 4"], review: ["20 phút cuối ngày"], note: "Bắt đầu vào chuỗi topic Anh." },
+      { date: "24/04", phase: "Chốt nền HSA", physics: ["HSA: Mạch điện", "HSA: Nhiệt", "Bắc Trung Nam Đề 13, 14, 15"], english: ["Topic 5, 6, 7, 8"], review: ["Xem lại lỗi 22-23/04"], note: "Làm chắc, không lướt qua cho có cảm giác chăm chỉ." },
       { date: "25/04", phase: "Chốt nền HSA", physics: ["HSA: Khí lý tưởng", "HSA: Từ trường", "HSA: Hạt nhân"], english: ["Topic 9, 10, 11, 12"], review: ["30 phút ôn HSA toàn cụm"], note: "Không nhét thêm 60 đề hôm nay. Chốt HSA cho sạch." },
-      { date: "26/04", phase: "Chuyển sang đề trộn", physics: ["60 đề: 16, 17, 18", "VSAT: 1, 2, 3, 4"], english: ["Topic 13, 14, 15, 16"], review: ["Xem lại lỗi 24-25/04"], note: "Ngày chuyển pha. Mục tiêu là đổi nhịp mượt, không sốc." },
-      { date: "27/04", phase: "Chuyển sang đề trộn", physics: ["60 đề: 19, 20, 21", "VSAT: 5, 6, 7, 8"], english: ["Topic 17, 18, 19, 20"], review: ["15 phút cuối ngày"], note: "Bắt đầu cảm giác vào form, nhưng vẫn phải giữ đầu lạnh." },
-      { date: "28/04", phase: "Đề trộn", physics: ["60 đề: 22, 23, 24", "VSAT: 9, 10, 11, 12"], english: ["Topic 21, 22, 23, 24"], review: ["Redo lỗi nặng của 26-27/04"], note: "Từ đây ưu tiên xử lý lỗi thật, không chỉ tick cho đẹp." },
-      { date: "29/04", phase: "Đề trộn", physics: ["60 đề: 25, 26, 27", "VSAT: 13, 14, 15, 16"], english: ["Đề 11, 12, 13, 14"], review: ["Ôn lại cụm mạch điện và dao động"], note: "Giữ tốc độ vừa đủ để mai còn tỉnh táo." },
-      { date: "30/04", phase: "Đề trộn", physics: ["60 đề: 28, 29, 30", "VSAT: 17, 18"], english: ["Đề 15, 16"], review: ["Xem lại lỗi 26-29/04"], note: "Ngày lễ nhưng nhịp học thì không xin nghỉ." },
-      { date: "01/05", phase: "Đề trộn", physics: ["60 đề: 31, 32, 33", "VSAT: 19, 20"], english: ["Topic 25, 26, 27, 28"], review: ["Xem lại lỗi 28-30/04"], note: "Đừng nghỉ lễ trong tâm hồn." },
-      { date: "02/05", phase: "Đề trộn", physics: ["60 đề: 37, 38, 39", "VSAT: 19, 20, 21, 22"], english: ["Topic 29, 30, 31, 32"], review: ["20 phút cuối ngày"], note: "Giữ nhịp, đừng để một ngày xấu phá cả chuỗi." },
-      { date: "03/05", phase: "Đề trộn", physics: ["60 đề: 40, 41, 42", "VSAT: 23, 24, 25, 26"], english: ["Topic 33, 34, 35, 36"], review: ["Redo cụm sai nhiều nhất"], note: "Tập trung vào lỗi nặng, không đi lang thang sang kiến thức mới." },
-      { date: "04/05", phase: "Đề trộn", physics: ["60 đề: 43, 44, 45", "VSAT: 27, 28, 29, 30"], english: ["Topic 37, 38, 39, 40"], review: ["Tổng ôn topic Anh 1-40 bằng recall ngắn"], note: "Mốc lớn: xong HSA, 45 đề bộ 60, 30 VSAT, 40 topic Anh." },
-      { date: "05/05", phase: "Nước rút vừa phải", physics: ["60 đề: 46, 47, 48", "VSAT: 31, 32, 33, 34, 35"], english: ["Đề 17, 18, 19, 20, 21"], review: ["Chỉ rà lỗi điển hình, không mở rộng thêm"], note: "Ngày nặng vừa phải, vẫn trong vùng người thường còn sống được." },
-      { date: "06/05", phase: "Nước rút vừa phải", physics: ["60 đề: 49, 50, 51", "VSAT: 36, 37, 38, 39, 40"], english: ["Đề 22, 23, 24, 25"], review: ["Tối chỉ ôn lỗi, không học lan man thêm"], note: "Ngày chốt chắc, không cố nhét cả vũ trụ vào đầu." }
+      { date: "26/04", phase: "Chuyển sang đề trộn", physics: ["Bắc Trung Nam Đề 16, 17, 18", "VSAT: 1, 2, 3, 4"], english: ["Topic 13, 14, 15, 16"], review: ["Xem lại lỗi 24-25/04"], note: "Ngày chuyển pha. Mục tiêu là đổi nhịp mượt, không sốc." },
+      { date: "27/04", phase: "Chuyển sang đề trộn", physics: ["Bắc Trung Nam Đề 19, 20, 21", "VSAT: 5, 6, 7, 8"], english: ["Topic 17, 18, 19, 20"], review: ["15 phút cuối ngày"], note: "Bắt đầu cảm giác vào form, nhưng vẫn phải giữ đầu lạnh." },
+      { date: "28/04", phase: "Đề trộn", physics: ["Bắc Trung Nam Đề 22, 23, 24", "VSAT: 9, 10, 11, 12"], english: ["Topic 21, 22, 23, 24"], review: ["Redo lỗi nặng của 26-27/04"], note: "Từ đây ưu tiên xử lý lỗi thật, không chỉ tick cho đẹp." },
+      { date: "29/04", phase: "Đề trộn", physics: ["Bắc Trung Nam Đề 25, 26, 27", "VSAT: 13, 14, 15, 16"], english: ["Đề 11, 12, 13, 14"], review: ["Ôn lại cụm mạch điện và dao động"], note: "Giữ tốc độ vừa đủ để mai còn tỉnh táo." },
+      { date: "30/04", phase: "Đề trộn", physics: ["Bắc Trung Nam Đề 28, 29, 30", "VSAT: 17, 18"], english: ["Đề 15, 16"], review: ["Xem lại lỗi 26-29/04"], note: "Ngày lễ nhưng nhịp học thì không xin nghỉ." },
+      { date: "01/05", phase: "Đề trộn", physics: ["Bắc Trung Nam Đề 31, 32, 33", "VSAT: 19, 20"], english: ["Topic 25, 26, 27, 28"], review: ["Xem lại lỗi 28-30/04"], note: "Đừng nghỉ lễ trong tâm hồn." },
+      { date: "02/05", phase: "Đề trộn", physics: ["Bắc Trung Nam Đề 37, 38, 39", "VSAT: 19, 20, 21, 22"], english: ["Topic 29, 30, 31, 32"], review: ["20 phút cuối ngày"], note: "Giữ nhịp, đừng để một ngày xấu phá cả chuỗi." },
+      { date: "03/05", phase: "Đề trộn", physics: ["Bắc Trung Nam Đề 40, 41, 42", "VSAT: 23, 24, 25, 26"], english: ["Topic 33, 34, 35, 36"], review: ["Redo cụm sai nhiều nhất"], note: "Tập trung vào lỗi nặng, không đi lang thang sang kiến thức mới." },
+      { date: "04/05", phase: "Đề trộn", physics: ["Bắc Trung Nam Đề 43, 44, 45", "VSAT: 27, 28, 29, 30"], english: ["Topic 37, 38, 39, 40"], review: ["Tổng ôn topic Anh 1-40 bằng recall ngắn"], note: "Mốc lớn: xong HSA, 45 đề bộ 60, 30 VSAT, 40 topic Anh." },
+      { date: "05/05", phase: "Nước rút vừa phải", physics: ["Bắc Trung Nam Đề 46, 47, 48", "VSAT: 31, 32, 33, 34, 35"], english: ["Đề 17, 18, 19, 20, 21"], review: ["Chỉ rà lỗi điển hình, không mở rộng thêm"], note: "Ngày nặng vừa phải, vẫn trong vùng người thường còn sống được." },
+      { date: "06/05", phase: "Nước rút vừa phải", physics: ["Bắc Trung Nam Đề 49, 50, 51", "VSAT: 36, 37, 38, 39, 40"], english: ["Đề 22, 23, 24, 25"], review: ["Tối chỉ ôn lỗi, không học lan man thêm"], note: "Ngày chốt chắc, không cố nhét cả vũ trụ vào đầu." }
     ];
 
     const paceClassMap = {
@@ -2062,7 +2062,7 @@
         }
       }
 
-      const seriesMatch = normalized.match(/^(Đề|Topic)\s+(.+)$/i);
+      const seriesMatch = normalized.match(/^(Bắc Trung Nam Đề|Đề|Topic)\s+(.+)$/i);
       if (seriesMatch && seriesMatch[2].includes(",")) {
         const label = seriesMatch[1];
         return seriesMatch[2].split(",").map((part) => `${label} ${part.trim()}`).filter(Boolean);
@@ -2094,7 +2094,7 @@
             const [prefix, rest] = text.split(":");
             return item.text.startsWith(`${prefix}:`) && rest.includes(item.text.split(":").pop().trim());
           }
-          const labelMatch = text.match(/^(Đề|Topic)\s+(.+)$/i);
+          const labelMatch = text.match(/^(Bắc Trung Nam Đề|Đề|Topic)\s+(.+)$/i);
           if (labelMatch) {
             return item.text.startsWith(`${labelMatch[1]} `) && labelMatch[2].includes(item.text.replace(`${labelMatch[1]} `, "").trim());
           }
