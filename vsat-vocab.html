@@ -789,6 +789,288 @@
       color: #eff7ff;
     }
 
+    .hero-copy.compact {
+      gap: 14px;
+    }
+
+    .hero-copy.compact h1 {
+      max-width: 900px;
+    }
+
+    .review-card {
+      padding: 24px;
+      border-radius: 30px;
+      background:
+        linear-gradient(135deg, rgba(79,140,255,0.14), rgba(139,92,246,0.12)),
+        rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      gap: 18px;
+      min-height: 100%;
+    }
+
+    .review-card::after {
+      content: "";
+      position: absolute;
+      right: -54px;
+      bottom: -58px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,224,255,0.16), transparent 62%);
+      filter: blur(8px);
+    }
+
+    .review-card::before {
+      content: "";
+      position: absolute;
+      right: 166px;
+      top: 8px;
+      width: 168px;
+      height: 168px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(116,160,255,.2), transparent 56%),
+        radial-gradient(circle, rgba(196,122,255,.09), transparent 72%);
+      filter: blur(18px);
+      opacity: 0.92;
+    }
+
+    .review-main,
+    .review-grid,
+    .review-actions,
+    .grade-actions {
+      position: relative;
+      z-index: 1;
+    }
+
+    .review-main {
+      display: grid;
+      gap: 12px;
+      padding-right: 180px;
+    }
+
+    .review-kicker {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #c7d2fe;
+    }
+
+    .review-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 0.94;
+      letter-spacing: -0.05em;
+      max-width: 720px;
+    }
+
+    .review-sub {
+      color: var(--cyan);
+      font-size: 15px;
+    }
+
+    .review-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .review-mini {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+      min-height: 118px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(5, 10, 22, 0.42);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .review-mini-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #c7d2fe;
+    }
+
+    .review-mini-value {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(22px, 3vw, 30px);
+      line-height: 1;
+      color: #f8fbff;
+    }
+
+    .review-mini-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .review-planet {
+      position: absolute;
+      top: 16px;
+      right: 68px;
+      width: 118px;
+      height: 118px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+      animation: heroPlanetFloat 8s ease-in-out infinite;
+      box-shadow:
+        inset -30px -34px 46px rgba(0,0,0,.48),
+        inset 12px 12px 24px rgba(255,255,255,.10),
+        0 26px 46px rgba(0,0,0,.38);
+      background:
+        radial-gradient(circle at 28% 24%, rgba(255,255,255,.98), rgba(255,255,255,.18) 12%, transparent 18%),
+        radial-gradient(circle at 52% 58%, rgba(225,230,238,.12), transparent 26%),
+        linear-gradient(155deg,#f8fafc 0%, #c7cdd6 38%, #676f7d 68%, #171c25 100%);
+    }
+
+    .review-planet::before {
+      content: "";
+      position: absolute;
+      inset: -18%;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(126,174,255,.18), transparent 60%),
+        radial-gradient(circle, rgba(196,122,255,.08), transparent 76%);
+      filter: blur(16px);
+      opacity: .9;
+      z-index: -1;
+      animation: auraPulse 4.5s ease-in-out infinite;
+    }
+
+    .review-planet::after {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 0 22px rgba(119,166,255,.10), inset 0 0 18px rgba(255,255,255,.04);
+    }
+
+    .main-grid.vocab-layout {
+      grid-template-columns: 360px minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .sidebar.vocab-sidebar {
+      position: sticky;
+      top: 18px;
+    }
+
+    .source-list {
+      display: grid;
+      gap: 10px;
+      max-height: calc(100vh - 330px);
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .source-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .source-list::-webkit-scrollbar-thumb {
+      background: rgba(148,163,184,0.22);
+      border-radius: 999px;
+    }
+
+    .source-btn {
+      width: 100%;
+      text-align: left;
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: white;
+      cursor: pointer;
+      transition: .24s ease;
+    }
+
+    .source-btn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .source-btn.active {
+      background:
+        linear-gradient(135deg, rgba(139,92,246,0.16), rgba(59,130,246,0.12)),
+        rgba(255,255,255,0.04);
+      border-color: rgba(139,92,246,0.45);
+      box-shadow: 0 16px 40px rgba(32,17,72,0.3);
+    }
+
+    .source-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .source-name {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .source-count {
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .source-progress {
+      margin-top: 10px;
+    }
+
+    .inline-add {
+      display: grid;
+      gap: 12px;
+    }
+
+    .inline-add .field textarea {
+      min-height: 84px;
+    }
+
+    .inline-add .field input[readonly] {
+      opacity: .8;
+      color: #dbe7ff;
+    }
+
+    .workspace.slim {
+      display: grid;
+      gap: 18px;
+    }
+
+    .workspace-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .workspace-toolbar .toolbar-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .word-grid.single-column {
+      grid-template-columns: 1fr;
+    }
+
     @keyframes driftNebula {
       from { transform: translate3d(0, 0, 0) scale(1); }
       to { transform: translate3d(24px, -16px, 0) scale(1.06); }
@@ -823,6 +1105,10 @@
         grid-template-columns: 1fr;
       }
 
+      .main-grid.vocab-layout {
+        grid-template-columns: 1fr;
+      }
+
       .stats-grid,
       .deck-grid,
       .word-grid {
@@ -838,7 +1124,8 @@
 
       .hero-shell,
       .panel,
-      .focus-card {
+      .focus-card,
+      .review-card {
         padding: 18px;
       }
 
@@ -847,6 +1134,18 @@
       .word-grid,
       .form-grid.two {
         grid-template-columns: 1fr;
+      }
+
+      .review-main {
+        padding-right: 0;
+      }
+
+      .review-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .review-planet {
+        display: none;
       }
 
       .toolbar {
@@ -1047,7 +1346,7 @@
       words: initialWords,
       selectedId: initialWords[0].id,
       search: "",
-      sourceFilter: "all",
+      sourceFilter: initialWords[0].source,
       statusFilter: "due",
       showAnswer: false
     };
@@ -1256,8 +1555,19 @@
     }
 
     function render() {
+      const sources = getSources();
+      const sourceOptions = sources.filter((source) => source !== "all");
+      if (!sourceOptions.includes(state.sourceFilter)) {
+        state.sourceFilter = sourceOptions[0] || "all";
+      }
+
+      const activeSource = state.sourceFilter === "all"
+        ? (sourceOptions[0] || "Đề mới")
+        : state.sourceFilter;
       const filteredWords = getFilteredWords();
-      const selectedWord = getSelectedWord(filteredWords);
+      const scopedWords = filteredWords.filter((item) => item.source === activeSource);
+      const wordsToRender = scopedWords.length ? scopedWords : filteredWords;
+      const selectedWord = getSelectedWord(wordsToRender);
       if (selectedWord && state.selectedId !== selectedWord.id) {
         state.selectedId = selectedWord.id;
         saveState();
@@ -1269,57 +1579,61 @@
         ? Math.round(state.words.reduce((sum, item) => sum + getRetention(item), 0) / state.words.length)
         : 0;
       const reviewedCount = state.words.filter((item) => item.lastReviewed === todayString()).length;
-      const sources = getSources();
+      const activeSourceWords = state.words.filter((item) => item.source === activeSource);
+      const activeSourceDue = activeSourceWords.filter(isDue).length;
+      const activeSourceDone = activeSourceWords.filter((item) => item.lastReviewed === todayString()).length;
+      const activeSourceRetention = activeSourceWords.length
+        ? Math.round(activeSourceWords.reduce((sum, item) => sum + getRetention(item), 0) / activeSourceWords.length)
+        : 0;
 
       app.innerHTML = `
         <section class="glass hero-shell">
           <div class="hero">
-            <div class="hero-copy">
+            <div class="hero-copy compact">
               <div class="pill">VSAT Vocab Memory Lab</div>
-              <h1>Trang ôn từ vựng sau mỗi đề tiếng Anh, thiết kế để não nhớ lâu chứ không chỉ nhìn cho quen.</h1>
-              <p>Tư duy của trang này là: sau mỗi đề, mình chắt ra từ đáng học, gắn nó với ngữ cảnh thật, ép não tự nhớ trước khi xem đáp án, rồi giãn khoảng ôn theo mức độ nhớ. Đó là bộ ba khoa học nhất cho từ vựng bền: <strong>active recall</strong>, <strong>spaced repetition</strong> và <strong>context encoding</strong>.</p>
+              <h1>Chọn từng đề, nhặt từ ngay sau bài làm, rồi ôn lại bằng một màn kiểm tra đủ lớn để ép não thật sự recall.</h1>
+              <p>Flow mới đi đúng kiểu `vsat.html`: bên trái chọn đề như chọn ngày, bên phải tập trung vào một từ đang luyện. Mục tiêu là giảm thao tác thừa, thêm từ nhanh hơn, và để phần kiểm tra từ vựng trở thành khu trung tâm rõ ràng nhất của trang.</p>
               <div class="hero-tags">
-                <span class="hero-tag">Ghi từ sau từng đề thật</span>
-                <span class="hero-tag">Tự chấm mức nhớ sau mỗi lượt</span>
-                <span class="hero-tag">Ôn lại đúng lúc sắp quên</span>
-                <span class="hero-tag">Nhớ cả sắc thái và cách dùng</span>
+                <span class="hero-tag">Chọn đề như timeline</span>
+                <span class="hero-tag">Thêm từ ngay trong sidebar</span>
+                <span class="hero-tag">Recall trước khi lật</span>
+                <span class="hero-tag">Tự chấm mức nhớ</span>
               </div>
               <div class="stats-grid">
                 <div class="stat-card">
                   <div class="stat-label">Đến hạn ôn</div>
                   <div class="stat-value">${dueCount}</div>
-                  <div class="stat-note">Các từ cần lôi ra khỏi trí nhớ ngay hôm nay để tránh mờ dấu vết.</div>
+                  <div class="stat-note">Những từ nên được gọi lại ngay hôm nay trước khi dấu nhớ mờ đi thêm.</div>
                 </div>
                 <div class="stat-card">
-                  <div class="stat-label">Đã chạm hôm nay</div>
+                  <div class="stat-label">Đề đang chọn</div>
+                  <div class="stat-value">${activeSourceWords.length}</div>
+                  <div class="stat-note">Số từ hiện đang nằm trong cụm đề ${escapeHtml(activeSource)}.</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Đã ôn hôm nay</div>
                   <div class="stat-value">${reviewedCount}</div>
-                  <div class="stat-note">Số mục đã được não kích hoạt lại trong ngày hiện tại.</div>
-                </div>
-                <div class="stat-card">
-                  <div class="stat-label">Khóa dài hạn</div>
-                  <div class="stat-value">${masteredCount}</div>
-                  <div class="stat-note">Những từ đã sống qua nhiều lần recall và đang vào vùng ổn định.</div>
+                  <div class="stat-note">Số lần bạn đã bật lại dấu nhớ trong ngày hiện tại.</div>
                 </div>
                 <div class="stat-card">
                   <div class="stat-label">Giữ lại trung bình</div>
                   <div class="stat-value">${averageRetention}%</div>
-                  <div class="stat-note">Điểm ước lượng từ dữ liệu nhớ và quên, để thấy chất lượng chứ không chỉ số lượng.</div>
+                  <div class="stat-note">${masteredCount} từ đã vào vùng nhớ dài hạn, nhưng ưu tiên hôm nay vẫn là recall đúng lúc.</div>
                 </div>
               </div>
             </div>
 
-            <div class="glass focus-card">
+            <div class="review-card">
               ${selectedWord ? `
-                <div class="focus-top">
-                  <div>
-                    <div class="focus-kicker">Từ đang luyện</div>
-                    <div class="focus-word">${escapeHtml(selectedWord.word)}</div>
-                    <div class="focus-phonetic">${escapeHtml(selectedWord.phonetic || selectedWord.pos || "")}</div>
-                  </div>
-                  <span class="stage-badge ${getStageClass(selectedWord.stage)}">${escapeHtml(getStageLabel(selectedWord.stage))}</span>
+                <div class="review-planet" aria-hidden="true"></div>
+                <div class="review-main">
+                  <div class="review-kicker">Đang kiểm tra</div>
+                  <div class="review-title">${escapeHtml(selectedWord.word)}</div>
+                  <div class="review-sub">${escapeHtml(selectedWord.phonetic || selectedWord.pos || "")}</div>
                 </div>
-                <div class="memory-badges">
+                <div class="review-meta">
                   <span class="badge">${escapeHtml(selectedWord.source)}</span>
+                  <span class="badge ${getStageClass(selectedWord.stage)}">${escapeHtml(getStageLabel(selectedWord.stage))}</span>
                   <span class="badge">Recall trước khi nhìn</span>
                   <span class="badge">Lần ôn kế: ${escapeHtml(selectedWord.nextReview || "hôm nay")}</span>
                 </div>
@@ -1332,7 +1646,7 @@
                     <div class="answer-line"><strong>Collocations:</strong> ${escapeHtml(selectedWord.collocations || "Chưa thêm cụm đi cùng.")}</div>
                     <div class="answer-line"><strong>Ví dụ:</strong> ${escapeHtml(selectedWord.example)}</div>
                   </div>
-                  <div class="focus-actions">
+                  <div class="review-actions">
                     <button class="btn primary" data-action="toggle-answer">${state.showAnswer ? "Ẩn đáp án để thử lại" : "Hiện đáp án sau khi đã tự nhớ"}</button>
                     <button class="btn" data-action="next-word">Chuyển sang từ kế</button>
                   </div>
@@ -1343,6 +1657,28 @@
                     <button class="grade-btn great" data-grade="easy">Nhớ rất nhanh</button>
                   </div>
                 </div>
+                <div class="review-grid">
+                  <div class="review-mini">
+                    <div class="review-mini-label">Từ của đề này</div>
+                    <div class="review-mini-value">${activeSourceWords.length}</div>
+                    <div class="review-mini-note">Số mục đang gắn với ${escapeHtml(activeSource)}.</div>
+                  </div>
+                  <div class="review-mini">
+                    <div class="review-mini-label">Đến hạn trong đề</div>
+                    <div class="review-mini-value">${activeSourceDue}</div>
+                    <div class="review-mini-note">Những mục nên được ôn ngay trong cụm đề hiện tại.</div>
+                  </div>
+                  <div class="review-mini">
+                    <div class="review-mini-label">Đã chạm hôm nay</div>
+                    <div class="review-mini-value">${activeSourceDone}</div>
+                    <div class="review-mini-note">Số thẻ của đề này bạn đã thực sự xem lại trong ngày.</div>
+                  </div>
+                  <div class="review-mini">
+                    <div class="review-mini-label">Giữ lại trung bình</div>
+                    <div class="review-mini-value">${activeSourceRetention}%</div>
+                    <div class="review-mini-note">Ước lượng chất lượng nhớ của riêng cụm đề đang chọn.</div>
+                  </div>
+                </div>
               ` : `
                 <div class="empty-state">Không có từ nào khớp bộ lọc hiện tại. Hãy đổi filter hoặc thêm một từ mới từ đề vừa làm xong.</div>
               `}
@@ -1350,51 +1686,42 @@
           </div>
         </section>
 
-        <section class="main-grid">
-          <aside class="sidebar">
+        <section class="main-grid vocab-layout">
+          <aside class="glass sidebar vocab-sidebar">
             <section class="glass panel">
               <div>
-                <div class="section-title">Protocol 5 phút</div>
-                <div class="section-desc">Chu trình ngắn sau mỗi đề để tận dụng ngay lúc não còn nóng dấu vết ngữ cảnh.</div>
+                <div class="section-title">Chọn Đề</div>
+                <div class="section-desc">Chọn từng đề ở đây giống chọn ngày trên trang gốc, rồi thêm hoặc ôn từ ngay theo đúng cụm đó.</div>
               </div>
-              <div class="protocol-list">
-                <div class="protocol-item">
-                  <div class="protocol-step">
-                    <span class="step-index">01</span>
-                    <div class="protocol-title">Harvest</div>
-                  </div>
-                  <div class="protocol-copy">Chỉ nhặt những từ thực sự chặn hiểu bài, lặp lại nhiều, hoặc có sắc thái đáng giá cho writing và speaking.</div>
-                </div>
-                <div class="protocol-item">
-                  <div class="protocol-step">
-                    <span class="step-index">02</span>
-                    <div class="protocol-title">Encode</div>
-                  </div>
-                  <div class="protocol-copy">Gắn mỗi từ với câu gốc, cảm giác khi gặp nó, và một mô tả tiếng Việt thật ngắn nhưng đúng sắc thái.</div>
-                </div>
-                <div class="protocol-item">
-                  <div class="protocol-step">
-                    <span class="step-index">03</span>
-                    <div class="protocol-title">Recall</div>
-                  </div>
-                  <div class="protocol-copy">Che đáp án, tự kéo nghĩa ra trước. Nỗ lực truy xuất chính là phần giúp trí nhớ mạnh lên.</div>
-                </div>
-                <div class="protocol-item">
-                  <div class="protocol-step">
-                    <span class="step-index">04</span>
-                    <div class="protocol-title">Rate</div>
-                  </div>
-                  <div class="protocol-copy">Chấm thật lòng mức nhớ để lịch ôn giãn ra hợp lí. Tự lừa mình sẽ phá spaced repetition.</div>
-                </div>
+              <div class="source-list">
+                ${sourceOptions.map((source) => {
+                  const words = state.words.filter((item) => item.source === source);
+                  const doneToday = words.filter((item) => item.lastReviewed === todayString()).length;
+                  const due = words.filter(isDue).length;
+                  const progress = words.length ? Math.round((doneToday * 100) / words.length) : 0;
+                  return `
+                    <button class="source-btn ${activeSource === source ? "active" : ""}" data-source="${escapeHtml(source)}">
+                      <div class="source-top">
+                        <div>
+                          <div class="source-name">${escapeHtml(source)}</div>
+                          <div class="date-phase">${due} từ đến hạn</div>
+                        </div>
+                        <span class="badge">${doneToday}/${words.length}</span>
+                      </div>
+                      <div class="source-count">${words.length} từ trong đề này</div>
+                      <div class="progress source-progress"><span style="width:${progress}%"></span></div>
+                    </button>
+                  `;
+                }).join("")}
               </div>
             </section>
 
             <section class="glass panel">
               <div>
                 <div class="section-title">Nhập Từ Mới</div>
-                <div class="section-desc">Thêm từ vừa đúc kết sau một đề. Càng gần ngữ cảnh gốc, dấu nhớ càng đậm.</div>
+                <div class="section-desc">Đang thêm cho <strong>${escapeHtml(activeSource)}</strong>. Chỉ giữ các trường thật cần để nhập nhanh.</div>
               </div>
-              <form id="addWordForm" class="form-grid">
+              <form id="addWordForm" class="inline-add">
                 <div class="form-grid two">
                   <div class="field">
                     <label for="word">Từ</label>
@@ -1411,17 +1738,13 @@
                     <input id="phonetic" name="phonetic" placeholder="/rɪˈteɪn/" />
                   </div>
                   <div class="field">
-                    <label for="source">Nguồn</label>
-                    <input id="source" name="source" placeholder="Đề 22" />
+                    <label for="source">Đề đang gắn</label>
+                    <input id="source" name="source" value="${escapeHtml(activeSource)}" readonly />
                   </div>
                 </div>
                 <div class="field">
                   <label for="meaning">Nghĩa trọng tâm</label>
                   <textarea id="meaning" name="meaning" placeholder="ghi nhớ và giữ lại trong đầu" required></textarea>
-                </div>
-                <div class="field">
-                  <label for="nuance">Sắc thái / khi nào dùng</label>
-                  <textarea id="nuance" name="nuance" placeholder="khác với remember ở chỗ..."></textarea>
                 </div>
                 <div class="field">
                   <label for="collocations">Cụm đi cùng</label>
@@ -1435,71 +1758,33 @@
                   <label for="prompt">Gợi nhớ cá nhân</label>
                   <input id="prompt" name="prompt" placeholder="liên hệ với lỗi reading vừa gặp" />
                 </div>
-                <div class="field">
-                  <label for="tags">Tags</label>
-                  <input id="tags" name="tags" placeholder="reading, memory, writing" />
-                </div>
                 <div class="deck-actions">
-                  <button class="btn primary" type="submit">Thêm vào hàng đợi ôn</button>
+                  <button class="btn primary" type="submit">Thêm từ vào ${escapeHtml(activeSource)}</button>
                 </div>
               </form>
             </section>
           </aside>
 
-          <section class="workspace">
-            <section class="glass panel workspace-top">
-              <div>
-                <div class="section-title">Bộ Đề Và Bộ Từ</div>
-                <div class="section-desc">Mỗi cụm từ nên xuất phát từ đề thật đã làm. Não nhớ tốt hơn khi có nguồn gốc rõ ràng, cảm xúc rõ ràng và lỗi rõ ràng.</div>
-              </div>
-              <div class="toolbar">
+          <section class="workspace slim">
+            <section class="glass panel">
+              <div class="workspace-toolbar">
                 <div class="toolbar-group">
-                  <input id="searchInput" class="search" placeholder="Tìm theo từ, nghĩa, source, tags..." value="${escapeHtml(state.search)}" />
-                  <select id="sourceFilter" class="select">
-                    ${sources.map((source) => `<option value="${escapeHtml(source)}" ${source === state.sourceFilter ? "selected" : ""}>${source === "all" ? "Tất cả nguồn" : escapeHtml(source)}</option>`).join("")}
-                  </select>
+                  <div>
+                    <div class="section-title">Từ Của ${escapeHtml(activeSource)}</div>
+                    <div class="section-desc">Danh sách thẻ sống của riêng đề đang chọn. Bấm vào một từ để kéo nó lên khu kiểm tra lớn phía trên.</div>
+                  </div>
                 </div>
                 <div class="toolbar-group">
+                  <input id="searchInput" class="search" placeholder="Tìm theo từ, nghĩa, gợi nhớ..." value="${escapeHtml(state.search)}" />
                   <button class="chip-btn ${state.statusFilter === "due" ? "active" : ""}" data-filter="due">Đến hạn</button>
                   <button class="chip-btn ${state.statusFilter === "growing" ? "active" : ""}" data-filter="growing">Đang bám</button>
                   <button class="chip-btn ${state.statusFilter === "locked" ? "active" : ""}" data-filter="locked">Khóa dài hạn</button>
                   <button class="chip-btn ${state.statusFilter === "all" ? "active" : ""}" data-filter="all">Tất cả</button>
                 </div>
               </div>
-
-              <div class="deck-grid">
-                ${sources.filter((source) => source !== "all").map((source) => {
-                  const words = state.words.filter((item) => item.source === source);
-                  const due = words.filter(isDue).length;
-                  const avgStage = words.length ? (words.reduce((sum, item) => sum + item.stage, 0) / words.length).toFixed(1) : "0.0";
-                  const isActive = state.sourceFilter === source;
-                  return `
-                    <button class="deck-btn ${isActive ? "active" : ""}" data-source="${escapeHtml(source)}">
-                      <div class="deck-item">
-                        <div class="deck-top">
-                          <div class="deck-title">${escapeHtml(source)}</div>
-                          <span class="deck-pulse"></span>
-                        </div>
-                        <div class="deck-copy">${due} từ đến hạn, stage trung bình ${avgStage}. Cụm này nên được ôn theo đề để giữ mạch ngữ cảnh.</div>
-                        <div class="deck-meta">
-                          <span class="tag">${words.length} từ</span>
-                          <span class="tag">${due} cần recall</span>
-                        </div>
-                      </div>
-                    </button>
-                  `;
-                }).join("")}
-              </div>
-            </section>
-
-            <section class="glass panel">
-              <div>
-                <div class="section-title">Flashcards Đang Sống</div>
-                <div class="section-desc">Đừng nhìn nghĩa đầu tiên. Hãy đọc từ, tự kéo nghĩa và ngữ cảnh ra, rồi mới lật. Nỗ lực retrieval chính là phần luyện thật.</div>
-              </div>
-              ${filteredWords.length ? `
-                <div class="word-grid">
-                  ${filteredWords.map((item) => `
+              ${wordsToRender.length ? `
+                <div class="word-grid single-column">
+                  ${wordsToRender.map((item) => `
                     <article class="word-card ${selectedWord && selectedWord.id === item.id ? "active" : ""}" data-word-id="${escapeHtml(item.id)}">
                       <div class="word-top">
                         <div class="word-main">
@@ -1508,14 +1793,11 @@
                         </div>
                         <span class="stage-badge ${getStageClass(item.stage)}">${escapeHtml(getStageLabel(item.stage))}</span>
                       </div>
-                      <div class="word-copy">${escapeHtml(item.prompt)}</div>
+                      <div class="word-copy">${escapeHtml(item.meaning)}</div>
                       <div class="word-meta">
                         <span class="meta-chip">${escapeHtml(item.source)}</span>
                         <span class="meta-chip">Giữ lại ${getRetention(item)}%</span>
                         <span class="meta-chip">${isDue(item) ? "Ôn hôm nay" : `Ôn ${escapeHtml(item.nextReview)}`}</span>
-                      </div>
-                      <div class="card-tags">
-                        ${(item.tags || []).slice(0, 3).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}
                       </div>
                     </article>
                   `).join("")}
@@ -1524,48 +1806,11 @@
                 <div class="empty-state">Bộ lọc hiện tại chưa có thẻ nào. Thử nới filter hoặc thêm từ mới từ đề vừa chữa.</div>
               `}
             </section>
-
-            <section class="glass panel">
-              <div>
-                <div class="section-title">Playbook Khoa Học</div>
-                <div class="section-desc">Trang này áp dụng các nguyên tắc học đã được dùng rất rộng trong nghiên cứu ghi nhớ và thực hành học tập hiệu quả.</div>
-              </div>
-              <div class="science-list">
-                <div class="science-item">
-                  <div class="science-head">
-                    <span class="science-index">A</span>
-                    <div class="science-title">Active Recall</div>
-                  </div>
-                  <div class="science-copy">Bắt não tự kéo thông tin ra trước khi nhìn đáp án. Cảm giác hơi khó chịu này lại là tín hiệu tốt cho trí nhớ dài hạn.</div>
-                </div>
-                <div class="science-item">
-                  <div class="science-head">
-                    <span class="science-index">B</span>
-                    <div class="science-title">Spacing</div>
-                  </div>
-                  <div class="science-copy">Không ôn dồn. Ôn lại đúng lúc ký ức đang mờ đi một chút sẽ tạo hiệu ứng củng cố mạnh hơn so với xem liên tục.</div>
-                </div>
-                <div class="science-item">
-                  <div class="science-head">
-                    <span class="science-index">C</span>
-                    <div class="science-title">Encoding Specificity</div>
-                  </div>
-                  <div class="science-copy">Một từ đi kèm đề gốc, câu gốc, lỗi gốc và cảm giác gốc sẽ dễ bật ra hơn khi gặp lại trong reading hoặc writing.</div>
-                </div>
-                <div class="science-item">
-                  <div class="science-head">
-                    <span class="science-index">D</span>
-                    <div class="science-title">Generation Effect</div>
-                  </div>
-                  <div class="science-copy">Tự viết ví dụ, tự đặt gợi nhớ và tự mô tả sắc thái sẽ giúp từ đó thuộc về bạn thay vì chỉ đi ngang qua mắt.</div>
-                </div>
-              </div>
-            </section>
           </section>
         </section>
 
         <section class="glass footer-note">
-          <strong>Gợi ý dùng chuẩn nhất:</strong> sau mỗi đề tiếng Anh, chỉ chọn 5 đến 10 từ thật đáng giữ. Thêm ngay vào đây trong vòng vài phút, tự nhớ trước khi lật, rồi để trang nhắc lại theo mức độ nhớ. Chất lượng của liên kết và lịch ôn sẽ quan trọng hơn số từ bạn nhặt cho thật nhiều.
+          <strong>Gợi ý dùng nhanh:</strong> chọn đề ở cột trái, thêm 5 đến 10 từ thực sự đáng giữ, rồi bấm từng từ ở danh sách bên phải để kéo lên ô kiểm tra lớn. Từ nào nhớ kém thì chấm thấp để nó quay lại sớm hơn.
         </section>
       `;
 
@@ -1582,15 +1827,6 @@
       if (searchInput) {
         searchInput.addEventListener("input", (event) => {
           state.search = event.target.value;
-          saveState();
-          render();
-        });
-      }
-
-      const sourceFilter = document.getElementById("sourceFilter");
-      if (sourceFilter) {
-        sourceFilter.addEventListener("change", (event) => {
-          state.sourceFilter = event.target.value;
           saveState();
           render();
         });
