@@ -10,25 +10,25 @@
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-1: #06111f;
-      --bg-2: #0b1f35;
-      --bg-3: #112742;
-      --bg-4: #25173f;
-      --panel: rgba(7, 15, 29, 0.72);
-      --panel-soft: rgba(255, 255, 255, 0.055);
-      --panel-strong: rgba(255, 255, 255, 0.10);
-      --border: rgba(166, 189, 255, 0.16);
-      --text: #edf5ff;
-      --muted: #9cb2d6;
-      --cyan: #35d6ff;
-      --blue: #6ea5ff;
-      --amber: #ffcb6b;
-      --mint: #6ce4c4;
-      --rose: #ff7e92;
-      --violet: #a88bff;
+      --bg-1: #02040c;
+      --bg-2: #061126;
+      --bg-3: #0b1a39;
+      --bg-4: #160f33;
+      --panel: rgba(8, 13, 28, 0.7);
+      --panel-soft: rgba(255, 255, 255, 0.05);
+      --panel-strong: rgba(255, 255, 255, 0.1);
+      --border: rgba(161, 176, 255, 0.14);
+      --text: #eef4ff;
+      --muted: #9fb0d3;
+      --blue: #4f8cff;
+      --cyan: #22d3ee;
+      --violet: #8b5cf6;
+      --rose: #fb7185;
+      --green: #34d399;
+      --amber: #fbbf24;
       --shadow: 0 28px 90px rgba(0, 0, 0, 0.38);
-      --radius-xl: 30px;
-      --radius-lg: 22px;
+      --radius-xl: 32px;
+      --radius-lg: 24px;
       --radius-md: 18px;
       --radius-sm: 14px;
     }
@@ -40,10 +40,10 @@
       font-family: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 12% 18%, rgba(94, 142, 255, 0.22), transparent 18%),
-        radial-gradient(circle at 84% 16%, rgba(54, 214, 255, 0.12), transparent 16%),
-        radial-gradient(circle at 50% 80%, rgba(255, 203, 107, 0.10), transparent 18%),
-        linear-gradient(135deg, var(--bg-1), var(--bg-2) 38%, var(--bg-3) 70%, var(--bg-4));
+        radial-gradient(circle at 14% 18%, rgba(91, 126, 255, 0.2), transparent 18%),
+        radial-gradient(circle at 82% 16%, rgba(34, 211, 238, 0.14), transparent 16%),
+        radial-gradient(circle at 50% 84%, rgba(168, 85, 247, 0.12), transparent 20%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2) 38%, var(--bg-3) 72%, var(--bg-4));
       overflow-x: hidden;
     }
 
@@ -53,8 +53,8 @@
     .universe {
       position: fixed;
       inset: 0;
-      pointer-events: none;
       overflow: hidden;
+      pointer-events: none;
       z-index: 0;
     }
 
@@ -64,37 +64,37 @@
       content: "";
       position: absolute;
       inset: -16%;
-      filter: blur(60px);
+      filter: blur(62px);
     }
 
     .nebula {
       background:
-        radial-gradient(circle at 15% 28%, rgba(109, 135, 255, 0.22), transparent 14%),
-        radial-gradient(circle at 78% 26%, rgba(53, 214, 255, 0.15), transparent 15%),
-        radial-gradient(circle at 48% 72%, rgba(255, 194, 95, 0.09), transparent 16%);
+        radial-gradient(circle at 14% 28%, rgba(88, 113, 255, 0.22), transparent 14%),
+        radial-gradient(circle at 78% 24%, rgba(58, 235, 255, 0.16), transparent 14%),
+        radial-gradient(circle at 46% 74%, rgba(196, 103, 255, 0.14), transparent 16%);
       animation: driftNebula 24s ease-in-out infinite alternate;
     }
 
     .nebula::before {
       background:
-        radial-gradient(circle at 32% 62%, rgba(125, 171, 255, 0.14), transparent 14%),
-        radial-gradient(circle at 69% 56%, rgba(108, 228, 196, 0.12), transparent 14%);
-      animation: driftNebula 34s ease-in-out infinite alternate-reverse;
+        radial-gradient(circle at 30% 62%, rgba(122, 160, 255, 0.16), transparent 14%),
+        radial-gradient(circle at 70% 58%, rgba(83, 244, 255, 0.1), transparent 14%);
+      animation: driftNebula 32s ease-in-out infinite alternate-reverse;
     }
 
     .nebula::after {
       background:
-        radial-gradient(circle at 52% 34%, rgba(255,255,255,0.06), transparent 9%),
-        radial-gradient(circle at 36% 84%, rgba(168, 139, 255, 0.10), transparent 14%);
-      animation: driftNebula 38s ease-in-out infinite alternate;
+        radial-gradient(circle at 52% 34%, rgba(255, 255, 255, 0.06), transparent 9%),
+        radial-gradient(circle at 34% 82%, rgba(191, 121, 255, 0.1), transparent 14%);
+      animation: driftNebula 36s ease-in-out infinite alternate;
     }
 
     .space-grid {
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(rgba(138, 175, 255, 0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(138, 175, 255, 0.045) 1px, transparent 1px);
+        linear-gradient(rgba(130, 170, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(130, 170, 255, 0.045) 1px, transparent 1px);
       background-size: 100px 100px;
       opacity: 0.22;
       mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.95), transparent 84%);
@@ -114,10 +114,10 @@
     .stars {
       background-image:
         radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.95), transparent),
-        radial-gradient(1.5px 1.5px at 120px 80px, rgba(126, 183, 255, .9), transparent),
+        radial-gradient(1.5px 1.5px at 120px 80px, rgba(130,190,255,.95), transparent),
         radial-gradient(2px 2px at 250px 140px, rgba(255,255,255,.9), transparent),
-        radial-gradient(1.8px 1.8px at 350px 40px, rgba(255, 204, 109, .95), transparent),
-        radial-gradient(2px 2px at 500px 160px, rgba(78, 231, 255, .95), transparent),
+        radial-gradient(1.8px 1.8px at 350px 40px, rgba(178,125,255,.95), transparent),
+        radial-gradient(2px 2px at 500px 160px, rgba(97,231,255,.95), transparent),
         radial-gradient(1.5px 1.5px at 700px 60px, rgba(255,255,255,.85), transparent);
       background-size: 800px 300px;
       opacity: .9;
@@ -127,8 +127,8 @@
     .stars2 {
       background-image:
         radial-gradient(1.2px 1.2px at 40px 60px, rgba(255,255,255,.85), transparent),
-        radial-gradient(1.6px 1.6px at 200px 120px, rgba(108, 228, 196, .75), transparent),
-        radial-gradient(1.2px 1.2px at 420px 40px, rgba(255,255,255,.92), transparent),
+        radial-gradient(1.7px 1.7px at 200px 120px, rgba(97,231,255,.75), transparent),
+        radial-gradient(1.2px 1.2px at 420px 40px, rgba(255,255,255,.95), transparent),
         radial-gradient(1.3px 1.3px at 600px 200px, rgba(170, 140, 255, .8), transparent),
         radial-gradient(1.5px 1.5px at 760px 100px, rgba(255,255,255,.8), transparent);
       background-size: 900px 380px;
@@ -139,8 +139,8 @@
     .stars3 {
       background-image:
         radial-gradient(3px 3px at 100px 90px, rgba(255,255,255,.9), transparent),
-        radial-gradient(2.5px 2.5px at 500px 60px, rgba(78, 231, 255, .9), transparent),
-        radial-gradient(3px 3px at 780px 170px, rgba(255, 203, 107, .85), transparent);
+        radial-gradient(2.5px 2.5px at 500px 60px, rgba(97,231,255,.9), transparent),
+        radial-gradient(3px 3px at 780px 170px, rgba(186,122,255,.85), transparent);
       background-size: 1000px 420px;
       opacity: .7;
       filter: drop-shadow(0 0 4px rgba(255,255,255,.22));
@@ -152,16 +152,177 @@
       width: 180px;
       height: 2px;
       border-radius: 999px;
-      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,1), rgba(53,214,255,0));
+      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,1), rgba(103,220,255,0));
       filter: drop-shadow(0 0 12px rgba(255,255,255,.8));
       opacity: 0;
-      transform: rotate(-24deg);
+      pointer-events: none;
+      transform: rotate(-25deg);
       animation: shooting 9s ease-in-out infinite;
+      will-change: transform, opacity;
     }
 
-    .shooting-star.one { top: 10%; left: 70%; animation-delay: 0s; }
-    .shooting-star.two { top: 22%; left: 14%; width: 150px; animation-delay: 3s; }
-    .shooting-star.three { top: 7%; left: 44%; width: 210px; animation-delay: 6s; }
+    .shooting-star.one { top: 12%; left: 72%; animation-delay: 0s; }
+    .shooting-star.two { top: 26%; left: 18%; width: 140px; animation-delay: 3s; }
+    .shooting-star.three { top: 8%; left: 45%; width: 210px; animation-delay: 6s; }
+
+    .flag-burst {
+      --flag-top: 88px;
+      --flag-right: max(5%, 22px);
+      --flag-shift-x: -18px;
+      --flag-shift-y: 14px;
+      --flag-tilt: -5deg;
+      position: absolute;
+      right: var(--flag-right);
+      top: var(--flag-top);
+      width: min(300px, 34vw);
+      aspect-ratio: 5 / 3;
+      pointer-events: none;
+      opacity: 0;
+      transform: translate3d(var(--flag-shift-x), var(--flag-shift-y), 0) rotate(var(--flag-tilt)) scale(.96);
+      transition: opacity .8s ease, transform .8s ease, filter .8s ease;
+      filter: drop-shadow(0 0 16px rgba(255,214,136,.12));
+    }
+
+    .flag-burst::before {
+      content: "";
+      position: absolute;
+      inset: -10% -8%;
+      background:
+        radial-gradient(circle at 50% 48%, rgba(255,205,112,.16), transparent 34%),
+        radial-gradient(circle at 50% 52%, rgba(255,244,218,.08), transparent 58%);
+      filter: blur(22px);
+      opacity: 0;
+      transform: scale(.88);
+      transition: opacity .9s ease, transform 1s ease;
+    }
+
+    .flag-burst::after {
+      content: "";
+      position: absolute;
+      inset: 8% 12%;
+      background: radial-gradient(circle at 50% 50%, rgba(255,232,170,.16), transparent 62%);
+      filter: blur(24px);
+      opacity: 0;
+    }
+
+    body.flag-burst-active .flag-burst {
+      opacity: 1;
+      transform: translate3d(0, 0, 0) rotate(var(--flag-tilt)) scale(1);
+      filter: drop-shadow(0 0 22px rgba(255,224,158,.22));
+    }
+
+    body.flag-burst-active .flag-burst::before {
+      opacity: .72;
+      transform: scale(1);
+      animation: flagAuraPulse 2.8s ease-in-out infinite alternate;
+    }
+
+    body.flag-burst-active .flag-burst::after {
+      opacity: .5;
+      animation: flagAuraDrift 3.2s ease-in-out infinite alternate;
+    }
+
+    .flag-burst svg {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .flag-dot {
+      fill: #ffe4a0;
+      opacity: 0;
+      transform-box: fill-box;
+      transform-origin: center;
+      filter: drop-shadow(0 0 5px rgba(255,224,154,.28));
+    }
+
+    .flag-dot.major {
+      fill: #fff5d6;
+      filter: drop-shadow(0 0 10px rgba(255,238,196,.48));
+    }
+
+    .flag-dot.soft {
+      fill: #ffd27f;
+      filter: drop-shadow(0 0 4px rgba(255,202,108,.22));
+    }
+
+    body.flag-burst-active .flag-dot {
+      animation:
+        flagDotAppear .9s ease forwards,
+        flagDotTwinkle 2.25s ease-in-out infinite alternate;
+      animation-delay: var(--delay, 0s), calc(var(--delay, 0s) + .92s);
+    }
+
+    body.flag-burst-active .flag-dot.soft {
+      animation-duration: 1s, 1.9s;
+    }
+
+    body.flag-burst-active .flag-dot.major {
+      animation-duration: .82s, 2.5s;
+    }
+
+    .floating-planet {
+      position: absolute;
+      border-radius: 50%;
+      box-shadow:
+        inset -20px -24px 36px rgba(0,0,0,0.38),
+        inset 8px 8px 16px rgba(255,255,255,0.12),
+        0 24px 40px rgba(0,0,0,0.28);
+      opacity: 0.82;
+      animation: planetFloat 9s ease-in-out infinite;
+    }
+
+    .floating-planet::before,
+    .floating-planet::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .floating-planet::before {
+      inset: -18%;
+      background: radial-gradient(circle, rgba(94, 156, 255, 0.18), transparent 66%);
+      filter: blur(12px);
+    }
+
+    .floating-planet::after {
+      inset: 8%;
+      background:
+        radial-gradient(circle at 28% 24%, rgba(255,255,255,0.28), transparent 18%),
+        radial-gradient(circle at 62% 54%, rgba(0,0,0,0.18), transparent 20%);
+      opacity: 0.88;
+    }
+
+    .floating-planet.p1 {
+      width: 78px;
+      height: 78px;
+      left: 6%;
+      top: 22%;
+      background: linear-gradient(155deg, #b7d2ff, #5279ff 46%, #15214c 100%);
+    }
+
+    .floating-planet.p3 .ring {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 150%;
+      height: 34%;
+      transform: translate(-50%, -50%) rotate(-12deg);
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.22);
+      border-left-color: rgba(255,255,255,0.45);
+      box-shadow: 0 0 18px rgba(255,255,255,0.12);
+    }
+
+    .floating-planet.p3 {
+      width: 56px;
+      height: 56px;
+      left: 18%;
+      bottom: 14%;
+      background: linear-gradient(155deg, #a7f3d0, #059669 46%, #062a28 100%);
+      animation-duration: 8s;
+    }
 
     .app {
       position: relative;
@@ -1400,6 +1561,11 @@
       filter: drop-shadow(0 34px 70px rgba(0,0,0,0.36));
       height: auto;
       min-height: inherit;
+      transform: none;
+    }
+
+    .mission-flash.flipped .mission-flash-inner {
+      transform: none;
     }
 
     .mission-face {
@@ -1407,6 +1573,28 @@
       position: relative;
       inset: auto;
       min-height: inherit;
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+      transition: opacity .28s ease, transform .28s ease;
+    }
+
+    .mission-face.back {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(14px) scale(0.985);
+    }
+
+    .mission-flash.flipped .mission-face.front {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-14px) scale(0.985);
+    }
+
+    .mission-flash.flipped .mission-face.back {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
     }
 
     .mission-face .review-card {
@@ -1588,13 +1776,51 @@
     }
 
     @keyframes twinkle {
-      from { opacity: .45; transform: scale(0.98); }
-      to { opacity: .78; transform: scale(1.02); }
+      from { opacity: .45; transform: scale(1); }
+      to { opacity: .9; transform: scale(1.03); }
     }
 
     @keyframes shooting {
-      0%, 70%, 100% { opacity: 0; transform: translate3d(0, 0, 0) rotate(-24deg); }
-      8%, 18% { opacity: 1; transform: translate3d(-180px, 120px, 0) rotate(-24deg); }
+      0%, 100% { opacity: 0; transform: translate3d(0, 0, 0) rotate(-25deg) scaleX(.7); }
+      8% { opacity: 1; }
+      18% { opacity: 0; transform: translate3d(-220px, 140px, 0) rotate(-25deg) scaleX(1); }
+    }
+
+    @keyframes flagDotAppear {
+      0% { opacity: 0; transform: scale(.18); }
+      42% { opacity: .46; transform: scale(.72); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes flagDotTwinkle {
+      0% { opacity: .16; filter: drop-shadow(0 0 4px rgba(255,214,140,.22)); }
+      36% { opacity: 1; filter: drop-shadow(0 0 13px rgba(255,240,196,.76)); }
+      100% { opacity: .34; filter: drop-shadow(0 0 7px rgba(255,226,170,.42)); }
+    }
+
+    @keyframes flagAuraPulse {
+      0% { opacity: .28; transform: scale(.92); }
+      100% { opacity: .82; transform: scale(1.05); }
+    }
+
+    @keyframes flagAuraDrift {
+      0% { opacity: .18; transform: translate3d(-6px, 4px, 0) scale(.96); }
+      100% { opacity: .58; transform: translate3d(8px, -5px, 0) scale(1.08); }
+    }
+
+    @keyframes planetFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    @keyframes heroPlanetFloat {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
+
+    @keyframes auraPulse {
+      0%, 100% { transform: scale(1); opacity: .72; }
+      50% { transform: scale(1.08); opacity: 1; }
     }
 
     @media (max-width: 1160px) {
@@ -1714,6 +1940,80 @@
     <div class="shooting-star one"></div>
     <div class="shooting-star two"></div>
     <div class="shooting-star three"></div>
+    <div class="flag-burst" aria-hidden="true">
+      <svg viewBox="0 0 500 300" role="presentation">
+        <g style="--delay:.04s">
+          <circle class="flag-dot major" cx="56" cy="50" r="4.0" />
+          <circle class="flag-dot" cx="92" cy="46" r="3.2" />
+          <circle class="flag-dot soft" cx="128" cy="43" r="2.8" />
+          <circle class="flag-dot" cx="164" cy="41" r="3.0" />
+          <circle class="flag-dot soft" cx="200" cy="39" r="2.7" />
+          <circle class="flag-dot" cx="236" cy="38" r="3.1" />
+          <circle class="flag-dot" cx="272" cy="38" r="3.1" />
+          <circle class="flag-dot soft" cx="308" cy="39" r="2.7" />
+          <circle class="flag-dot" cx="344" cy="41" r="3.0" />
+          <circle class="flag-dot soft" cx="380" cy="43" r="2.8" />
+          <circle class="flag-dot" cx="416" cy="46" r="3.2" />
+          <circle class="flag-dot major" cx="444" cy="50" r="4.0" />
+        </g>
+        <g style="--delay:.18s">
+          <circle class="flag-dot" cx="452" cy="74" r="3.2" />
+          <circle class="flag-dot soft" cx="456" cy="102" r="2.8" />
+          <circle class="flag-dot" cx="458" cy="132" r="3.0" />
+          <circle class="flag-dot" cx="458" cy="164" r="3.0" />
+          <circle class="flag-dot soft" cx="456" cy="194" r="2.8" />
+          <circle class="flag-dot" cx="452" cy="224" r="3.2" />
+          <circle class="flag-dot major" cx="446" cy="250" r="3.9" />
+        </g>
+        <g style="--delay:.30s">
+          <circle class="flag-dot" cx="416" cy="258" r="3.2" />
+          <circle class="flag-dot soft" cx="380" cy="261" r="2.8" />
+          <circle class="flag-dot soft" cx="344" cy="263" r="2.7" />
+          <circle class="flag-dot" cx="308" cy="264" r="3.0" />
+          <circle class="flag-dot" cx="272" cy="264" r="3.0" />
+          <circle class="flag-dot" cx="236" cy="264" r="3.0" />
+          <circle class="flag-dot" cx="200" cy="263" r="3.0" />
+          <circle class="flag-dot soft" cx="164" cy="261" r="2.8" />
+          <circle class="flag-dot" cx="128" cy="258" r="3.2" />
+          <circle class="flag-dot" cx="92" cy="254" r="3.2" />
+          <circle class="flag-dot major" cx="60" cy="248" r="3.9" />
+        </g>
+        <g style="--delay:.42s">
+          <circle class="flag-dot" cx="48" cy="224" r="3.2" />
+          <circle class="flag-dot soft" cx="44" cy="194" r="2.8" />
+          <circle class="flag-dot" cx="42" cy="164" r="3.0" />
+          <circle class="flag-dot" cx="42" cy="132" r="3.0" />
+          <circle class="flag-dot soft" cx="44" cy="102" r="2.8" />
+          <circle class="flag-dot" cx="48" cy="74" r="3.2" />
+        </g>
+        <g style="--delay:.56s">
+          <circle class="flag-dot major" cx="250" cy="78" r="4.2" />
+          <circle class="flag-dot" cx="262" cy="106" r="3.2" />
+          <circle class="flag-dot" cx="274" cy="134" r="3.1" />
+          <circle class="flag-dot soft" cx="304" cy="137" r="2.8" />
+          <circle class="flag-dot major" cx="336" cy="141" r="4.1" />
+          <circle class="flag-dot" cx="313" cy="159" r="3.0" />
+          <circle class="flag-dot" cx="289" cy="178" r="3.1" />
+          <circle class="flag-dot soft" cx="298" cy="210" r="2.8" />
+          <circle class="flag-dot major" cx="306" cy="242" r="4.0" />
+          <circle class="flag-dot" cx="278" cy="225" r="3.0" />
+        </g>
+        <g style="--delay:.74s">
+          <circle class="flag-dot major" cx="250" cy="208" r="4.1" />
+          <circle class="flag-dot" cx="222" cy="225" r="3.0" />
+          <circle class="flag-dot major" cx="194" cy="242" r="4.0" />
+          <circle class="flag-dot soft" cx="202" cy="210" r="2.8" />
+          <circle class="flag-dot" cx="211" cy="178" r="3.1" />
+          <circle class="flag-dot" cx="187" cy="159" r="3.0" />
+          <circle class="flag-dot major" cx="164" cy="141" r="4.1" />
+          <circle class="flag-dot soft" cx="196" cy="137" r="2.8" />
+          <circle class="flag-dot" cx="226" cy="134" r="3.1" />
+          <circle class="flag-dot" cx="238" cy="106" r="3.2" />
+        </g>
+      </svg>
+    </div>
+    <div class="floating-planet p1"></div>
+    <div class="floating-planet p3"><div class="ring"></div></div>
   </div>
 
   <main class="app" id="app"></main>
@@ -1970,9 +2270,40 @@
 
     let state = loadState();
     let keyboardBound = false;
+    let flagBurstTimer = 0;
 
     function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function randomizeFlagBurstPose() {
+      const flagBurst = document.querySelector(".flag-burst");
+      if (!flagBurst) return;
+
+      const top = 42 + Math.round(Math.random() * 68);
+      const right = 20 + Math.round(Math.random() * 54);
+      const shiftX = -8 - Math.round(Math.random() * 22);
+      const shiftY = 8 + Math.round(Math.random() * 14);
+      const tilt = -12 + Math.round(Math.random() * 16);
+
+      flagBurst.style.setProperty("--flag-top", `${top}px`);
+      flagBurst.style.setProperty("--flag-right", `${right}px`);
+      flagBurst.style.setProperty("--flag-shift-x", `${shiftX}px`);
+      flagBurst.style.setProperty("--flag-shift-y", `${shiftY}px`);
+      flagBurst.style.setProperty("--flag-tilt", `${tilt}deg`);
+    }
+
+    function triggerFlagBurst() {
+      randomizeFlagBurstPose();
+      document.body.classList.remove("flag-burst-active");
+      void document.body.offsetWidth;
+      document.body.classList.add("flag-burst-active");
+
+      if (flagBurstTimer) clearTimeout(flagBurstTimer);
+      flagBurstTimer = window.setTimeout(() => {
+        document.body.classList.remove("flag-burst-active");
+        flagBurstTimer = 0;
+      }, 4200);
     }
 
     function clearAnswerState() {
@@ -1997,9 +2328,13 @@
     function checkCurrentAnswer() {
       const current = getSelectedWord(getFilteredWords());
       if (!current) return;
-      state.answerStatus = checkAnswer(current, state.cardMode, state.answerInput);
+      const result = checkAnswer(current, state.cardMode, state.answerInput);
+      state.answerStatus = result;
       saveState();
       render();
+      if (result === "correct") {
+        triggerFlagBurst();
+      }
     }
 
     function goToNextWord() {
@@ -2291,11 +2626,12 @@
         saveState();
       }
       const frontValue = effectiveSelectedWord
-        ? (state.cardMode === "en-vi" ? effectiveSelectedWord.word : effectiveSelectedWord.meaning)
+        ? effectiveSelectedWord.word
         : "";
       const backValue = effectiveSelectedWord
-        ? (state.cardMode === "en-vi" ? effectiveSelectedWord.meaning : effectiveSelectedWord.word)
+        ? effectiveSelectedWord.meaning
         : "";
+      const flashcardDirection = "Anh → Việt";
       const answerPlaceholder = state.cardMode === "en-vi"
         ? "Gõ nghĩa tiếng Việt của từ này..."
         : "Gõ từ tiếng Anh tương ứng...";
@@ -2308,7 +2644,7 @@
       app.innerHTML = `
         <section class="vocab-stage">
           <div class="hero">
-            <div class="mission-flash ${state.isFlipped ? "flipped" : ""}" data-action="flip-card" title="Nhấn để lật thẻ">
+            <div class="mission-flash ${state.isFlipped ? "flipped" : ""}" data-action="flip-card" title="Nhấn để xem nghĩa tiếng Việt">
               <div class="mission-flash-inner">
                 <div class="mission-face front">
                   <div class="review-card">
@@ -2316,13 +2652,12 @@
                       <div class="review-planet" aria-hidden="true"></div>
                       <div class="review-main">
                         <div class="pill">VSAT Vocab Flash Deck</div>
-                        <div class="review-kicker">${escapeHtml(activeSource)} · ${state.cardMode === "en-vi" ? "Anh → Việt" : "Việt → Anh"}</div>
+                        <div class="review-kicker">${escapeHtml(activeSource)} · ${flashcardDirection}</div>
                       </div>
                       <div class="flashcard-display">
                         <div class="flashcard-eyebrow">Mặt trước</div>
                         <div class="flashcard-term">${escapeHtml(frontValue)}</div>
-                        <div class="flashcard-hint">${escapeHtml(effectiveSelectedWord.prompt)}</div>
-                        <div class="flashcard-tap">Nhấn vào thẻ để lật 3D</div>
+                        <div class="flashcard-tap">Nhấn vào thẻ để xem nghĩa tiếng Việt</div>
                       </div>
                       <div class="mission-focus-grid">
                         <div class="mission-focus-card">
@@ -2347,10 +2682,10 @@
                         </div>
                       </div>
                       <div class="mission-badges">
-                        <span class="badge">${state.cardMode === "en-vi" ? "Anh → Việt" : "Việt → Anh"}</span>
+                        <span class="badge">${flashcardDirection}</span>
                         <span class="badge">${activeSourceDue} thẻ đến hạn</span>
                         <span class="badge">Lần ôn kế: ${escapeHtml(effectiveSelectedWord.nextReview || "hôm nay")}</span>
-                        <span class="badge">Nhấn vào thẻ để lật 3D</span>
+                        <span class="badge">Mặt sau là nghĩa tiếng Việt</span>
                       </div>
                     ` : `
                       <div class="empty-state">Không có thẻ nào cho bài đang chọn.</div>
@@ -2370,7 +2705,7 @@
                         <div class="flashcard-eyebrow">Đáp án</div>
                         <div class="flashcard-answer">${escapeHtml(backValue)}</div>
                         <div class="flashcard-hint">Ví dụ: ${escapeHtml(effectiveSelectedWord.example)}</div>
-                        <div class="flashcard-tap">Nhấn vào thẻ để quay lại mặt trước</div>
+                        <div class="flashcard-tap">Nhấn vào thẻ để quay lại từ tiếng Anh</div>
                       </div>
                       <div class="mission-focus-grid">
                         <div class="mission-focus-card">
@@ -2397,7 +2732,6 @@
                       <div class="mission-badges">
                         <span class="badge">${escapeHtml(effectiveSelectedWord.source)}</span>
                         <span class="badge ${getStageClass(effectiveSelectedWord.stage)}">${escapeHtml(getStageLabel(effectiveSelectedWord.stage))}</span>
-                        <span class="badge">${escapeHtml(effectiveSelectedWord.prompt)}</span>
                       </div>
                     ` : `
                       <div class="empty-state">Không có thẻ nào cho bài đang chọn.</div>
