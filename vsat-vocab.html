@@ -204,7 +204,7 @@
 
     .hero {
       display: grid;
-      grid-template-columns: minmax(0, 1.25fr) minmax(340px, 420px);
+      grid-template-columns: 1fr;
       gap: 24px;
       align-items: stretch;
       position: relative;
@@ -937,6 +937,67 @@
       gap: 10px;
     }
 
+    .recall-lab {
+      display: grid;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .recall-lab textarea {
+      width: 100%;
+      min-height: 112px;
+      resize: vertical;
+      color: var(--text);
+      background: rgba(3, 8, 18, 0.58);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 18px;
+      padding: 14px 16px;
+      outline: none;
+    }
+
+    .recall-lab textarea:focus {
+      border-color: rgba(53,214,255,0.30);
+      box-shadow: 0 0 0 3px rgba(53,214,255,0.12);
+    }
+
+    .recall-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .recall-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .challenge-box {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(5, 10, 22, 0.42);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .challenge-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #c7d2fe;
+    }
+
+    .challenge-copy {
+      color: #edf4ff;
+      line-height: 1.7;
+    }
+
     .review-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1401,6 +1462,36 @@
       }
     ];
 
+    const englishPlanGroups = [
+      "Đề 1, 2, 3",
+      "Đề 4, 5, 6",
+      "Đề 7, 8, 9, 10",
+      "Topic 1, 2, 3, 4",
+      "Topic 5, 6, 7, 8",
+      "Topic 9, 10, 11, 12",
+      "Topic 13, 14, 15, 16",
+      "Topic 17, 18, 19, 20",
+      "Topic 21, 22, 23, 24",
+      "Đề 11, 12, 13, 14",
+      "Đề 15, 16",
+      "Topic 25, 26, 27, 28",
+      "Topic 29, 30, 31, 32",
+      "Topic 33, 34, 35, 36",
+      "Topic 37, 38, 39, 40",
+      "Đề 17, 18, 19, 20, 21",
+      "Đề 22, 23, 24, 25"
+    ];
+
+    function expandEnglishSources(text) {
+      const normalized = String(text).trim();
+      const match = normalized.match(/^(Đề|Topic)\s+(.+)$/i);
+      if (!match) return [normalized];
+      const label = match[1];
+      return match[2].split(",").map((part) => `${label} ${part.trim()}`).filter(Boolean);
+    }
+
+    const lessonSources = [...new Set(englishPlanGroups.flatMap((item) => expandEnglishSources(item)))];
+
     const defaultState = {
       words: initialWords,
       selectedId: initialWords[0].id,
@@ -1408,6 +1499,7 @@
       sourceFilter: initialWords[0].source,
       statusFilter: "due",
       showAnswer: false,
+      recallDraft: "",
       session: {
         active: false,
         completed: false,
@@ -1475,7 +1567,7 @@
     }
 
     function getSources(words = state.words) {
-      return ["all", ...new Set(words.map((item) => item.source))];
+      return ["all", ...new Set([...lessonSources, ...words.map((item) => item.source)])];
     }
 
     function isDue(item) {
@@ -1494,6 +1586,17 @@
 
     function getStageLabel(stage) {
       return STAGE_LABELS[Math.max(0, Math.min(4, stage))];
+    }
+
+    function getChallengePrompt(word) {
+      const prompts = [
+        `Tự nói nghĩa của "${word.word}" theo cách ngắn, đúng sắc thái và không nhìn đáp án.`,
+        `Viết 1 câu mới có dùng "${word.word}" gần ngữ cảnh đề gốc.`,
+        `Nói 2 collocations hoặc tình huống mà "${word.word}" nên xuất hiện.`,
+        `Nếu gặp "${word.word}" trong reading, bạn sẽ hiểu nó qua dấu hiệu nào?`
+      ];
+      const seed = String(word.id || word.word).split("").reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+      return prompts[seed % prompts.length];
     }
 
     function getFilteredWords() {
@@ -1562,6 +1665,7 @@
       };
       state.selectedId = wordIds[0];
       state.showAnswer = false;
+      state.recallDraft = "";
       saveState();
       render();
     }
@@ -1577,6 +1681,7 @@
         };
       }
       state.showAnswer = false;
+      state.recallDraft = "";
       saveState();
       render();
     }
@@ -1651,6 +1756,7 @@
       }
 
       state.showAnswer = false;
+      state.recallDraft = "";
       saveState();
       render();
     }
@@ -1687,6 +1793,7 @@
       state.selectedId = newWord.id;
       state.sourceFilter = newWord.source;
       state.showAnswer = false;
+      state.recallDraft = "";
       saveState();
       form.reset();
       render();
@@ -1737,6 +1844,7 @@
       const effectiveSelectedWord = liveSession.active
         ? state.words.find((item) => item.id === sessionActiveWordId) || selectedWord
         : selectedWord;
+      const challengePrompt = effectiveSelectedWord ? getChallengePrompt(effectiveSelectedWord) : "";
       if (effectiveSelectedWord && state.selectedId !== effectiveSelectedWord.id) {
         state.selectedId = effectiveSelectedWord.id;
         saveState();
@@ -1745,44 +1853,11 @@
       app.innerHTML = `
         <section class="glass hero-shell">
           <div class="hero">
-            <div class="hero-copy compact">
-              <div class="pill">VSAT Vocab Memory Lab</div>
-              <h1>Chọn từng đề, nhặt từ ngay sau bài làm, rồi ôn lại bằng một màn kiểm tra đủ lớn để ép não thật sự recall.</h1>
-              <p>Flow mới đi đúng kiểu trang VSAT gốc: bên trái chọn đề như chọn ngày, bên phải tập trung vào một từ đang luyện. Mục tiêu là giảm thao tác thừa, thêm từ nhanh hơn, và để phần kiểm tra từ vựng trở thành khu trung tâm rõ ràng nhất của trang.</p>
-              <div class="hero-tags">
-                <span class="hero-tag">Chọn đề như timeline</span>
-                <span class="hero-tag">Thêm từ ngay trong sidebar</span>
-                <span class="hero-tag">Recall trước khi lật</span>
-                <span class="hero-tag">Tự chấm mức nhớ</span>
-              </div>
-              <div class="stats-grid">
-                <div class="stat-card">
-                  <div class="stat-label">Đến hạn ôn</div>
-                  <div class="stat-value">${dueCount}</div>
-                  <div class="stat-note">Những từ nên được gọi lại ngay hôm nay trước khi dấu nhớ mờ đi thêm.</div>
-                </div>
-                <div class="stat-card">
-                  <div class="stat-label">Đề đang chọn</div>
-                  <div class="stat-value">${activeSourceWords.length}</div>
-                  <div class="stat-note">Số từ hiện đang nằm trong cụm đề ${escapeHtml(activeSource)}.</div>
-                </div>
-                <div class="stat-card">
-                  <div class="stat-label">Đã ôn hôm nay</div>
-                  <div class="stat-value">${reviewedCount}</div>
-                  <div class="stat-note">Số lần bạn đã bật lại dấu nhớ trong ngày hiện tại.</div>
-                </div>
-                <div class="stat-card">
-                  <div class="stat-label">Giữ lại trung bình</div>
-                  <div class="stat-value">${averageRetention}%</div>
-                  <div class="stat-note">${masteredCount} từ đã vào vùng nhớ dài hạn, nhưng ưu tiên hôm nay vẫn là recall đúng lúc.</div>
-                </div>
-              </div>
-            </div>
-
             <div class="review-card">
               ${effectiveSelectedWord ? `
                 <div class="review-planet" aria-hidden="true"></div>
                 <div class="review-main">
+                  <div class="pill">VSAT Vocab Memory Lab</div>
                   <div class="review-kicker">Đang kiểm tra</div>
                   <div class="review-title">${escapeHtml(effectiveSelectedWord.word)}</div>
                   <div class="review-sub">${escapeHtml(effectiveSelectedWord.phonetic || effectiveSelectedWord.pos || "")}</div>
@@ -1822,6 +1897,17 @@
                   ${sessionTotal ? `<div class="progress"><span style="width:${sessionProgress}%"></span></div>` : ""}
                 </div>
                 <div class="focus-prompt"><strong>Gợi nhớ:</strong> ${escapeHtml(effectiveSelectedWord.prompt)}</div>
+                <div class="challenge-box">
+                  <div class="challenge-label">Micro Challenge</div>
+                  <div class="challenge-copy">${escapeHtml(challengePrompt)}</div>
+                </div>
+                <div class="recall-lab">
+                  <textarea id="recallDraft" placeholder="Viết nghĩa, collocation, câu ví dụ hoặc cách bạn tự nhớ từ này trước khi lật đáp án...">${escapeHtml(state.recallDraft || "")}</textarea>
+                  <div class="recall-tools">
+                    <div class="recall-note">Cơ chế ôn đã đổi từ nhìn-thẻ sang tự kéo thông tin ra: viết nhanh điều bạn nhớ được trước, rồi mới so với đáp án.</div>
+                    <button class="btn" data-action="clear-draft">Xóa nháp</button>
+                  </div>
+                </div>
                 <div class="reveal-shell">
                   <div class="reveal-answer ${state.showAnswer ? "" : "hidden"}">
                     <div class="answer-title">Đáp án mở rộng</div>
@@ -2016,6 +2102,14 @@
         });
       }
 
+      const recallDraft = document.getElementById("recallDraft");
+      if (recallDraft) {
+        recallDraft.addEventListener("input", (event) => {
+          state.recallDraft = event.target.value;
+          saveState();
+        });
+      }
+
       app.querySelectorAll("[data-filter]").forEach((button) => {
         button.addEventListener("click", () => {
           state.statusFilter = button.dataset.filter;
@@ -2027,6 +2121,7 @@
       app.querySelectorAll("[data-source]").forEach((button) => {
         button.addEventListener("click", () => {
           state.sourceFilter = button.dataset.source;
+          state.recallDraft = "";
           saveState();
           render();
         });
@@ -2036,6 +2131,7 @@
         card.addEventListener("click", () => {
           state.selectedId = card.dataset.wordId;
           state.showAnswer = false;
+          state.recallDraft = "";
           saveState();
           render();
         });
@@ -2045,6 +2141,15 @@
       if (toggleAnswer) {
         toggleAnswer.addEventListener("click", () => {
           state.showAnswer = !state.showAnswer;
+          saveState();
+          render();
+        });
+      }
+
+      const clearDraft = app.querySelector("[data-action='clear-draft']");
+      if (clearDraft) {
+        clearDraft.addEventListener("click", () => {
+          state.recallDraft = "";
           saveState();
           render();
         });
@@ -2079,6 +2184,7 @@
             state.selectedId = pickNextWord(state.selectedId, filteredWords);
           }
           state.showAnswer = false;
+          state.recallDraft = "";
           saveState();
           render();
         });
