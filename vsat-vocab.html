@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#07111f" />
+  <title>VSAT Vocab Memory Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-1: #06111f;
+      --bg-2: #0b1f35;
+      --bg-3: #112742;
+      --bg-4: #25173f;
+      --panel: rgba(7, 15, 29, 0.72);
+      --panel-soft: rgba(255, 255, 255, 0.055);
+      --panel-strong: rgba(255, 255, 255, 0.10);
+      --border: rgba(166, 189, 255, 0.16);
+      --text: #edf5ff;
+      --muted: #9cb2d6;
+      --cyan: #35d6ff;
+      --blue: #6ea5ff;
+      --amber: #ffcb6b;
+      --mint: #6ce4c4;
+      --rose: #ff7e92;
+      --violet: #a88bff;
+      --shadow: 0 28px 90px rgba(0, 0, 0, 0.38);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      font-family: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(94, 142, 255, 0.22), transparent 18%),
+        radial-gradient(circle at 84% 16%, rgba(54, 214, 255, 0.12), transparent 16%),
+        radial-gradient(circle at 50% 80%, rgba(255, 203, 107, 0.10), transparent 18%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2) 38%, var(--bg-3) 70%, var(--bg-4));
+      overflow-x: hidden;
+    }
+
+    body { position: relative; }
+    button, input, textarea, select { font: inherit; }
+
+    .universe {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .nebula,
+    .nebula::before,
+    .nebula::after {
+      content: "";
+      position: absolute;
+      inset: -16%;
+      filter: blur(60px);
+    }
+
+    .nebula {
+      background:
+        radial-gradient(circle at 15% 28%, rgba(109, 135, 255, 0.22), transparent 14%),
+        radial-gradient(circle at 78% 26%, rgba(53, 214, 255, 0.15), transparent 15%),
+        radial-gradient(circle at 48% 72%, rgba(255, 194, 95, 0.09), transparent 16%);
+      animation: driftNebula 24s ease-in-out infinite alternate;
+    }
+
+    .nebula::before {
+      background:
+        radial-gradient(circle at 32% 62%, rgba(125, 171, 255, 0.14), transparent 14%),
+        radial-gradient(circle at 69% 56%, rgba(108, 228, 196, 0.12), transparent 14%);
+      animation: driftNebula 34s ease-in-out infinite alternate-reverse;
+    }
+
+    .nebula::after {
+      background:
+        radial-gradient(circle at 52% 34%, rgba(255,255,255,0.06), transparent 9%),
+        radial-gradient(circle at 36% 84%, rgba(168, 139, 255, 0.10), transparent 14%);
+      animation: driftNebula 38s ease-in-out infinite alternate;
+    }
+
+    .space-grid {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(138, 175, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(138, 175, 255, 0.045) 1px, transparent 1px);
+      background-size: 100px 100px;
+      opacity: 0.22;
+      mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.95), transparent 84%);
+      transform: perspective(1200px) rotateX(78deg) scale(1.8) translateY(16%);
+    }
+
+    .stars,
+    .stars2,
+    .stars3 {
+      position: absolute;
+      inset: 0;
+      background-repeat: repeat;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    .stars {
+      background-image:
+        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.95), transparent),
+        radial-gradient(1.5px 1.5px at 120px 80px, rgba(126, 183, 255, .9), transparent),
+        radial-gradient(2px 2px at 250px 140px, rgba(255,255,255,.9), transparent),
+        radial-gradient(1.8px 1.8px at 350px 40px, rgba(255, 204, 109, .95), transparent),
+        radial-gradient(2px 2px at 500px 160px, rgba(78, 231, 255, .95), transparent),
+        radial-gradient(1.5px 1.5px at 700px 60px, rgba(255,255,255,.85), transparent);
+      background-size: 800px 300px;
+      opacity: .9;
+      animation: driftStars 100s linear infinite;
+    }
+
+    .stars2 {
+      background-image:
+        radial-gradient(1.2px 1.2px at 40px 60px, rgba(255,255,255,.85), transparent),
+        radial-gradient(1.6px 1.6px at 200px 120px, rgba(108, 228, 196, .75), transparent),
+        radial-gradient(1.2px 1.2px at 420px 40px, rgba(255,255,255,.92), transparent),
+        radial-gradient(1.3px 1.3px at 600px 200px, rgba(170, 140, 255, .8), transparent),
+        radial-gradient(1.5px 1.5px at 760px 100px, rgba(255,255,255,.8), transparent);
+      background-size: 900px 380px;
+      opacity: .55;
+      animation: driftStarsReverse 145s linear infinite;
+    }
+
+    .stars3 {
+      background-image:
+        radial-gradient(3px 3px at 100px 90px, rgba(255,255,255,.9), transparent),
+        radial-gradient(2.5px 2.5px at 500px 60px, rgba(78, 231, 255, .9), transparent),
+        radial-gradient(3px 3px at 780px 170px, rgba(255, 203, 107, .85), transparent);
+      background-size: 1000px 420px;
+      opacity: .7;
+      filter: drop-shadow(0 0 4px rgba(255,255,255,.22));
+      animation: twinkle 7s ease-in-out infinite alternate;
+    }
+
+    .shooting-star {
+      position: absolute;
+      width: 180px;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,1), rgba(53,214,255,0));
+      filter: drop-shadow(0 0 12px rgba(255,255,255,.8));
+      opacity: 0;
+      transform: rotate(-24deg);
+      animation: shooting 9s ease-in-out infinite;
+    }
+
+    .shooting-star.one { top: 10%; left: 70%; animation-delay: 0s; }
+    .shooting-star.two { top: 22%; left: 14%; width: 150px; animation-delay: 3s; }
+    .shooting-star.three { top: 7%; left: 44%; width: 210px; animation-delay: 6s; }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      width: min(1480px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 24px 0 36px;
+    }
+
+    .glass {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)),
+        var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-shell {
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-shell::before {
+      content: "";
+      position: absolute;
+      right: -90px;
+      top: -90px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(53, 214, 255, 0.16), transparent 58%),
+        radial-gradient(circle, rgba(255, 203, 107, 0.11), transparent 72%);
+      filter: blur(10px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(340px, 420px);
+      gap: 24px;
+      align-items: stretch;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-copy {
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .pill {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(53, 214, 255, 0.10);
+      border: 1px solid rgba(53, 214, 255, 0.20);
+      color: #d8f7ff;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--amber), var(--cyan));
+      box-shadow: 0 0 12px rgba(255, 203, 107, 0.65);
+    }
+
+    h1 {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(38px, 5vw, 66px);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      max-width: 760px;
+    }
+
+    .hero-copy p {
+      color: var(--muted);
+      max-width: 760px;
+      line-height: 1.82;
+      font-size: 15px;
+    }
+
+    .hero-tags,
+    .science-tags,
+    .deck-meta,
+    .card-tags,
+    .memory-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .hero-tag,
+    .tag,
+    .badge {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #dde8ff;
+      font-size: 12px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .stat-card {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 8px;
+      min-height: 122px;
+    }
+
+    .stat-label {
+      color: #c8d8f8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .stat-value {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(24px, 4vw, 34px);
+      line-height: 1;
+    }
+
+    .stat-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .focus-card {
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+      min-height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .focus-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -50px -70px auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 203, 107, 0.18), transparent 65%);
+      filter: blur(10px);
+    }
+
+    .focus-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .focus-kicker {
+      color: #d8edff;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .focus-word {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+    }
+
+    .focus-phonetic {
+      color: var(--cyan);
+      font-size: 15px;
+    }
+
+    .focus-prompt {
+      color: var(--muted);
+      line-height: 1.8;
+      position: relative;
+      z-index: 1;
+    }
+
+    .reveal-shell {
+      display: grid;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .reveal-answer {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(4, 10, 20, 0.46);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 10px;
+      min-height: 148px;
+    }
+
+    .reveal-answer.hidden .answer-line {
+      filter: blur(10px);
+      opacity: 0.5;
+      user-select: none;
+    }
+
+    .answer-title {
+      color: #dce8ff;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .answer-line {
+      line-height: 1.75;
+      transition: .25s ease;
+    }
+
+    .answer-line strong {
+      color: #ffffff;
+    }
+
+    .focus-actions,
+    .grade-actions,
+    .toolbar,
+    .deck-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn,
+    .chip-btn,
+    .grade-btn,
+    .deck-btn {
+      border: 0;
+      color: var(--text);
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+
+    .btn:hover,
+    .chip-btn:hover,
+    .grade-btn:hover,
+    .deck-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn {
+      padding: 12px 18px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(53,214,255,0.20), rgba(110,165,255,0.18));
+      border-color: rgba(53,214,255,0.30);
+      box-shadow: 0 14px 30px rgba(53,214,255,0.15);
+    }
+
+    .grade-btn {
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      min-width: 132px;
+      text-align: center;
+    }
+
+    .grade-btn.danger {
+      background: rgba(255, 126, 146, 0.10);
+      border-color: rgba(255, 126, 146, 0.24);
+    }
+
+    .grade-btn.warn {
+      background: rgba(255, 203, 107, 0.10);
+      border-color: rgba(255, 203, 107, 0.24);
+    }
+
+    .grade-btn.good {
+      background: rgba(108, 228, 196, 0.10);
+      border-color: rgba(108, 228, 196, 0.22);
+    }
+
+    .grade-btn.great {
+      background: rgba(110, 165, 255, 0.12);
+      border-color: rgba(110, 165, 255, 0.24);
+    }
+
+    .main-grid {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .sidebar,
+    .workspace {
+      display: grid;
+      gap: 20px;
+    }
+
+    .panel {
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .section-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      line-height: 1.72;
+      font-size: 14px;
+    }
+
+    .protocol-list,
+    .science-list,
+    .queue-list,
+    .deck-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .protocol-item,
+    .science-item,
+    .queue-item,
+    .deck-item {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .protocol-step,
+    .science-head,
+    .queue-top,
+    .deck-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .step-index,
+    .science-index {
+      width: 30px;
+      height: 30px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(53,214,255,0.12);
+      border: 1px solid rgba(53,214,255,0.24);
+      color: #d8f7ff;
+      font-size: 12px;
+      flex: 0 0 auto;
+    }
+
+    .protocol-title,
+    .science-title,
+    .deck-title,
+    .queue-word {
+      font-weight: 700;
+      color: #f3f8ff;
+    }
+
+    .protocol-copy,
+    .science-copy,
+    .queue-copy,
+    .deck-copy {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .form-grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      color: #d9e7ff;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      color: var(--text);
+      background: rgba(3, 8, 18, 0.54);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 16px;
+      padding: 13px 14px;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .field textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: rgba(53,214,255,0.30);
+      box-shadow: 0 0 0 3px rgba(53,214,255,0.12);
+    }
+
+    .workspace-top {
+      display: grid;
+      gap: 18px;
+    }
+
+    .toolbar {
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toolbar-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .search,
+    .select {
+      color: var(--text);
+      background: rgba(3, 8, 18, 0.54);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 16px;
+      padding: 12px 14px;
+      min-width: 180px;
+      outline: none;
+    }
+
+    .chip-btn {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .chip-btn.active,
+    .deck-btn.active {
+      background: rgba(53,214,255,0.12);
+      border-color: rgba(53,214,255,0.28);
+      color: #d8f7ff;
+    }
+
+    .deck-grid,
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .deck-btn {
+      width: 100%;
+      padding: 0;
+      text-align: left;
+      background: transparent;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .deck-btn .deck-item {
+      height: 100%;
+    }
+
+    .deck-pulse {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--amber), var(--cyan));
+      box-shadow: 0 0 12px rgba(255,203,107,0.45);
+    }
+
+    .word-card {
+      padding: 18px;
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)),
+        rgba(7, 15, 29, 0.72);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .word-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(53,214,255,0.26);
+      box-shadow: 0 20px 38px rgba(0,0,0,0.24);
+    }
+
+    .word-card.active {
+      border-color: rgba(255, 203, 107, 0.30);
+      box-shadow: 0 20px 44px rgba(255, 203, 107, 0.10);
+    }
+
+    .word-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .word-main {
+      display: grid;
+      gap: 4px;
+    }
+
+    .word-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .word-sub {
+      color: var(--cyan);
+      font-size: 13px;
+    }
+
+    .stage-badge {
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .stage-0 { color: #ffe3a5; background: rgba(255,203,107,0.10); border-color: rgba(255,203,107,0.24); }
+    .stage-1 { color: #d7fbff; background: rgba(53,214,255,0.10); border-color: rgba(53,214,255,0.22); }
+    .stage-2 { color: #dbf9ef; background: rgba(108,228,196,0.10); border-color: rgba(108,228,196,0.22); }
+    .stage-3 { color: #dfe5ff; background: rgba(110,165,255,0.10); border-color: rgba(110,165,255,0.22); }
+    .stage-4 { color: #efe7ff; background: rgba(168,139,255,0.10); border-color: rgba(168,139,255,0.22); }
+
+    .word-copy {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .word-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .meta-chip {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      font-size: 12px;
+      color: #d7e5ff;
+    }
+
+    .empty-state {
+      padding: 28px;
+      border-radius: 24px;
+      border: 1px dashed rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .footer-note {
+      margin-top: 22px;
+      padding: 20px 24px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .footer-note strong {
+      color: #eff7ff;
+    }
+
+    @keyframes driftNebula {
+      from { transform: translate3d(0, 0, 0) scale(1); }
+      to { transform: translate3d(24px, -16px, 0) scale(1.06); }
+    }
+
+    @keyframes driftStars {
+      from { transform: translateX(0); }
+      to { transform: translateX(-800px); }
+    }
+
+    @keyframes driftStarsReverse {
+      from { transform: translateX(-900px); }
+      to { transform: translateX(0); }
+    }
+
+    @keyframes twinkle {
+      from { opacity: .45; transform: scale(0.98); }
+      to { opacity: .78; transform: scale(1.02); }
+    }
+
+    @keyframes shooting {
+      0%, 70%, 100% { opacity: 0; transform: translate3d(0, 0, 0) rotate(-24deg); }
+      8%, 18% { opacity: 1; transform: translate3d(-180px, 120px, 0) rotate(-24deg); }
+    }
+
+    @media (max-width: 1160px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid,
+      .deck-grid,
+      .word-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        width: min(100%, calc(100% - 18px));
+        padding-top: 12px;
+      }
+
+      .hero-shell,
+      .panel,
+      .focus-card {
+        padding: 18px;
+      }
+
+      .stats-grid,
+      .deck-grid,
+      .word-grid,
+      .form-grid.two {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        align-items: stretch;
+      }
+
+      .toolbar,
+      .toolbar-group {
+        flex-direction: column;
+      }
+
+      .search,
+      .select {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .grade-btn {
+        min-width: 0;
+        width: calc(50% - 5px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="universe" aria-hidden="true">
+    <div class="nebula"></div>
+    <div class="space-grid"></div>
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="stars3"></div>
+    <div class="shooting-star one"></div>
+    <div class="shooting-star two"></div>
+    <div class="shooting-star three"></div>
+  </div>
+
+  <main class="app" id="app"></main>
+
+  <script>
+    const STORAGE_KEY = "vsat_vocab_memory_lab_v1";
+    const INTERVALS = [0, 1, 3, 7, 14];
+    const STAGE_LABELS = [
+      "Mới nhặt",
+      "Đã chạm mặt",
+      "Bắt đầu bám",
+      "Gần tự động",
+      "Khóa dài hạn"
+    ];
+
+    const initialWords = [
+      {
+        id: "w1",
+        word: "meticulous",
+        phonetic: "/məˈtɪkjələs/",
+        pos: "adj.",
+        meaning: "tỉ mỉ, cực kì cẩn thận trong từng chi tiết",
+        nuance: "dùng khi ai đó làm việc chuẩn xác đến mức soi cả lỗi rất nhỏ",
+        collocations: "meticulous planning, meticulous notes",
+        example: "She kept a meticulous record of every vocabulary mistake after each mock test.",
+        prompt: "Nhớ lại cảm giác rà từng lỗi nhỏ sau một đề tiếng Anh và không bỏ sót.",
+        source: "Đề 17",
+        tags: ["error-log", "study"],
+        stage: 1,
+        successes: 2,
+        lapses: 0,
+        lastReviewed: "2026-04-22",
+        nextReview: "2026-04-23"
+      },
+      {
+        id: "w2",
+        word: "retain",
+        phonetic: "/rɪˈteɪn/",
+        pos: "v.",
+        meaning: "ghi nhớ và giữ lại trong đầu",
+        nuance: "hợp khi nói về kiến thức, thông tin hoặc khả năng giữ tập trung",
+        collocations: "retain information, retain focus",
+        example: "You retain vocabulary better when you recall it before looking at the answer.",
+        prompt: "Từ khóa lõi của cả trang này: làm sao để não giữ được từ lâu hơn.",
+        source: "Đề 18",
+        tags: ["memory", "core"],
+        stage: 2,
+        successes: 3,
+        lapses: 1,
+        lastReviewed: "2026-04-20",
+        nextReview: "2026-04-23"
+      },
+      {
+        id: "w3",
+        word: "subtle",
+        phonetic: "/ˈsʌtl/",
+        pos: "adj.",
+        meaning: "tinh tế, khó nhận ra ngay nếu không chú ý",
+        nuance: "hay đi với nghĩa, khác biệt, thay đổi hoặc gợi ý mờ",
+        collocations: "subtle difference, subtle signal",
+        example: "There is a subtle difference between familiar words and words you can actually use.",
+        prompt: "Nhớ những bẫy từ gần nghĩa trong reading.",
+        source: "Đề 18",
+        tags: ["reading", "nuance"],
+        stage: 0,
+        successes: 0,
+        lapses: 0,
+        lastReviewed: "",
+        nextReview: "2026-04-23"
+      },
+      {
+        id: "w4",
+        word: "compelling",
+        phonetic: "/kəmˈpelɪŋ/",
+        pos: "adj.",
+        meaning: "rất thuyết phục, lôi cuốn, đủ mạnh để kéo sự chú ý",
+        nuance: "dùng cho argument, reason, story, evidence",
+        collocations: "compelling reason, compelling evidence",
+        example: "A compelling image or personal memory makes a new word easier to retrieve later.",
+        prompt: "Tạo móc cảm xúc hoặc hình ảnh cho từ khó.",
+        source: "Đề 19",
+        tags: ["emotion", "writing"],
+        stage: 3,
+        successes: 5,
+        lapses: 1,
+        lastReviewed: "2026-04-21",
+        nextReview: "2026-04-28"
+      },
+      {
+        id: "w5",
+        word: "allocate",
+        phonetic: "/ˈæləkeɪt/",
+        pos: "v.",
+        meaning: "phân bổ, dành ra một phần thời gian hoặc nguồn lực",
+        nuance: "rất hợp với quản lí thời gian, ngân sách, tài nguyên",
+        collocations: "allocate time, allocate resources",
+        example: "Allocate five minutes after every test to harvest useful vocabulary.",
+        prompt: "Nghĩ đến việc chốt 5 phút cuối đề để chắt từ mới.",
+        source: "Đề 19",
+        tags: ["time", "habit"],
+        stage: 1,
+        successes: 1,
+        lapses: 0,
+        lastReviewed: "2026-04-22",
+        nextReview: "2026-04-23"
+      },
+      {
+        id: "w6",
+        word: "consolidate",
+        phonetic: "/kənˈsɒlɪdeɪt/",
+        pos: "v.",
+        meaning: "củng cố, gom lại cho chắc hơn",
+        nuance: "đúng chất học tập: sau khi nhận diện, phải củng cố bằng lần ôn kế tiếp",
+        collocations: "consolidate knowledge, consolidate learning",
+        example: "Sleep and spaced review help consolidate fragile vocabulary memories.",
+        prompt: "Nhớ liên hệ với giai đoạn ngủ và ôn ngắt quãng.",
+        source: "Đề 20",
+        tags: ["science", "memory"],
+        stage: 2,
+        successes: 3,
+        lapses: 0,
+        lastReviewed: "2026-04-22",
+        nextReview: "2026-04-25"
+      },
+      {
+        id: "w7",
+        word: "hamper",
+        phonetic: "/ˈhæmpə(r)/",
+        pos: "v.",
+        meaning: "cản trở, làm chậm lại",
+        nuance: "hay gặp trong reading khi nói về yếu tố tiêu cực ảnh hưởng kết quả",
+        collocations: "hamper progress, hamper performance",
+        example: "Passive rereading can hamper long-term recall because the brain feels falsely fluent.",
+        prompt: "Từ dùng để cảnh báo việc đọc lại quá nhiều mà không recall.",
+        source: "Đề 20",
+        tags: ["reading", "warning"],
+        stage: 0,
+        successes: 0,
+        lapses: 0,
+        lastReviewed: "",
+        nextReview: "2026-04-23"
+      },
+      {
+        id: "w8",
+        word: "retrieve",
+        phonetic: "/rɪˈtriːv/",
+        pos: "v.",
+        meaning: "lôi lại, truy xuất thông tin đã học từ trí nhớ",
+        nuance: "đây là động từ trung tâm của active recall",
+        collocations: "retrieve information, retrieve from memory",
+        example: "The harder you have to retrieve a word, the stronger the memory trace can become.",
+        prompt: "Đây là từ cốt lõi của active recall và flashcard.",
+        source: "Đề 21",
+        tags: ["active-recall", "core"],
+        stage: 2,
+        successes: 4,
+        lapses: 1,
+        lastReviewed: "2026-04-22",
+        nextReview: "2026-04-23"
+      }
+    ];
+
+    const defaultState = {
+      words: initialWords,
+      selectedId: initialWords[0].id,
+      search: "",
+      sourceFilter: "all",
+      statusFilter: "due",
+      showAnswer: false
+    };
+
+    const app = document.getElementById("app");
+
+    function clone(value) {
+      if (typeof structuredClone === "function") return structuredClone(value);
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function todayString() {
+      const now = new Date();
+      const offset = now.getTimezoneOffset();
+      const local = new Date(now.getTime() - offset * 60000);
+      return local.toISOString().slice(0, 10);
+    }
+
+    function addDays(dateString, days) {
+      const base = dateString ? new Date(dateString + "T00:00:00") : new Date(todayString() + "T00:00:00");
+      base.setDate(base.getDate() + days);
+      return base.toISOString().slice(0, 10);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        if (!saved || !Array.isArray(saved.words)) return clone(defaultState);
+        return {
+          ...clone(defaultState),
+          ...saved,
+          words: saved.words.map((item) => ({
+            successes: 0,
+            lapses: 0,
+            stage: 0,
+            lastReviewed: "",
+            nextReview: todayString(),
+            ...item
+          }))
+        };
+      } catch (error) {
+        return clone(defaultState);
+      }
+    }
+
+    let state = loadState();
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function getSources(words = state.words) {
+      return ["all", ...new Set(words.map((item) => item.source))];
+    }
+
+    function isDue(item) {
+      return !item.nextReview || item.nextReview <= todayString();
+    }
+
+    function getRetention(item) {
+      const total = item.successes + item.lapses;
+      if (!total) return 50;
+      return Math.round((item.successes / total) * 100);
+    }
+
+    function getStageClass(stage) {
+      return `stage-${Math.max(0, Math.min(4, stage))}`;
+    }
+
+    function getStageLabel(stage) {
+      return STAGE_LABELS[Math.max(0, Math.min(4, stage))];
+    }
+
+    function getFilteredWords() {
+      const keyword = state.search.trim().toLowerCase();
+      return state.words.filter((item) => {
+        const matchesSource = state.sourceFilter === "all" || item.source === state.sourceFilter;
+        const matchesStatus =
+          state.statusFilter === "all" ||
+          (state.statusFilter === "due" && isDue(item)) ||
+          (state.statusFilter === "growing" && item.stage >= 1 && item.stage <= 3) ||
+          (state.statusFilter === "locked" && item.stage >= 4);
+        const haystack = [
+          item.word,
+          item.meaning,
+          item.nuance,
+          item.collocations,
+          item.example,
+          item.prompt,
+          item.source,
+          ...(item.tags || [])
+        ].join(" ").toLowerCase();
+        const matchesKeyword = !keyword || haystack.includes(keyword);
+        return matchesSource && matchesStatus && matchesKeyword;
+      });
+    }
+
+    function getSelectedWord(filteredWords) {
+      const selected = filteredWords.find((item) => item.id === state.selectedId);
+      if (selected) return selected;
+      return filteredWords[0] || state.words[0] || null;
+    }
+
+    function pickNextWord(currentId, filteredWords) {
+      if (!filteredWords.length) return "";
+      const currentIndex = filteredWords.findIndex((item) => item.id === currentId);
+      if (currentIndex === -1 || currentIndex === filteredWords.length - 1) return filteredWords[0].id;
+      return filteredWords[currentIndex + 1].id;
+    }
+
+    function updateWord(wordId, updater) {
+      state.words = state.words.map((item) => item.id === wordId ? updater(item) : item);
+      saveState();
+      render();
+    }
+
+    function gradeWord(wordId, quality) {
+      const currentDay = todayString();
+      updateWord(wordId, (item) => {
+        let stage = item.stage;
+        let successes = item.successes;
+        let lapses = item.lapses;
+
+        if (quality === "again") {
+          stage = Math.max(0, stage - 1);
+          lapses += 1;
+        } else if (quality === "hard") {
+          stage = Math.max(1, stage);
+          successes += 1;
+        } else if (quality === "good") {
+          stage = Math.min(4, stage + 1);
+          successes += 1;
+        } else if (quality === "easy") {
+          stage = Math.min(4, stage + 2);
+          successes += 1;
+        }
+
+        stage = Math.max(0, Math.min(4, stage));
+        const waitDays =
+          quality === "again"
+            ? 0
+            : quality === "easy"
+              ? (INTERVALS[stage] || 14) + 3
+              : (INTERVALS[stage] || 14);
+
+        return {
+          ...item,
+          stage,
+          successes,
+          lapses,
+          lastReviewed: currentDay,
+          nextReview: addDays(currentDay, waitDays)
+        };
+      });
+
+      const filteredWords = getFilteredWords();
+      state.selectedId = pickNextWord(wordId, filteredWords);
+      state.showAnswer = false;
+      saveState();
+      render();
+    }
+
+    function addWordFromForm(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const formData = new FormData(form);
+      const word = String(formData.get("word") || "").trim();
+      const meaning = String(formData.get("meaning") || "").trim();
+      const example = String(formData.get("example") || "").trim();
+      if (!word || !meaning || !example) return;
+
+      const newWord = {
+        id: `w_${Date.now()}`,
+        word,
+        phonetic: String(formData.get("phonetic") || "").trim(),
+        pos: String(formData.get("pos") || "").trim(),
+        meaning,
+        nuance: String(formData.get("nuance") || "").trim(),
+        collocations: String(formData.get("collocations") || "").trim(),
+        example,
+        prompt: String(formData.get("prompt") || "").trim() || `Nhớ lại ngữ cảnh gốc khi gặp từ "${word}".`,
+        source: String(formData.get("source") || "").trim() || "Đề mới",
+        tags: String(formData.get("tags") || "").split(",").map((item) => item.trim()).filter(Boolean),
+        stage: 0,
+        successes: 0,
+        lapses: 0,
+        lastReviewed: "",
+        nextReview: todayString()
+      };
+
+      state.words = [newWord, ...state.words];
+      state.selectedId = newWord.id;
+      state.showAnswer = false;
+      saveState();
+      form.reset();
+      render();
+    }
+
+    function render() {
+      const filteredWords = getFilteredWords();
+      const selectedWord = getSelectedWord(filteredWords);
+      if (selectedWord && state.selectedId !== selectedWord.id) {
+        state.selectedId = selectedWord.id;
+        saveState();
+      }
+
+      const dueCount = state.words.filter(isDue).length;
+      const masteredCount = state.words.filter((item) => item.stage >= 4).length;
+      const averageRetention = state.words.length
+        ? Math.round(state.words.reduce((sum, item) => sum + getRetention(item), 0) / state.words.length)
+        : 0;
+      const reviewedCount = state.words.filter((item) => item.lastReviewed === todayString()).length;
+      const sources = getSources();
+
+      app.innerHTML = `
+        <section class="glass hero-shell">
+          <div class="hero">
+            <div class="hero-copy">
+              <div class="pill">VSAT Vocab Memory Lab</div>
+              <h1>Trang ôn từ vựng sau mỗi đề tiếng Anh, thiết kế để não nhớ lâu chứ không chỉ nhìn cho quen.</h1>
+              <p>Tư duy của trang này là: sau mỗi đề, mình chắt ra từ đáng học, gắn nó với ngữ cảnh thật, ép não tự nhớ trước khi xem đáp án, rồi giãn khoảng ôn theo mức độ nhớ. Đó là bộ ba khoa học nhất cho từ vựng bền: <strong>active recall</strong>, <strong>spaced repetition</strong> và <strong>context encoding</strong>.</p>
+              <div class="hero-tags">
+                <span class="hero-tag">Ghi từ sau từng đề thật</span>
+                <span class="hero-tag">Tự chấm mức nhớ sau mỗi lượt</span>
+                <span class="hero-tag">Ôn lại đúng lúc sắp quên</span>
+                <span class="hero-tag">Nhớ cả sắc thái và cách dùng</span>
+              </div>
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <div class="stat-label">Đến hạn ôn</div>
+                  <div class="stat-value">${dueCount}</div>
+                  <div class="stat-note">Các từ cần lôi ra khỏi trí nhớ ngay hôm nay để tránh mờ dấu vết.</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Đã chạm hôm nay</div>
+                  <div class="stat-value">${reviewedCount}</div>
+                  <div class="stat-note">Số mục đã được não kích hoạt lại trong ngày hiện tại.</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Khóa dài hạn</div>
+                  <div class="stat-value">${masteredCount}</div>
+                  <div class="stat-note">Những từ đã sống qua nhiều lần recall và đang vào vùng ổn định.</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Giữ lại trung bình</div>
+                  <div class="stat-value">${averageRetention}%</div>
+                  <div class="stat-note">Điểm ước lượng từ dữ liệu nhớ và quên, để thấy chất lượng chứ không chỉ số lượng.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass focus-card">
+              ${selectedWord ? `
+                <div class="focus-top">
+                  <div>
+                    <div class="focus-kicker">Từ đang luyện</div>
+                    <div class="focus-word">${escapeHtml(selectedWord.word)}</div>
+                    <div class="focus-phonetic">${escapeHtml(selectedWord.phonetic || selectedWord.pos || "")}</div>
+                  </div>
+                  <span class="stage-badge ${getStageClass(selectedWord.stage)}">${escapeHtml(getStageLabel(selectedWord.stage))}</span>
+                </div>
+                <div class="memory-badges">
+                  <span class="badge">${escapeHtml(selectedWord.source)}</span>
+                  <span class="badge">Recall trước khi nhìn</span>
+                  <span class="badge">Lần ôn kế: ${escapeHtml(selectedWord.nextReview || "hôm nay")}</span>
+                </div>
+                <div class="focus-prompt"><strong>Gợi nhớ:</strong> ${escapeHtml(selectedWord.prompt)}</div>
+                <div class="reveal-shell">
+                  <div class="reveal-answer ${state.showAnswer ? "" : "hidden"}">
+                    <div class="answer-title">Đáp án mở rộng</div>
+                    <div class="answer-line"><strong>Nghĩa:</strong> ${escapeHtml(selectedWord.meaning)}</div>
+                    <div class="answer-line"><strong>Sắc thái:</strong> ${escapeHtml(selectedWord.nuance || "Tự bổ sung một ghi chú ngắn để tăng liên kết nghĩa.")}</div>
+                    <div class="answer-line"><strong>Collocations:</strong> ${escapeHtml(selectedWord.collocations || "Chưa thêm cụm đi cùng.")}</div>
+                    <div class="answer-line"><strong>Ví dụ:</strong> ${escapeHtml(selectedWord.example)}</div>
+                  </div>
+                  <div class="focus-actions">
+                    <button class="btn primary" data-action="toggle-answer">${state.showAnswer ? "Ẩn đáp án để thử lại" : "Hiện đáp án sau khi đã tự nhớ"}</button>
+                    <button class="btn" data-action="next-word">Chuyển sang từ kế</button>
+                  </div>
+                  <div class="grade-actions">
+                    <button class="grade-btn danger" data-grade="again">Quên sạch</button>
+                    <button class="grade-btn warn" data-grade="hard">Nhớ lơ mơ</button>
+                    <button class="grade-btn good" data-grade="good">Nhớ khá chắc</button>
+                    <button class="grade-btn great" data-grade="easy">Nhớ rất nhanh</button>
+                  </div>
+                </div>
+              ` : `
+                <div class="empty-state">Không có từ nào khớp bộ lọc hiện tại. Hãy đổi filter hoặc thêm một từ mới từ đề vừa làm xong.</div>
+              `}
+            </div>
+          </div>
+        </section>
+
+        <section class="main-grid">
+          <aside class="sidebar">
+            <section class="glass panel">
+              <div>
+                <div class="section-title">Protocol 5 phút</div>
+                <div class="section-desc">Chu trình ngắn sau mỗi đề để tận dụng ngay lúc não còn nóng dấu vết ngữ cảnh.</div>
+              </div>
+              <div class="protocol-list">
+                <div class="protocol-item">
+                  <div class="protocol-step">
+                    <span class="step-index">01</span>
+                    <div class="protocol-title">Harvest</div>
+                  </div>
+                  <div class="protocol-copy">Chỉ nhặt những từ thực sự chặn hiểu bài, lặp lại nhiều, hoặc có sắc thái đáng giá cho writing và speaking.</div>
+                </div>
+                <div class="protocol-item">
+                  <div class="protocol-step">
+                    <span class="step-index">02</span>
+                    <div class="protocol-title">Encode</div>
+                  </div>
+                  <div class="protocol-copy">Gắn mỗi từ với câu gốc, cảm giác khi gặp nó, và một mô tả tiếng Việt thật ngắn nhưng đúng sắc thái.</div>
+                </div>
+                <div class="protocol-item">
+                  <div class="protocol-step">
+                    <span class="step-index">03</span>
+                    <div class="protocol-title">Recall</div>
+                  </div>
+                  <div class="protocol-copy">Che đáp án, tự kéo nghĩa ra trước. Nỗ lực truy xuất chính là phần giúp trí nhớ mạnh lên.</div>
+                </div>
+                <div class="protocol-item">
+                  <div class="protocol-step">
+                    <span class="step-index">04</span>
+                    <div class="protocol-title">Rate</div>
+                  </div>
+                  <div class="protocol-copy">Chấm thật lòng mức nhớ để lịch ôn giãn ra hợp lí. Tự lừa mình sẽ phá spaced repetition.</div>
+                </div>
+              </div>
+            </section>
+
+            <section class="glass panel">
+              <div>
+                <div class="section-title">Nhập Từ Mới</div>
+                <div class="section-desc">Thêm từ vừa đúc kết sau một đề. Càng gần ngữ cảnh gốc, dấu nhớ càng đậm.</div>
+              </div>
+              <form id="addWordForm" class="form-grid">
+                <div class="form-grid two">
+                  <div class="field">
+                    <label for="word">Từ</label>
+                    <input id="word" name="word" placeholder="retain" required />
+                  </div>
+                  <div class="field">
+                    <label for="pos">Từ loại</label>
+                    <input id="pos" name="pos" placeholder="v." />
+                  </div>
+                </div>
+                <div class="form-grid two">
+                  <div class="field">
+                    <label for="phonetic">Phiên âm</label>
+                    <input id="phonetic" name="phonetic" placeholder="/rɪˈteɪn/" />
+                  </div>
+                  <div class="field">
+                    <label for="source">Nguồn</label>
+                    <input id="source" name="source" placeholder="Đề 22" />
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="meaning">Nghĩa trọng tâm</label>
+                  <textarea id="meaning" name="meaning" placeholder="ghi nhớ và giữ lại trong đầu" required></textarea>
+                </div>
+                <div class="field">
+                  <label for="nuance">Sắc thái / khi nào dùng</label>
+                  <textarea id="nuance" name="nuance" placeholder="khác với remember ở chỗ..."></textarea>
+                </div>
+                <div class="field">
+                  <label for="collocations">Cụm đi cùng</label>
+                  <input id="collocations" name="collocations" placeholder="retain information, retain control" />
+                </div>
+                <div class="field">
+                  <label for="example">Câu ví dụ lấy từ đề hoặc tự tạo</label>
+                  <textarea id="example" name="example" placeholder="Students retain information better when they test themselves." required></textarea>
+                </div>
+                <div class="field">
+                  <label for="prompt">Gợi nhớ cá nhân</label>
+                  <input id="prompt" name="prompt" placeholder="liên hệ với lỗi reading vừa gặp" />
+                </div>
+                <div class="field">
+                  <label for="tags">Tags</label>
+                  <input id="tags" name="tags" placeholder="reading, memory, writing" />
+                </div>
+                <div class="deck-actions">
+                  <button class="btn primary" type="submit">Thêm vào hàng đợi ôn</button>
+                </div>
+              </form>
+            </section>
+          </aside>
+
+          <section class="workspace">
+            <section class="glass panel workspace-top">
+              <div>
+                <div class="section-title">Bộ Đề Và Bộ Từ</div>
+                <div class="section-desc">Mỗi cụm từ nên xuất phát từ đề thật đã làm. Não nhớ tốt hơn khi có nguồn gốc rõ ràng, cảm xúc rõ ràng và lỗi rõ ràng.</div>
+              </div>
+              <div class="toolbar">
+                <div class="toolbar-group">
+                  <input id="searchInput" class="search" placeholder="Tìm theo từ, nghĩa, source, tags..." value="${escapeHtml(state.search)}" />
+                  <select id="sourceFilter" class="select">
+                    ${sources.map((source) => `<option value="${escapeHtml(source)}" ${source === state.sourceFilter ? "selected" : ""}>${source === "all" ? "Tất cả nguồn" : escapeHtml(source)}</option>`).join("")}
+                  </select>
+                </div>
+                <div class="toolbar-group">
+                  <button class="chip-btn ${state.statusFilter === "due" ? "active" : ""}" data-filter="due">Đến hạn</button>
+                  <button class="chip-btn ${state.statusFilter === "growing" ? "active" : ""}" data-filter="growing">Đang bám</button>
+                  <button class="chip-btn ${state.statusFilter === "locked" ? "active" : ""}" data-filter="locked">Khóa dài hạn</button>
+                  <button class="chip-btn ${state.statusFilter === "all" ? "active" : ""}" data-filter="all">Tất cả</button>
+                </div>
+              </div>
+
+              <div class="deck-grid">
+                ${sources.filter((source) => source !== "all").map((source) => {
+                  const words = state.words.filter((item) => item.source === source);
+                  const due = words.filter(isDue).length;
+                  const avgStage = words.length ? (words.reduce((sum, item) => sum + item.stage, 0) / words.length).toFixed(1) : "0.0";
+                  const isActive = state.sourceFilter === source;
+                  return `
+                    <button class="deck-btn ${isActive ? "active" : ""}" data-source="${escapeHtml(source)}">
+                      <div class="deck-item">
+                        <div class="deck-top">
+                          <div class="deck-title">${escapeHtml(source)}</div>
+                          <span class="deck-pulse"></span>
+                        </div>
+                        <div class="deck-copy">${due} từ đến hạn, stage trung bình ${avgStage}. Cụm này nên được ôn theo đề để giữ mạch ngữ cảnh.</div>
+                        <div class="deck-meta">
+                          <span class="tag">${words.length} từ</span>
+                          <span class="tag">${due} cần recall</span>
+                        </div>
+                      </div>
+                    </button>
+                  `;
+                }).join("")}
+              </div>
+            </section>
+
+            <section class="glass panel">
+              <div>
+                <div class="section-title">Flashcards Đang Sống</div>
+                <div class="section-desc">Đừng nhìn nghĩa đầu tiên. Hãy đọc từ, tự kéo nghĩa và ngữ cảnh ra, rồi mới lật. Nỗ lực retrieval chính là phần luyện thật.</div>
+              </div>
+              ${filteredWords.length ? `
+                <div class="word-grid">
+                  ${filteredWords.map((item) => `
+                    <article class="word-card ${selectedWord && selectedWord.id === item.id ? "active" : ""}" data-word-id="${escapeHtml(item.id)}">
+                      <div class="word-top">
+                        <div class="word-main">
+                          <div class="word-title">${escapeHtml(item.word)}</div>
+                          <div class="word-sub">${escapeHtml(item.phonetic || item.pos || "")}</div>
+                        </div>
+                        <span class="stage-badge ${getStageClass(item.stage)}">${escapeHtml(getStageLabel(item.stage))}</span>
+                      </div>
+                      <div class="word-copy">${escapeHtml(item.prompt)}</div>
+                      <div class="word-meta">
+                        <span class="meta-chip">${escapeHtml(item.source)}</span>
+                        <span class="meta-chip">Giữ lại ${getRetention(item)}%</span>
+                        <span class="meta-chip">${isDue(item) ? "Ôn hôm nay" : `Ôn ${escapeHtml(item.nextReview)}`}</span>
+                      </div>
+                      <div class="card-tags">
+                        ${(item.tags || []).slice(0, 3).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}
+                      </div>
+                    </article>
+                  `).join("")}
+                </div>
+              ` : `
+                <div class="empty-state">Bộ lọc hiện tại chưa có thẻ nào. Thử nới filter hoặc thêm từ mới từ đề vừa chữa.</div>
+              `}
+            </section>
+
+            <section class="glass panel">
+              <div>
+                <div class="section-title">Playbook Khoa Học</div>
+                <div class="section-desc">Trang này áp dụng các nguyên tắc học đã được dùng rất rộng trong nghiên cứu ghi nhớ và thực hành học tập hiệu quả.</div>
+              </div>
+              <div class="science-list">
+                <div class="science-item">
+                  <div class="science-head">
+                    <span class="science-index">A</span>
+                    <div class="science-title">Active Recall</div>
+                  </div>
+                  <div class="science-copy">Bắt não tự kéo thông tin ra trước khi nhìn đáp án. Cảm giác hơi khó chịu này lại là tín hiệu tốt cho trí nhớ dài hạn.</div>
+                </div>
+                <div class="science-item">
+                  <div class="science-head">
+                    <span class="science-index">B</span>
+                    <div class="science-title">Spacing</div>
+                  </div>
+                  <div class="science-copy">Không ôn dồn. Ôn lại đúng lúc ký ức đang mờ đi một chút sẽ tạo hiệu ứng củng cố mạnh hơn so với xem liên tục.</div>
+                </div>
+                <div class="science-item">
+                  <div class="science-head">
+                    <span class="science-index">C</span>
+                    <div class="science-title">Encoding Specificity</div>
+                  </div>
+                  <div class="science-copy">Một từ đi kèm đề gốc, câu gốc, lỗi gốc và cảm giác gốc sẽ dễ bật ra hơn khi gặp lại trong reading hoặc writing.</div>
+                </div>
+                <div class="science-item">
+                  <div class="science-head">
+                    <span class="science-index">D</span>
+                    <div class="science-title">Generation Effect</div>
+                  </div>
+                  <div class="science-copy">Tự viết ví dụ, tự đặt gợi nhớ và tự mô tả sắc thái sẽ giúp từ đó thuộc về bạn thay vì chỉ đi ngang qua mắt.</div>
+                </div>
+              </div>
+            </section>
+          </section>
+        </section>
+
+        <section class="glass footer-note">
+          <strong>Gợi ý dùng chuẩn nhất:</strong> sau mỗi đề tiếng Anh, chỉ chọn 5 đến 10 từ thật đáng giữ. Thêm ngay vào đây trong vòng vài phút, tự nhớ trước khi lật, rồi để trang nhắc lại theo mức độ nhớ. Chất lượng của liên kết và lịch ôn sẽ quan trọng hơn số từ bạn nhặt cho thật nhiều.
+        </section>
+      `;
+
+      bindEvents();
+    }
+
+    function bindEvents() {
+      const addWordForm = document.getElementById("addWordForm");
+      if (addWordForm) {
+        addWordForm.addEventListener("submit", addWordFromForm);
+      }
+
+      const searchInput = document.getElementById("searchInput");
+      if (searchInput) {
+        searchInput.addEventListener("input", (event) => {
+          state.search = event.target.value;
+          saveState();
+          render();
+        });
+      }
+
+      const sourceFilter = document.getElementById("sourceFilter");
+      if (sourceFilter) {
+        sourceFilter.addEventListener("change", (event) => {
+          state.sourceFilter = event.target.value;
+          saveState();
+          render();
+        });
+      }
+
+      app.querySelectorAll("[data-filter]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.statusFilter = button.dataset.filter;
+          saveState();
+          render();
+        });
+      });
+
+      app.querySelectorAll("[data-source]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.sourceFilter = button.dataset.source;
+          saveState();
+          render();
+        });
+      });
+
+      app.querySelectorAll("[data-word-id]").forEach((card) => {
+        card.addEventListener("click", () => {
+          state.selectedId = card.dataset.wordId;
+          state.showAnswer = false;
+          saveState();
+          render();
+        });
+      });
+
+      const toggleAnswer = app.querySelector("[data-action='toggle-answer']");
+      if (toggleAnswer) {
+        toggleAnswer.addEventListener("click", () => {
+          state.showAnswer = !state.showAnswer;
+          saveState();
+          render();
+        });
+      }
+
+      const nextWord = app.querySelector("[data-action='next-word']");
+      if (nextWord) {
+        nextWord.addEventListener("click", () => {
+          const filteredWords = getFilteredWords();
+          state.selectedId = pickNextWord(state.selectedId, filteredWords);
+          state.showAnswer = false;
+          saveState();
+          render();
+        });
+      }
+
+      app.querySelectorAll("[data-grade]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!state.selectedId) return;
+          gradeWord(state.selectedId, button.dataset.grade);
+        });
+      });
+    }
+
+    render();
+  </script>
+</body>
+</html>
