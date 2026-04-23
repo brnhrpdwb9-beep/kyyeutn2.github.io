@@ -1396,7 +1396,22 @@
     }
 
     .mission-flash-inner {
+      display: grid;
       filter: drop-shadow(0 34px 70px rgba(0,0,0,0.36));
+      height: auto;
+      min-height: inherit;
+    }
+
+    .mission-face {
+      grid-area: 1 / 1;
+      position: relative;
+      inset: auto;
+      min-height: inherit;
+    }
+
+    .mission-face .review-card {
+      min-height: inherit;
+      height: 100%;
     }
 
     .review-card {
@@ -2396,7 +2411,6 @@
               ${effectiveSelectedWord ? `
                 <div>
                   <div class="section-title">Check Đáp Án</div>
-                  <div class="section-desc">Khối bên trái là flash card chính. Nhấn trực tiếp vào thẻ để lật 3D, còn bên phải chỉ dùng để nhập, check và chấm mức nhớ.</div>
                 </div>
                 <div class="review-meta">
                   <span class="badge">${escapeHtml(effectiveSelectedWord.source)}</span>
@@ -2416,7 +2430,6 @@
                   <div class="flash-label">${state.cardMode === "en-vi" ? "Tự gõ nghĩa tiếng Việt" : "Tự gõ từ tiếng Anh"}</div>
                   <input id="answerInput" class="${state.answerStatus ? `answer-${state.answerStatus}` : ""}" value="${escapeHtml(state.answerInput || "")}" placeholder="${escapeHtml(answerPlaceholder)}" />
                   <div class="check-tools">
-                    <div class="check-note">Gõ đáp án của bạn trước, bấm kiểm tra nhanh rồi mới lật thẻ để đối chiếu.</div>
                     <div class="flash-actions">
                       <button class="btn" data-action="check-answer">Kiểm tra nhanh</button>
                       <button class="btn" data-action="clear-answer">Xóa ô trả lời</button>
