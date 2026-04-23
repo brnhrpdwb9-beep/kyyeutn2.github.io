@@ -657,6 +657,12 @@
       color: #d8f7ff;
     }
 
+    .btn.session {
+      background: rgba(255,203,107,0.10);
+      border-color: rgba(255,203,107,0.24);
+      color: #fff2cc;
+    }
+
     .deck-grid,
     .word-grid {
       display: grid;
@@ -873,6 +879,59 @@
     }
 
     .review-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .session-strip {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(5, 10, 22, 0.42);
+      border: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+      z-index: 1;
+    }
+
+    .session-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .session-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #c7d2fe;
+    }
+
+    .session-copy {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 13px;
+    }
+
+    .session-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .session-chip {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #d7e5ff;
+      font-size: 12px;
+    }
+
+    .session-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
@@ -1348,7 +1407,15 @@
       search: "",
       sourceFilter: initialWords[0].source,
       statusFilter: "due",
-      showAnswer: false
+      showAnswer: false,
+      session: {
+        active: false,
+        completed: false,
+        source: "",
+        queue: [],
+        currentIndex: 0,
+        results: { again: 0, hard: 0, good: 0, easy: 0 }
+      }
     };
 
     const app = document.getElementById("app");
@@ -1472,6 +1539,48 @@
       render();
     }
 
+    function createEmptySession() {
+      return {
+        active: false,
+        completed: false,
+        source: "",
+        queue: [],
+        currentIndex: 0,
+        results: { again: 0, hard: 0, good: 0, easy: 0 }
+      };
+    }
+
+    function startSession(wordIds, source) {
+      if (!wordIds.length) return;
+      state.session = {
+        active: true,
+        completed: false,
+        source,
+        queue: [...wordIds],
+        currentIndex: 0,
+        results: { again: 0, hard: 0, good: 0, easy: 0 }
+      };
+      state.selectedId = wordIds[0];
+      state.showAnswer = false;
+      saveState();
+      render();
+    }
+
+    function stopSession(keepSummary = false) {
+      if (!keepSummary) {
+        state.session = createEmptySession();
+      } else {
+        state.session = {
+          ...state.session,
+          active: false,
+          completed: true
+        };
+      }
+      state.showAnswer = false;
+      saveState();
+      render();
+    }
+
     function gradeWord(wordId, quality) {
       const currentDay = todayString();
       updateWord(wordId, (item) => {
@@ -1511,8 +1620,36 @@
         };
       });
 
-      const filteredWords = getFilteredWords();
-      state.selectedId = pickNextWord(wordId, filteredWords);
+      if (state.session && state.session.active && state.session.queue.includes(wordId)) {
+        const nextResults = {
+          again: state.session.results.again,
+          hard: state.session.results.hard,
+          good: state.session.results.good,
+          easy: state.session.results.easy
+        };
+        nextResults[quality] += 1;
+        const nextIndex = state.session.currentIndex + 1;
+        if (nextIndex >= state.session.queue.length) {
+          state.session = {
+            ...state.session,
+            active: false,
+            completed: true,
+            currentIndex: state.session.queue.length,
+            results: nextResults
+          };
+        } else {
+          state.session = {
+            ...state.session,
+            currentIndex: nextIndex,
+            results: nextResults
+          };
+          state.selectedId = state.session.queue[nextIndex];
+        }
+      } else {
+        const filteredWords = getFilteredWords();
+        state.selectedId = pickNextWord(wordId, filteredWords);
+      }
+
       state.showAnswer = false;
       saveState();
       render();
@@ -1548,6 +1685,7 @@
 
       state.words = [newWord, ...state.words];
       state.selectedId = newWord.id;
+      state.sourceFilter = newWord.source;
       state.showAnswer = false;
       saveState();
       form.reset();
@@ -1585,6 +1723,24 @@
       const activeSourceRetention = activeSourceWords.length
         ? Math.round(activeSourceWords.reduce((sum, item) => sum + getRetention(item), 0) / activeSourceWords.length)
         : 0;
+      const sessionWords = wordsToRender;
+      const session = state.session || createEmptySession();
+      if (session.source && session.source !== activeSource && (session.active || session.completed)) {
+        state.session = createEmptySession();
+      }
+      const liveSession = state.session || createEmptySession();
+      const sessionTotal = liveSession.queue.length;
+      const sessionCurrent = liveSession.active ? Math.min(liveSession.currentIndex + 1, Math.max(sessionTotal, 1)) : sessionTotal;
+      const sessionProgress = sessionTotal ? Math.min(100, Math.round((Math.min(liveSession.currentIndex, sessionTotal) * 100) / sessionTotal)) : 0;
+      const sessionSummary = liveSession.results || { again: 0, hard: 0, good: 0, easy: 0 };
+      const sessionActiveWordId = liveSession.active ? liveSession.queue[liveSession.currentIndex] : "";
+      const effectiveSelectedWord = liveSession.active
+        ? state.words.find((item) => item.id === sessionActiveWordId) || selectedWord
+        : selectedWord;
+      if (effectiveSelectedWord && state.selectedId !== effectiveSelectedWord.id) {
+        state.selectedId = effectiveSelectedWord.id;
+        saveState();
+      }
 
       app.innerHTML = `
         <section class="glass hero-shell">
@@ -1592,7 +1748,7 @@
             <div class="hero-copy compact">
               <div class="pill">VSAT Vocab Memory Lab</div>
               <h1>Chọn từng đề, nhặt từ ngay sau bài làm, rồi ôn lại bằng một màn kiểm tra đủ lớn để ép não thật sự recall.</h1>
-              <p>Flow mới đi đúng kiểu `vsat.html`: bên trái chọn đề như chọn ngày, bên phải tập trung vào một từ đang luyện. Mục tiêu là giảm thao tác thừa, thêm từ nhanh hơn, và để phần kiểm tra từ vựng trở thành khu trung tâm rõ ràng nhất của trang.</p>
+              <p>Flow mới đi đúng kiểu trang VSAT gốc: bên trái chọn đề như chọn ngày, bên phải tập trung vào một từ đang luyện. Mục tiêu là giảm thao tác thừa, thêm từ nhanh hơn, và để phần kiểm tra từ vựng trở thành khu trung tâm rõ ràng nhất của trang.</p>
               <div class="hero-tags">
                 <span class="hero-tag">Chọn đề như timeline</span>
                 <span class="hero-tag">Thêm từ ngay trong sidebar</span>
@@ -1624,27 +1780,55 @@
             </div>
 
             <div class="review-card">
-              ${selectedWord ? `
+              ${effectiveSelectedWord ? `
                 <div class="review-planet" aria-hidden="true"></div>
                 <div class="review-main">
                   <div class="review-kicker">Đang kiểm tra</div>
-                  <div class="review-title">${escapeHtml(selectedWord.word)}</div>
-                  <div class="review-sub">${escapeHtml(selectedWord.phonetic || selectedWord.pos || "")}</div>
+                  <div class="review-title">${escapeHtml(effectiveSelectedWord.word)}</div>
+                  <div class="review-sub">${escapeHtml(effectiveSelectedWord.phonetic || effectiveSelectedWord.pos || "")}</div>
                 </div>
                 <div class="review-meta">
-                  <span class="badge">${escapeHtml(selectedWord.source)}</span>
-                  <span class="badge ${getStageClass(selectedWord.stage)}">${escapeHtml(getStageLabel(selectedWord.stage))}</span>
+                  <span class="badge">${escapeHtml(effectiveSelectedWord.source)}</span>
+                  <span class="badge ${getStageClass(effectiveSelectedWord.stage)}">${escapeHtml(getStageLabel(effectiveSelectedWord.stage))}</span>
                   <span class="badge">Recall trước khi nhìn</span>
-                  <span class="badge">Lần ôn kế: ${escapeHtml(selectedWord.nextReview || "hôm nay")}</span>
+                  <span class="badge">Lần ôn kế: ${escapeHtml(effectiveSelectedWord.nextReview || "hôm nay")}</span>
                 </div>
-                <div class="focus-prompt"><strong>Gợi nhớ:</strong> ${escapeHtml(selectedWord.prompt)}</div>
+                <div class="session-strip">
+                  <div class="session-top">
+                    <div>
+                      <div class="session-title">Mini Test Session</div>
+                      <div class="session-copy">
+                        ${liveSession.active
+                          ? `Đang chạy tự động qua từng từ của ${escapeHtml(activeSource)}. Chấm xong từ này, trang sẽ tự nhảy sang từ kế.`
+                          : liveSession.completed && liveSession.source === activeSource
+                            ? `Phiên của ${escapeHtml(activeSource)} vừa xong. Bạn có thể xem tổng kết hoặc chạy lại ngay.`
+                            : `Bấm bắt đầu để duyệt liên tục toàn bộ từ đang hiện của ${escapeHtml(activeSource)}.`}
+                      </div>
+                    </div>
+                    <div class="session-actions">
+                      ${liveSession.active
+                        ? `<button class="btn session" data-action="stop-session">Dừng phiên</button>`
+                        : `<button class="btn session" data-action="start-session" ${sessionWords.length ? "" : "disabled"}>Bắt đầu mini test</button>`}
+                    </div>
+                  </div>
+                  <div class="session-stats">
+                    <span class="session-chip">${sessionWords.length} từ trong hàng đợi</span>
+                    <span class="session-chip">${liveSession.active ? `Từ ${sessionCurrent}/${sessionTotal}` : `Tiến độ ${sessionProgress}%`}</span>
+                    <span class="session-chip">Quên ${sessionSummary.again}</span>
+                    <span class="session-chip">Lơ mơ ${sessionSummary.hard}</span>
+                    <span class="session-chip">Khá chắc ${sessionSummary.good}</span>
+                    <span class="session-chip">Rất nhanh ${sessionSummary.easy}</span>
+                  </div>
+                  ${sessionTotal ? `<div class="progress"><span style="width:${sessionProgress}%"></span></div>` : ""}
+                </div>
+                <div class="focus-prompt"><strong>Gợi nhớ:</strong> ${escapeHtml(effectiveSelectedWord.prompt)}</div>
                 <div class="reveal-shell">
                   <div class="reveal-answer ${state.showAnswer ? "" : "hidden"}">
                     <div class="answer-title">Đáp án mở rộng</div>
-                    <div class="answer-line"><strong>Nghĩa:</strong> ${escapeHtml(selectedWord.meaning)}</div>
-                    <div class="answer-line"><strong>Sắc thái:</strong> ${escapeHtml(selectedWord.nuance || "Tự bổ sung một ghi chú ngắn để tăng liên kết nghĩa.")}</div>
-                    <div class="answer-line"><strong>Collocations:</strong> ${escapeHtml(selectedWord.collocations || "Chưa thêm cụm đi cùng.")}</div>
-                    <div class="answer-line"><strong>Ví dụ:</strong> ${escapeHtml(selectedWord.example)}</div>
+                    <div class="answer-line"><strong>Nghĩa:</strong> ${escapeHtml(effectiveSelectedWord.meaning)}</div>
+                    <div class="answer-line"><strong>Sắc thái:</strong> ${escapeHtml(effectiveSelectedWord.nuance || "Tự bổ sung một ghi chú ngắn để tăng liên kết nghĩa.")}</div>
+                    <div class="answer-line"><strong>Collocations:</strong> ${escapeHtml(effectiveSelectedWord.collocations || "Chưa thêm cụm đi cùng.")}</div>
+                    <div class="answer-line"><strong>Ví dụ:</strong> ${escapeHtml(effectiveSelectedWord.example)}</div>
                   </div>
                   <div class="review-actions">
                     <button class="btn primary" data-action="toggle-answer">${state.showAnswer ? "Ẩn đáp án để thử lại" : "Hiện đáp án sau khi đã tự nhớ"}</button>
@@ -1785,7 +1969,7 @@
               ${wordsToRender.length ? `
                 <div class="word-grid single-column">
                   ${wordsToRender.map((item) => `
-                    <article class="word-card ${selectedWord && selectedWord.id === item.id ? "active" : ""}" data-word-id="${escapeHtml(item.id)}">
+                    <article class="word-card ${effectiveSelectedWord && effectiveSelectedWord.id === item.id ? "active" : ""}" data-word-id="${escapeHtml(item.id)}">
                       <div class="word-top">
                         <div class="word-main">
                           <div class="word-title">${escapeHtml(item.word)}</div>
@@ -1866,11 +2050,34 @@
         });
       }
 
+      const startSessionButton = app.querySelector("[data-action='start-session']");
+      if (startSessionButton) {
+        startSessionButton.addEventListener("click", () => {
+          const queue = getFilteredWords()
+            .filter((item) => item.source === state.sourceFilter)
+            .map((item) => item.id);
+          startSession(queue, state.sourceFilter);
+        });
+      }
+
+      const stopSessionButton = app.querySelector("[data-action='stop-session']");
+      if (stopSessionButton) {
+        stopSessionButton.addEventListener("click", () => {
+          stopSession(true);
+        });
+      }
+
       const nextWord = app.querySelector("[data-action='next-word']");
       if (nextWord) {
         nextWord.addEventListener("click", () => {
-          const filteredWords = getFilteredWords();
-          state.selectedId = pickNextWord(state.selectedId, filteredWords);
+          if (state.session && state.session.active) {
+            const nextIndex = Math.min(state.session.currentIndex + 1, state.session.queue.length - 1);
+            state.session.currentIndex = nextIndex;
+            state.selectedId = state.session.queue[nextIndex] || state.selectedId;
+          } else {
+            const filteredWords = getFilteredWords();
+            state.selectedId = pickNextWord(state.selectedId, filteredWords);
+          }
           state.showAnswer = false;
           saveState();
           render();
