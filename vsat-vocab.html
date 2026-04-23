@@ -166,21 +166,26 @@
     .shooting-star.three { top: 8%; left: 45%; width: 210px; animation-delay: 6s; }
 
     .flag-burst {
-      --flag-top: 88px;
-      --flag-right: max(5%, 22px);
-      --flag-shift-x: -18px;
+      --flag-top: 42px;
+      --flag-left: 22px;
+      --flag-shift-x: -24px;
       --flag-shift-y: 14px;
       --flag-tilt: -5deg;
       position: absolute;
-      right: var(--flag-right);
+      left: var(--flag-left);
       top: var(--flag-top);
-      width: min(300px, 34vw);
+      width: min(280px, 36vw);
       aspect-ratio: 5 / 3;
       pointer-events: none;
       opacity: 0;
+      z-index: 4;
       transform: translate3d(var(--flag-shift-x), var(--flag-shift-y), 0) rotate(var(--flag-tilt)) scale(.96);
       transition: opacity .8s ease, transform .8s ease, filter .8s ease;
       filter: drop-shadow(0 0 16px rgba(255,214,136,.12));
+    }
+
+    .flag-burst-template {
+      display: none;
     }
 
     .flag-burst::before {
@@ -939,6 +944,12 @@
       gap: 8px;
     }
 
+    .word-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
     .meta-chip {
       padding: 8px 10px;
       border-radius: 999px;
@@ -946,6 +957,28 @@
       border: 1px solid rgba(255,255,255,0.07);
       font-size: 12px;
       color: #d7e5ff;
+    }
+
+    .word-action-btn {
+      padding: 8px 11px;
+      border-radius: 999px;
+      color: #d7e5ff;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.08);
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .word-action-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(53,214,255,0.24);
+      background: rgba(53,214,255,0.08);
+    }
+
+    .word-action-btn.danger {
+      color: #ffd8df;
+      background: rgba(255,126,146,0.08);
+      border-color: rgba(255,126,146,0.18);
     }
 
     .empty-state {
@@ -1100,6 +1133,10 @@
     }
 
     .mission-face.front .mission-focus-grid {
+      display: none;
+    }
+
+    .mission-face.back .mission-focus-grid {
       display: none;
     }
 
@@ -1483,6 +1520,13 @@
       display: none;
     }
 
+    .inline-add.editing .form-grid.two:first-of-type .field:nth-child(2),
+    .inline-add.editing .form-grid.two:nth-of-type(2),
+    .inline-add.editing .field:has(#collocations),
+    .inline-add.editing .field:has(#prompt) {
+      display: grid;
+    }
+
     .inline-add .field textarea {
       min-height: 84px;
     }
@@ -1632,7 +1676,7 @@
       font-size: clamp(32px, 4.6vw, 62px);
     }
 
-    .mission-face.front .mission-badges {
+    .mission-face .mission-badges {
       margin-top: auto;
     }
 
@@ -1940,7 +1984,7 @@
     <div class="shooting-star one"></div>
     <div class="shooting-star two"></div>
     <div class="shooting-star three"></div>
-    <div class="flag-burst" aria-hidden="true">
+    <div class="flag-burst flag-burst-template" aria-hidden="true">
       <svg viewBox="0 0 500 300" role="presentation">
         <g style="--delay:.04s">
           <circle class="flag-dot major" cx="56" cy="50" r="4.0" />
@@ -2205,6 +2249,7 @@
     }
 
     const lessonSources = [...new Set(englishPlanGroups.flatMap((item) => expandEnglishSources(item)))];
+    const flagBurstTemplate = document.querySelector(".flag-burst-template");
 
     const defaultState = {
       words: initialWords,
@@ -2215,7 +2260,8 @@
       isFlipped: false,
       cardMode: "en-vi",
       answerInput: "",
-      answerStatus: ""
+      answerStatus: "",
+      editingId: ""
     };
 
     const app = document.getElementById("app");
@@ -2277,20 +2323,29 @@
     }
 
     function randomizeFlagBurstPose() {
-      const flagBurst = document.querySelector(".flag-burst");
+      const flagBurst = document.querySelector(".mission-flash .flag-burst");
       if (!flagBurst) return;
 
-      const top = 42 + Math.round(Math.random() * 68);
-      const right = 20 + Math.round(Math.random() * 54);
-      const shiftX = -8 - Math.round(Math.random() * 22);
-      const shiftY = 8 + Math.round(Math.random() * 14);
-      const tilt = -12 + Math.round(Math.random() * 16);
+      const top = 34 + Math.round(Math.random() * 38);
+      const left = 18 + Math.round(Math.random() * 28);
+      const shiftX = -18 - Math.round(Math.random() * 18);
+      const shiftY = 6 + Math.round(Math.random() * 12);
+      const tilt = -10 + Math.round(Math.random() * 12);
 
       flagBurst.style.setProperty("--flag-top", `${top}px`);
-      flagBurst.style.setProperty("--flag-right", `${right}px`);
+      flagBurst.style.setProperty("--flag-left", `${left}px`);
       flagBurst.style.setProperty("--flag-shift-x", `${shiftX}px`);
       flagBurst.style.setProperty("--flag-shift-y", `${shiftY}px`);
       flagBurst.style.setProperty("--flag-tilt", `${tilt}deg`);
+    }
+
+    function mountFlagBurst() {
+      const flashCard = app.querySelector(".mission-flash");
+      if (!flagBurstTemplate || !flashCard) return;
+
+      const flagBurst = flagBurstTemplate.cloneNode(true);
+      flagBurst.classList.remove("flag-burst-template");
+      flashCard.appendChild(flagBurst);
     }
 
     function triggerFlagBurst() {
@@ -2502,6 +2557,43 @@
       saveState();
     }
 
+    function startEditingWord(wordId) {
+      const word = state.words.find((item) => item.id === wordId);
+      if (!word) return;
+
+      state.editingId = wordId;
+      state.selectedId = wordId;
+      state.sourceFilter = word.source;
+      clearAnswerState();
+      saveState();
+      render();
+    }
+
+    function cancelEditingWord() {
+      state.editingId = "";
+      saveState();
+      render();
+    }
+
+    function deleteWord(wordId) {
+      const word = state.words.find((item) => item.id === wordId);
+      if (!word) return;
+      const shouldDelete = window.confirm(`Xóa từ "${word.word}" khỏi bộ thẻ này?`);
+      if (!shouldDelete) return;
+
+      state.words = state.words.filter((item) => item.id !== wordId);
+      if (state.selectedId === wordId) {
+        const filteredWords = getFilteredWords();
+        state.selectedId = filteredWords[0]?.id || state.words[0]?.id || "";
+      }
+      if (state.editingId === wordId) {
+        state.editingId = "";
+      }
+      clearAnswerState();
+      saveState();
+      render();
+    }
+
     function gradeWord(wordId, quality) {
       const currentDay = todayString();
       updateWord(wordId, (item) => {
@@ -2559,6 +2651,27 @@
       const example = String(formData.get("example") || "").trim();
       if (!word || !meaning) return;
 
+      if (state.editingId) {
+        updateWord(state.editingId, (item) => ({
+          ...item,
+          word,
+          phonetic: String(formData.get("phonetic") || "").trim(),
+          pos: String(formData.get("pos") || "").trim(),
+          meaning,
+          collocations: String(formData.get("collocations") || "").trim(),
+          example: example || `Tự tạo một câu ngắn với "${word}" khi ôn lại thẻ này.`,
+          prompt: String(formData.get("prompt") || "").trim() || `Nhớ lại ngữ cảnh gốc khi gặp từ "${word}".`,
+          source: String(formData.get("source") || "").trim() || item.source || "Đề mới"
+        }));
+        state.selectedId = state.editingId;
+        state.sourceFilter = String(formData.get("source") || "").trim() || state.sourceFilter;
+        state.editingId = "";
+        clearAnswerState();
+        saveState();
+        render();
+        return;
+      }
+
       const newWord = {
         id: `w_${Date.now()}`,
         word,
@@ -2599,6 +2712,12 @@
       const activeSource = state.sourceFilter === "all"
         ? (sourceOptions[0] || "Đề mới")
         : state.sourceFilter;
+      let editingWord = state.editingId
+        ? state.words.find((item) => item.id === state.editingId)
+        : null;
+      if (state.editingId && !editingWord) {
+        state.editingId = "";
+      }
       const filteredWords = getFilteredWords();
       const scopedWords = filteredWords.filter((item) => item.source === activeSource);
       const wordsToRender = scopedWords.length ? scopedWords : filteredWords;
@@ -2730,8 +2849,9 @@
                         </div>
                       </div>
                       <div class="mission-badges">
-                        <span class="badge">${escapeHtml(effectiveSelectedWord.source)}</span>
-                        <span class="badge ${getStageClass(effectiveSelectedWord.stage)}">${escapeHtml(getStageLabel(effectiveSelectedWord.stage))}</span>
+                        <span class="badge">${flashcardDirection}</span>
+                        <span class="badge">${activeSourceDue} thẻ đến hạn</span>
+                        <span class="badge">Từ tiếng Anh: ${escapeHtml(effectiveSelectedWord.word)}</span>
                       </div>
                     ` : `
                       <div class="empty-state">Không có thẻ nào cho bài đang chọn.</div>
@@ -2816,48 +2936,49 @@
 
             <section class="glass panel">
               <div>
-                <div class="section-title">Nhập Từ Mới</div>
-                <div class="section-desc">Đang thêm cho <strong>${escapeHtml(activeSource)}</strong>. Chỉ giữ các trường thật cần để nhập nhanh.</div>
+                <div class="section-title">${editingWord ? "Chỉnh Sửa Từ" : "Nhập Từ Mới"}</div>
+                <div class="section-desc">${editingWord ? `Đang sửa <strong>${escapeHtml(editingWord.word)}</strong>. Cập nhật xong thì bấm lưu, hoặc hủy để quay lại thêm từ mới.` : `Đang thêm cho <strong>${escapeHtml(activeSource)}</strong>. Chỉ giữ các trường thật cần để nhập nhanh.`}</div>
               </div>
-              <form id="addWordForm" class="inline-add">
+              <form id="addWordForm" class="inline-add ${editingWord ? "editing" : ""}">
                 <div class="form-grid two">
                   <div class="field">
                     <label for="word">Từ</label>
-                    <input id="word" name="word" placeholder="retain" required />
+                    <input id="word" name="word" placeholder="retain" value="${escapeHtml(editingWord?.word || "")}" required />
                   </div>
                   <div class="field">
                     <label for="pos">Từ loại</label>
-                    <input id="pos" name="pos" placeholder="v." />
+                    <input id="pos" name="pos" placeholder="v." value="${escapeHtml(editingWord?.pos || "")}" />
                   </div>
                 </div>
                 <div class="form-grid two">
                   <div class="field">
                     <label for="phonetic">Phiên âm</label>
-                    <input id="phonetic" name="phonetic" placeholder="/rɪˈteɪn/" />
+                    <input id="phonetic" name="phonetic" placeholder="/rɪˈteɪn/" value="${escapeHtml(editingWord?.phonetic || "")}" />
                   </div>
                   <div class="field">
                     <label for="source">Đề đang gắn</label>
-                    <input id="source" name="source" value="${escapeHtml(activeSource)}" readonly />
+                    <input id="source" name="source" value="${escapeHtml(editingWord?.source || activeSource)}" readonly />
                   </div>
                 </div>
                 <div class="field">
                   <label for="meaning">Nghĩa trọng tâm</label>
-                  <textarea id="meaning" name="meaning" placeholder="ghi nhớ và giữ lại trong đầu" required></textarea>
+                  <textarea id="meaning" name="meaning" placeholder="ghi nhớ và giữ lại trong đầu" required>${escapeHtml(editingWord?.meaning || "")}</textarea>
                 </div>
                 <div class="field">
                   <label for="collocations">Cụm đi cùng</label>
-                  <input id="collocations" name="collocations" placeholder="retain information, retain control" />
+                  <input id="collocations" name="collocations" placeholder="retain information, retain control" value="${escapeHtml(editingWord?.collocations || "")}" />
                 </div>
                 <div class="field">
                   <label for="example">Câu ví dụ tùy chọn</label>
-                  <textarea id="example" name="example" placeholder="Có thể bỏ trống, hệ thống sẽ tự tạo lời nhắc."></textarea>
+                  <textarea id="example" name="example" placeholder="Có thể bỏ trống, hệ thống sẽ tự tạo lời nhắc.">${escapeHtml(editingWord?.example || "")}</textarea>
                 </div>
                 <div class="field">
                   <label for="prompt">Gợi nhớ cá nhân</label>
-                  <input id="prompt" name="prompt" placeholder="liên hệ với lỗi reading vừa gặp" />
+                  <input id="prompt" name="prompt" placeholder="liên hệ với lỗi reading vừa gặp" value="${escapeHtml(editingWord?.prompt || "")}" />
                 </div>
                 <div class="deck-actions">
-                  <button class="btn primary" type="submit">Thêm từ vào ${escapeHtml(activeSource)}</button>
+                  <button class="btn primary" type="submit">${editingWord ? "Lưu chỉnh sửa" : `Thêm từ vào ${escapeHtml(activeSource)}`}</button>
+                  ${editingWord ? `<button class="btn" type="button" data-action="cancel-edit">Hủy sửa</button>` : ""}
                 </div>
               </form>
             </section>
@@ -2897,6 +3018,10 @@
                         <span class="meta-chip">Giữ lại ${getRetention(item)}%</span>
                         <span class="meta-chip">${isDue(item) ? "Ôn hôm nay" : `Ôn ${escapeHtml(item.nextReview)}`}</span>
                       </div>
+                      <div class="word-actions">
+                        <button class="word-action-btn" type="button" data-edit-word="${escapeHtml(item.id)}">Sửa</button>
+                        <button class="word-action-btn danger" type="button" data-delete-word="${escapeHtml(item.id)}">Xóa</button>
+                      </div>
                     </article>
                   `).join("")}
                 </div>
@@ -2912,6 +3037,7 @@
         </section>
       `;
 
+      mountFlagBurst();
       bindEvents();
     }
 
@@ -2921,6 +3047,13 @@
       const addWordForm = document.getElementById("addWordForm");
       if (addWordForm) {
         addWordForm.addEventListener("submit", addWordFromForm);
+      }
+
+      const cancelEdit = app.querySelector("[data-action='cancel-edit']");
+      if (cancelEdit) {
+        cancelEdit.addEventListener("click", () => {
+          cancelEditingWord();
+        });
       }
 
       const searchInput = document.getElementById("searchInput");
@@ -2971,6 +3104,20 @@
           clearAnswerState();
           saveState();
           render();
+        });
+      });
+
+      app.querySelectorAll("[data-edit-word]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          startEditingWord(button.dataset.editWord);
+        });
+      });
+
+      app.querySelectorAll("[data-delete-word]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          deleteWord(button.dataset.deleteWord);
         });
       });
 
