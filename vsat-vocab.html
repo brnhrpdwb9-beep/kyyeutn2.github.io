@@ -204,7 +204,7 @@
 
     .hero {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1.18fr) minmax(340px, 420px);
       gap: 24px;
       align-items: stretch;
       position: relative;
@@ -809,6 +809,7 @@
       display: grid;
       gap: 18px;
       min-height: 100%;
+      height: 100%;
     }
 
     .review-card::after {
@@ -878,14 +879,37 @@
       gap: 10px;
     }
 
-    .flash-shell {
-      display: grid;
-      gap: 14px;
+    .mission-flash {
+      perspective: 2200px;
       position: relative;
       z-index: 1;
+      min-height: 100%;
     }
 
-    .flash-meta {
+    .mission-flash-inner {
+      position: relative;
+      min-height: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform .65s ease;
+    }
+
+    .mission-flash.flipped .mission-flash-inner {
+      transform: rotateY(180deg);
+    }
+
+    .mission-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      min-height: 100%;
+    }
+
+    .mission-face.back {
+      transform: rotateY(180deg);
+    }
+
+    .mission-badges {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
@@ -893,41 +917,55 @@
       z-index: 1;
     }
 
-    .flashcard {
-      perspective: 1600px;
+    .mission-focus-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
       position: relative;
       z-index: 1;
     }
 
-    .flashcard-inner {
-      position: relative;
-      min-height: 280px;
-      transform-style: preserve-3d;
-      transition: transform .65s ease;
-    }
-
-    .flashcard.flipped .flashcard-inner {
-      transform: rotateY(180deg);
-    }
-
-    .flash-face {
-      position: absolute;
-      inset: 0;
-      backface-visibility: hidden;
+    .mission-focus-card {
       display: grid;
-      gap: 14px;
-      align-content: center;
-      padding: 28px;
-      border-radius: 26px;
+      gap: 8px;
+      align-content: start;
+      min-height: 120px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(5, 10, 22, 0.42);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .mission-focus-label {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #c7d2fe;
+    }
+
+    .mission-focus-value {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(22px, 3vw, 30px);
+      line-height: 1;
+      color: #f8fbff;
+    }
+
+    .mission-focus-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .side-check {
+      padding: 24px;
+      border-radius: 30px;
       background:
         linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)),
-        rgba(4, 10, 20, 0.48);
+        rgba(7, 15, 29, 0.72);
       border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
-    }
-
-    .flash-face.back {
-      transform: rotateY(180deg);
+      display: grid;
+      gap: 16px;
+      min-height: 100%;
     }
 
     .flash-label {
@@ -1263,6 +1301,10 @@
       .word-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+
+      .mission-flash {
+        min-height: 720px;
+      }
     }
 
     @media (max-width: 760px) {
@@ -1290,6 +1332,10 @@
       }
 
       .review-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mission-focus-grid {
         grid-template-columns: 1fr;
       }
 
@@ -1807,7 +1853,6 @@
         state.selectedId = effectiveSelectedWord.id;
         saveState();
       }
-      const promptLabel = state.cardMode === "en-vi" ? "Mặt trước: Từ tiếng Anh" : "Mặt trước: Nghĩa tiếng Việt";
       const frontValue = effectiveSelectedWord
         ? (state.cardMode === "en-vi" ? effectiveSelectedWord.word : effectiveSelectedWord.meaning)
         : "";
@@ -1826,52 +1871,112 @@
       app.innerHTML = `
         <section class="glass hero-shell">
           <div class="hero">
-            <div class="review-card">
+            <div class="mission-flash ${state.isFlipped ? "flipped" : ""}">
+              <div class="mission-flash-inner">
+                <div class="mission-face front">
+                  <div class="review-card">
+                    ${effectiveSelectedWord ? `
+                      <div class="review-planet" aria-hidden="true"></div>
+                      <div class="review-main">
+                        <div class="pill">VSAT Mission Control</div>
+                        <div class="review-kicker">Ngày đang học</div>
+                        <div class="review-title">${escapeHtml(activeSource)}</div>
+                        <div class="review-sub">${escapeHtml(frontValue)}</div>
+                        <div class="flash-copy">${escapeHtml(effectiveSelectedWord.prompt)}</div>
+                      </div>
+                      <div class="mission-focus-grid">
+                        <div class="mission-focus-card">
+                          <div class="mission-focus-label">Ngày đang hiện</div>
+                          <div class="mission-focus-value">${lessonSources.length}</div>
+                          <div class="mission-focus-note">Số bài tiếng Anh đang có trong toàn bộ lịch VSAT.</div>
+                        </div>
+                        <div class="mission-focus-card">
+                          <div class="mission-focus-label">Đầu việc đã xong</div>
+                          <div class="mission-focus-value">${reviewedCount}/${state.words.length}</div>
+                          <div class="mission-focus-note">Số thẻ đã được bạn chạm tới trong ngày hiện tại.</div>
+                        </div>
+                        <div class="mission-focus-card">
+                          <div class="mission-focus-label">${escapeHtml(activeSource)}</div>
+                          <div class="mission-focus-value">${activeSourceDone}/${activeSourceWords.length}</div>
+                          <div class="mission-focus-note">Số thẻ đã được check trong bài đang chọn.</div>
+                        </div>
+                        <div class="mission-focus-card">
+                          <div class="mission-focus-label">Nhịp hiện tại</div>
+                          <div class="mission-focus-value">${state.answerStatus ? (state.answerStatus === "correct" ? "Đúng nhịp" : state.answerStatus === "partial" ? "Chậm hơn dự kiến" : "Tắc tiến độ") : getStageLabel(effectiveSelectedWord.stage)}</div>
+                          <div class="mission-focus-note">${state.cardMode === "en-vi" ? "Đang kiểm tra theo chiều Anh sang Việt." : "Đang kiểm tra theo chiều Việt sang Anh."}</div>
+                        </div>
+                      </div>
+                      <div class="mission-badges">
+                        <span class="badge">${state.cardMode === "en-vi" ? "Anh → Việt" : "Việt → Anh"}</span>
+                        <span class="badge">${activeSourceDue} thẻ đến hạn</span>
+                        <span class="badge">Lần ôn kế: ${escapeHtml(effectiveSelectedWord.nextReview || "hôm nay")}</span>
+                      </div>
+                    ` : `
+                      <div class="empty-state">Không có thẻ nào cho bài đang chọn.</div>
+                    `}
+                  </div>
+                </div>
+
+                <div class="mission-face back">
+                  <div class="review-card">
+                    ${effectiveSelectedWord ? `
+                      <div class="review-planet" aria-hidden="true"></div>
+                      <div class="review-main">
+                        <div class="pill">VSAT Mission Control</div>
+                        <div class="review-kicker">Mặt sau flash card</div>
+                        <div class="review-title">${escapeHtml(activeSource)}</div>
+                        <div class="review-sub">${escapeHtml(backValue)}</div>
+                        <div class="flash-copy">Ví dụ: ${escapeHtml(effectiveSelectedWord.example)}</div>
+                      </div>
+                      <div class="mission-focus-grid">
+                        <div class="mission-focus-card">
+                          <div class="mission-focus-label">Collocations</div>
+                          <div class="mission-focus-value">${escapeHtml(effectiveSelectedWord.collocations || "Chưa thêm")}</div>
+                          <div class="mission-focus-note">Cụm đi cùng để dùng lại từ trong bài viết hoặc reading.</div>
+                        </div>
+                        <div class="mission-focus-card">
+                          <div class="mission-focus-label">Từ loại</div>
+                          <div class="mission-focus-value">${escapeHtml(effectiveSelectedWord.pos || "—")}</div>
+                          <div class="mission-focus-note">Phiên âm: ${escapeHtml(effectiveSelectedWord.phonetic || "chưa có")}</div>
+                        </div>
+                        <div class="mission-focus-card">
+                          <div class="mission-focus-label">Giữ lại trung bình</div>
+                          <div class="mission-focus-value">${activeSourceRetention}%</div>
+                          <div class="mission-focus-note">Ước lượng chất lượng nhớ của riêng bài đang chọn.</div>
+                        </div>
+                        <div class="mission-focus-card">
+                          <div class="mission-focus-label">Trạng thái thẻ</div>
+                          <div class="mission-focus-value">${escapeHtml(getStageLabel(effectiveSelectedWord.stage))}</div>
+                          <div class="mission-focus-note">Chấm mức nhớ ở cột phải để điều chỉnh lượt ôn kế tiếp.</div>
+                        </div>
+                      </div>
+                      <div class="mission-badges">
+                        <span class="badge">${escapeHtml(effectiveSelectedWord.source)}</span>
+                        <span class="badge ${getStageClass(effectiveSelectedWord.stage)}">${escapeHtml(getStageLabel(effectiveSelectedWord.stage))}</span>
+                        <span class="badge">${escapeHtml(effectiveSelectedWord.prompt)}</span>
+                      </div>
+                    ` : `
+                      <div class="empty-state">Không có thẻ nào cho bài đang chọn.</div>
+                    `}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="side-check">
               ${effectiveSelectedWord ? `
-                <div class="review-planet" aria-hidden="true"></div>
-                <div class="review-main">
-                  <div class="pill">VSAT Vocab Memory Lab</div>
-                  <div class="review-kicker">Đang kiểm tra</div>
-                  <div class="review-title">${escapeHtml(effectiveSelectedWord.word)}</div>
-                  <div class="review-sub">${escapeHtml(effectiveSelectedWord.phonetic || effectiveSelectedWord.pos || "")}</div>
+                <div>
+                  <div class="section-title">Check Đáp Án</div>
+                  <div class="section-desc">Thẻ nằm bên trái. Ở đây bạn chọn chiều kiểm tra, nhập đáp án và chấm mức nhớ sau khi lật.</div>
                 </div>
                 <div class="review-meta">
                   <span class="badge">${escapeHtml(effectiveSelectedWord.source)}</span>
-                  <span class="badge ${getStageClass(effectiveSelectedWord.stage)}">${escapeHtml(getStageLabel(effectiveSelectedWord.stage))}</span>
                   <span class="badge">${state.cardMode === "en-vi" ? "Anh → Việt" : "Việt → Anh"}</span>
-                  <span class="badge">Lần ôn kế: ${escapeHtml(effectiveSelectedWord.nextReview || "hôm nay")}</span>
                 </div>
-                <div class="flash-shell">
-                  <div class="flash-meta">
-                    <span class="badge">${escapeHtml(promptLabel)}</span>
-                    <span class="badge">${activeSourceWords.length} thẻ trong ${escapeHtml(activeSource)}</span>
-                    <span class="badge">${activeSourceDue} thẻ đến hạn</span>
-                  </div>
-                  <div class="flashcard ${state.isFlipped ? "flipped" : ""}">
-                    <div class="flashcard-inner">
-                      <div class="flash-face front">
-                        <div class="flash-label">${state.cardMode === "en-vi" ? "Nhìn từ, gọi nghĩa" : "Nhìn nghĩa, gọi từ"}</div>
-                        <div class="flash-value">${escapeHtml(frontValue)}</div>
-                        <div class="flash-copy">${escapeHtml(effectiveSelectedWord.prompt)}</div>
-                      </div>
-                      <div class="flash-face back">
-                        <div class="flash-label">Mặt sau</div>
-                        <div class="flash-value">${escapeHtml(backValue)}</div>
-                        <div class="flash-copy">
-                          ${state.cardMode === "en-vi"
-                            ? `Từ loại: ${escapeHtml(effectiveSelectedWord.pos || "")} · Phiên âm: ${escapeHtml(effectiveSelectedWord.phonetic || "")}`
-                            : `Nghĩa chuẩn và ngữ cảnh dùng của từ vừa nhớ lại.`}
-                        </div>
-                        <div class="flash-copy">Collocations: ${escapeHtml(effectiveSelectedWord.collocations || "Chưa thêm")}</div>
-                        <div class="flash-copy">Ví dụ: ${escapeHtml(effectiveSelectedWord.example)}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="flash-actions">
-                    <button class="btn primary" data-action="flip-card">${state.isFlipped ? "Úp thẻ lại" : "Lật thẻ"}</button>
-                    <button class="btn" data-action="switch-mode">${state.cardMode === "en-vi" ? "Đổi sang Việt → Anh" : "Đổi sang Anh → Việt"}</button>
-                    <button class="btn" data-action="next-word">Thẻ tiếp theo</button>
-                  </div>
+                <div class="flash-actions">
+                  <button class="btn primary" data-action="flip-card">${state.isFlipped ? "Úp thẻ lại" : "Lật thẻ"}</button>
+                  <button class="btn" data-action="switch-mode">${state.cardMode === "en-vi" ? "Đổi sang Việt → Anh" : "Đổi sang Anh → Việt"}</button>
+                  <button class="btn" data-action="next-word">Thẻ tiếp theo</button>
                 </div>
                 <div class="check-panel">
                   <div class="flash-label">${state.cardMode === "en-vi" ? "Tự gõ nghĩa tiếng Việt" : "Tự gõ từ tiếng Anh"}</div>
@@ -1889,28 +1994,6 @@
                     <button class="grade-btn warn" data-grade="hard">Nhớ lơ mơ</button>
                     <button class="grade-btn good" data-grade="good">Nhớ khá chắc</button>
                     <button class="grade-btn great" data-grade="easy">Nhớ rất nhanh</button>
-                  </div>
-                </div>
-                <div class="review-grid">
-                  <div class="review-mini">
-                    <div class="review-mini-label">Từ của đề này</div>
-                    <div class="review-mini-value">${activeSourceWords.length}</div>
-                    <div class="review-mini-note">Số mục đang gắn với ${escapeHtml(activeSource)}.</div>
-                  </div>
-                  <div class="review-mini">
-                    <div class="review-mini-label">Đến hạn trong đề</div>
-                    <div class="review-mini-value">${activeSourceDue}</div>
-                    <div class="review-mini-note">Những mục nên được ôn ngay trong cụm đề hiện tại.</div>
-                  </div>
-                  <div class="review-mini">
-                    <div class="review-mini-label">Đã chạm hôm nay</div>
-                    <div class="review-mini-value">${activeSourceDone}</div>
-                    <div class="review-mini-note">Số thẻ của đề này bạn đã thực sự xem lại trong ngày.</div>
-                  </div>
-                  <div class="review-mini">
-                    <div class="review-mini-label">Giữ lại trung bình</div>
-                    <div class="review-mini-value">${activeSourceRetention}%</div>
-                    <div class="review-mini-note">Ước lượng chất lượng nhớ của riêng cụm đề đang chọn.</div>
                   </div>
                 </div>
               ` : `
