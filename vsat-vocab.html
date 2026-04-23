@@ -39,7 +39,7 @@
       min-height: 100%;
       font-family: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
       color: var(--text);
-      background:
+      background:kết
         radial-gradient(circle at 12% 18%, rgba(94, 142, 255, 0.22), transparent 18%),
         radial-gradient(circle at 84% 16%, rgba(54, 214, 255, 0.12), transparent 16%),
         radial-gradient(circle at 50% 80%, rgba(255, 203, 107, 0.10), transparent 18%),
@@ -1315,6 +1315,13 @@
       gap: 12px;
     }
 
+    .inline-add .form-grid.two:first-of-type .field:nth-child(2),
+    .inline-add .form-grid.two:nth-of-type(2),
+    .inline-add .field:has(#collocations),
+    .inline-add .field:has(#prompt) {
+      display: none;
+    }
+
     .inline-add .field textarea {
       min-height: 84px;
     }
@@ -1346,6 +1353,208 @@
 
     .word-grid.single-column {
       grid-template-columns: 1fr;
+    }
+
+    /* Refined layout: keep the study surface focused and reduce visual noise. */
+    .app {
+      width: min(1360px, calc(100% - 32px));
+      padding-top: 18px;
+    }
+
+    .vocab-stage {
+      padding: 4px 0 26px;
+    }
+
+    .hero {
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .mission-flash {
+      min-height: 520px;
+    }
+
+    .mission-flash::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 36px;
+      pointer-events: none;
+      background:
+        linear-gradient(120deg, rgba(53,214,255,0.32), transparent 28%, rgba(255,203,107,0.22) 52%, transparent 76%, rgba(108,228,196,0.26));
+      opacity: 0.38;
+      filter: blur(18px);
+      transform: translateY(10px);
+      transition: opacity .25s ease, transform .25s ease;
+    }
+
+    .mission-flash:hover::before,
+    .mission-flash.flipped::before {
+      opacity: 0.62;
+      transform: translateY(4px);
+    }
+
+    .mission-flash-inner {
+      filter: drop-shadow(0 34px 70px rgba(0,0,0,0.36));
+    }
+
+    .review-card {
+      padding: clamp(22px, 3vw, 34px);
+      border-radius: 34px;
+      gap: 14px;
+    }
+
+    .review-card::after {
+      background:
+        radial-gradient(circle, rgba(99,224,255,0.18), transparent 62%),
+        linear-gradient(135deg, rgba(255,255,255,0.12), transparent 36%, rgba(255,255,255,0.04));
+    }
+
+    .review-main {
+      padding-right: 142px;
+    }
+
+    .flashcard-display {
+      min-height: 210px;
+      gap: 14px;
+      padding-top: 8px;
+    }
+
+    .flashcard-term {
+      font-size: clamp(52px, 7vw, 96px);
+    }
+
+    .flashcard-answer {
+      font-size: clamp(32px, 4.6vw, 62px);
+    }
+
+    .mission-face.front .mission-badges {
+      margin-top: auto;
+    }
+
+    .side-check {
+      position: sticky;
+      top: 18px;
+      border-radius: 26px;
+      gap: 14px;
+      padding: 20px;
+    }
+
+    .side-check .section-title {
+      font-size: 22px;
+    }
+
+    .shortcut-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .shortcut-row span {
+      padding: 8px 10px;
+      border-radius: 999px;
+      color: #c9dbff;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 11px;
+      letter-spacing: 0.02em;
+    }
+
+    .check-panel {
+      padding: 14px;
+    }
+
+    .check-panel input.answer-correct {
+      border-color: rgba(108,228,196,0.48);
+      box-shadow: 0 0 0 3px rgba(108,228,196,0.13);
+    }
+
+    .check-panel input.answer-partial {
+      border-color: rgba(255,203,107,0.50);
+      box-shadow: 0 0 0 3px rgba(255,203,107,0.12);
+    }
+
+    .check-panel input.answer-wrong {
+      border-color: rgba(255,126,146,0.50);
+      box-shadow: 0 0 0 3px rgba(255,126,146,0.12);
+    }
+
+    .check-tools {
+      align-items: stretch;
+    }
+
+    .check-tools .flash-actions,
+    .grade-actions {
+      width: 100%;
+    }
+
+    .check-tools .btn,
+    .grade-btn {
+      flex: 1 1 140px;
+    }
+
+    .main-grid.vocab-layout {
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    .panel {
+      padding: 18px;
+      border-radius: 24px;
+    }
+
+    .source-list {
+      max-height: 430px;
+    }
+
+    .source-btn {
+      padding: 13px;
+      border-radius: 17px;
+    }
+
+    .source-name {
+      font-size: 15px;
+    }
+
+    .inline-add {
+      gap: 10px;
+    }
+
+    .inline-add .form-grid.two:first-of-type {
+      grid-template-columns: 1fr;
+    }
+
+    .inline-add .field textarea {
+      min-height: 72px;
+    }
+
+    .inline-add .deck-actions .btn {
+      width: 100%;
+    }
+
+    .workspace-toolbar {
+      align-items: flex-start;
+    }
+
+    .word-grid.single-column {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    .word-card {
+      padding: 15px;
+      border-radius: 19px;
+    }
+
+    .word-title {
+      font-size: 24px;
+    }
+
+    .footer-note {
+      display: none;
     }
 
     @keyframes driftNebula {
@@ -1393,7 +1602,12 @@
       }
 
       .mission-flash {
-        min-height: 720px;
+        min-height: 520px;
+      }
+
+      .side-check {
+        position: relative;
+        top: auto;
       }
     }
 
@@ -1451,6 +1665,26 @@
       .grade-btn {
         min-width: 0;
         width: calc(50% - 5px);
+      }
+
+      .mission-flash {
+        min-height: 500px;
+      }
+
+      .review-main {
+        padding-right: 0;
+      }
+
+      .flashcard-term {
+        font-size: clamp(42px, 16vw, 70px);
+      }
+
+      .flashcard-answer {
+        font-size: clamp(28px, 11vw, 48px);
+      }
+
+      .word-grid.single-column {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -1720,9 +1954,97 @@
     }
 
     let state = loadState();
+    let keyboardBound = false;
 
     function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function clearAnswerState() {
+      state.isFlipped = false;
+      state.answerInput = "";
+      state.answerStatus = "";
+    }
+
+    function flipCurrentCard() {
+      state.isFlipped = !state.isFlipped;
+      saveState();
+      render();
+    }
+
+    function switchCardMode() {
+      state.cardMode = state.cardMode === "en-vi" ? "vi-en" : "en-vi";
+      clearAnswerState();
+      saveState();
+      render();
+    }
+
+    function checkCurrentAnswer() {
+      const current = getSelectedWord(getFilteredWords());
+      if (!current) return;
+      state.answerStatus = checkAnswer(current, state.cardMode, state.answerInput);
+      saveState();
+      render();
+    }
+
+    function goToNextWord() {
+      const filteredWords = getFilteredWords();
+      state.selectedId = pickNextWord(state.selectedId, filteredWords);
+      clearAnswerState();
+      saveState();
+      render();
+    }
+
+    function bindKeyboardShortcuts() {
+      if (keyboardBound) return;
+      keyboardBound = true;
+
+      document.addEventListener("keydown", (event) => {
+        const active = document.activeElement;
+        const tagName = active ? active.tagName : "";
+        const isTyping = ["INPUT", "TEXTAREA", "SELECT"].includes(tagName);
+        const isButton = tagName === "BUTTON";
+
+        if (isTyping) {
+          if (active.id === "answerInput" && event.key === "Enter") {
+            event.preventDefault();
+            checkCurrentAnswer();
+          }
+          return;
+        }
+
+        if (isButton) return;
+
+        if (event.key === " ") {
+          event.preventDefault();
+          flipCurrentCard();
+          return;
+        }
+
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          goToNextWord();
+          return;
+        }
+
+        if (event.key.toLowerCase() === "m") {
+          event.preventDefault();
+          switchCardMode();
+          return;
+        }
+
+        const gradeMap = {
+          1: "again",
+          2: "hard",
+          3: "good",
+          4: "easy"
+        };
+
+        if (gradeMap[event.key] && state.selectedId) {
+          event.preventDefault();
+          gradeWord(state.selectedId, gradeMap[event.key]);
+        }
+      });
     }
 
     function getSources(words = state.words) {
@@ -1757,6 +2079,13 @@
         .trim();
     }
 
+    function getMeaningCandidates(word) {
+      return String(word.meaning || "")
+        .split(/[,;()/]+/)
+        .map(normalizeText)
+        .filter((item) => item.length >= 2);
+    }
+
     function checkAnswer(word, mode, answer) {
       const cleanedAnswer = normalizeText(answer);
       if (!cleanedAnswer) return "";
@@ -1769,6 +2098,10 @@
       const target = normalizeText(word.meaning);
       if (cleanedAnswer === target) return "correct";
       if (target.includes(cleanedAnswer) || cleanedAnswer.includes(target)) return "partial";
+
+      const candidates = getMeaningCandidates(word);
+      if (candidates.some((candidate) => cleanedAnswer === candidate)) return "correct";
+      if (candidates.some((candidate) => candidate.includes(cleanedAnswer) || cleanedAnswer.includes(candidate))) return "partial";
 
       const targetWords = target.split(" ").filter(Boolean);
       const answerWords = cleanedAnswer.split(" ").filter(Boolean);
@@ -1817,7 +2150,6 @@
     function updateWord(wordId, updater) {
       state.words = state.words.map((item) => item.id === wordId ? updater(item) : item);
       saveState();
-      render();
     }
 
     function gradeWord(wordId, quality) {
@@ -1875,7 +2207,7 @@
       const word = String(formData.get("word") || "").trim();
       const meaning = String(formData.get("meaning") || "").trim();
       const example = String(formData.get("example") || "").trim();
-      if (!word || !meaning || !example) return;
+      if (!word || !meaning) return;
 
       const newWord = {
         id: `w_${Date.now()}`,
@@ -1885,7 +2217,7 @@
         meaning,
         nuance: String(formData.get("nuance") || "").trim(),
         collocations: String(formData.get("collocations") || "").trim(),
-        example,
+        example: example || `Tự tạo một câu ngắn với "${word}" khi ôn lại thẻ này.`,
         prompt: String(formData.get("prompt") || "").trim() || `Nhớ lại ngữ cảnh gốc khi gặp từ "${word}".`,
         source: String(formData.get("source") || "").trim() || "Đề mới",
         tags: String(formData.get("tags") || "").split(",").map((item) => item.trim()).filter(Boolean),
@@ -2070,13 +2402,19 @@
                   <span class="badge">${escapeHtml(effectiveSelectedWord.source)}</span>
                   <span class="badge">${state.cardMode === "en-vi" ? "Anh → Việt" : "Việt → Anh"}</span>
                 </div>
+                <div class="shortcut-row" aria-label="Keyboard shortcuts">
+                  <span>Enter: check</span>
+                  <span>Space: flip</span>
+                  <span>M: switch</span>
+                  <span>1-4: grade</span>
+                </div>
                 <div class="flash-actions">
                   <button class="btn" data-action="switch-mode">${state.cardMode === "en-vi" ? "Đổi sang Việt → Anh" : "Đổi sang Anh → Việt"}</button>
                   <button class="btn" data-action="next-word">Thẻ tiếp theo</button>
                 </div>
                 <div class="check-panel">
                   <div class="flash-label">${state.cardMode === "en-vi" ? "Tự gõ nghĩa tiếng Việt" : "Tự gõ từ tiếng Anh"}</div>
-                  <input id="answerInput" value="${escapeHtml(state.answerInput || "")}" placeholder="${escapeHtml(answerPlaceholder)}" />
+                  <input id="answerInput" class="${state.answerStatus ? `answer-${state.answerStatus}` : ""}" value="${escapeHtml(state.answerInput || "")}" placeholder="${escapeHtml(answerPlaceholder)}" />
                   <div class="check-tools">
                     <div class="check-note">Gõ đáp án của bạn trước, bấm kiểm tra nhanh rồi mới lật thẻ để đối chiếu.</div>
                     <div class="flash-actions">
@@ -2164,8 +2502,8 @@
                   <input id="collocations" name="collocations" placeholder="retain information, retain control" />
                 </div>
                 <div class="field">
-                  <label for="example">Câu ví dụ lấy từ đề hoặc tự tạo</label>
-                  <textarea id="example" name="example" placeholder="Students retain information better when they test themselves." required></textarea>
+                  <label for="example">Câu ví dụ tùy chọn</label>
+                  <textarea id="example" name="example" placeholder="Có thể bỏ trống, hệ thống sẽ tự tạo lời nhắc."></textarea>
                 </div>
                 <div class="field">
                   <label for="prompt">Gợi nhớ cá nhân</label>
@@ -2231,6 +2569,8 @@
     }
 
     function bindEvents() {
+      bindKeyboardShortcuts();
+
       const addWordForm = document.getElementById("addWordForm");
       if (addWordForm) {
         addWordForm.addEventListener("submit", addWordFromForm);
@@ -2252,6 +2592,13 @@
           state.answerStatus = "";
           saveState();
         });
+        answerInput.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            event.stopPropagation();
+            checkCurrentAnswer();
+          }
+        });
       }
 
       app.querySelectorAll("[data-filter]").forEach((button) => {
@@ -2265,9 +2612,7 @@
       app.querySelectorAll("[data-source]").forEach((button) => {
         button.addEventListener("click", () => {
           state.sourceFilter = button.dataset.source;
-          state.isFlipped = false;
-          state.answerInput = "";
-          state.answerStatus = "";
+          clearAnswerState();
           saveState();
           render();
         });
@@ -2276,9 +2621,7 @@
       app.querySelectorAll("[data-word-id]").forEach((card) => {
         card.addEventListener("click", () => {
           state.selectedId = card.dataset.wordId;
-          state.isFlipped = false;
-          state.answerInput = "";
-          state.answerStatus = "";
+          clearAnswerState();
           saveState();
           render();
         });
@@ -2286,32 +2629,21 @@
 
       app.querySelectorAll("[data-action='flip-card']").forEach((card) => {
         card.addEventListener("click", () => {
-          state.isFlipped = !state.isFlipped;
-          saveState();
-          render();
+          flipCurrentCard();
         });
       });
 
       const switchMode = app.querySelector("[data-action='switch-mode']");
       if (switchMode) {
         switchMode.addEventListener("click", () => {
-          state.cardMode = state.cardMode === "en-vi" ? "vi-en" : "en-vi";
-          state.isFlipped = false;
-          state.answerInput = "";
-          state.answerStatus = "";
-          saveState();
-          render();
+          switchCardMode();
         });
       }
 
       const checkAnswerBtn = app.querySelector("[data-action='check-answer']");
       if (checkAnswerBtn) {
         checkAnswerBtn.addEventListener("click", () => {
-          const current = getSelectedWord(getFilteredWords());
-          if (!current) return;
-          state.answerStatus = checkAnswer(current, state.cardMode, state.answerInput);
-          saveState();
-          render();
+          checkCurrentAnswer();
         });
       }
 
@@ -2328,13 +2660,7 @@
       const nextWord = app.querySelector("[data-action='next-word']");
       if (nextWord) {
         nextWord.addEventListener("click", () => {
-          const filteredWords = getFilteredWords();
-          state.selectedId = pickNextWord(state.selectedId, filteredWords);
-          state.isFlipped = false;
-          state.answerInput = "";
-          state.answerStatus = "";
-          saveState();
-          render();
+          goToNextWord();
         });
       }
 
