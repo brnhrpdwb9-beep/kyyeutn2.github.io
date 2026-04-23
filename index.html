@@ -2,33 +2,33 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=1280" />
-  <meta name="theme-color" content="#050918" />
-  <title>Lịch học 20/04 - 06/05</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#07111f" />
+  <title>VSAT Vocab Memory Lab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-1: #02040c;
-      --bg-2: #061126;
-      --bg-3: #0b1a39;
-      --bg-4: #160f33;
-      --panel: rgba(8, 13, 28, 0.7);
-      --panel-soft: rgba(255, 255, 255, 0.05);
-      --panel-strong: rgba(255, 255, 255, 0.1);
-      --border: rgba(161, 176, 255, 0.14);
-      --text: #eef4ff;
-      --muted: #9fb0d3;
-      --blue: #4f8cff;
-      --cyan: #22d3ee;
-      --violet: #8b5cf6;
-      --rose: #fb7185;
-      --green: #34d399;
-      --amber: #fbbf24;
+      --bg-1: #06111f;
+      --bg-2: #0b1f35;
+      --bg-3: #112742;
+      --bg-4: #25173f;
+      --panel: rgba(7, 15, 29, 0.72);
+      --panel-soft: rgba(255, 255, 255, 0.055);
+      --panel-strong: rgba(255, 255, 255, 0.10);
+      --border: rgba(166, 189, 255, 0.16);
+      --text: #edf5ff;
+      --muted: #9cb2d6;
+      --cyan: #35d6ff;
+      --blue: #6ea5ff;
+      --amber: #ffcb6b;
+      --mint: #6ce4c4;
+      --rose: #ff7e92;
+      --violet: #a88bff;
       --shadow: 0 28px 90px rgba(0, 0, 0, 0.38);
-      --radius-xl: 32px;
-      --radius-lg: 24px;
+      --radius-xl: 30px;
+      --radius-lg: 22px;
       --radius-md: 18px;
       --radius-sm: 14px;
     }
@@ -40,10 +40,10 @@
       font-family: "Be Vietnam Pro", ui-sans-serif, system-ui, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 14% 18%, rgba(91, 126, 255, 0.2), transparent 18%),
-        radial-gradient(circle at 82% 16%, rgba(34, 211, 238, 0.14), transparent 16%),
-        radial-gradient(circle at 50% 84%, rgba(168, 85, 247, 0.12), transparent 20%),
-        linear-gradient(135deg, var(--bg-1), var(--bg-2) 38%, var(--bg-3) 72%, var(--bg-4));
+        radial-gradient(circle at 12% 18%, rgba(94, 142, 255, 0.22), transparent 18%),
+        radial-gradient(circle at 84% 16%, rgba(54, 214, 255, 0.12), transparent 16%),
+        radial-gradient(circle at 50% 80%, rgba(255, 203, 107, 0.10), transparent 18%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2) 38%, var(--bg-3) 70%, var(--bg-4));
       overflow-x: hidden;
     }
 
@@ -53,8 +53,8 @@
     .universe {
       position: fixed;
       inset: 0;
-      overflow: hidden;
       pointer-events: none;
+      overflow: hidden;
       z-index: 0;
     }
 
@@ -64,40 +64,40 @@
       content: "";
       position: absolute;
       inset: -16%;
-      filter: blur(62px);
+      filter: blur(60px);
     }
 
     .nebula {
       background:
-        radial-gradient(circle at 14% 28%, rgba(88, 113, 255, 0.22), transparent 14%),
-        radial-gradient(circle at 78% 24%, rgba(58, 235, 255, 0.16), transparent 14%),
-        radial-gradient(circle at 46% 74%, rgba(196, 103, 255, 0.14), transparent 16%);
+        radial-gradient(circle at 15% 28%, rgba(109, 135, 255, 0.22), transparent 14%),
+        radial-gradient(circle at 78% 26%, rgba(53, 214, 255, 0.15), transparent 15%),
+        radial-gradient(circle at 48% 72%, rgba(255, 194, 95, 0.09), transparent 16%);
       animation: driftNebula 24s ease-in-out infinite alternate;
     }
 
     .nebula::before {
       background:
-        radial-gradient(circle at 30% 62%, rgba(122, 160, 255, 0.16), transparent 14%),
-        radial-gradient(circle at 70% 58%, rgba(83, 244, 255, 0.1), transparent 14%);
-      animation: driftNebula 32s ease-in-out infinite alternate-reverse;
+        radial-gradient(circle at 32% 62%, rgba(125, 171, 255, 0.14), transparent 14%),
+        radial-gradient(circle at 69% 56%, rgba(108, 228, 196, 0.12), transparent 14%);
+      animation: driftNebula 34s ease-in-out infinite alternate-reverse;
     }
 
     .nebula::after {
       background:
-        radial-gradient(circle at 52% 34%, rgba(255, 255, 255, 0.06), transparent 9%),
-        radial-gradient(circle at 34% 82%, rgba(191, 121, 255, 0.1), transparent 14%);
-      animation: driftNebula 36s ease-in-out infinite alternate;
+        radial-gradient(circle at 52% 34%, rgba(255,255,255,0.06), transparent 9%),
+        radial-gradient(circle at 36% 84%, rgba(168, 139, 255, 0.10), transparent 14%);
+      animation: driftNebula 38s ease-in-out infinite alternate;
     }
 
     .space-grid {
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(rgba(130, 170, 255, 0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(130, 170, 255, 0.045) 1px, transparent 1px);
+        linear-gradient(rgba(138, 175, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(138, 175, 255, 0.045) 1px, transparent 1px);
       background-size: 100px 100px;
-      mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.95), transparent 84%);
       opacity: 0.22;
+      mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.95), transparent 84%);
       transform: perspective(1200px) rotateX(78deg) scale(1.8) translateY(16%);
     }
 
@@ -114,10 +114,10 @@
     .stars {
       background-image:
         radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.95), transparent),
-        radial-gradient(1.5px 1.5px at 120px 80px, rgba(130,190,255,.95), transparent),
+        radial-gradient(1.5px 1.5px at 120px 80px, rgba(126, 183, 255, .9), transparent),
         radial-gradient(2px 2px at 250px 140px, rgba(255,255,255,.9), transparent),
-        radial-gradient(1.8px 1.8px at 350px 40px, rgba(178,125,255,.95), transparent),
-        radial-gradient(2px 2px at 500px 160px, rgba(97,231,255,.95), transparent),
+        radial-gradient(1.8px 1.8px at 350px 40px, rgba(255, 204, 109, .95), transparent),
+        radial-gradient(2px 2px at 500px 160px, rgba(78, 231, 255, .95), transparent),
         radial-gradient(1.5px 1.5px at 700px 60px, rgba(255,255,255,.85), transparent);
       background-size: 800px 300px;
       opacity: .9;
@@ -127,24 +127,24 @@
     .stars2 {
       background-image:
         radial-gradient(1.2px 1.2px at 40px 60px, rgba(255,255,255,.85), transparent),
-        radial-gradient(1.7px 1.7px at 200px 120px, rgba(97,231,255,.75), transparent),
-        radial-gradient(1.2px 1.2px at 420px 40px, rgba(255,255,255,.95), transparent),
-        radial-gradient(1.3px 1.3px at 600px 200px, rgba(170,140,255,.8), transparent),
+        radial-gradient(1.6px 1.6px at 200px 120px, rgba(108, 228, 196, .75), transparent),
+        radial-gradient(1.2px 1.2px at 420px 40px, rgba(255,255,255,.92), transparent),
+        radial-gradient(1.3px 1.3px at 600px 200px, rgba(170, 140, 255, .8), transparent),
         radial-gradient(1.5px 1.5px at 760px 100px, rgba(255,255,255,.8), transparent);
       background-size: 900px 380px;
-      animation: driftStarsReverse 145s linear infinite;
       opacity: .55;
+      animation: driftStarsReverse 145s linear infinite;
     }
 
     .stars3 {
       background-image:
         radial-gradient(3px 3px at 100px 90px, rgba(255,255,255,.9), transparent),
-        radial-gradient(2.5px 2.5px at 500px 60px, rgba(97,231,255,.9), transparent),
-        radial-gradient(3px 3px at 780px 170px, rgba(186,122,255,.85), transparent);
+        radial-gradient(2.5px 2.5px at 500px 60px, rgba(78, 231, 255, .9), transparent),
+        radial-gradient(3px 3px at 780px 170px, rgba(255, 203, 107, .85), transparent);
       background-size: 1000px 420px;
-      animation: twinkle 7s ease-in-out infinite alternate;
       opacity: .7;
       filter: drop-shadow(0 0 4px rgba(255,255,255,.22));
+      animation: twinkle 7s ease-in-out infinite alternate;
     }
 
     .shooting-star {
@@ -152,225 +152,81 @@
       width: 180px;
       height: 2px;
       border-radius: 999px;
-      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,1), rgba(103,220,255,0));
+      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,1), rgba(53,214,255,0));
       filter: drop-shadow(0 0 12px rgba(255,255,255,.8));
       opacity: 0;
-      pointer-events: none;
-      transform: rotate(-25deg);
+      transform: rotate(-24deg);
       animation: shooting 9s ease-in-out infinite;
-      will-change: transform, opacity;
     }
 
-    .shooting-star.one { top: 12%; left: 72%; animation-delay: 0s; }
-    .shooting-star.two { top: 26%; left: 18%; width: 140px; animation-delay: 3s; }
-    .shooting-star.three { top: 8%; left: 45%; width: 210px; animation-delay: 6s; }
-
-    .flag-burst {
-      --flag-top: 88px;
-      --flag-right: max(5%, 22px);
-      --flag-shift-x: -18px;
-      --flag-shift-y: 14px;
-      --flag-tilt: -5deg;
-      position: absolute;
-      right: var(--flag-right);
-      top: var(--flag-top);
-      width: min(300px, 34vw);
-      aspect-ratio: 5 / 3;
-      pointer-events: none;
-      opacity: 0;
-      transform: translate3d(var(--flag-shift-x), var(--flag-shift-y), 0) rotate(var(--flag-tilt)) scale(.96);
-      transition: opacity .8s ease, transform .8s ease, filter .8s ease;
-      filter: drop-shadow(0 0 16px rgba(255,214,136,.12));
-    }
-
-    .flag-burst::before {
-      content: "";
-      position: absolute;
-      inset: -10% -8%;
-      background:
-        radial-gradient(circle at 50% 48%, rgba(255,205,112,.16), transparent 34%),
-        radial-gradient(circle at 50% 52%, rgba(255,244,218,.08), transparent 58%);
-      filter: blur(22px);
-      opacity: 0;
-      transform: scale(.88);
-      transition: opacity .9s ease, transform 1s ease;
-    }
-
-    .flag-burst::after {
-      content: "";
-      position: absolute;
-      inset: 8% 12%;
-      background: radial-gradient(circle at 50% 50%, rgba(255,232,170,.16), transparent 62%);
-      filter: blur(24px);
-      opacity: 0;
-    }
-
-    body.flag-burst-active .flag-burst {
-      opacity: 1;
-      transform: translate3d(0, 0, 0) rotate(var(--flag-tilt)) scale(1);
-      filter: drop-shadow(0 0 22px rgba(255,224,158,.22));
-    }
-
-    body.flag-burst-active .flag-burst::before {
-      opacity: .72;
-      transform: scale(1);
-      animation: flagAuraPulse 2.8s ease-in-out infinite alternate;
-    }
-
-    body.flag-burst-active .flag-burst::after {
-      opacity: .5;
-      animation: flagAuraDrift 3.2s ease-in-out infinite alternate;
-    }
-
-    .flag-burst svg {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      overflow: visible;
-    }
-
-    .flag-dot {
-      fill: #ffe4a0;
-      opacity: 0;
-      transform-box: fill-box;
-      transform-origin: center;
-      filter: drop-shadow(0 0 5px rgba(255,224,154,.28));
-    }
-
-    .flag-dot.major {
-      fill: #fff5d6;
-      filter: drop-shadow(0 0 10px rgba(255,238,196,.48));
-    }
-
-    .flag-dot.soft {
-      fill: #ffd27f;
-      filter: drop-shadow(0 0 4px rgba(255,202,108,.22));
-    }
-
-    body.flag-burst-active .flag-dot {
-      animation:
-        flagDotAppear .9s ease forwards,
-        flagDotTwinkle 2.25s ease-in-out infinite alternate;
-      animation-delay: var(--delay, 0s), calc(var(--delay, 0s) + .92s);
-    }
-
-    body.flag-burst-active .flag-dot.soft {
-      animation-duration: 1s, 1.9s;
-    }
-
-    body.flag-burst-active .flag-dot.major {
-      animation-duration: .82s, 2.5s;
-    }
-
-    .floating-planet {
-      position: absolute;
-      border-radius: 50%;
-      box-shadow:
-        inset -20px -24px 36px rgba(0,0,0,0.38),
-        inset 8px 8px 16px rgba(255,255,255,0.12),
-        0 24px 40px rgba(0,0,0,0.28);
-      opacity: 0.82;
-      animation: planetFloat 9s ease-in-out infinite;
-    }
-
-    .floating-planet::before,
-    .floating-planet::after {
-      content: "";
-      position: absolute;
-      border-radius: 50%;
-    }
-
-    .floating-planet::before {
-      inset: -18%;
-      background: radial-gradient(circle, rgba(94, 156, 255, 0.18), transparent 66%);
-      filter: blur(12px);
-    }
-
-    .floating-planet::after {
-      inset: 8%;
-      background:
-        radial-gradient(circle at 28% 24%, rgba(255,255,255,0.28), transparent 18%),
-        radial-gradient(circle at 62% 54%, rgba(0,0,0,0.18), transparent 20%);
-      opacity: 0.88;
-    }
-
-    .floating-planet.p1 {
-      width: 78px;
-      height: 78px;
-      left: 6%;
-      top: 22%;
-      background: linear-gradient(155deg, #b7d2ff, #5279ff 46%, #15214c 100%);
-    }
-
-    .floating-planet.p3 .ring {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 150%;
-      height: 34%;
-      transform: translate(-50%, -50%) rotate(-12deg);
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.22);
-      border-left-color: rgba(255,255,255,0.45);
-      box-shadow: 0 0 18px rgba(255,255,255,0.12);
-    }
-
-    .floating-planet.p3 {
-      width: 56px;
-      height: 56px;
-      left: 18%;
-      bottom: 14%;
-      background: linear-gradient(155deg, #a7f3d0, #059669 46%, #062a28 100%);
-      animation-duration: 8s;
-    }
+    .shooting-star.one { top: 10%; left: 70%; animation-delay: 0s; }
+    .shooting-star.two { top: 22%; left: 14%; width: 150px; animation-delay: 3s; }
+    .shooting-star.three { top: 7%; left: 44%; width: 210px; animation-delay: 6s; }
 
     .app {
       position: relative;
       z-index: 1;
       width: min(1480px, calc(100% - 28px));
       margin: 0 auto;
-      padding: 26px 0 32px;
+      padding: 24px 0 36px;
+    }
+
+    .glass {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)),
+        var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: var(--shadow);
     }
 
     .hero-shell {
+      padding: 28px;
       position: relative;
-      overflow: visible;
-      padding: 32px;
-      border-radius: 0;
-      border: 0;
-      background: transparent;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-      box-shadow: none;
+      overflow: hidden;
+    }
+
+    .hero-shell::before {
+      content: "";
+      position: absolute;
+      right: -90px;
+      top: -90px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(53, 214, 255, 0.16), transparent 58%),
+        radial-gradient(circle, rgba(255, 203, 107, 0.11), transparent 72%);
+      filter: blur(10px);
     }
 
     .hero {
       display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 420px);
-      gap: 28px;
+      grid-template-columns: minmax(0, 1.25fr) minmax(340px, 420px);
+      gap: 24px;
       align-items: stretch;
       position: relative;
-      z-index: 2;
-      overflow: visible;
+      z-index: 1;
     }
 
     .hero-copy {
       display: grid;
       gap: 18px;
-      align-content: stretch;
-      height: 100%;
+      align-content: start;
     }
 
     .pill {
+      width: fit-content;
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      width: fit-content;
       padding: 10px 16px;
       border-radius: 999px;
-      background: rgba(139,92,246,0.12);
-      border: 1px solid rgba(139,92,246,0.22);
-      color: #ddd6fe;
+      background: rgba(53, 214, 255, 0.10);
+      border: 1px solid rgba(53, 214, 255, 0.20);
+      color: #d8f7ff;
       font-size: 12px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -381,13 +237,13 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--cyan), #d8b4fe);
-      box-shadow: 0 0 12px rgba(103, 232, 255, 0.75);
+      background: linear-gradient(135deg, var(--amber), var(--cyan));
+      box-shadow: 0 0 12px rgba(255, 203, 107, 0.65);
     }
 
     h1 {
       font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(38px, 5vw, 68px);
+      font-size: clamp(38px, 5vw, 66px);
       line-height: 0.98;
       letter-spacing: -0.05em;
       max-width: 760px;
@@ -395,27 +251,553 @@
 
     .hero-copy p {
       color: var(--muted);
-      max-width: 720px;
-      line-height: 1.8;
+      max-width: 760px;
+      line-height: 1.82;
       font-size: 15px;
     }
 
-    .hero-highlights {
+    .hero-tags,
+    .science-tags,
+    .deck-meta,
+    .card-tags,
+    .memory-badges {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .hero-tag {
-      padding: 11px 15px;
+    .hero-tag,
+    .tag,
+    .badge {
+      padding: 10px 14px;
       border-radius: 999px;
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.08);
-      color: #d8e4ff;
+      color: #dde8ff;
+      font-size: 12px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .stat-card {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 8px;
+      min-height: 122px;
+    }
+
+    .stat-label {
+      color: #c8d8f8;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .stat-value {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(24px, 4vw, 34px);
+      line-height: 1;
+    }
+
+    .stat-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .focus-card {
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+      min-height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .focus-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -50px -70px auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 203, 107, 0.18), transparent 65%);
+      filter: blur(10px);
+    }
+
+    .focus-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .focus-kicker {
+      color: #d8edff;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .focus-word {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+    }
+
+    .focus-phonetic {
+      color: var(--cyan);
+      font-size: 15px;
+    }
+
+    .focus-prompt {
+      color: var(--muted);
+      line-height: 1.8;
+      position: relative;
+      z-index: 1;
+    }
+
+    .reveal-shell {
+      display: grid;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .reveal-answer {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(4, 10, 20, 0.46);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 10px;
+      min-height: 148px;
+    }
+
+    .reveal-answer.hidden .answer-line {
+      filter: blur(10px);
+      opacity: 0.5;
+      user-select: none;
+    }
+
+    .answer-title {
+      color: #dce8ff;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .answer-line {
+      line-height: 1.75;
+      transition: .25s ease;
+    }
+
+    .answer-line strong {
+      color: #ffffff;
+    }
+
+    .focus-actions,
+    .grade-actions,
+    .toolbar,
+    .deck-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn,
+    .chip-btn,
+    .grade-btn,
+    .deck-btn {
+      border: 0;
+      color: var(--text);
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+
+    .btn:hover,
+    .chip-btn:hover,
+    .grade-btn:hover,
+    .deck-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn {
+      padding: 12px 18px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, rgba(53,214,255,0.20), rgba(110,165,255,0.18));
+      border-color: rgba(53,214,255,0.30);
+      box-shadow: 0 14px 30px rgba(53,214,255,0.15);
+    }
+
+    .grade-btn {
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      min-width: 132px;
+      text-align: center;
+    }
+
+    .grade-btn.danger {
+      background: rgba(255, 126, 146, 0.10);
+      border-color: rgba(255, 126, 146, 0.24);
+    }
+
+    .grade-btn.warn {
+      background: rgba(255, 203, 107, 0.10);
+      border-color: rgba(255, 203, 107, 0.24);
+    }
+
+    .grade-btn.good {
+      background: rgba(108, 228, 196, 0.10);
+      border-color: rgba(108, 228, 196, 0.22);
+    }
+
+    .grade-btn.great {
+      background: rgba(110, 165, 255, 0.12);
+      border-color: rgba(110, 165, 255, 0.24);
+    }
+
+    .main-grid {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .sidebar,
+    .workspace {
+      display: grid;
+      gap: 20px;
+    }
+
+    .panel {
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .section-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      line-height: 1.72;
+      font-size: 14px;
+    }
+
+    .protocol-list,
+    .science-list,
+    .queue-list,
+    .deck-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .protocol-item,
+    .science-item,
+    .queue-item,
+    .deck-item {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .protocol-step,
+    .science-head,
+    .queue-top,
+    .deck-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .step-index,
+    .science-index {
+      width: 30px;
+      height: 30px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(53,214,255,0.12);
+      border: 1px solid rgba(53,214,255,0.24);
+      color: #d8f7ff;
+      font-size: 12px;
+      flex: 0 0 auto;
+    }
+
+    .protocol-title,
+    .science-title,
+    .deck-title,
+    .queue-word {
+      font-weight: 700;
+      color: #f3f8ff;
+    }
+
+    .protocol-copy,
+    .science-copy,
+    .queue-copy,
+    .deck-copy {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .form-grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      color: #d9e7ff;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      color: var(--text);
+      background: rgba(3, 8, 18, 0.54);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 16px;
+      padding: 13px 14px;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .field textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: rgba(53,214,255,0.30);
+      box-shadow: 0 0 0 3px rgba(53,214,255,0.12);
+    }
+
+    .workspace-top {
+      display: grid;
+      gap: 18px;
+    }
+
+    .toolbar {
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toolbar-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .search,
+    .select {
+      color: var(--text);
+      background: rgba(3, 8, 18, 0.54);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 16px;
+      padding: 12px 14px;
+      min-width: 180px;
+      outline: none;
+    }
+
+    .chip-btn {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .chip-btn.active,
+    .deck-btn.active {
+      background: rgba(53,214,255,0.12);
+      border-color: rgba(53,214,255,0.28);
+      color: #d8f7ff;
+    }
+
+    .deck-grid,
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .deck-btn {
+      width: 100%;
+      padding: 0;
+      text-align: left;
+      background: transparent;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .deck-btn .deck-item {
+      height: 100%;
+    }
+
+    .deck-pulse {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--amber), var(--cyan));
+      box-shadow: 0 0 12px rgba(255,203,107,0.45);
+    }
+
+    .word-card {
+      padding: 18px;
+      border-radius: 22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)),
+        rgba(7, 15, 29, 0.72);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .word-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(53,214,255,0.26);
+      box-shadow: 0 20px 38px rgba(0,0,0,0.24);
+    }
+
+    .word-card.active {
+      border-color: rgba(255, 203, 107, 0.30);
+      box-shadow: 0 20px 44px rgba(255, 203, 107, 0.10);
+    }
+
+    .word-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .word-main {
+      display: grid;
+      gap: 4px;
+    }
+
+    .word-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .word-sub {
+      color: var(--cyan);
       font-size: 13px;
     }
 
-    .hero-day-card {
+    .stage-badge {
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .stage-0 { color: #ffe3a5; background: rgba(255,203,107,0.10); border-color: rgba(255,203,107,0.24); }
+    .stage-1 { color: #d7fbff; background: rgba(53,214,255,0.10); border-color: rgba(53,214,255,0.22); }
+    .stage-2 { color: #dbf9ef; background: rgba(108,228,196,0.10); border-color: rgba(108,228,196,0.22); }
+    .stage-3 { color: #dfe5ff; background: rgba(110,165,255,0.10); border-color: rgba(110,165,255,0.22); }
+    .stage-4 { color: #efe7ff; background: rgba(168,139,255,0.10); border-color: rgba(168,139,255,0.22); }
+
+    .word-copy {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .word-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .meta-chip {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      font-size: 12px;
+      color: #d7e5ff;
+    }
+
+    .empty-state {
+      padding: 28px;
+      border-radius: 24px;
+      border: 1px dashed rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .footer-note {
+      margin-top: 22px;
+      padding: 20px 24px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .footer-note strong {
+      color: #eff7ff;
+    }
+
+    .hero-copy.compact {
+      gap: 14px;
+    }
+
+    .hero-copy.compact h1 {
+      max-width: 900px;
+    }
+
+    .review-card {
       padding: 24px;
       border-radius: 30px;
       background:
@@ -423,13 +805,13 @@
         rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.08);
       position: relative;
-      overflow: visible;
+      overflow: hidden;
       display: grid;
       gap: 18px;
-      height: 100%;
+      min-height: 100%;
     }
 
-    .hero-day-card::after {
+    .review-card::after {
       content: "";
       position: absolute;
       right: -54px;
@@ -441,7 +823,7 @@
       filter: blur(8px);
     }
 
-    .hero-day-card::before {
+    .review-card::before {
       content: "";
       position: absolute;
       right: 166px;
@@ -456,584 +838,154 @@
       opacity: 0.92;
     }
 
-    .hero-day-main,
-    .hero-day-focus {
+    .review-main,
+    .review-grid,
+    .review-actions,
+    .grade-actions {
       position: relative;
       z-index: 1;
     }
 
-    .hero-day-focus {
-      z-index: 4;
-    }
-
-    .hero-day-main {
+    .review-main {
       display: grid;
+      gap: 12px;
+      padding-right: 180px;
+    }
+
+    .review-kicker {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #c7d2fe;
+    }
+
+    .review-title {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 0.94;
+      letter-spacing: -0.05em;
+      max-width: 720px;
+    }
+
+    .review-sub {
+      color: var(--cyan);
+      font-size: 15px;
+    }
+
+    .review-meta {
+      display: flex;
+      flex-wrap: wrap;
       gap: 10px;
-      padding-right: 216px;
     }
 
-    .hero-progress-inline {
-      width: min(220px, calc(100% - 40px));
-      margin-top: 4px;
-    }
-
-    .hero-day-focus {
+    .review-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
     }
 
-    .hero-focus-card {
+    .review-mini {
       display: grid;
       gap: 8px;
       align-content: start;
-      min-height: 120px;
+      min-height: 118px;
       padding: 16px;
       border-radius: 18px;
       background: rgba(5, 10, 22, 0.42);
       border: 1px solid rgba(255,255,255,0.08);
     }
 
-    .hero-focus-label {
+    .review-mini-label {
       font-size: 11px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: #c7d2fe;
     }
 
-    .hero-focus-value {
+    .review-mini-value {
       font-family: "Space Grotesk", sans-serif;
       font-size: clamp(22px, 3vw, 30px);
       line-height: 1;
       color: #f8fbff;
     }
 
-    .hero-focus-note {
+    .review-mini-note {
       color: var(--muted);
       font-size: 13px;
       line-height: 1.55;
     }
 
-    .hero-planet {
+    .review-planet {
       position: absolute;
       top: 16px;
-      right: 92px;
+      right: 68px;
       width: 118px;
       height: 118px;
+      border-radius: 50%;
       pointer-events: none;
       z-index: 1;
-      transform-style: preserve-3d;
       animation: heroPlanetFloat 8s ease-in-out infinite;
-    }
-
-    .hero-planet-ball {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      transform-style: preserve-3d;
       box-shadow:
         inset -30px -34px 46px rgba(0,0,0,.48),
         inset 12px 12px 24px rgba(255,255,255,.10),
-        inset -6px -8px 14px rgba(0,0,0,.2),
         0 26px 46px rgba(0,0,0,.38);
-      overflow: visible;
-      isolation: isolate;
       background:
         radial-gradient(circle at 28% 24%, rgba(255,255,255,.98), rgba(255,255,255,.18) 12%, transparent 18%),
         radial-gradient(circle at 52% 58%, rgba(225,230,238,.12), transparent 26%),
         linear-gradient(155deg,#f8fafc 0%, #c7cdd6 38%, #676f7d 68%, #171c25 100%);
     }
 
-    .hero-planet-ball::before {
+    .review-planet::before {
       content: "";
       position: absolute;
-      inset: 7%;
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 28% 24%, rgba(255,255,255,.34), transparent 24%),
-        radial-gradient(circle at 36% 34%, rgba(255,255,255,.14), transparent 18%),
-        radial-gradient(circle at 72% 70%, rgba(255,255,255,.06), transparent 24%);
-      filter: blur(7px);
-      z-index: 6;
-      pointer-events: none;
-    }
-
-    .hero-planet-ball::after {
-      content: "";
-      position: absolute;
-      inset: -8px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,.10);
-      box-shadow: 0 0 22px rgba(119,166,255,.10), inset 0 0 18px rgba(255,255,255,.04);
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    .hero-planet-aura {
-      position: absolute;
-      inset: -20%;
+      inset: -18%;
       border-radius: 50%;
       background:
         radial-gradient(circle, rgba(126,174,255,.18), transparent 60%),
         radial-gradient(circle, rgba(196,122,255,.08), transparent 76%);
       filter: blur(16px);
       opacity: .9;
-      z-index: -2;
+      z-index: -1;
       animation: auraPulse 4.5s ease-in-out infinite;
     }
 
-    .hero-planet-atmosphere {
-      position: absolute;
-      inset: -4px;
-      border-radius: 50%;
-      mix-blend-mode: screen;
-      filter: blur(2px);
-      opacity: .88;
-      z-index: 5;
-      animation: atmosphereRotate 32s linear infinite;
-      background:
-        radial-gradient(circle at 26% 24%, rgba(255,255,255,.10), transparent 32%),
-        conic-gradient(from 0deg, rgba(255,255,255,0) 0deg, rgba(229,234,240,.16) 124deg, rgba(255,255,255,0) 190deg, rgba(182,189,200,.12) 260deg, rgba(255,255,255,0) 360deg);
-    }
-
-    .hero-planet-surface {
-      position: absolute;
-      inset: 8%;
-      border-radius: 50%;
-      overflow: hidden;
-      z-index: 3;
-      mix-blend-mode: soft-light;
-      opacity: .82;
-      background:
-        radial-gradient(circle at 26% 36%, rgba(255,255,255,.20), transparent 16%),
-        radial-gradient(circle at 54% 56%, rgba(18,22,30,.22), transparent 22%),
-        radial-gradient(circle at 68% 30%, rgba(232,236,243,.12), transparent 12%);
-    }
-
-    .hero-planet-surface::before {
+    .review-planet::after {
       content: "";
       position: absolute;
-      inset: -10%;
-      background:
-        radial-gradient(circle at 24% 36%, rgba(255,255,255,.18), transparent 10%),
-        radial-gradient(circle at 60% 26%, rgba(255,255,255,.10), transparent 8%),
-        radial-gradient(circle at 56% 60%, rgba(0,0,0,.20), transparent 14%),
-        radial-gradient(circle at 34% 72%, rgba(255,255,255,.08), transparent 11%),
-        radial-gradient(circle at 74% 66%, rgba(0,0,0,.12), transparent 12%);
-      filter: blur(5px);
-      animation: surfaceDrift 24s linear infinite;
-    }
-
-    .hero-planet-surface::after {
-      content: "";
-      position: absolute;
-      inset: -14%;
-      background: repeating-linear-gradient(155deg, rgba(255,255,255,.05) 0 10px, rgba(255,255,255,0) 10px 24px);
-      opacity: .34;
-      filter: blur(3px);
-      transform: rotate(-10deg);
-    }
-
-    .hero-planet-night {
-      position: absolute;
-      inset: 0;
+      inset: -8px;
       border-radius: 50%;
-      z-index: 4;
-      background: linear-gradient(120deg, transparent 35%, rgba(0,0,0,.68) 85%);
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 0 22px rgba(119,166,255,.10), inset 0 0 18px rgba(255,255,255,.04);
     }
 
-    .hero-planet-band {
-      position: absolute;
-      left: 10%;
-      right: 10%;
-      top: 42%;
-      height: 16%;
-      border-radius: 999px;
-      filter: blur(4px);
-      opacity: .72;
-      z-index: 6;
-      transform: rotate(-15deg);
-      background: linear-gradient(90deg, transparent, rgba(232,236,242,.28), transparent);
-      animation: bandShift 9s ease-in-out infinite;
-    }
-
-    .hero-planet-crater {
-      position: absolute;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.16), rgba(0,0,0,.14) 70%, transparent 72%);
-      opacity: .42;
-      mix-blend-mode: screen;
-      z-index: 6;
-    }
-
-    .hero-planet-crater.c1 { width: 18%; height: 18%; left: 24%; top: 46%; }
-    .hero-planet-crater.c2 { width: 12%; height: 12%; left: 58%; top: 28%; opacity: .28; }
-    .hero-planet-crater.c3 { width: 10%; height: 10%; left: 48%; top: 62%; opacity: .22; }
-
-    .hero-planet-orbit {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      border-radius: 50%;
-      transform-style: preserve-3d;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .hero-planet-orbit::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      border: 1px solid rgba(220,226,236,.22);
-      box-shadow: 0 0 10px rgba(220,226,236,.14);
-    }
-
-    .hero-planet-orbit::after {
-      content: "";
-      position: absolute;
-      inset: -2px;
-      border-radius: inherit;
-      border: 1px dashed rgba(186,194,206,.22);
-      filter: blur(.5px);
-    }
-
-    .hero-planet-orbit.po1 {
-      width: 190%;
-      height: 190%;
-      transform: translate(-50%, -50%) rotateX(72deg) rotateY(15deg);
-      animation: pOrbit1 12s linear infinite;
-    }
-
-    .hero-planet-orbit.po2 {
-      width: 250%;
-      height: 250%;
-      transform: translate(-50%, -50%) rotateX(68deg) rotateY(5deg);
-      animation: pOrbit2 24s linear infinite reverse;
-    }
-
-    .hero-planet-ring {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 210%;
-      height: 210%;
-      transform: translate(-50%, -50%) rotateX(72deg) rotateY(15deg);
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,.10);
-      border-left-color: rgba(230,235,242,.34);
-      z-index: 1;
-    }
-
-    .hero-planet-moon {
-      position: absolute;
-      border-radius: 50%;
-      z-index: 7;
-      pointer-events: none;
-      background: radial-gradient(circle at 30% 28%, rgba(255,255,255,.95), transparent 22%), linear-gradient(145deg, #f6f8fb, #b8bfca 62%, #353c48);
-      box-shadow: inset -4px -5px 8px rgba(0,0,0,.35), 0 0 16px rgba(224,229,238,.20);
-    }
-
-    .hero-planet-moon.one {
-      width: 12px;
-      height: 12px;
-      top: -12%;
-      right: -22%;
-      animation: moonOrbit1 8s ease-in-out infinite;
-    }
-
-    .hero-planet-moon.two {
-      width: 9px;
-      height: 9px;
-      bottom: -16%;
-      left: -28%;
-      animation: moonOrbit2 10s ease-in-out infinite;
-    }
-
-    .hero-planet-shadow {
-      position: absolute;
-      left: 50%;
-      bottom: -18px;
-      width: 86px;
-      height: 18px;
-      transform: translateX(-50%);
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(0,0,0,0.38), transparent 72%);
-      filter: blur(10px);
-      opacity: 0.8;
-    }
-
-    .hero-orbit {
-      position: relative;
-      min-height: 330px;
-      height: 100%;
-      align-self: stretch;
-      display: grid;
-      place-items: stretch;
-      border-radius: 30px;
-      padding: 22px 20px 18px;
-      background: transparent;
-      border: 0;
-      box-shadow: none;
-      overflow: hidden;
-    }
-
-    .orbit-progress-wrap {
-      position: relative;
-      inset: auto;
-      display: grid;
-      grid-template-rows: auto 1fr;
-      align-content: stretch;
-      height: 100%;
-      width: 100%;
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    .orbit-progress-head {
-      margin-bottom: 18px;
-      display: grid;
-      gap: 6px;
-    }
-
-    .orbit-progress-kicker {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: rgba(199, 210, 254, 0.82);
-    }
-
-    .orbit-progress-title {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 22px;
-      letter-spacing: -0.04em;
-      color: #f8fbff;
-    }
-
-    .orbit-progress-columns {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-      align-items: stretch;
-      min-height: 240px;
-      height: 100%;
-      align-self: stretch;
-    }
-
-    .orbit-progress-item {
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      justify-items: center;
-      gap: 12px;
-      height: 100%;
-      align-self: stretch;
-    }
-
-    .orbit-progress-value {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 18px;
-      color: #f8fbff;
-      text-shadow: 0 4px 18px rgba(0,0,0,0.36);
-    }
-
-    .orbit-progress-track {
-      position: relative;
-      width: 38px;
-      height: 100%;
-      min-height: 220px;
-      padding: 0;
-      border-radius: 999px;
-      background: rgba(8, 14, 28, 0.42);
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.04),
-        0 10px 26px rgba(0,0,0,0.18);
-      overflow: hidden;
-    }
-
-    .orbit-progress-fill {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 0;
-      border-radius: 999px;
-      background: linear-gradient(180deg, #fde68a 0%, #f59e0b 42%, #f97316 100%);
-      box-shadow: 0 0 24px rgba(245, 158, 11, 0.34);
-    }
-
-    .orbit-progress-fill.physics {
-      background: linear-gradient(180deg, #a5f3fc 0%, #38bdf8 48%, #2563eb 100%);
-      box-shadow: 0 0 24px rgba(56, 189, 248, 0.3);
-    }
-
-    .orbit-progress-fill.english {
-      background: linear-gradient(180deg, #f9a8d4 0%, #fb7185 48%, #f97316 100%);
-    }
-
-    .orbit-progress-fill.tasks {
-      background: linear-gradient(180deg, #86efac 0%, #34d399 48%, #0ea5e9 100%);
-    }
-
-    .orbit-progress-name {
-      font-size: 11px;
-      line-height: 1.4;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      text-align: center;
-      color: #d8e4ff;
-      text-shadow: 0 4px 18px rgba(0,0,0,0.32);
-    }
-
-    .dashboard {
-      margin-top: 22px;
-      display: grid;
+    .main-grid.vocab-layout {
       grid-template-columns: 360px minmax(0, 1fr);
-      gap: 22px;
       align-items: start;
     }
 
-    .glass {
-      position: relative;
-      border-radius: var(--radius-xl);
-      background:
-        linear-gradient(180deg, rgba(8, 13, 28, 0.8), rgba(8, 13, 28, 0.54)),
-        rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      box-shadow: 0 20px 48px rgba(0,0,0,0.18);
-      overflow: hidden;
-    }
-
-    .sidebar {
+    .sidebar.vocab-sidebar {
       position: sticky;
       top: 18px;
-      padding: 18px;
-      display: grid;
-      gap: 18px;
     }
 
-    .section-title {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 20px;
-      font-weight: 700;
-    }
-
-    .section-desc {
-      margin-top: 8px;
-      color: var(--muted);
-      line-height: 1.7;
-      font-size: 14px;
-    }
-
-    .field,
-    .select,
-    .search {
-      width: 100%;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(5,10,22,0.62);
-      color: var(--text);
-      padding: 13px 15px;
-      outline: none;
-    }
-
-    .field:focus,
-    .select:focus,
-    .search:focus {
-      border-color: rgba(96,165,250,0.42);
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
-    }
-
-    .field::placeholder,
-    .search::placeholder {
-      color: #64748b;
-    }
-
-    .segmented {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      padding: 6px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .segment-btn,
-    .date-btn,
-    .task-btn,
-    .primary-btn {
-      border: 0;
-      cursor: pointer;
-      transition: 0.24s ease;
-    }
-
-    .segment-btn {
-      padding: 10px 12px;
-      border-radius: 12px;
-      background: transparent;
-      color: #cbd5e1;
-      font-weight: 600;
-    }
-
-    .segment-btn.active {
-      background: linear-gradient(135deg, rgba(139,92,246,0.26), rgba(59,130,246,0.22));
-      color: white;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
-    }
-
-    .radar {
-      padding: 18px;
-      border-radius: 24px;
-      background:
-        radial-gradient(circle at 18% 18%, rgba(79,140,255,0.1), transparent 32%),
-        rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .radar-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 7px 12px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .pace-on { background: rgba(100,116,139,0.16); color: #e2e8f0; border-color: rgba(226,232,240,0.12); }
-    .pace-fast { background: rgba(52,211,153,0.14); color: #a7f3d0; border-color: rgba(52,211,153,0.25); }
-    .pace-slow { background: rgba(251,191,36,0.14); color: #fde68a; border-color: rgba(251,191,36,0.25); }
-    .pace-stuck { background: rgba(251,113,133,0.14); color: #fecdd3; border-color: rgba(251,113,133,0.25); }
-
-    .date-list {
+    .source-list {
       display: grid;
       gap: 10px;
-      max-height: calc(100vh - 380px);
+      max-height: calc(100vh - 330px);
       overflow: auto;
       padding-right: 4px;
     }
 
-    .date-list::-webkit-scrollbar { width: 8px; }
-    .date-list::-webkit-scrollbar-thumb {
+    .source-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .source-list::-webkit-scrollbar-thumb {
       background: rgba(148,163,184,0.22);
       border-radius: 999px;
     }
 
-    .date-btn {
+    .source-btn {
       width: 100%;
       text-align: left;
       padding: 16px;
@@ -1041,17 +993,17 @@
       background: rgba(255,255,255,0.035);
       border: 1px solid rgba(255,255,255,0.08);
       color: white;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      cursor: pointer;
+      transition: .24s ease;
     }
 
-    .date-btn:hover {
+    .source-btn:hover {
       transform: translateY(-2px);
       border-color: rgba(255,255,255,0.16);
       background: rgba(255,255,255,0.06);
     }
 
-    .date-btn.active {
+    .source-btn.active {
       background:
         linear-gradient(135deg, rgba(139,92,246,0.16), rgba(59,130,246,0.12)),
         rgba(255,255,255,0.04);
@@ -1059,871 +1011,167 @@
       box-shadow: 0 16px 40px rgba(32,17,72,0.3);
     }
 
-    .date-top {
+    .source-top {
       display: flex;
       justify-content: space-between;
       gap: 12px;
       align-items: flex-start;
     }
 
-    .date-date { font-size: 17px; font-weight: 700; }
-    .date-phase { font-size: 12px; color: var(--muted); margin-top: 4px; }
-    .date-count { font-size: 12px; color: var(--muted); margin-top: 12px; }
-
-    .progress {
-      height: 10px;
-      width: 100%;
-      background: rgba(255,255,255,0.08);
-      border-radius: 999px;
-      overflow: hidden;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+    .source-name {
+      font-size: 17px;
+      font-weight: 700;
     }
 
-    .progress > span {
-      display: block;
-      height: 100%;
-      width: 0;
-      border-radius: inherit;
-      background: linear-gradient(90deg, var(--violet), var(--blue) 58%, var(--cyan));
-      transition: width .25s ease;
-    }
-
-    .main {
-      display: grid;
-      gap: 20px;
-    }
-
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .stat-card {
-      padding: 18px;
-      border-radius: 24px;
-      background: rgba(255,255,255,0.035);
-      border: 1px solid rgba(255,255,255,0.08);
-      min-height: 120px;
-    }
-
-    .stat-card .label {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #c7d2fe;
-    }
-
-    .stat-card .value {
+    .source-count {
       margin-top: 12px;
-      font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(28px, 3vw, 40px);
-      line-height: 1;
-    }
-
-    .stat-card .meta {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    .mission-shell {
-      padding: 24px;
-      display: grid;
-      gap: 22px;
-    }
-
-    .schedule-shell {
-      padding: 20px;
-      display: grid;
-      gap: 16px;
-    }
-
-    .schedule-divider {
-      width: 100%;
-      margin-top: 8px;
-      padding-top: 24px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      position: relative;
-    }
-
-    .schedule-divider::before {
-      content: "";
-      position: absolute;
-      top: -1px;
-      left: 50%;
-      width: min(180px, 30vw);
-      height: 1px;
-      transform: translateX(-50%);
-      background: linear-gradient(90deg, transparent, rgba(79,140,255,0.75), transparent);
-      box-shadow: 0 0 18px rgba(79,140,255,0.28);
-    }
-
-    .schedule-head {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .schedule-stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .schedule-table-wrap {
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background:
-        radial-gradient(circle at top right, rgba(79,140,255,0.12), transparent 28%),
-        rgba(255,255,255,0.03);
-      overflow: auto;
-    }
-
-    .schedule-table {
-      width: 100%;
-      min-width: 1080px;
-      border-collapse: separate;
-      border-spacing: 0;
-    }
-
-    .schedule-table th,
-    .schedule-table td {
-      padding: 14px 16px;
-      vertical-align: top;
-      text-align: left;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .schedule-table th {
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      background: rgba(8, 13, 28, 0.96);
-      color: #c7d2fe;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .schedule-table tr:last-child td {
-      border-bottom: 0;
-    }
-
-    .schedule-table tbody tr {
-      transition: 0.22s ease;
-    }
-
-    .schedule-table tbody tr:hover td {
-      background: rgba(255,255,255,0.035);
-    }
-
-    .schedule-table tr.active-row td {
-      background: rgba(79,140,255,0.1);
-    }
-
-    .schedule-date-cell {
-      position: sticky;
-      left: 0;
-      z-index: 1;
-      min-width: 130px;
-      background: rgba(8, 13, 28, 0.94);
-    }
-
-    .schedule-date-main {
-      font-weight: 700;
-      color: #eef4ff;
-    }
-
-    .schedule-phase {
       font-size: 12px;
       color: var(--muted);
-      margin-top: 4px;
     }
 
-    .schedule-day-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+    .source-progress {
       margin-top: 10px;
     }
 
-    .schedule-list {
+    .inline-add {
       display: grid;
-      gap: 6px;
+      gap: 12px;
+    }
+
+    .inline-add .field textarea {
+      min-height: 84px;
+    }
+
+    .inline-add .field input[readonly] {
+      opacity: .8;
       color: #dbe7ff;
-      font-size: 13px;
-      line-height: 1.55;
     }
 
-    .schedule-list span {
-      display: block;
-    }
-
-    .schedule-list.tight {
-      gap: 5px;
-      font-size: 12.5px;
-    }
-
-    .schedule-task-panel {
-      min-width: 240px;
-      display: grid;
-      gap: 8px;
-      padding: 10px 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .schedule-task-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-width: 220px;
-      gap: 10px;
-    }
-
-    .schedule-task-title {
-      color: #eef4ff;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .schedule-task-meta {
-      color: #9fb0d3;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-
-    .schedule-task-divider {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .schedule-task-line {
-      flex: 1 1 auto;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.24), rgba(255,255,255,0.06));
-    }
-
-    .schedule-task-items {
-      display: grid;
-      gap: 8px;
-    }
-
-    .schedule-task-item {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      align-items: center;
-      padding: 9px 10px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.035);
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .schedule-task-item.done {
-      background: rgba(52,211,153,0.08);
-      border-color: rgba(52,211,153,0.16);
-    }
-
-    .schedule-task-text {
-      color: #edf3ff;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .schedule-task-item.done .schedule-task-text {
-      color: #9fb0d3;
-      text-decoration: line-through;
-    }
-
-    .schedule-task-state {
-      padding: 5px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      color: #c7d2fe;
-      font-size: 11px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .schedule-task-item.done .schedule-task-state {
-      background: rgba(52,211,153,0.12);
-      border-color: rgba(52,211,153,0.2);
-      color: #a7f3d0;
-    }
-
-    .schedule-progress-cell {
-      min-width: 120px;
-    }
-
-    .schedule-progress-stack {
-      display: grid;
-      justify-items: center;
-      gap: 10px;
-    }
-
-    .schedule-progress-meta {
-      display: grid;
-      gap: 4px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .schedule-progress-bar {
-      position: relative;
-      width: 18px;
-      height: 132px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.08);
-      overflow: hidden;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
-    }
-
-    .schedule-progress-bar > span {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: block;
-      height: 0;
-      border-radius: inherit;
-      background: linear-gradient(180deg, var(--violet), var(--blue) 58%, var(--cyan));
-      transition: height .25s ease;
-    }
-
-    .schedule-note-cell {
-      min-width: 240px;
-      color: #dbe7ff;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .schedule-note-snippet {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .schedule-open-btn {
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05);
-      color: #eef4ff;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.22s ease;
-    }
-
-    .schedule-open-btn:hover {
-      transform: translateY(-1px);
-      border-color: rgba(96,165,250,0.32);
-      background: rgba(79,140,255,0.14);
-    }
-
-    .mission-top {
-      display: grid;
-      grid-template-columns: minmax(0, 1.3fr) 280px;
-      gap: 20px;
-      align-items: stretch;
-    }
-
-    .mission-overview {
-      padding: 24px;
-      border-radius: 28px;
-      background:
-        linear-gradient(135deg, rgba(79,140,255,0.14), rgba(139,92,246,0.12)),
-        rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      position: relative;
-      overflow: hidden;
+    .workspace.slim {
       display: grid;
       gap: 18px;
-      align-content: stretch;
     }
 
-    .mission-overview::after {
-      content: "";
-      position: absolute;
-      right: -50px;
-      bottom: -54px;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(99,224,255,0.16), transparent 62%);
-      filter: blur(8px);
-    }
-
-    .mission-kicker {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #c7d2fe;
-    }
-
-    .mission-title {
-      margin-top: 10px;
-      font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(30px, 4vw, 42px);
-      letter-spacing: -0.04em;
-    }
-
-    .mission-copy {
-      margin-top: 10px;
-      color: #d5e1fb;
-      line-height: 1.8;
-      max-width: 720px;
-    }
-
-    .overview-grid {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
-      height: 100%;
-    }
-
-    .overview-card {
-      display: grid;
-      gap: 8px;
-      align-content: start;
-      padding: 18px;
-      border-radius: 20px;
-      background: rgba(5, 10, 22, 0.42);
-      border: 1px solid rgba(255,255,255,0.08);
-      min-height: 132px;
-    }
-
-    .overview-card-label {
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #c7d2fe;
-    }
-
-    .overview-card-value {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(24px, 3vw, 34px);
-      line-height: 1;
-      color: #f8fbff;
-    }
-
-    .overview-card-note {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .mission-focus {
-      margin-top: 18px;
-      display: grid;
-      gap: 12px;
-    }
-
-    .focus-chip {
+    .workspace-toolbar {
       display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      padding: 12px 14px;
-      border-radius: 18px;
-      background: rgba(5, 10, 22, 0.42);
-      border: 1px solid rgba(255,255,255,0.08);
     }
 
-    .focus-chip span:first-child {
-      color: #e6efff;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .focus-chip span:last-child {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .focus-chip.pace-chip {
-      position: relative;
-      align-items: center;
-    }
-
-    .pace-menu {
-      position: relative;
-      margin-left: auto;
-      z-index: 8;
-    }
-
-    .pace-menu summary {
-      list-style: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      min-height: 36px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.05);
-      color: #eef4ff;
-      font-size: 12px;
-      line-height: 1.2;
-      cursor: pointer;
-      transition: 0.22s ease;
-    }
-
-    .pace-menu summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .pace-menu summary:hover {
-      transform: translateY(-1px);
-      border-color: rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.08);
-    }
-
-    .pace-menu summary::after {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-right: 1.5px solid currentColor;
-      border-bottom: 1.5px solid currentColor;
-      transform: rotate(45deg) translateY(-1px);
-      opacity: 0.8;
-    }
-
-    .pace-menu[open] summary::after {
-      transform: rotate(-135deg) translateY(-1px);
-    }
-
-    .pace-current {
-      white-space: nowrap;
-    }
-
-    .pace-options {
-      position: absolute;
-      top: calc(100% + 8px);
-      right: 0;
-      min-width: 220px;
-      display: grid;
-      gap: 8px;
-      padding: 10px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(8, 13, 28, 0.96);
-      box-shadow: 0 18px 34px rgba(0,0,0,0.28);
-      z-index: 5;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
-    .pace-option {
-      width: 100%;
-      text-align: left;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      color: #d8e4ff;
-      border-radius: 999px;
-      padding: 9px 12px;
-      font-size: 12px;
-      line-height: 1.2;
-      cursor: pointer;
-      transition: 0.22s ease;
-    }
-
-    .pace-option.active {
-      font-weight: 700;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.16);
-    }
-
-    .mission-side {
-      padding: 22px;
-      border-radius: 28px;
-      background: rgba(255,255,255,0.035);
-      border: 1px solid rgba(255,255,255,0.08);
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-
-    .mission-side .big {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 42px;
-      line-height: 1;
-    }
-
-    .muted {
-      color: var(--muted);
-      line-height: 1.7;
-      font-size: 14px;
-    }
-
-    .sections {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .section {
-      border-radius: 24px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.035);
-      padding: 18px;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: 0 18px 44px rgba(0,0,0,0.12);
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-
-    .section h3 {
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      font-size: 13px;
+    .workspace-toolbar .toolbar-group {
       display: flex;
-      gap: 8px;
-      align-items: center;
-      padding: 6px 0 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #dbe7ff;
-    }
-
-    .section-count {
-      margin-left: auto;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #c7d2fe;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0;
-      text-transform: none;
-    }
-
-    .task-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .task-btn {
-      width: 100%;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      text-align: left;
-      padding: 14px;
-      border-radius: 16px;
-      background: rgba(0,0,0,0.2);
-      border: 1px solid rgba(255,255,255,0.06);
-      color: white;
-    }
-
-    .task-btn:hover {
-      transform: translateY(-1px);
-      background: rgba(255,255,255,0.05);
-      border-color: rgba(139,92,246,0.24);
-    }
-
-    .task-btn.done { color: #64748b; }
-    .task-btn.done .task-text { text-decoration: line-through; }
-
-    .check {
-      margin-top: 1px;
-      width: 18px;
-      height: 18px;
-      border-radius: 999px;
-      border: 2px solid #a78bfa;
-      flex: 0 0 auto;
-      position: relative;
-    }
-
-    .task-btn.done .check::after {
-      content: "";
-      position: absolute;
-      inset: 2px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--violet), var(--cyan));
-    }
-
-    .task-text {
-      line-height: 1.65;
-      font-size: 14px;
-    }
-
-    .mission-footer {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 16px;
-      align-items: center;
-      padding: 18px 20px;
-      border-radius: 24px;
-      background: rgba(255,255,255,0.035);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .mission-footer .hint {
-      color: var(--muted);
-      line-height: 1.75;
-      font-size: 14px;
-    }
-
-    .action-links {
-      display: flex;
-      align-items: center;
-      gap: 12px;
       flex-wrap: wrap;
-    }
-
-    .primary-btn {
-      background: linear-gradient(135deg, #7c3aed, #2563eb);
-      color: white;
-      padding: 12px 18px;
-      border-radius: 16px;
-      font-weight: 700;
-      text-decoration: none;
-      box-shadow: 0 14px 32px rgba(37,99,235,0.26);
-    }
-
-    .primary-btn:hover { filter: brightness(1.08); }
-
-    .ghost-btn {
-      display: inline-flex;
+      gap: 10px;
       align-items: center;
-      justify-content: center;
-      padding: 12px 18px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.04);
-      color: #e8f0ff;
-      text-decoration: none;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
     }
 
-    .footer-note {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.68;
+    .word-grid.single-column {
+      grid-template-columns: 1fr;
     }
 
     @keyframes driftNebula {
-      from { transform: translate3d(0, 0, 0) scale(1); opacity: .82; }
-      to { transform: translate3d(-2%, 2%, 0) scale(1.05); opacity: 1; }
+      from { transform: translate3d(0, 0, 0) scale(1); }
+      to { transform: translate3d(24px, -16px, 0) scale(1.06); }
     }
 
     @keyframes driftStars {
-      from { transform: translate3d(0, 0, 0); }
-      to { transform: translate3d(-90px, -260px, 0); }
+      from { transform: translateX(0); }
+      to { transform: translateX(-800px); }
     }
 
     @keyframes driftStarsReverse {
-      from { transform: translate3d(0, 0, 0); }
-      to { transform: translate3d(70px, 220px, 0); }
+      from { transform: translateX(-900px); }
+      to { transform: translateX(0); }
     }
 
     @keyframes twinkle {
-      from { opacity: .45; transform: scale(1); }
-      to { opacity: .9; transform: scale(1.03); }
+      from { opacity: .45; transform: scale(0.98); }
+      to { opacity: .78; transform: scale(1.02); }
     }
 
     @keyframes shooting {
-      0%,100% { opacity: 0; transform: translate3d(0,0,0) rotate(-25deg) scaleX(.7); }
-      8% { opacity: 1; }
-      18% { opacity: 0; transform: translate3d(-220px,140px,0) rotate(-25deg) scaleX(1); }
+      0%, 70%, 100% { opacity: 0; transform: translate3d(0, 0, 0) rotate(-24deg); }
+      8%, 18% { opacity: 1; transform: translate3d(-180px, 120px, 0) rotate(-24deg); }
     }
 
-    @keyframes flagDotAppear {
-      0% { opacity: 0; transform: scale(.18); }
-      42% { opacity: .46; transform: scale(.72); }
-      100% { opacity: 1; transform: scale(1); }
+    @media (max-width: 1160px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .main-grid.vocab-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid,
+      .deck-grid,
+      .word-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
-    @keyframes flagDotTwinkle {
-      0% { opacity: .16; filter: drop-shadow(0 0 4px rgba(255,214,140,.22)); }
-      36% { opacity: 1; filter: drop-shadow(0 0 13px rgba(255,240,196,.76)); }
-      100% { opacity: .34; filter: drop-shadow(0 0 7px rgba(255,226,170,.42)); }
-    }
+    @media (max-width: 760px) {
+      .app {
+        width: min(100%, calc(100% - 18px));
+        padding-top: 12px;
+      }
 
-    @keyframes flagAuraPulse {
-      0% { opacity: .28; transform: scale(.92); }
-      100% { opacity: .82; transform: scale(1.05); }
-    }
+      .hero-shell,
+      .panel,
+      .focus-card,
+      .review-card {
+        padding: 18px;
+      }
 
-    @keyframes flagAuraDrift {
-      0% { opacity: .18; transform: translate3d(-6px,4px,0) scale(.96); }
-      100% { opacity: .58; transform: translate3d(8px,-5px,0) scale(1.08); }
-    }
+      .stats-grid,
+      .deck-grid,
+      .word-grid,
+      .form-grid.two {
+        grid-template-columns: 1fr;
+      }
 
-    @keyframes planetFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
+      .review-main {
+        padding-right: 0;
+      }
 
-    @keyframes heroPlanetFloat {
-      0%, 100% { transform: translateY(0) rotate(-2deg); }
-      50% { transform: translateY(-10px) rotate(2deg); }
-    }
+      .review-grid {
+        grid-template-columns: 1fr;
+      }
 
-    @keyframes auraPulse {
-      0%,100% { transform: scale(1); opacity: .72; }
-      50% { transform: scale(1.08); opacity: 1; }
-    }
+      .review-planet {
+        display: none;
+      }
 
-    @keyframes atmosphereRotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
+      .toolbar {
+        align-items: stretch;
+      }
 
-    @keyframes surfaceDrift {
-      from { transform: translateX(0) rotate(0deg); }
-      to { transform: translateX(-10px) rotate(8deg); }
-    }
+      .toolbar,
+      .toolbar-group {
+        flex-direction: column;
+      }
 
-    @keyframes bandShift {
-      0%,100% { transform: rotate(-15deg) translateY(0); opacity: .55; }
-      50% { transform: rotate(-15deg) translateY(2px); opacity: .86; }
-    }
+      .search,
+      .select {
+        width: 100%;
+        min-width: 0;
+      }
 
-    @keyframes moonOrbit1 {
-      0%,100% { transform: translate3d(0,0,0) scale(1); }
-      50% { transform: translate3d(14px,-16px,0) scale(1.08); }
-    }
-
-    @keyframes moonOrbit2 {
-      0%,100% { transform: translate3d(0,0,0) scale(1); }
-      50% { transform: translate3d(-12px,14px,0) scale(.92); }
-    }
-
-    @keyframes pOrbit1 {
-      from { transform: translate(-50%, -50%) rotateX(72deg) rotateY(15deg) rotateZ(0deg); }
-      to { transform: translate(-50%, -50%) rotateX(72deg) rotateY(15deg) rotateZ(360deg); }
-    }
-
-    @keyframes pOrbit2 {
-      from { transform: translate(-50%, -50%) rotateX(68deg) rotateY(5deg) rotateZ(0deg); }
-      to { transform: translate(-50%, -50%) rotateX(68deg) rotateY(5deg) rotateZ(360deg); }
+      .grade-btn {
+        min-width: 0;
+        width: calc(50% - 5px);
+      }
     }
   </style>
 </head>
 <body>
-  <div class="universe">
+  <div class="universe" aria-hidden="true">
     <div class="nebula"></div>
     <div class="space-grid"></div>
     <div class="stars"></div>
@@ -1932,762 +1180,712 @@
     <div class="shooting-star one"></div>
     <div class="shooting-star two"></div>
     <div class="shooting-star three"></div>
-    <div class="flag-burst" aria-hidden="true">
-      <svg viewBox="0 0 500 300" role="presentation">
-        <g style="--delay:.04s">
-          <circle class="flag-dot major" cx="56" cy="50" r="4.0" />
-          <circle class="flag-dot" cx="92" cy="46" r="3.2" />
-          <circle class="flag-dot soft" cx="128" cy="43" r="2.8" />
-          <circle class="flag-dot" cx="164" cy="41" r="3.0" />
-          <circle class="flag-dot soft" cx="200" cy="39" r="2.7" />
-          <circle class="flag-dot" cx="236" cy="38" r="3.1" />
-          <circle class="flag-dot" cx="272" cy="38" r="3.1" />
-          <circle class="flag-dot soft" cx="308" cy="39" r="2.7" />
-          <circle class="flag-dot" cx="344" cy="41" r="3.0" />
-          <circle class="flag-dot soft" cx="380" cy="43" r="2.8" />
-          <circle class="flag-dot" cx="416" cy="46" r="3.2" />
-          <circle class="flag-dot major" cx="444" cy="50" r="4.0" />
-        </g>
-        <g style="--delay:.18s">
-          <circle class="flag-dot" cx="452" cy="74" r="3.2" />
-          <circle class="flag-dot soft" cx="456" cy="102" r="2.8" />
-          <circle class="flag-dot" cx="458" cy="132" r="3.0" />
-          <circle class="flag-dot" cx="458" cy="164" r="3.0" />
-          <circle class="flag-dot soft" cx="456" cy="194" r="2.8" />
-          <circle class="flag-dot" cx="452" cy="224" r="3.2" />
-          <circle class="flag-dot major" cx="446" cy="250" r="3.9" />
-        </g>
-        <g style="--delay:.30s">
-          <circle class="flag-dot" cx="416" cy="258" r="3.2" />
-          <circle class="flag-dot soft" cx="380" cy="261" r="2.8" />
-          <circle class="flag-dot soft" cx="344" cy="263" r="2.7" />
-          <circle class="flag-dot" cx="308" cy="264" r="3.0" />
-          <circle class="flag-dot" cx="272" cy="264" r="3.0" />
-          <circle class="flag-dot" cx="236" cy="264" r="3.0" />
-          <circle class="flag-dot" cx="200" cy="263" r="3.0" />
-          <circle class="flag-dot soft" cx="164" cy="261" r="2.8" />
-          <circle class="flag-dot" cx="128" cy="258" r="3.2" />
-          <circle class="flag-dot" cx="92" cy="254" r="3.2" />
-          <circle class="flag-dot major" cx="60" cy="248" r="3.9" />
-        </g>
-        <g style="--delay:.42s">
-          <circle class="flag-dot" cx="48" cy="224" r="3.2" />
-          <circle class="flag-dot soft" cx="44" cy="194" r="2.8" />
-          <circle class="flag-dot" cx="42" cy="164" r="3.0" />
-          <circle class="flag-dot" cx="42" cy="132" r="3.0" />
-          <circle class="flag-dot soft" cx="44" cy="102" r="2.8" />
-          <circle class="flag-dot" cx="48" cy="74" r="3.2" />
-        </g>
-        <g style="--delay:.56s">
-          <circle class="flag-dot major" cx="250" cy="78" r="4.2" />
-          <circle class="flag-dot" cx="262" cy="106" r="3.2" />
-          <circle class="flag-dot" cx="274" cy="134" r="3.1" />
-          <circle class="flag-dot soft" cx="304" cy="137" r="2.8" />
-          <circle class="flag-dot major" cx="336" cy="141" r="4.1" />
-          <circle class="flag-dot" cx="313" cy="159" r="3.0" />
-          <circle class="flag-dot" cx="289" cy="178" r="3.1" />
-          <circle class="flag-dot soft" cx="298" cy="210" r="2.8" />
-          <circle class="flag-dot major" cx="306" cy="242" r="4.0" />
-          <circle class="flag-dot" cx="278" cy="225" r="3.0" />
-        </g>
-        <g style="--delay:.74s">
-          <circle class="flag-dot major" cx="250" cy="208" r="4.1" />
-          <circle class="flag-dot" cx="222" cy="225" r="3.0" />
-          <circle class="flag-dot major" cx="194" cy="242" r="4.0" />
-          <circle class="flag-dot soft" cx="202" cy="210" r="2.8" />
-          <circle class="flag-dot" cx="211" cy="178" r="3.1" />
-          <circle class="flag-dot" cx="187" cy="159" r="3.0" />
-          <circle class="flag-dot major" cx="164" cy="141" r="4.1" />
-          <circle class="flag-dot soft" cx="196" cy="137" r="2.8" />
-          <circle class="flag-dot" cx="226" cy="134" r="3.1" />
-          <circle class="flag-dot" cx="238" cy="106" r="3.2" />
-        </g>
-      </svg>
-    </div>
-    <div class="floating-planet p1"></div>
-    <div class="floating-planet p3"><div class="ring"></div></div>
   </div>
 
-  <div class="app" id="app"></div>
+  <main class="app" id="app"></main>
 
   <script>
-    const initialSchedule = [
-      { date: "20/04", phase: "Chốt nền HSA", physics: ["HSA: Động học", "HSA: Động lực học", "Bắc Trung Nam Đề 1, 2, 3"], english: ["Đề 1, 2, 3"], review: ["20 phút cuối ngày ghi sổ lỗi ngay từ đầu"], note: "Ngày mở máy, quan trọng nhất là vào guồng và không phí thời gian vào việc làm note đẹp." },
-      { date: "21/04", phase: "Chốt nền HSA", physics: ["HSA: Công và năng lượng", "HSA: Động lượng và va chạm", "Bắc Trung Nam Đề 4, 5, 6"], english: ["Đề 4, 5, 6"], review: ["Xem lại lỗi 20/04"], note: "Giữ nhịp đều, chưa cần tăng tốc kiểu anh hùng bàn phím." },
-      { date: "22/04", phase: "Chốt nền HSA", physics: ["HSA: Chuyển động tròn", "HSA: Dao động", "Bắc Trung Nam Đề 7, 8, 9"], english: ["Đề 7, 8, 9, 10"], review: ["Redo vài câu sai tiêu biểu 20-21/04"], note: "Ngày khá nặng. Không chép note như đang thi thư pháp." },
-      { date: "23/04", phase: "Chốt nền HSA", physics: ["HSA: Sóng", "HSA: Điện tích điện trường", "Bắc Trung Nam Đề 10, 11, 12"], english: ["Topic 1, 2, 3, 4"], review: ["20 phút cuối ngày"], note: "Bắt đầu vào chuỗi topic Anh." },
-      { date: "24/04", phase: "Chốt nền HSA", physics: ["HSA: Mạch điện", "HSA: Nhiệt", "Bắc Trung Nam Đề 13, 14, 15"], english: ["Topic 5, 6, 7, 8"], review: ["Xem lại lỗi 22-23/04"], note: "Làm chắc, không lướt qua cho có cảm giác chăm chỉ." },
-      { date: "25/04", phase: "Chốt nền HSA", physics: ["HSA: Khí lý tưởng", "HSA: Từ trường", "HSA: Hạt nhân"], english: ["Topic 9, 10, 11, 12"], review: ["30 phút ôn HSA toàn cụm"], note: "Không nhét thêm 60 đề hôm nay. Chốt HSA cho sạch." },
-      { date: "26/04", phase: "Chuyển sang đề trộn", physics: ["Bắc Trung Nam Đề 16, 17, 18", "VSAT: 1, 2, 3, 4"], english: ["Topic 13, 14, 15, 16"], review: ["Xem lại lỗi 24-25/04"], note: "Ngày chuyển pha. Mục tiêu là đổi nhịp mượt, không sốc." },
-      { date: "27/04", phase: "Chuyển sang đề trộn", physics: ["Bắc Trung Nam Đề 19, 20, 21", "VSAT: 5, 6, 7, 8"], english: ["Topic 17, 18, 19, 20"], review: ["15 phút cuối ngày"], note: "Bắt đầu cảm giác vào form, nhưng vẫn phải giữ đầu lạnh." },
-      { date: "28/04", phase: "Đề trộn", physics: ["Bắc Trung Nam Đề 22, 23, 24", "VSAT: 9, 10, 11, 12"], english: ["Topic 21, 22, 23, 24"], review: ["Redo lỗi nặng của 26-27/04"], note: "Từ đây ưu tiên xử lý lỗi thật, không chỉ tick cho đẹp." },
-      { date: "29/04", phase: "Đề trộn", physics: ["Bắc Trung Nam Đề 25, 26, 27", "VSAT: 13, 14, 15, 16"], english: ["Đề 11, 12, 13, 14"], review: ["Ôn lại cụm mạch điện và dao động"], note: "Giữ tốc độ vừa đủ để mai còn tỉnh táo." },
-      { date: "30/04", phase: "Đề trộn", physics: ["Bắc Trung Nam Đề 28, 29, 30", "VSAT: 17, 18"], english: ["Đề 15, 16"], review: ["Xem lại lỗi 26-29/04"], note: "Ngày lễ nhưng nhịp học thì không xin nghỉ." },
-      { date: "01/05", phase: "Đề trộn", physics: ["Bắc Trung Nam Đề 31, 32, 33", "VSAT: 19, 20"], english: ["Topic 25, 26, 27, 28"], review: ["Xem lại lỗi 28-30/04"], note: "Đừng nghỉ lễ trong tâm hồn." },
-      { date: "02/05", phase: "Đề trộn", physics: ["Bắc Trung Nam Đề 37, 38, 39", "VSAT: 19, 20, 21, 22"], english: ["Topic 29, 30, 31, 32"], review: ["20 phút cuối ngày"], note: "Giữ nhịp, đừng để một ngày xấu phá cả chuỗi." },
-      { date: "03/05", phase: "Đề trộn", physics: ["Bắc Trung Nam Đề 40, 41, 42", "VSAT: 23, 24, 25, 26"], english: ["Topic 33, 34, 35, 36"], review: ["Redo cụm sai nhiều nhất"], note: "Tập trung vào lỗi nặng, không đi lang thang sang kiến thức mới." },
-      { date: "04/05", phase: "Đề trộn", physics: ["Bắc Trung Nam Đề 43, 44, 45", "VSAT: 27, 28, 29, 30"], english: ["Topic 37, 38, 39, 40"], review: ["Tổng ôn topic Anh 1-40 bằng recall ngắn"], note: "Mốc lớn: xong HSA, 45 đề bộ 60, 30 VSAT, 40 topic Anh." },
-      { date: "05/05", phase: "Nước rút vừa phải", physics: ["Bắc Trung Nam Đề 46, 47, 48", "VSAT: 31, 32, 33, 34, 35"], english: ["Đề 17, 18, 19, 20, 21"], review: ["Chỉ rà lỗi điển hình, không mở rộng thêm"], note: "Ngày nặng vừa phải, vẫn trong vùng người thường còn sống được." },
-      { date: "06/05", phase: "Nước rút vừa phải", physics: ["Bắc Trung Nam Đề 49, 50, 51", "VSAT: 36, 37, 38, 39, 40"], english: ["Đề 22, 23, 24, 25"], review: ["Tối chỉ ôn lỗi, không học lan man thêm"], note: "Ngày chốt chắc, không cố nhét cả vũ trụ vào đầu." }
+    const STORAGE_KEY = "vsat_vocab_memory_lab_v1";
+    const INTERVALS = [0, 1, 3, 7, 14];
+    const STAGE_LABELS = [
+      "Mới nhặt",
+      "Đã chạm mặt",
+      "Bắt đầu bám",
+      "Gần tự động",
+      "Khóa dài hạn"
     ];
 
-    const paceClassMap = {
-      "Nhanh hơn dự kiến": "pace-fast",
-      "Đúng nhịp": "pace-on",
-      "Chậm hơn dự kiến": "pace-slow",
-      "Tắc tiến độ": "pace-stuck"
+    const initialWords = [
+      {
+        id: "w1",
+        word: "meticulous",
+        phonetic: "/məˈtɪkjələs/",
+        pos: "adj.",
+        meaning: "tỉ mỉ, cực kì cẩn thận trong từng chi tiết",
+        nuance: "dùng khi ai đó làm việc chuẩn xác đến mức soi cả lỗi rất nhỏ",
+        collocations: "meticulous planning, meticulous notes",
+        example: "She kept a meticulous record of every vocabulary mistake after each mock test.",
+        prompt: "Nhớ lại cảm giác rà từng lỗi nhỏ sau một đề tiếng Anh và không bỏ sót.",
+        source: "Đề 17",
+        tags: ["error-log", "study"],
+        stage: 1,
+        successes: 2,
+        lapses: 0,
+        lastReviewed: "2026-04-22",
+        nextReview: "2026-04-23"
+      },
+      {
+        id: "w2",
+        word: "retain",
+        phonetic: "/rɪˈteɪn/",
+        pos: "v.",
+        meaning: "ghi nhớ và giữ lại trong đầu",
+        nuance: "hợp khi nói về kiến thức, thông tin hoặc khả năng giữ tập trung",
+        collocations: "retain information, retain focus",
+        example: "You retain vocabulary better when you recall it before looking at the answer.",
+        prompt: "Từ khóa lõi của cả trang này: làm sao để não giữ được từ lâu hơn.",
+        source: "Đề 18",
+        tags: ["memory", "core"],
+        stage: 2,
+        successes: 3,
+        lapses: 1,
+        lastReviewed: "2026-04-20",
+        nextReview: "2026-04-23"
+      },
+      {
+        id: "w3",
+        word: "subtle",
+        phonetic: "/ˈsʌtl/",
+        pos: "adj.",
+        meaning: "tinh tế, khó nhận ra ngay nếu không chú ý",
+        nuance: "hay đi với nghĩa, khác biệt, thay đổi hoặc gợi ý mờ",
+        collocations: "subtle difference, subtle signal",
+        example: "There is a subtle difference between familiar words and words you can actually use.",
+        prompt: "Nhớ những bẫy từ gần nghĩa trong reading.",
+        source: "Đề 18",
+        tags: ["reading", "nuance"],
+        stage: 0,
+        successes: 0,
+        lapses: 0,
+        lastReviewed: "",
+        nextReview: "2026-04-23"
+      },
+      {
+        id: "w4",
+        word: "compelling",
+        phonetic: "/kəmˈpelɪŋ/",
+        pos: "adj.",
+        meaning: "rất thuyết phục, lôi cuốn, đủ mạnh để kéo sự chú ý",
+        nuance: "dùng cho argument, reason, story, evidence",
+        collocations: "compelling reason, compelling evidence",
+        example: "A compelling image or personal memory makes a new word easier to retrieve later.",
+        prompt: "Tạo móc cảm xúc hoặc hình ảnh cho từ khó.",
+        source: "Đề 19",
+        tags: ["emotion", "writing"],
+        stage: 3,
+        successes: 5,
+        lapses: 1,
+        lastReviewed: "2026-04-21",
+        nextReview: "2026-04-28"
+      },
+      {
+        id: "w5",
+        word: "allocate",
+        phonetic: "/ˈæləkeɪt/",
+        pos: "v.",
+        meaning: "phân bổ, dành ra một phần thời gian hoặc nguồn lực",
+        nuance: "rất hợp với quản lí thời gian, ngân sách, tài nguyên",
+        collocations: "allocate time, allocate resources",
+        example: "Allocate five minutes after every test to harvest useful vocabulary.",
+        prompt: "Nghĩ đến việc chốt 5 phút cuối đề để chắt từ mới.",
+        source: "Đề 19",
+        tags: ["time", "habit"],
+        stage: 1,
+        successes: 1,
+        lapses: 0,
+        lastReviewed: "2026-04-22",
+        nextReview: "2026-04-23"
+      },
+      {
+        id: "w6",
+        word: "consolidate",
+        phonetic: "/kənˈsɒlɪdeɪt/",
+        pos: "v.",
+        meaning: "củng cố, gom lại cho chắc hơn",
+        nuance: "đúng chất học tập: sau khi nhận diện, phải củng cố bằng lần ôn kế tiếp",
+        collocations: "consolidate knowledge, consolidate learning",
+        example: "Sleep and spaced review help consolidate fragile vocabulary memories.",
+        prompt: "Nhớ liên hệ với giai đoạn ngủ và ôn ngắt quãng.",
+        source: "Đề 20",
+        tags: ["science", "memory"],
+        stage: 2,
+        successes: 3,
+        lapses: 0,
+        lastReviewed: "2026-04-22",
+        nextReview: "2026-04-25"
+      },
+      {
+        id: "w7",
+        word: "hamper",
+        phonetic: "/ˈhæmpə(r)/",
+        pos: "v.",
+        meaning: "cản trở, làm chậm lại",
+        nuance: "hay gặp trong reading khi nói về yếu tố tiêu cực ảnh hưởng kết quả",
+        collocations: "hamper progress, hamper performance",
+        example: "Passive rereading can hamper long-term recall because the brain feels falsely fluent.",
+        prompt: "Từ dùng để cảnh báo việc đọc lại quá nhiều mà không recall.",
+        source: "Đề 20",
+        tags: ["reading", "warning"],
+        stage: 0,
+        successes: 0,
+        lapses: 0,
+        lastReviewed: "",
+        nextReview: "2026-04-23"
+      },
+      {
+        id: "w8",
+        word: "retrieve",
+        phonetic: "/rɪˈtriːv/",
+        pos: "v.",
+        meaning: "lôi lại, truy xuất thông tin đã học từ trí nhớ",
+        nuance: "đây là động từ trung tâm của active recall",
+        collocations: "retrieve information, retrieve from memory",
+        example: "The harder you have to retrieve a word, the stronger the memory trace can become.",
+        prompt: "Đây là từ cốt lõi của active recall và flashcard.",
+        source: "Đề 21",
+        tags: ["active-recall", "core"],
+        stage: 2,
+        successes: 4,
+        lapses: 1,
+        lastReviewed: "2026-04-22",
+        nextReview: "2026-04-23"
+      }
+    ];
+
+    const defaultState = {
+      words: initialWords,
+      selectedId: initialWords[0].id,
+      search: "",
+      sourceFilter: initialWords[0].source,
+      statusFilter: "due",
+      showAnswer: false
     };
 
-    const STORAGE_KEY = "study_schedule_dashboard_v1";
     const app = document.getElementById("app");
-    let flagBurstTimer = 0;
-    let flagBurstLoop = 0;
-    let saveTimer = 0;
-    let renderRaf = 0;
-    let syncHeightRaf = 0;
-    let searchInputTimer = 0;
 
     function clone(value) {
       if (typeof structuredClone === "function") return structuredClone(value);
       return JSON.parse(JSON.stringify(value));
     }
 
-    function expandTaskEntry(text) {
-      const normalized = String(text).trim();
-      const colonMatch = normalized.match(/^([^:]+:\s*)(.+)$/);
-      if (colonMatch) {
-        const [, prefix, rest] = colonMatch;
-        if (rest.includes(",")) {
-          return rest.split(",").map((part) => `${prefix}${part.trim()}`).filter(Boolean);
-        }
-      }
-
-      const seriesMatch = normalized.match(/^(Bắc Trung Nam Đề|Đề|Topic)\s+(.+)$/i);
-      if (seriesMatch && seriesMatch[2].includes(",")) {
-        const label = seriesMatch[1];
-        return seriesMatch[2].split(",").map((part) => `${label} ${part.trim()}`).filter(Boolean);
-      }
-
-      return [normalized];
+    function todayString() {
+      const now = new Date();
+      const offset = now.getTimezoneOffset();
+      const local = new Date(now.getTime() - offset * 60000);
+      return local.toISOString().slice(0, 10);
     }
 
-    function createTaskItems(list) {
-      return list.flatMap((text) => expandTaskEntry(text)).map((text) => ({ text, done: false }));
+    function addDays(dateString, days) {
+      const base = dateString ? new Date(dateString + "T00:00:00") : new Date(todayString() + "T00:00:00");
+      base.setDate(base.getDate() + days);
+      return base.toISOString().slice(0, 10);
     }
 
-    function mergeTaskItems(savedItems, freshItems) {
-      if (!Array.isArray(savedItems)) return freshItems;
-
-      const savedByText = new Map(savedItems.map((item) => [item.text, !!item.done]));
-      const groupedDonePrefixes = savedItems
-        .filter((item) => item && item.done && typeof item.text === "string")
-        .map((item) => item.text);
-
-      return freshItems.map((item) => {
-        if (savedByText.has(item.text)) {
-          return { ...item, done: savedByText.get(item.text) };
-        }
-
-        const inheritedDone = groupedDonePrefixes.some((text) => {
-          if (text === item.text) return true;
-          if (text.includes(":")) {
-            const [prefix, rest] = text.split(":");
-            return item.text.startsWith(`${prefix}:`) && rest.includes(item.text.split(":").pop().trim());
-          }
-          const labelMatch = text.match(/^(Bắc Trung Nam Đề|Đề|Topic)\s+(.+)$/i);
-          if (labelMatch) {
-            return item.text.startsWith(`${labelMatch[1]} `) && labelMatch[2].includes(item.text.replace(`${labelMatch[1]} `, "").trim());
-          }
-          return false;
-        });
-
-        return { ...item, done: inheritedDone };
-      });
-    }
-
-    function createTaskMap() {
-      const map = {};
-      initialSchedule.forEach((day) => {
-        map[day.date] = {
-          physics: createTaskItems(day.physics),
-          english: createTaskItems(day.english),
-          review: createTaskItems(day.review),
-          dailyNote: "",
-          pace: "Đúng nhịp",
-          customAdd: ""
-        };
-      });
-      return map;
-    }
-
-    const defaultState = {
-      schedule: clone(initialSchedule),
-      selectedDate: initialSchedule[0].date,
-      query: "",
-      phaseFilter: "Tất cả",
-      tab: "all",
-      tasks: createTaskMap()
-    };
-
-    function mergeTasks(savedTasks, freshTasks) {
-      const merged = {};
-      Object.keys(freshTasks).forEach((date) => {
-        const savedDay = savedTasks && savedTasks[date] ? savedTasks[date] : {};
-        merged[date] = {
-          physics: mergeTaskItems(savedDay.physics, freshTasks[date].physics),
-          english: mergeTaskItems(savedDay.english, freshTasks[date].english),
-          review: mergeTaskItems(savedDay.review, freshTasks[date].review),
-          dailyNote: typeof savedDay.dailyNote === "string" ? savedDay.dailyNote : "",
-          pace: typeof savedDay.pace === "string" ? savedDay.pace : "Đúng nhịp",
-          customAdd: typeof savedDay.customAdd === "string" ? savedDay.customAdd : ""
-        };
-      });
-      return merged;
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
     }
 
     function loadState() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return clone(defaultState);
-        const saved = JSON.parse(raw);
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        if (!saved || !Array.isArray(saved.words)) return clone(defaultState);
         return {
-          schedule: Array.isArray(saved.schedule) ? saved.schedule : clone(initialSchedule),
-          selectedDate: typeof saved.selectedDate === "string" ? saved.selectedDate : initialSchedule[0].date,
-          query: typeof saved.query === "string" ? saved.query : "",
-          phaseFilter: typeof saved.phaseFilter === "string" ? saved.phaseFilter : "Tất cả",
-          tab: typeof saved.tab === "string" ? saved.tab : "all",
-          tasks: mergeTasks(saved.tasks, createTaskMap())
+          ...clone(defaultState),
+          ...saved,
+          words: saved.words.map((item) => ({
+            successes: 0,
+            lapses: 0,
+            stage: 0,
+            lastReviewed: "",
+            nextReview: todayString(),
+            ...item
+          }))
         };
-      } catch (err) {
-        console.error("Không đọc được dữ liệu localStorage, dùng trạng thái mặc định:", err);
+      } catch (error) {
         return clone(defaultState);
       }
     }
 
-    const state = loadState();
-
-    function persistState() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (err) {
-        console.error("Không lưu được dữ liệu vào localStorage:", err);
-      }
-    }
+    let state = loadState();
 
     function saveState() {
-      if (saveTimer) clearTimeout(saveTimer);
-      saveTimer = window.setTimeout(() => {
-        persistState();
-        saveTimer = 0;
-      }, 120);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
-    function flushState() {
-      if (saveTimer) {
-        clearTimeout(saveTimer);
-        saveTimer = 0;
-      }
-      persistState();
+    function getSources(words = state.words) {
+      return ["all", ...new Set(words.map((item) => item.source))];
     }
 
-    function scheduleRender() {
-      if (renderRaf) return;
-      renderRaf = window.requestAnimationFrame(() => {
-        renderRaf = 0;
-        render();
+    function isDue(item) {
+      return !item.nextReview || item.nextReview <= todayString();
+    }
+
+    function getRetention(item) {
+      const total = item.successes + item.lapses;
+      if (!total) return 50;
+      return Math.round((item.successes / total) * 100);
+    }
+
+    function getStageClass(stage) {
+      return `stage-${Math.max(0, Math.min(4, stage))}`;
+    }
+
+    function getStageLabel(stage) {
+      return STAGE_LABELS[Math.max(0, Math.min(4, stage))];
+    }
+
+    function getFilteredWords() {
+      const keyword = state.search.trim().toLowerCase();
+      return state.words.filter((item) => {
+        const matchesSource = state.sourceFilter === "all" || item.source === state.sourceFilter;
+        const matchesStatus =
+          state.statusFilter === "all" ||
+          (state.statusFilter === "due" && isDue(item)) ||
+          (state.statusFilter === "growing" && item.stage >= 1 && item.stage <= 3) ||
+          (state.statusFilter === "locked" && item.stage >= 4);
+        const haystack = [
+          item.word,
+          item.meaning,
+          item.nuance,
+          item.collocations,
+          item.example,
+          item.prompt,
+          item.source,
+          ...(item.tags || [])
+        ].join(" ").toLowerCase();
+        const matchesKeyword = !keyword || haystack.includes(keyword);
+        return matchesSource && matchesStatus && matchesKeyword;
       });
     }
 
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+    function getSelectedWord(filteredWords) {
+      const selected = filteredWords.find((item) => item.id === state.selectedId);
+      if (selected) return selected;
+      return filteredWords[0] || state.words[0] || null;
     }
 
-    function getSelectedDay() {
-      return state.schedule.find((day) => day.date === state.selectedDate) || state.schedule[0];
+    function pickNextWord(currentId, filteredWords) {
+      if (!filteredWords.length) return "";
+      const currentIndex = filteredWords.findIndex((item) => item.id === currentId);
+      if (currentIndex === -1 || currentIndex === filteredWords.length - 1) return filteredWords[0].id;
+      return filteredWords[currentIndex + 1].id;
     }
 
-    function allTasks() {
-      return Object.values(state.tasks).flatMap((day) => [...day.physics, ...day.english]);
+    function updateWord(wordId, updater) {
+      state.words = state.words.map((item) => item.id === wordId ? updater(item) : item);
+      saveState();
+      render();
     }
 
-    function getProgress() {
-      const total = allTasks().length;
-      const done = allTasks().filter((item) => item.done).length;
-      return total ? Math.round((done * 100) / total) : 0;
-    }
+    function gradeWord(wordId, quality) {
+      const currentDay = todayString();
+      updateWord(wordId, (item) => {
+        let stage = item.stage;
+        let successes = item.successes;
+        let lapses = item.lapses;
 
-    function groupProgress(key) {
-      const items = Object.values(state.tasks).flatMap((day) => day[key]);
-      const done = items.filter((item) => item.done).length;
-      return items.length ? Math.round((done * 100) / items.length) : 0;
-    }
+        if (quality === "again") {
+          stage = Math.max(0, stage - 1);
+          lapses += 1;
+        } else if (quality === "hard") {
+          stage = Math.max(1, stage);
+          successes += 1;
+        } else if (quality === "good") {
+          stage = Math.min(4, stage + 1);
+          successes += 1;
+        } else if (quality === "easy") {
+          stage = Math.min(4, stage + 2);
+          successes += 1;
+        }
 
-    function filteredDays() {
-      return state.schedule.filter((day) => {
-        const taskGroup = state.tasks[day.date];
-        const tasks = [...taskGroup.physics, ...taskGroup.english, ...taskGroup.review];
-        const haystack = [day.date, day.phase, day.note, ...day.physics, ...day.english, ...day.review].join(" ").toLowerCase();
-        const queryMatch = !state.query || haystack.includes(state.query.toLowerCase());
-        const phaseMatch = state.phaseFilter === "Tất cả" || day.phase === state.phaseFilter;
-        let tabMatch = true;
-        if (state.tab === "active") tabMatch = tasks.some((task) => !task.done);
-        if (state.tab === "done") tabMatch = tasks.every((task) => task.done);
-        return queryMatch && phaseMatch && tabMatch;
+        stage = Math.max(0, Math.min(4, stage));
+        const waitDays =
+          quality === "again"
+            ? 0
+            : quality === "easy"
+              ? (INTERVALS[stage] || 14) + 3
+              : (INTERVALS[stage] || 14);
+
+        return {
+          ...item,
+          stage,
+          successes,
+          lapses,
+          lastReviewed: currentDay,
+          nextReview: addDays(currentDay, waitDays)
+        };
       });
-    }
 
-    function phases() {
-      return ["Tất cả", ...new Set(state.schedule.map((day) => day.phase))];
-    }
-
-    function toggleTask(group, index) {
-      const item = state.tasks[state.selectedDate][group][index];
-      item.done = !item.done;
+      const filteredWords = getFilteredWords();
+      state.selectedId = pickNextWord(wordId, filteredWords);
+      state.showAnswer = false;
       saveState();
-      scheduleRender();
+      render();
     }
 
-    function setPace(value) {
-      state.tasks[state.selectedDate].pace = value;
+    function addWordFromForm(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const formData = new FormData(form);
+      const word = String(formData.get("word") || "").trim();
+      const meaning = String(formData.get("meaning") || "").trim();
+      const example = String(formData.get("example") || "").trim();
+      if (!word || !meaning || !example) return;
+
+      const newWord = {
+        id: `w_${Date.now()}`,
+        word,
+        phonetic: String(formData.get("phonetic") || "").trim(),
+        pos: String(formData.get("pos") || "").trim(),
+        meaning,
+        nuance: String(formData.get("nuance") || "").trim(),
+        collocations: String(formData.get("collocations") || "").trim(),
+        example,
+        prompt: String(formData.get("prompt") || "").trim() || `Nhớ lại ngữ cảnh gốc khi gặp từ "${word}".`,
+        source: String(formData.get("source") || "").trim() || "Đề mới",
+        tags: String(formData.get("tags") || "").split(",").map((item) => item.trim()).filter(Boolean),
+        stage: 0,
+        successes: 0,
+        lapses: 0,
+        lastReviewed: "",
+        nextReview: todayString()
+      };
+
+      state.words = [newWord, ...state.words];
+      state.selectedId = newWord.id;
+      state.showAnswer = false;
       saveState();
-      scheduleRender();
-    }
-
-    function sectionHtml(title, groupKey, items) {
-      const icons = { physics: "◎", english: "△", review: "✓" };
-      const doneCount = items.filter((item) => item.done).length;
-      return `
-        <section class="section">
-          <h3>${icons[groupKey]} ${escapeHtml(title)}<span class="section-count">${doneCount}/${items.length}</span></h3>
-          <div class="task-list">
-            ${items.map((item, idx) => `
-              <button class="task-btn ${item.done ? "done" : ""}" data-action="toggle" data-group="${groupKey}" data-index="${idx}">
-                <span class="check"></span>
-                <span class="task-text">${escapeHtml(item.text)}</span>
-              </button>
-            `).join("")}
-          </div>
-        </section>
-      `;
+      form.reset();
+      render();
     }
 
     function render() {
-      const selectedDay = getSelectedDay();
-      const selectedTaskState = state.tasks[state.selectedDate];
-      const visibleDays = filteredDays();
-      const all = allTasks();
-      const total = all.length;
-      const done = all.filter((item) => item.done).length;
-      const progress = total ? Math.round((done * 100) / total) : 0;
-      const physicsProgress = groupProgress("physics");
-      const englishProgress = groupProgress("english");
-      const totalTaskLabel = `${done}/${total}`;
-      const currentDayTasks = [...selectedTaskState.physics, ...selectedTaskState.english, ...selectedTaskState.review];
-      const currentDone = currentDayTasks.filter((item) => item.done).length;
-      const currentPercent = currentDayTasks.length ? Math.round((currentDone * 100) / currentDayTasks.length) : 0;
+      const sources = getSources();
+      const sourceOptions = sources.filter((source) => source !== "all");
+      if (!sourceOptions.includes(state.sourceFilter)) {
+        state.sourceFilter = sourceOptions[0] || "all";
+      }
+
+      const activeSource = state.sourceFilter === "all"
+        ? (sourceOptions[0] || "Đề mới")
+        : state.sourceFilter;
+      const filteredWords = getFilteredWords();
+      const scopedWords = filteredWords.filter((item) => item.source === activeSource);
+      const wordsToRender = scopedWords.length ? scopedWords : filteredWords;
+      const selectedWord = getSelectedWord(wordsToRender);
+      if (selectedWord && state.selectedId !== selectedWord.id) {
+        state.selectedId = selectedWord.id;
+        saveState();
+      }
+
+      const dueCount = state.words.filter(isDue).length;
+      const masteredCount = state.words.filter((item) => item.stage >= 4).length;
+      const averageRetention = state.words.length
+        ? Math.round(state.words.reduce((sum, item) => sum + getRetention(item), 0) / state.words.length)
+        : 0;
+      const reviewedCount = state.words.filter((item) => item.lastReviewed === todayString()).length;
+      const activeSourceWords = state.words.filter((item) => item.source === activeSource);
+      const activeSourceDue = activeSourceWords.filter(isDue).length;
+      const activeSourceDone = activeSourceWords.filter((item) => item.lastReviewed === todayString()).length;
+      const activeSourceRetention = activeSourceWords.length
+        ? Math.round(activeSourceWords.reduce((sum, item) => sum + getRetention(item), 0) / activeSourceWords.length)
+        : 0;
 
       app.innerHTML = `
-        <section class="hero-shell">
+        <section class="glass hero-shell">
           <div class="hero">
-            <div class="hero-copy">
-              <div class="hero-day-card">
-                <div class="hero-planet" aria-hidden="true">
-                  <div class="hero-planet-ball">
-                    <div class="hero-planet-aura"></div>
-                    <div class="hero-planet-atmosphere"></div>
-                    <div class="hero-planet-surface"></div>
-                    <div class="hero-planet-night"></div>
-                    <div class="hero-planet-band"></div>
-                    <div class="hero-planet-crater c1"></div>
-                    <div class="hero-planet-crater c2"></div>
-                    <div class="hero-planet-crater c3"></div>
-                    <div class="hero-planet-orbit po1"></div>
-                    <div class="hero-planet-orbit po2"></div>
-                    <div class="hero-planet-ring"></div>
-                    <div class="hero-planet-moon one"></div>
-                    <div class="hero-planet-moon two"></div>
-                  </div>
-                  <div class="hero-planet-shadow"></div>
+            <div class="hero-copy compact">
+              <div class="pill">VSAT Vocab Memory Lab</div>
+              <h1>Chọn từng đề, nhặt từ ngay sau bài làm, rồi ôn lại bằng một màn kiểm tra đủ lớn để ép não thật sự recall.</h1>
+              <p>Flow mới đi đúng kiểu `vsat.html`: bên trái chọn đề như chọn ngày, bên phải tập trung vào một từ đang luyện. Mục tiêu là giảm thao tác thừa, thêm từ nhanh hơn, và để phần kiểm tra từ vựng trở thành khu trung tâm rõ ràng nhất của trang.</p>
+              <div class="hero-tags">
+                <span class="hero-tag">Chọn đề như timeline</span>
+                <span class="hero-tag">Thêm từ ngay trong sidebar</span>
+                <span class="hero-tag">Recall trước khi lật</span>
+                <span class="hero-tag">Tự chấm mức nhớ</span>
+              </div>
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <div class="stat-label">Đến hạn ôn</div>
+                  <div class="stat-value">${dueCount}</div>
+                  <div class="stat-note">Những từ nên được gọi lại ngay hôm nay trước khi dấu nhớ mờ đi thêm.</div>
                 </div>
-                <div class="hero-day-main">
-                  <div class="pill">VSAT Mission Control</div>
-                  <div class="mission-kicker">Ngày đang học</div>
-                  <div class="mission-title">${escapeHtml(selectedDay.date)} · ${escapeHtml(selectedDay.phase)}</div>
-                  <div class="progress hero-progress-inline"><span style="width:${currentPercent}%"></span></div>
-                  <div class="mission-copy">${escapeHtml(selectedDay.note)}</div>
+                <div class="stat-card">
+                  <div class="stat-label">Đề đang chọn</div>
+                  <div class="stat-value">${activeSourceWords.length}</div>
+                  <div class="stat-note">Số từ hiện đang nằm trong cụm đề ${escapeHtml(activeSource)}.</div>
                 </div>
-                <div class="hero-day-focus">
-                  <div class="hero-focus-card">
-                    <div class="hero-focus-label">Ngày đang hiện</div>
-                    <div class="hero-focus-value">${visibleDays.length}</div>
-                    <div class="hero-focus-note">Số ngày còn lại theo bộ lọc hiện tại.</div>
-                  </div>
-                  <div class="hero-focus-card">
-                    <div class="hero-focus-label">Đầu việc đã xong</div>
-                    <div class="hero-focus-value">${done}/${total}</div>
-                    <div class="hero-focus-note">Tiến độ tổng hợp của toàn bộ kế hoạch.</div>
-                  </div>
-                  <div class="hero-focus-card">
-                    <div class="hero-focus-label">Ngày ${escapeHtml(selectedDay.date)}</div>
-                    <div class="hero-focus-value">${currentDone}/${currentDayTasks.length}</div>
-                    <div class="hero-focus-note">Số đầu việc đã tick trong ngày đang chọn.</div>
-                  </div>
-                  <div class="hero-focus-card focus-chip pace-chip">
-                    <div class="hero-focus-label">Nhịp hiện tại</div>
-                    <div class="hero-focus-value">${escapeHtml(selectedTaskState.pace)}</div>
-                    <details class="pace-menu">
-                      <summary class="badge ${paceClassMap[selectedTaskState.pace]}">
-                        <span class="pace-current">${escapeHtml(selectedTaskState.pace)}</span>
-                      </summary>
-                      <div class="pace-options">
-                        ${Object.keys(paceClassMap).map((pace) => `
-                          <button
-                            class="pace-option badge ${paceClassMap[pace]} ${pace === selectedTaskState.pace ? "active" : ""}"
-                            data-action="set-pace"
-                            data-pace="${escapeHtml(pace)}"
-                            type="button"
-                          >${escapeHtml(pace)}</button>
-                        `).join("")}
-                      </div>
-                    </details>
-                  </div>
+                <div class="stat-card">
+                  <div class="stat-label">Đã ôn hôm nay</div>
+                  <div class="stat-value">${reviewedCount}</div>
+                  <div class="stat-note">Số lần bạn đã bật lại dấu nhớ trong ngày hiện tại.</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Giữ lại trung bình</div>
+                  <div class="stat-value">${averageRetention}%</div>
+                  <div class="stat-note">${masteredCount} từ đã vào vùng nhớ dài hạn, nhưng ưu tiên hôm nay vẫn là recall đúng lúc.</div>
                 </div>
               </div>
             </div>
 
-            <div class="hero-orbit">
-              <div class="orbit-progress-wrap">
-                <div class="orbit-progress-columns">
-                  <div class="orbit-progress-item">
-                    <div class="orbit-progress-value">${progress}%</div>
-                    <div class="orbit-progress-track">
-                      <div class="orbit-progress-fill" style="height:${progress}%"></div>
-                    </div>
-                    <div class="orbit-progress-name">Tổng nhịp</div>
+            <div class="review-card">
+              ${selectedWord ? `
+                <div class="review-planet" aria-hidden="true"></div>
+                <div class="review-main">
+                  <div class="review-kicker">Đang kiểm tra</div>
+                  <div class="review-title">${escapeHtml(selectedWord.word)}</div>
+                  <div class="review-sub">${escapeHtml(selectedWord.phonetic || selectedWord.pos || "")}</div>
+                </div>
+                <div class="review-meta">
+                  <span class="badge">${escapeHtml(selectedWord.source)}</span>
+                  <span class="badge ${getStageClass(selectedWord.stage)}">${escapeHtml(getStageLabel(selectedWord.stage))}</span>
+                  <span class="badge">Recall trước khi nhìn</span>
+                  <span class="badge">Lần ôn kế: ${escapeHtml(selectedWord.nextReview || "hôm nay")}</span>
+                </div>
+                <div class="focus-prompt"><strong>Gợi nhớ:</strong> ${escapeHtml(selectedWord.prompt)}</div>
+                <div class="reveal-shell">
+                  <div class="reveal-answer ${state.showAnswer ? "" : "hidden"}">
+                    <div class="answer-title">Đáp án mở rộng</div>
+                    <div class="answer-line"><strong>Nghĩa:</strong> ${escapeHtml(selectedWord.meaning)}</div>
+                    <div class="answer-line"><strong>Sắc thái:</strong> ${escapeHtml(selectedWord.nuance || "Tự bổ sung một ghi chú ngắn để tăng liên kết nghĩa.")}</div>
+                    <div class="answer-line"><strong>Collocations:</strong> ${escapeHtml(selectedWord.collocations || "Chưa thêm cụm đi cùng.")}</div>
+                    <div class="answer-line"><strong>Ví dụ:</strong> ${escapeHtml(selectedWord.example)}</div>
                   </div>
-                  <div class="orbit-progress-item">
-                    <div class="orbit-progress-value">${physicsProgress}%</div>
-                    <div class="orbit-progress-track">
-                      <div class="orbit-progress-fill physics" style="height:${physicsProgress}%"></div>
-                    </div>
-                    <div class="orbit-progress-name">Vật lí</div>
+                  <div class="review-actions">
+                    <button class="btn primary" data-action="toggle-answer">${state.showAnswer ? "Ẩn đáp án để thử lại" : "Hiện đáp án sau khi đã tự nhớ"}</button>
+                    <button class="btn" data-action="next-word">Chuyển sang từ kế</button>
                   </div>
-                  <div class="orbit-progress-item">
-                    <div class="orbit-progress-value">${englishProgress}%</div>
-                    <div class="orbit-progress-track">
-                      <div class="orbit-progress-fill english" style="height:${englishProgress}%"></div>
-                    </div>
-                    <div class="orbit-progress-name">Tiếng Anh</div>
-                  </div>
-                  <div class="orbit-progress-item">
-                    <div class="orbit-progress-value">${totalTaskLabel}</div>
-                    <div class="orbit-progress-track">
-                      <div class="orbit-progress-fill tasks" style="height:${progress}%"></div>
-                    </div>
-                    <div class="orbit-progress-name">Công việc</div>
+                  <div class="grade-actions">
+                    <button class="grade-btn danger" data-grade="again">Quên sạch</button>
+                    <button class="grade-btn warn" data-grade="hard">Nhớ lơ mơ</button>
+                    <button class="grade-btn good" data-grade="good">Nhớ khá chắc</button>
+                    <button class="grade-btn great" data-grade="easy">Nhớ rất nhanh</button>
                   </div>
                 </div>
-              </div>
+                <div class="review-grid">
+                  <div class="review-mini">
+                    <div class="review-mini-label">Từ của đề này</div>
+                    <div class="review-mini-value">${activeSourceWords.length}</div>
+                    <div class="review-mini-note">Số mục đang gắn với ${escapeHtml(activeSource)}.</div>
+                  </div>
+                  <div class="review-mini">
+                    <div class="review-mini-label">Đến hạn trong đề</div>
+                    <div class="review-mini-value">${activeSourceDue}</div>
+                    <div class="review-mini-note">Những mục nên được ôn ngay trong cụm đề hiện tại.</div>
+                  </div>
+                  <div class="review-mini">
+                    <div class="review-mini-label">Đã chạm hôm nay</div>
+                    <div class="review-mini-value">${activeSourceDone}</div>
+                    <div class="review-mini-note">Số thẻ của đề này bạn đã thực sự xem lại trong ngày.</div>
+                  </div>
+                  <div class="review-mini">
+                    <div class="review-mini-label">Giữ lại trung bình</div>
+                    <div class="review-mini-value">${activeSourceRetention}%</div>
+                    <div class="review-mini-note">Ước lượng chất lượng nhớ của riêng cụm đề đang chọn.</div>
+                  </div>
+                </div>
+              ` : `
+                <div class="empty-state">Không có từ nào khớp bộ lọc hiện tại. Hãy đổi filter hoặc thêm một từ mới từ đề vừa làm xong.</div>
+              `}
             </div>
           </div>
         </section>
 
-        <section class="dashboard">
-          <aside class="glass sidebar">
-            <div>
-              <div class="section-title">Radar điều hướng</div>
-            </div>
-
-            <div style="display:grid; gap:12px;">
-              <input id="searchInput" class="search" placeholder="Tìm theo ngày, môn, đề, topic..." value="${escapeHtml(state.query)}" />
-              <select id="phaseSelect" class="select">
-                ${phases().map((phase) => `<option value="${escapeHtml(phase)}" ${phase === state.phaseFilter ? "selected" : ""}>${escapeHtml(phase)}</option>`).join("")}
-              </select>
-              <div class="segmented">
-                <button class="segment-btn ${state.tab === "all" ? "active" : ""}" data-tab="all">Tất cả</button>
-                <button class="segment-btn ${state.tab === "active" ? "active" : ""}" data-tab="active">Đang làm</button>
-                <button class="segment-btn ${state.tab === "done" ? "active" : ""}" data-tab="done">Xong</button>
+        <section class="main-grid vocab-layout">
+          <aside class="glass sidebar vocab-sidebar">
+            <section class="glass panel">
+              <div>
+                <div class="section-title">Chọn Đề</div>
+                <div class="section-desc">Chọn từng đề ở đây giống chọn ngày trên trang gốc, rồi thêm hoặc ôn từ ngay theo đúng cụm đó.</div>
               </div>
-            </div>
-
-            <div class="radar">
-              <div class="radar-top">
-                <div>
-                  <div class="section-title" style="font-size:18px;">Timeline</div>
-                  <div class="section-desc" style="margin-top:4px;">Chọn nhanh ngày cần xử lý.</div>
-                </div>
-                <span class="badge ${paceClassMap[selectedTaskState.pace]}">${escapeHtml(selectedTaskState.pace)}</span>
-              </div>
-
-              <div class="date-list">
-                ${visibleDays.map((day) => {
-                  const taskState = state.tasks[day.date];
-                  const dayTasks = [...taskState.physics, ...taskState.english, ...taskState.review];
-                  const dayDone = dayTasks.filter((item) => item.done).length;
-                  const dayPercent = dayTasks.length ? Math.round((dayDone * 100) / dayTasks.length) : 0;
-
+              <div class="source-list">
+                ${sourceOptions.map((source) => {
+                  const words = state.words.filter((item) => item.source === source);
+                  const doneToday = words.filter((item) => item.lastReviewed === todayString()).length;
+                  const due = words.filter(isDue).length;
+                  const progress = words.length ? Math.round((doneToday * 100) / words.length) : 0;
                   return `
-                    <button class="date-btn ${state.selectedDate === day.date ? "active" : ""}" data-action="select-date" data-date="${day.date}">
-                      <div class="date-top">
+                    <button class="source-btn ${activeSource === source ? "active" : ""}" data-source="${escapeHtml(source)}">
+                      <div class="source-top">
                         <div>
-                          <div class="date-date">${escapeHtml(day.date)}</div>
-                          <div class="date-phase">${escapeHtml(day.phase)}</div>
+                          <div class="source-name">${escapeHtml(source)}</div>
+                          <div class="date-phase">${due} từ đến hạn</div>
                         </div>
-                        <span class="badge ${paceClassMap[taskState.pace]}">${escapeHtml(taskState.pace)}</span>
+                        <span class="badge">${doneToday}/${words.length}</span>
                       </div>
-                      <div class="date-count">${dayDone}/${dayTasks.length} đầu việc xong</div>
-                      <div class="progress" style="margin-top:10px;"><span style="width:${dayPercent}%"></span></div>
+                      <div class="source-count">${words.length} từ trong đề này</div>
+                      <div class="progress source-progress"><span style="width:${progress}%"></span></div>
                     </button>
                   `;
                 }).join("")}
               </div>
-            </div>
+            </section>
+
+            <section class="glass panel">
+              <div>
+                <div class="section-title">Nhập Từ Mới</div>
+                <div class="section-desc">Đang thêm cho <strong>${escapeHtml(activeSource)}</strong>. Chỉ giữ các trường thật cần để nhập nhanh.</div>
+              </div>
+              <form id="addWordForm" class="inline-add">
+                <div class="form-grid two">
+                  <div class="field">
+                    <label for="word">Từ</label>
+                    <input id="word" name="word" placeholder="retain" required />
+                  </div>
+                  <div class="field">
+                    <label for="pos">Từ loại</label>
+                    <input id="pos" name="pos" placeholder="v." />
+                  </div>
+                </div>
+                <div class="form-grid two">
+                  <div class="field">
+                    <label for="phonetic">Phiên âm</label>
+                    <input id="phonetic" name="phonetic" placeholder="/rɪˈteɪn/" />
+                  </div>
+                  <div class="field">
+                    <label for="source">Đề đang gắn</label>
+                    <input id="source" name="source" value="${escapeHtml(activeSource)}" readonly />
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="meaning">Nghĩa trọng tâm</label>
+                  <textarea id="meaning" name="meaning" placeholder="ghi nhớ và giữ lại trong đầu" required></textarea>
+                </div>
+                <div class="field">
+                  <label for="collocations">Cụm đi cùng</label>
+                  <input id="collocations" name="collocations" placeholder="retain information, retain control" />
+                </div>
+                <div class="field">
+                  <label for="example">Câu ví dụ lấy từ đề hoặc tự tạo</label>
+                  <textarea id="example" name="example" placeholder="Students retain information better when they test themselves." required></textarea>
+                </div>
+                <div class="field">
+                  <label for="prompt">Gợi nhớ cá nhân</label>
+                  <input id="prompt" name="prompt" placeholder="liên hệ với lỗi reading vừa gặp" />
+                </div>
+                <div class="deck-actions">
+                  <button class="btn primary" type="submit">Thêm từ vào ${escapeHtml(activeSource)}</button>
+                </div>
+              </form>
+            </section>
           </aside>
 
-          <div class="main">
-            <section class="glass mission-shell">
-              <div class="sections">
-                ${sectionHtml("Vật lí", "physics", selectedTaskState.physics)}
-                ${sectionHtml("Tiếng Anh", "english", selectedTaskState.english)}
-                ${sectionHtml("Ôn lỗi / Recall", "review", selectedTaskState.review)}
-              </div>
-
-              <div class="mission-footer">
-                <div class="hint">Các phần ghi chú kế hoạch, note thực tế, thêm việc phát sinh và reset dữ liệu vẫn nằm ở trang phụ để mặt chính luôn sạch và tập trung vào thao tác học chính.</div>
-                <div class="action-links">
-                  <a class="ghost-btn" href="vsat-center.html">Mở VSAT Center</a>
-                  <a class="ghost-btn" href="vsat-vocab.html">Mở Vocab Memory Lab</a>
-                  <span class="badge ${paceClassMap[selectedTaskState.pace]}">${escapeHtml(selectedTaskState.pace)}</span>
+          <section class="workspace slim">
+            <section class="glass panel">
+              <div class="workspace-toolbar">
+                <div class="toolbar-group">
+                  <div>
+                    <div class="section-title">Từ Của ${escapeHtml(activeSource)}</div>
+                    <div class="section-desc">Danh sách thẻ sống của riêng đề đang chọn. Bấm vào một từ để kéo nó lên khu kiểm tra lớn phía trên.</div>
+                  </div>
+                </div>
+                <div class="toolbar-group">
+                  <input id="searchInput" class="search" placeholder="Tìm theo từ, nghĩa, gợi nhớ..." value="${escapeHtml(state.search)}" />
+                  <button class="chip-btn ${state.statusFilter === "due" ? "active" : ""}" data-filter="due">Đến hạn</button>
+                  <button class="chip-btn ${state.statusFilter === "growing" ? "active" : ""}" data-filter="growing">Đang bám</button>
+                  <button class="chip-btn ${state.statusFilter === "locked" ? "active" : ""}" data-filter="locked">Khóa dài hạn</button>
+                  <button class="chip-btn ${state.statusFilter === "all" ? "active" : ""}" data-filter="all">Tất cả</button>
                 </div>
               </div>
+              ${wordsToRender.length ? `
+                <div class="word-grid single-column">
+                  ${wordsToRender.map((item) => `
+                    <article class="word-card ${selectedWord && selectedWord.id === item.id ? "active" : ""}" data-word-id="${escapeHtml(item.id)}">
+                      <div class="word-top">
+                        <div class="word-main">
+                          <div class="word-title">${escapeHtml(item.word)}</div>
+                          <div class="word-sub">${escapeHtml(item.phonetic || item.pos || "")}</div>
+                        </div>
+                        <span class="stage-badge ${getStageClass(item.stage)}">${escapeHtml(getStageLabel(item.stage))}</span>
+                      </div>
+                      <div class="word-copy">${escapeHtml(item.meaning)}</div>
+                      <div class="word-meta">
+                        <span class="meta-chip">${escapeHtml(item.source)}</span>
+                        <span class="meta-chip">Giữ lại ${getRetention(item)}%</span>
+                        <span class="meta-chip">${isDue(item) ? "Ôn hôm nay" : `Ôn ${escapeHtml(item.nextReview)}`}</span>
+                      </div>
+                    </article>
+                  `).join("")}
+                </div>
+              ` : `
+                <div class="empty-state">Bộ lọc hiện tại chưa có thẻ nào. Thử nới filter hoặc thêm từ mới từ đề vừa chữa.</div>
+              `}
             </section>
-
-          </div>
+          </section>
         </section>
 
-        <section class="schedule-divider">
-            <section class="glass schedule-shell">
-              <div class="schedule-head">
-                <div>
-                  <div class="section-title">Thời Khóa Biểu Tổng Thể</div>
-                  <div class="section-desc">Tách riêng để quét toàn bộ công việc. Mỗi môn chỉ hiện một dòng ngang gọn, bấm vào để bung chi tiết.</div>
-                </div>
-                <div class="schedule-stats">
-                  <span class="badge">${visibleDays.length} ngày</span>
-                  <span class="badge">${done}/${total} việc chính</span>
-                  <span class="badge ${paceClassMap[selectedTaskState.pace]}">${escapeHtml(selectedTaskState.pace)}</span>
-                </div>
-              </div>
-
-              <div class="schedule-table-wrap">
-                <table class="schedule-table">
-                  <thead>
-                    <tr>
-                      <th>Ngày</th>
-                      <th>Vật lí</th>
-                      <th>Tiếng Anh</th>
-                      <th>Tiến độ</th>
-                      <th>Ghi chú</th>
-                      <th>Chọn nhanh</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${visibleDays.map((day) => {
-                      const taskState = state.tasks[day.date];
-                      const mainTasks = [...taskState.physics, ...taskState.english];
-                      const mainDone = mainTasks.filter((item) => item.done).length;
-                      const mainPercent = mainTasks.length ? Math.round((mainDone * 100) / mainTasks.length) : 0;
-
-                      const renderTaskPanel = (title, items) => `
-                        <div class="schedule-task-panel">
-                          <div class="schedule-task-head">
-                            <span class="schedule-task-title">${title}</span>
-                            <span class="schedule-task-meta">${items.filter((item) => item.done).length}/${items.length}</span>
-                          </div>
-                          <div class="schedule-task-divider">
-                            <span class="schedule-task-line"></span>
-                          </div>
-                          <div class="schedule-task-items">
-                            ${items.map((item) => `
-                              <div class="schedule-task-item ${item.done ? "done" : ""}">
-                                <span class="schedule-task-text">${escapeHtml(item.text)}</span>
-                                <span class="schedule-task-state">${item.done ? "Xong" : "Chưa"}</span>
-                              </div>
-                            `).join("")}
-                          </div>
-                        </div>
-                      `;
-
-                      return `
-                        <tr class="${state.selectedDate === day.date ? "active-row" : ""}">
-                          <td class="schedule-date-cell">
-                            <div class="schedule-date-main">${escapeHtml(day.date)}</div>
-                            <div class="schedule-phase">${escapeHtml(day.phase)}</div>
-                            <div class="schedule-day-badges">
-                              <span class="badge ${paceClassMap[taskState.pace]}">${escapeHtml(taskState.pace)}</span>
-                            </div>
-                          </td>
-                          <td>${renderTaskPanel("Vật lí", taskState.physics)}</td>
-                          <td>${renderTaskPanel("Tiếng Anh", taskState.english)}</td>
-                          <td class="schedule-progress-cell">
-                            <div class="schedule-progress-stack">
-                              <div class="schedule-progress-meta">
-                                <span>${mainPercent}%</span>
-                                <span>${mainDone}/${mainTasks.length}</span>
-                              </div>
-                              <div class="schedule-progress-bar"><span style="height:${mainPercent}%"></span></div>
-                            </div>
-                          </td>
-                          <td class="schedule-note-cell">
-                            <div class="schedule-note-snippet">${escapeHtml(day.note)}</div>
-                          </td>
-                          <td>
-                            <button class="schedule-open-btn" data-action="select-date" data-date="${day.date}">Mở ngày</button>
-                          </td>
-                        </tr>
-                      `;
-                    }).join("")}
-                  </tbody>
-                </table>
-              </div>
-            </section>
+        <section class="glass footer-note">
+          <strong>Gợi ý dùng nhanh:</strong> chọn đề ở cột trái, thêm 5 đến 10 từ thực sự đáng giữ, rồi bấm từng từ ở danh sách bên phải để kéo lên ô kiểm tra lớn. Từ nào nhớ kém thì chấm thấp để nó quay lại sớm hơn.
         </section>
       `;
 
-      if (syncHeightRaf) cancelAnimationFrame(syncHeightRaf);
-      syncHeightRaf = requestAnimationFrame(() => {
-        syncHeightRaf = 0;
-        syncHeroOrbitHeight();
+      bindEvents();
+    }
+
+    function bindEvents() {
+      const addWordForm = document.getElementById("addWordForm");
+      if (addWordForm) {
+        addWordForm.addEventListener("submit", addWordFromForm);
+      }
+
+      const searchInput = document.getElementById("searchInput");
+      if (searchInput) {
+        searchInput.addEventListener("input", (event) => {
+          state.search = event.target.value;
+          saveState();
+          render();
+        });
+      }
+
+      app.querySelectorAll("[data-filter]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.statusFilter = button.dataset.filter;
+          saveState();
+          render();
+        });
+      });
+
+      app.querySelectorAll("[data-source]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.sourceFilter = button.dataset.source;
+          saveState();
+          render();
+        });
+      });
+
+      app.querySelectorAll("[data-word-id]").forEach((card) => {
+        card.addEventListener("click", () => {
+          state.selectedId = card.dataset.wordId;
+          state.showAnswer = false;
+          saveState();
+          render();
+        });
+      });
+
+      const toggleAnswer = app.querySelector("[data-action='toggle-answer']");
+      if (toggleAnswer) {
+        toggleAnswer.addEventListener("click", () => {
+          state.showAnswer = !state.showAnswer;
+          saveState();
+          render();
+        });
+      }
+
+      const nextWord = app.querySelector("[data-action='next-word']");
+      if (nextWord) {
+        nextWord.addEventListener("click", () => {
+          const filteredWords = getFilteredWords();
+          state.selectedId = pickNextWord(state.selectedId, filteredWords);
+          state.showAnswer = false;
+          saveState();
+          render();
+        });
+      }
+
+      app.querySelectorAll("[data-grade]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!state.selectedId) return;
+          gradeWord(state.selectedId, button.dataset.grade);
+        });
       });
     }
 
-    function syncHeroOrbitHeight() {
-      const leftCard = document.querySelector(".hero-day-card");
-      const rightCard = document.querySelector(".hero-orbit");
-      const columns = document.querySelector(".orbit-progress-columns");
-      const tracks = document.querySelectorAll(".orbit-progress-track");
-
-      if (!leftCard || !rightCard || !columns) return;
-
-      const leftHeight = Math.ceil(leftCard.getBoundingClientRect().height);
-      const orbitStyle = window.getComputedStyle(rightCard);
-      const padTop = parseFloat(orbitStyle.paddingTop) || 0;
-      const padBottom = parseFloat(orbitStyle.paddingBottom) || 0;
-      const availableHeight = Math.max(240, leftHeight - padTop - padBottom);
-      const trackHeight = Math.max(190, availableHeight - 54);
-
-      rightCard.style.height = `${leftHeight}px`;
-      rightCard.style.minHeight = `${leftHeight}px`;
-      columns.style.height = `${availableHeight}px`;
-      tracks.forEach((track) => {
-        track.style.height = `${trackHeight}px`;
-      });
-    }
-
-    function handleAppClick(event) {
-      const target = event.target.closest("[data-tab], [data-action]");
-      if (!target) return;
-
-      if (target.dataset.tab) {
-        state.tab = target.dataset.tab;
-        saveState();
-        scheduleRender();
-        return;
-      }
-
-      if (target.dataset.action === "select-date") {
-        state.selectedDate = target.dataset.date;
-        saveState();
-        scheduleRender();
-        return;
-      }
-
-      if (target.dataset.action === "toggle") {
-        toggleTask(target.dataset.group, Number(target.dataset.index));
-        return;
-      }
-
-      if (target.dataset.action === "set-pace") {
-        const paceMenu = target.closest(".pace-menu");
-        if (paceMenu) paceMenu.open = false;
-        setPace(target.dataset.pace);
-      }
-    }
-
-    function handleAppInput(event) {
-      if (event.target.id !== "searchInput") return;
-      state.query = event.target.value;
-      saveState();
-      if (searchInputTimer) clearTimeout(searchInputTimer);
-      searchInputTimer = window.setTimeout(() => {
-        searchInputTimer = 0;
-        scheduleRender();
-      }, 120);
-    }
-
-    function handleAppChange(event) {
-      if (event.target.id !== "phaseSelect") return;
-      state.phaseFilter = event.target.value;
-      saveState();
-      scheduleRender();
-    }
-
-    function randomizeFlagBurstPose() {
-      const flagBurst = document.querySelector(".flag-burst");
-      if (!flagBurst) return;
-
-      const top = 42 + Math.round(Math.random() * 68);
-      const right = 20 + Math.round(Math.random() * 54);
-      const shiftX = -8 - Math.round(Math.random() * 22);
-      const shiftY = 8 + Math.round(Math.random() * 14);
-      const tilt = -12 + Math.round(Math.random() * 16);
-
-      flagBurst.style.setProperty("--flag-top", `${top}px`);
-      flagBurst.style.setProperty("--flag-right", `${right}px`);
-      flagBurst.style.setProperty("--flag-shift-x", `${shiftX}px`);
-      flagBurst.style.setProperty("--flag-shift-y", `${shiftY}px`);
-      flagBurst.style.setProperty("--flag-tilt", `${tilt}deg`);
-    }
-
-    function triggerFlagBurst() {
-      randomizeFlagBurstPose();
-      document.body.classList.remove("flag-burst-active");
-      void document.body.offsetWidth;
-      document.body.classList.add("flag-burst-active");
-
-      if (flagBurstTimer) clearTimeout(flagBurstTimer);
-      flagBurstTimer = window.setTimeout(() => {
-        document.body.classList.remove("flag-burst-active");
-        flagBurstTimer = 0;
-      }, 4200);
-    }
-
-    function startFlagBurstLoop() {
-      if (flagBurstLoop) clearInterval(flagBurstLoop);
-      flagBurstLoop = window.setInterval(() => {
-        triggerFlagBurst();
-      }, 10000);
-    }
-
-    app.addEventListener("click", handleAppClick);
-    app.addEventListener("input", handleAppInput);
-    app.addEventListener("change", handleAppChange);
-    window.addEventListener("resize", () => {
-      if (syncHeightRaf) cancelAnimationFrame(syncHeightRaf);
-      syncHeightRaf = requestAnimationFrame(() => {
-        syncHeightRaf = 0;
-        syncHeroOrbitHeight();
-      });
-    });
-    window.addEventListener("pagehide", flushState);
     render();
-    window.setTimeout(triggerFlagBurst, 1800);
-    startFlagBurstLoop();
   </script>
 </body>
 </html>
