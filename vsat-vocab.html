@@ -810,6 +810,7 @@
       gap: 18px;
       min-height: 100%;
       height: 100%;
+      transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
     }
 
     .review-card::after {
@@ -884,6 +885,7 @@
       position: relative;
       z-index: 1;
       min-height: 100%;
+      cursor: pointer;
     }
 
     .mission-flash-inner {
@@ -896,6 +898,12 @@
 
     .mission-flash.flipped .mission-flash-inner {
       transform: rotateY(180deg);
+    }
+
+    .mission-flash:hover .review-card {
+      transform: translateY(-3px);
+      border-color: rgba(255,255,255,0.14);
+      box-shadow: 0 30px 64px rgba(0, 0, 0, 0.34);
     }
 
     .mission-face {
@@ -1871,7 +1879,7 @@
       app.innerHTML = `
         <section class="glass hero-shell">
           <div class="hero">
-            <div class="mission-flash ${state.isFlipped ? "flipped" : ""}">
+            <div class="mission-flash ${state.isFlipped ? "flipped" : ""}" data-action="flip-card" title="Nhấn để lật thẻ">
               <div class="mission-flash-inner">
                 <div class="mission-face front">
                   <div class="review-card">
@@ -1910,6 +1918,7 @@
                         <span class="badge">${state.cardMode === "en-vi" ? "Anh → Việt" : "Việt → Anh"}</span>
                         <span class="badge">${activeSourceDue} thẻ đến hạn</span>
                         <span class="badge">Lần ôn kế: ${escapeHtml(effectiveSelectedWord.nextReview || "hôm nay")}</span>
+                        <span class="badge">Nhấn vào thẻ để lật 3D</span>
                       </div>
                     ` : `
                       <div class="empty-state">Không có thẻ nào cho bài đang chọn.</div>
@@ -1967,14 +1976,13 @@
               ${effectiveSelectedWord ? `
                 <div>
                   <div class="section-title">Check Đáp Án</div>
-                  <div class="section-desc">Thẻ nằm bên trái. Ở đây bạn chọn chiều kiểm tra, nhập đáp án và chấm mức nhớ sau khi lật.</div>
+                  <div class="section-desc">Khối bên trái là flash card chính. Nhấn trực tiếp vào thẻ để lật 3D, còn bên phải chỉ dùng để nhập, check và chấm mức nhớ.</div>
                 </div>
                 <div class="review-meta">
                   <span class="badge">${escapeHtml(effectiveSelectedWord.source)}</span>
                   <span class="badge">${state.cardMode === "en-vi" ? "Anh → Việt" : "Việt → Anh"}</span>
                 </div>
                 <div class="flash-actions">
-                  <button class="btn primary" data-action="flip-card">${state.isFlipped ? "Úp thẻ lại" : "Lật thẻ"}</button>
                   <button class="btn" data-action="switch-mode">${state.cardMode === "en-vi" ? "Đổi sang Việt → Anh" : "Đổi sang Anh → Việt"}</button>
                   <button class="btn" data-action="next-word">Thẻ tiếp theo</button>
                 </div>
@@ -2188,14 +2196,13 @@
         });
       });
 
-      const flipCard = app.querySelector("[data-action='flip-card']");
-      if (flipCard) {
-        flipCard.addEventListener("click", () => {
+      app.querySelectorAll("[data-action='flip-card']").forEach((card) => {
+        card.addEventListener("click", () => {
           state.isFlipped = !state.isFlipped;
           saveState();
           render();
         });
-      }
+      });
 
       const switchMode = app.querySelector("[data-action='switch-mode']");
       if (switchMode) {
