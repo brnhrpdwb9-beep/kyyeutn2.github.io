@@ -3301,30 +3301,17 @@
     }
 
     .schedule-row-menu {
-      position: absolute;
-      top: calc(100% + 8px);
-      right: 0;
-      min-width: 150px;
-      display: none;
-      gap: 8px;
-      padding: 10px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background:
-        linear-gradient(180deg, rgba(14, 22, 40, 0.98), rgba(9, 16, 31, 0.98)),
-        rgba(8, 13, 28, 0.96);
-      box-shadow: 0 20px 38px rgba(0,0,0,0.3);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      z-index: 30;
-    }
-
-    .schedule-row-actions.open .schedule-row-menu {
-      display: grid;
-    }
-
-    .schedule-row-menu .task-menu-btn {
-      width: 100%;
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      width: 0 !important;
+      min-width: 0 !important;
+      height: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      overflow: hidden !important;
+      box-shadow: none !important;
     }
 
 
@@ -3712,6 +3699,172 @@
       width: 100%;
     }
 
+    .schedule-floating-menu {
+      position: fixed;
+      top: var(--floating-menu-top, 90px);
+      left: var(--floating-menu-left, 90px);
+      width: max-content;
+      min-width: 188px;
+      display: none;
+      gap: 8px;
+      padding: 11px;
+      border-radius: 20px;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      z-index: 2147483000;
+      pointer-events: auto;
+    }
+
+    .task-floating-menu.theme-aurora-ice,
+    .schedule-floating-menu.theme-aurora-ice {
+      border: 1px solid rgba(192, 240, 255, 0.24);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03) 34%, rgba(255,255,255,0.01)),
+        radial-gradient(circle at 14% 10%, rgba(220, 248, 255, 0.24), transparent 24%),
+        radial-gradient(circle at 82% 14%, rgba(103, 232, 249, 0.2), transparent 28%),
+        radial-gradient(circle at 72% 100%, rgba(129, 140, 248, 0.16), transparent 34%),
+        radial-gradient(circle at 46% -12%, rgba(167, 243, 255, 0.1), transparent 34%),
+        linear-gradient(160deg, rgba(10, 29, 55, 0.99), rgba(6, 21, 49, 0.992) 46%, rgba(7, 14, 35, 0.995));
+      box-shadow:
+        0 36px 86px rgba(0,0,0,0.58),
+        inset 0 1px 0 rgba(255,255,255,0.09),
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 0 38px rgba(103, 232, 249, 0.14),
+        0 0 28px rgba(129, 140, 248, 0.12);
+    }
+
+    .task-floating-menu.theme-aurora-mint,
+    .schedule-floating-menu.theme-aurora-mint {
+      border: 1px solid rgba(184, 255, 234, 0.24);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03) 34%, rgba(255,255,255,0.01)),
+        radial-gradient(circle at 15% 10%, rgba(224, 255, 248, 0.24), transparent 24%),
+        radial-gradient(circle at 82% 16%, rgba(94, 234, 212, 0.18), transparent 28%),
+        radial-gradient(circle at 72% 100%, rgba(56, 189, 248, 0.14), transparent 34%),
+        radial-gradient(circle at 48% -12%, rgba(167, 243, 208, 0.12), transparent 34%),
+        linear-gradient(160deg, rgba(8, 34, 40, 0.99), rgba(7, 25, 39, 0.992) 46%, rgba(7, 14, 31, 0.995));
+      box-shadow:
+        0 36px 86px rgba(0,0,0,0.58),
+        inset 0 1px 0 rgba(255,255,255,0.09),
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 0 38px rgba(45, 212, 191, 0.14),
+        0 0 28px rgba(56, 189, 248, 0.11);
+    }
+
+    .task-floating-menu.theme-aurora-violet,
+    .schedule-floating-menu.theme-aurora-violet {
+      border: 1px solid rgba(214, 223, 255, 0.24);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03) 34%, rgba(255,255,255,0.01)),
+        radial-gradient(circle at 14% 10%, rgba(233, 240, 255, 0.22), transparent 24%),
+        radial-gradient(circle at 82% 14%, rgba(129, 140, 248, 0.2), transparent 28%),
+        radial-gradient(circle at 72% 100%, rgba(192, 132, 252, 0.16), transparent 34%),
+        radial-gradient(circle at 46% -12%, rgba(165, 243, 252, 0.08), transparent 34%),
+        linear-gradient(160deg, rgba(18, 24, 56, 0.99), rgba(15, 18, 48, 0.992) 46%, rgba(10, 12, 34, 0.995));
+      box-shadow:
+        0 36px 86px rgba(0,0,0,0.58),
+        inset 0 1px 0 rgba(255,255,255,0.09),
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 0 38px rgba(129, 140, 248, 0.14),
+        0 0 28px rgba(192, 132, 252, 0.12);
+    }
+
+    .schedule-floating-menu.open {
+      display: grid;
+      animation: menuFloatIn .16s ease both;
+    }
+
+    .task-floating-menu .task-menu-btn,
+    .schedule-floating-menu .task-menu-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      color: #effbff;
+      border-color: rgba(188, 236, 255, 0.14);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.03) 42%, rgba(255,255,255,0.015)),
+        linear-gradient(135deg, rgba(167, 243, 255, 0.09), rgba(96, 165, 250, 0.08) 54%, rgba(129, 140, 248, 0.07)),
+        rgba(13, 25, 48, 0.76);
+      text-shadow: 0 1px 10px rgba(176, 244, 255, 0.08);
+    }
+
+    .task-floating-menu.theme-aurora-mint .task-menu-btn,
+    .schedule-floating-menu.theme-aurora-mint .task-menu-btn {
+      color: #effff9;
+      border-color: rgba(191, 255, 239, 0.14);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.03) 42%, rgba(255,255,255,0.015)),
+        linear-gradient(135deg, rgba(167, 243, 208, 0.09), rgba(45, 212, 191, 0.08) 54%, rgba(56, 189, 248, 0.07)),
+        rgba(10, 29, 40, 0.76);
+      text-shadow: 0 1px 10px rgba(180, 255, 233, 0.08);
+    }
+
+    .task-floating-menu.theme-aurora-violet .task-menu-btn,
+    .schedule-floating-menu.theme-aurora-violet .task-menu-btn {
+      color: #f3f3ff;
+      border-color: rgba(220, 228, 255, 0.14);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.11), rgba(255,255,255,0.03) 42%, rgba(255,255,255,0.015)),
+        linear-gradient(135deg, rgba(196, 181, 253, 0.08), rgba(129, 140, 248, 0.08) 54%, rgba(192, 132, 252, 0.08)),
+        rgba(19, 21, 48, 0.76);
+      text-shadow: 0 1px 10px rgba(220, 214, 255, 0.08);
+    }
+
+    .task-floating-menu .task-menu-btn:hover,
+    .schedule-floating-menu .task-menu-btn:hover {
+      border-color: rgba(192, 236, 255, 0.32);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.045) 40%, rgba(255,255,255,0.02)),
+        linear-gradient(135deg, rgba(144, 243, 255, 0.16), rgba(96, 165, 250, 0.1) 52%, rgba(129, 140, 248, 0.1)),
+        rgba(17, 30, 54, 0.8);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 14px 28px rgba(0,0,0,0.24),
+        0 0 20px rgba(103, 232, 249, 0.14),
+        0 0 16px rgba(129, 140, 248, 0.1);
+    }
+
+    .task-floating-menu.theme-aurora-mint .task-menu-btn:hover,
+    .schedule-floating-menu.theme-aurora-mint .task-menu-btn:hover {
+      border-color: rgba(184, 255, 232, 0.3);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.045) 40%, rgba(255,255,255,0.02)),
+        linear-gradient(135deg, rgba(167, 243, 208, 0.15), rgba(45, 212, 191, 0.1) 52%, rgba(56, 189, 248, 0.09)),
+        rgba(13, 33, 44, 0.8);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 14px 28px rgba(0,0,0,0.24),
+        0 0 20px rgba(45, 212, 191, 0.14),
+        0 0 16px rgba(56, 189, 248, 0.1);
+    }
+
+    .task-floating-menu.theme-aurora-violet .task-menu-btn:hover,
+    .schedule-floating-menu.theme-aurora-violet .task-menu-btn:hover {
+      border-color: rgba(212, 221, 255, 0.3);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.045) 40%, rgba(255,255,255,0.02)),
+        linear-gradient(135deg, rgba(196, 181, 253, 0.14), rgba(129, 140, 248, 0.11) 52%, rgba(192, 132, 252, 0.1)),
+        rgba(22, 24, 52, 0.8);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 14px 28px rgba(0,0,0,0.24),
+        0 0 20px rgba(129, 140, 248, 0.14),
+        0 0 16px rgba(192, 132, 252, 0.1);
+    }
+
+    .schedule-dot-btn[aria-expanded="true"] {
+      border-color: rgba(188, 236, 255, 0.36) !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03)),
+        linear-gradient(135deg, rgba(167, 243, 255, 0.16), rgba(96, 165, 250, 0.09) 56%, rgba(129, 140, 248, 0.09)) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 12px 28px rgba(0,0,0,0.24),
+        0 0 22px rgba(103, 232, 249, 0.16),
+        0 0 14px rgba(129, 140, 248, 0.1) !important;
+    }
+
     .task-action-menu {
       display: none !important;
     }
@@ -4082,6 +4235,48 @@
       persistState();
     }
 
+    function slugifyDateForFile(dateText) {
+      return String(dateText || "ngay")
+        .trim()
+        .replace(/[\\/:*?"<>|]+/g, "-")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "") || "ngay";
+    }
+
+    function exportDayBackup(date) {
+      const day = state.schedule.find((item) => item.date === date);
+      const taskState = ensureTaskState(date);
+      if (!day || !taskState) {
+        alert("Khong tim thay du lieu ngay nay de backup.");
+        return;
+      }
+
+      flushState();
+
+      const backupPayload = {
+        app: "vsat",
+        type: "daily-backup",
+        exportedAt: new Date().toISOString(),
+        day: clone(day),
+        tasks: clone(taskState)
+      };
+
+      const blob = new Blob([JSON.stringify(backupPayload, null, 2)], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const safeDate = slugifyDateForFile(date);
+      const todayStamp = new Date().toISOString().slice(0, 10);
+
+      link.href = url;
+      link.download = `vsat-backup-${safeDate}-${todayStamp}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.setTimeout(() => URL.revokeObjectURL(url), 500);
+    }
+
     function scheduleRender() {
       if (renderRaf) return;
       renderRaf = window.requestAnimationFrame(() => {
@@ -4314,7 +4509,7 @@
 
           const note = item.note;
           if (parts.done && !item.done && item.note) {
-            item.note.textContent = "ÄÃ£ tá»›i má»‘c thi. HÃ­t sÃ¢u, vÃ o phÃ²ng vá»›i cÃ¡i Ä‘áº§u tháº­t tá»‰nh vÃ  gá»n.";
+            item.note.textContent = "Đã tới mốc thi. Hít sâu, vào phòng với cái đầu thật tỉnh và gọn.";
             if (note) note.textContent = "Đã tới mốc thi. Hít sâu, vào phòng với cái đầu thật tỉnh và gọn.";
           }
           item.done = parts.done;
@@ -4618,7 +4813,72 @@
       if (!current.includes(note)) day.note = `${current}\n${note}`;
     }
 
+    function findScheduleDay(date) {
+      return state.schedule.find((day) => day.date === date) || null;
+    }
+
+    function isPlainObject(value) {
+      return value && typeof value === "object" && !Array.isArray(value);
+    }
+
+    function parseBackupFilePayload(rawText) {
+      const text = String(rawText || "").trim();
+      if (!text || !text.startsWith("{")) return null;
+
+      try {
+        const payload = JSON.parse(text);
+        if (!isPlainObject(payload) || payload.type !== "daily-backup") return null;
+        return payload;
+      } catch (err) {
+        return null;
+      }
+    }
+
+    function importDailyBackup(rawText, mode) {
+      const payload = parseBackupFilePayload(rawText);
+      if (!payload) return false;
+
+      const backupDay = isPlainObject(payload.day) ? payload.day : null;
+      const backupTasks = isPlainObject(payload.tasks) ? payload.tasks : null;
+      const date = backupDay && typeof backupDay.date === "string" ? backupDay.date.trim() : "";
+      const targetDay = findScheduleDay(date);
+
+      if (!date || !targetDay || !backupTasks) {
+        importStatus = {
+          type: "error",
+          message: "File backup khong hop le hoac ngay trong backup khong ton tai trong lich hien tai."
+        };
+        alert(importStatus.message);
+        scheduleRender();
+        return true;
+      }
+
+      state.tasks[date] = {
+        physics: normalizeTaskItems(backupTasks.physics, date, "physics"),
+        math: normalizeTaskItems(backupTasks.math, date, "math"),
+        english: normalizeTaskItems(backupTasks.english, date, "english"),
+        review: normalizeTaskItems(backupTasks.review, date, "review"),
+        dailyNote: typeof backupTasks.dailyNote === "string" ? backupTasks.dailyNote : "",
+        pace: typeof backupTasks.pace === "string" && backupTasks.pace.trim() ? backupTasks.pace : "Đúng nhịp",
+        customAdd: typeof backupTasks.customAdd === "string" ? backupTasks.customAdd : ""
+      };
+
+      targetDay.note = typeof backupDay.note === "string" ? backupDay.note : targetDay.note;
+      if (typeof backupDay.phase === "string" && backupDay.phase.trim()) targetDay.phase = backupDay.phase;
+
+      state.selectedDate = date;
+      importStatus = {
+        type: "success",
+        message: `Da phuc hoi backup ngay ${date} vao web thanh cong.`
+      };
+      saveState();
+      scheduleRender();
+      return true;
+    }
+
     function importScheduleFromText(rawText, mode) {
+      if (importDailyBackup(rawText, mode)) return;
+
       const { entries, errors } = parseScheduleImportText(rawText);
       if (errors.length) {
         importStatus = {
@@ -5085,7 +5345,7 @@
                 </div>
                 <div class="import-grid">
                   <label class="import-file-trigger">
-                    <input id="importFile" type="file" accept=".txt,.csv,text/plain,text/csv" />
+                    <input id="importFile" type="file" accept=".txt,.csv,.json,text/plain,text/csv,application/json" />
                     <span class="import-file-icon">↥</span>
                     <span class="import-file-text"><strong>Chọn tệp</strong><small>.txt / .csv</small></span>
                   </label>
@@ -5274,8 +5534,26 @@
       return menu;
     }
 
+    function ensureScheduleFloatingMenu() {
+      let menu = document.getElementById("scheduleFloatingMenu");
+      if (!menu) {
+        menu = document.createElement("div");
+        menu.id = "scheduleFloatingMenu";
+        menu.className = "schedule-floating-menu";
+        menu.setAttribute("aria-hidden", "true");
+        app.appendChild(menu);
+      }
+      return menu;
+    }
+
     function resetTaskMenuTriggers() {
       document.querySelectorAll(".task-action-trigger[aria-expanded='true']").forEach((trigger) => {
+        trigger.setAttribute("aria-expanded", "false");
+      });
+    }
+
+    function resetScheduleMenuTriggers() {
+      document.querySelectorAll(".schedule-dot-btn[aria-expanded='true']").forEach((trigger) => {
         trigger.setAttribute("aria-expanded", "false");
       });
     }
@@ -5285,11 +5563,18 @@
         .querySelectorAll(".task-actions.open, .schedule-row-actions.open")
         .forEach((item) => item.classList.remove("open"));
       resetTaskMenuTriggers();
+      resetScheduleMenuTriggers();
       const taskMenu = document.getElementById("taskFloatingMenu");
       if (taskMenu) {
         taskMenu.classList.remove("open");
         taskMenu.setAttribute("aria-hidden", "true");
         taskMenu.innerHTML = "";
+      }
+      const scheduleMenu = document.getElementById("scheduleFloatingMenu");
+      if (scheduleMenu) {
+        scheduleMenu.classList.remove("open");
+        scheduleMenu.setAttribute("aria-hidden", "true");
+        scheduleMenu.innerHTML = "";
       }
     }
 
@@ -5320,6 +5605,20 @@
       positionMenuByTrigger(trigger, menu);
     }
 
+    function syncOpenFloatingMenus() {
+      const openTaskTrigger = document.querySelector(".task-action-trigger[aria-expanded='true']");
+      const taskMenu = document.getElementById("taskFloatingMenu");
+      if (openTaskTrigger && taskMenu && taskMenu.classList.contains("open")) {
+        positionMenuByTrigger(openTaskTrigger, taskMenu);
+      }
+
+      const openScheduleTrigger = document.querySelector(".schedule-dot-btn[aria-expanded='true']");
+      const scheduleMenu = document.getElementById("scheduleFloatingMenu");
+      if (openScheduleTrigger && scheduleMenu && scheduleMenu.classList.contains("open")) {
+        positionMenuByTrigger(openScheduleTrigger, scheduleMenu);
+      }
+    }
+
     function openTaskFloatingMenu(trigger) {
       const group = trigger.dataset.group;
       const index = Number(trigger.dataset.index);
@@ -5328,8 +5627,12 @@
       if (!item) return;
 
       const menu = ensureTaskFloatingMenu();
+      const taskThemes = ["theme-aurora-ice", "theme-aurora-mint", "theme-aurora-violet"];
+      const nextTheme = taskThemes[Math.floor(Math.random() * taskThemes.length)];
       const safeGroup = escapeHtml(group);
       const safeIndex = escapeHtml(index);
+      menu.classList.remove("theme-aurora-ice", "theme-aurora-mint", "theme-aurora-violet");
+      menu.classList.add(nextTheme);
       menu.innerHTML = `
         <button
           type="button"
@@ -5359,6 +5662,42 @@
       positionMenuByTrigger(trigger, menu);
     }
 
+    function openScheduleFloatingMenu(trigger) {
+      const date = String(trigger.dataset.date || "").trim();
+      if (!date) return;
+
+      const menu = ensureScheduleFloatingMenu();
+      const safeDate = escapeHtml(date);
+      const scheduleThemes = ["theme-aurora-ice", "theme-aurora-mint", "theme-aurora-violet"];
+      const nextTheme = scheduleThemes[Math.floor(Math.random() * scheduleThemes.length)];
+      menu.classList.remove("theme-aurora-ice", "theme-aurora-mint", "theme-aurora-violet");
+      menu.classList.add(nextTheme);
+      menu.innerHTML = `
+        <button
+          type="button"
+          class="schedule-open-btn task-menu-btn"
+          data-action="select-date"
+          data-date="${safeDate}"
+        >Mo ngay</button>
+        <button
+          type="button"
+          class="schedule-open-btn task-menu-btn task-edit-btn"
+          data-action="open-day-editor"
+          data-date="${safeDate}"
+        >Sua nhanh</button>
+        <button
+          type="button"
+          class="schedule-open-btn task-menu-btn"
+          data-action="export-day-backup"
+          data-date="${safeDate}"
+        >Xuat backup</button>
+      `;
+      menu.classList.add("open");
+      menu.setAttribute("aria-hidden", "false");
+      trigger.setAttribute("aria-expanded", "true");
+      positionMenuByTrigger(trigger, menu);
+    }
+
     function handleAppClick(event) {
       const target = event.target.closest("[data-tab], [data-action]");
       if (!target) {
@@ -5380,7 +5719,7 @@
         closeFloatingMenus();
         if (!isOpen) {
           wrap.classList.add("open");
-          positionFloatingMenu(wrap, ".schedule-dot-btn", ".schedule-row-menu");
+          openScheduleFloatingMenu(target);
         }
         return;
       }
@@ -5394,6 +5733,12 @@
           const editor = document.querySelector(".mission-footer");
           if (editor) editor.scrollIntoView({ behavior: "smooth", block: "center" });
         }, 80);
+        return;
+      }
+
+      if (target.dataset.action === "export-day-backup") {
+        closeFloatingMenus();
+        exportDayBackup(target.dataset.date);
         return;
       }
 
@@ -5544,8 +5889,10 @@
       syncHeightRaf = requestAnimationFrame(() => {
         syncHeightRaf = 0;
         syncHeroOrbitHeight();
+        syncOpenFloatingMenus();
       });
     });
+    window.addEventListener("scroll", syncOpenFloatingMenus, { passive: true });
     window.addEventListener("pagehide", () => {
       if (examCountdownTimer) {
         clearInterval(examCountdownTimer);
