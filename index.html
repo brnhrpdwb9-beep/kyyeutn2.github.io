@@ -3196,7 +3196,540 @@
       }
     }
 
-  </style>
+  
+
+    /* Clean task rows + three-dot menus */
+    .section {
+      overflow: visible;
+    }
+
+    .section-summary {
+      padding: 12px 14px !important;
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at top right, rgba(255,255,255,0.1), transparent 34%),
+        linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 2px;
+      text-transform: none !important;
+      letter-spacing: 0 !important;
+    }
+
+    .section-summary-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #eef4ff;
+      font-weight: 800;
+      flex: none;
+    }
+
+    .section-summary-copy {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .section-summary-title {
+      color: #f8fbff;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .section-summary-sub {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .section-summary.physics .section-summary-icon { color: #9cc4ff; background: rgba(95,143,255,0.1); border-color: rgba(95,143,255,0.22); }
+    .section-summary.math .section-summary-icon { color: #ffd56f; background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.22); }
+    .section-summary.english .section-summary-icon { color: #79ecff; background: rgba(34,211,238,0.1); border-color: rgba(34,211,238,0.22); }
+    .section-summary.review .section-summary-icon { color: #ff9ac7; background: rgba(244,114,182,0.1); border-color: rgba(244,114,182,0.22); }
+
+    .task-actions {
+      min-width: 68px;
+      justify-items: center;
+      padding: 10px;
+      overflow: visible;
+    }
+
+    .task-action-label,
+    .task-link-btn,
+    .task-time-sub,
+    .task-note-label,
+    .task-subject-chip {
+      display: none !important;
+    }
+
+    .task-action-trigger,
+    .schedule-dot-btn {
+      min-width: 42px;
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      border-radius: 15px;
+      display: inline-grid;
+      place-items: center;
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .task-action-menu {
+      top: calc(100% - 2px);
+      right: 8px;
+    }
+
+    .schedule-action-cell {
+      min-width: 86px;
+    }
+
+    .schedule-row-actions {
+      position: relative;
+      display: grid;
+      justify-items: center;
+      overflow: visible;
+    }
+
+    .schedule-row-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 150px;
+      display: none;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background:
+        linear-gradient(180deg, rgba(14, 22, 40, 0.98), rgba(9, 16, 31, 0.98)),
+        rgba(8, 13, 28, 0.96);
+      box-shadow: 0 20px 38px rgba(0,0,0,0.3);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 30;
+    }
+
+    .schedule-row-actions.open .schedule-row-menu {
+      display: grid;
+    }
+
+    .schedule-row-menu .task-menu-btn {
+      width: 100%;
+    }
+
+
+    /* Update v2: fixed floating menus + richer subject color heads */
+    .schedule-table-wrap {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .schedule-table th.schedule-action-head {
+      text-align: center;
+      color: #eaf7ff;
+      background:
+        linear-gradient(135deg, rgba(79,140,255,0.28), rgba(34,211,238,0.12)),
+        rgba(8, 13, 28, 0.96);
+    }
+
+    .task-grid-head span:last-child {
+      color: #eaf7ff;
+      background: linear-gradient(135deg, rgba(34,211,238,0.12), rgba(139,92,246,0.12));
+    }
+
+    .task-action-menu,
+    .schedule-row-menu {
+      position: fixed !important;
+      top: var(--floating-menu-top, 80px) !important;
+      left: var(--floating-menu-left, 80px) !important;
+      right: auto !important;
+      z-index: 9999 !important;
+      border-color: rgba(157, 188, 255, 0.22) !important;
+      box-shadow:
+        0 26px 58px rgba(0,0,0,0.46),
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 0 28px rgba(79,140,255,0.16) !important;
+    }
+
+    .schedule-row-actions.open .schedule-row-menu,
+    .task-actions.open .task-action-menu {
+      display: grid !important;
+      animation: menuFloatIn .16s ease both;
+    }
+
+    @keyframes menuFloatIn {
+      from { opacity: 0; transform: translateY(-6px) scale(.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .section-summary,
+    .schedule-task-head {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .section-summary::after,
+    .schedule-task-head::after {
+      content: "";
+      position: absolute;
+      inset: -40% -18%;
+      background:
+        radial-gradient(circle at 18% 30%, var(--head-spark-a, rgba(255,255,255,0.16)), transparent 20%),
+        radial-gradient(circle at 88% 18%, var(--head-spark-b, rgba(255,255,255,0.10)), transparent 22%),
+        linear-gradient(120deg, transparent, rgba(255,255,255,0.08), transparent);
+      opacity: .72;
+      transform: translateX(-10%) rotate(-8deg);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .section-summary.physics,
+    .schedule-task-panel.physics .schedule-task-head {
+      --head-spark-a: rgba(165, 243, 252, 0.28);
+      --head-spark-b: rgba(79, 140, 255, 0.3);
+      background:
+        linear-gradient(135deg, rgba(56,189,248,0.28), rgba(37,99,235,0.2) 48%, rgba(139,92,246,0.14)),
+        rgba(5, 10, 22, 0.54) !important;
+      border: 1px solid rgba(96,165,250,0.30) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.13), 0 14px 34px rgba(37,99,235,0.12);
+    }
+
+    .section-summary.math,
+    .schedule-task-panel.math .schedule-task-head {
+      --head-spark-a: rgba(196,181,253,0.30);
+      --head-spark-b: rgba(251,191,36,0.20);
+      background:
+        linear-gradient(135deg, rgba(196,181,253,0.26), rgba(139,92,246,0.25) 48%, rgba(79,70,229,0.18)),
+        rgba(5, 10, 22, 0.54) !important;
+      border: 1px solid rgba(167,139,250,0.32) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.13), 0 14px 34px rgba(139,92,246,0.13);
+    }
+
+    .section-summary.english,
+    .schedule-task-panel.english .schedule-task-head {
+      --head-spark-a: rgba(249,168,212,0.30);
+      --head-spark-b: rgba(251,113,133,0.24);
+      background:
+        linear-gradient(135deg, rgba(249,168,212,0.23), rgba(251,113,133,0.24) 52%, rgba(249,115,22,0.18)),
+        rgba(5, 10, 22, 0.54) !important;
+      border: 1px solid rgba(251,113,133,0.30) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.13), 0 14px 34px rgba(251,113,133,0.11);
+    }
+
+    .section-summary.review,
+    .schedule-task-panel.review .schedule-task-head {
+      --head-spark-a: rgba(134,239,172,0.28);
+      --head-spark-b: rgba(34,211,238,0.22);
+      background:
+        linear-gradient(135deg, rgba(134,239,172,0.22), rgba(52,211,153,0.22) 50%, rgba(14,165,233,0.17)),
+        rgba(5, 10, 22, 0.54) !important;
+      border: 1px solid rgba(52,211,153,0.28) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.13), 0 14px 34px rgba(52,211,153,0.10);
+    }
+
+    .schedule-task-panel.physics {
+      --subject-glow: rgba(56, 189, 248, 0.25);
+      --subject-border: rgba(96, 165, 250, 0.30);
+      --subject-accent: #9bdcff;
+      --subject-soft: rgba(56, 189, 248, 0.10);
+    }
+
+    .schedule-task-panel.math {
+      --subject-glow: rgba(139, 92, 246, 0.26);
+      --subject-border: rgba(167, 139, 250, 0.30);
+      --subject-accent: #cbbdff;
+      --subject-soft: rgba(139, 92, 246, 0.10);
+    }
+
+    .schedule-task-panel.english {
+      --subject-glow: rgba(251, 113, 133, 0.25);
+      --subject-border: rgba(251, 113, 133, 0.28);
+      --subject-accent: #ffb2c0;
+      --subject-soft: rgba(251, 113, 133, 0.10);
+    }
+
+    .schedule-task-panel.review {
+      --subject-glow: rgba(52, 211, 153, 0.24);
+      --subject-border: rgba(52, 211, 153, 0.26);
+      --subject-accent: #a8f4cd;
+      --subject-soft: rgba(52, 211, 153, 0.10);
+    }
+
+    .schedule-task-head {
+      padding: 10px;
+      border-radius: 16px;
+    }
+
+    .schedule-task-eyebrow {
+      margin-bottom: 3px;
+      color: rgba(239,246,255,0.72);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .schedule-task-icon,
+    .section-summary-icon {
+      background:
+        radial-gradient(circle at 28% 22%, rgba(255,255,255,0.28), transparent 28%),
+        var(--subject-soft, rgba(255,255,255,0.08)) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.14),
+        0 10px 22px rgba(0,0,0,0.16);
+    }
+
+    .section-summary.physics .section-summary-icon { color: #9bdcff; background-color: rgba(56,189,248,0.12) !important; border-color: rgba(96,165,250,0.30); }
+    .section-summary.math .section-summary-icon { color: #cbbdff; background-color: rgba(139,92,246,0.12) !important; border-color: rgba(167,139,250,0.30); }
+    .section-summary.english .section-summary-icon { color: #ffb2c0; background-color: rgba(251,113,133,0.12) !important; border-color: rgba(251,113,133,0.30); }
+    .section-summary.review .section-summary-icon { color: #a8f4cd; background-color: rgba(52,211,153,0.12) !important; border-color: rgba(52,211,153,0.28); }
+
+
+
+    /* Update v3: softer task table heads + repaired visible three-dot menus */
+    .task-grid-head {
+      --task-head-main: rgba(148, 163, 184, 0.10);
+      --task-head-side: rgba(79, 140, 255, 0.08);
+      --task-head-accent: rgba(255,255,255,0.08);
+      --task-head-line: rgba(255,255,255,0.08);
+      --task-head-border: rgba(255,255,255,0.12);
+      --task-head-text: rgba(238, 244, 255, 0.86);
+      position: relative;
+      isolation: isolate;
+      border-color: var(--task-head-border) !important;
+      background:
+        radial-gradient(circle at 9% 24%, var(--task-head-accent), transparent 28%),
+        radial-gradient(circle at 92% 26%, rgba(255,255,255,0.035), transparent 24%),
+        linear-gradient(135deg, var(--task-head-main), rgba(8,13,28,0.82) 46%, var(--task-head-side)),
+        rgba(8, 13, 28, 0.78) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 12px 26px rgba(0,0,0,0.13) !important;
+    }
+
+    .task-grid-head::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      opacity: .42;
+      background:
+        linear-gradient(90deg, transparent, rgba(255,255,255,0.035), transparent),
+        repeating-linear-gradient(135deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 12px);
+      pointer-events: none;
+    }
+
+    .task-grid-head span {
+      color: var(--task-head-text) !important;
+      border-right-color: var(--task-head-line) !important;
+      background: linear-gradient(180deg, rgba(255,255,255,0.028), rgba(255,255,255,0.006));
+      text-shadow: none;
+    }
+
+    .task-grid-head span:nth-child(1),
+    .task-grid-head span:nth-child(2),
+    .task-grid-head span:nth-child(3),
+    .task-grid-head span:nth-child(4),
+    .task-grid-head span:nth-child(5),
+    .task-grid-head span:nth-child(6) {
+      opacity: .92;
+    }
+
+    .task-grid-head span:last-child {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.042), rgba(255,255,255,0.012)),
+        radial-gradient(circle at 50% 0%, var(--task-head-accent), transparent 72%) !important;
+      color: var(--task-head-text) !important;
+    }
+
+    .task-grid-head.physics {
+      --task-head-main: rgba(56, 189, 248, 0.14);
+      --task-head-side: rgba(37, 99, 235, 0.10);
+      --task-head-accent: rgba(165, 243, 252, 0.12);
+      --task-head-line: rgba(125, 211, 252, 0.11);
+      --task-head-border: rgba(125, 211, 252, 0.18);
+      --task-head-text: rgba(222, 247, 255, 0.90);
+    }
+
+    .task-grid-head.math {
+      --task-head-main: rgba(139, 92, 246, 0.14);
+      --task-head-side: rgba(79, 70, 229, 0.10);
+      --task-head-accent: rgba(196, 181, 253, 0.12);
+      --task-head-line: rgba(196, 181, 253, 0.11);
+      --task-head-border: rgba(167, 139, 250, 0.18);
+      --task-head-text: rgba(235, 229, 255, 0.90);
+    }
+
+    .task-grid-head.english {
+      --task-head-main: rgba(251, 113, 133, 0.13);
+      --task-head-side: rgba(249, 115, 22, 0.08);
+      --task-head-accent: rgba(249, 168, 212, 0.12);
+      --task-head-line: rgba(251, 113, 133, 0.10);
+      --task-head-border: rgba(251, 113, 133, 0.17);
+      --task-head-text: rgba(255, 232, 239, 0.90);
+    }
+
+    .task-grid-head.review {
+      --task-head-main: rgba(52, 211, 153, 0.13);
+      --task-head-side: rgba(14, 165, 233, 0.08);
+      --task-head-accent: rgba(134, 239, 172, 0.11);
+      --task-head-line: rgba(52, 211, 153, 0.10);
+      --task-head-border: rgba(52, 211, 153, 0.17);
+      --task-head-text: rgba(224, 255, 239, 0.90);
+    }
+
+    .task-action-menu,
+    .schedule-row-menu {
+      pointer-events: auto !important;
+    }
+
+    .task-actions.open,
+    .schedule-row-actions.open {
+      z-index: 10000 !important;
+    }
+
+
+    /* Update v4: task menu portal + subject head wraps task content */
+    .section {
+      padding: 0 !important;
+      border: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      overflow: visible !important;
+      border-radius: 24px !important;
+    }
+
+    .section-summary {
+      margin: 0 !important;
+      padding: 14px 16px !important;
+      border-radius: 24px 24px 0 0 !important;
+      border-bottom-width: 0 !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 14px 30px rgba(0,0,0,0.14) !important;
+    }
+
+    .section:not([open]) .section-summary {
+      border-radius: 24px !important;
+      border-bottom-width: 1px !important;
+    }
+
+    .section .task-list {
+      --section-body-border: rgba(255,255,255,0.10);
+      --section-body-glow: rgba(255,255,255,0.04);
+      --section-body-soft: rgba(255,255,255,0.025);
+      margin-top: 0 !important;
+      padding: 15px !important;
+      border-radius: 0 0 24px 24px;
+      border: 1px solid var(--section-body-border);
+      border-top: 0;
+      background:
+        radial-gradient(circle at 8% 0%, var(--section-body-glow), transparent 34%),
+        radial-gradient(circle at 96% 4%, rgba(255,255,255,0.035), transparent 28%),
+        linear-gradient(180deg, rgba(8,13,28,0.72), rgba(8,13,28,0.42)),
+        var(--section-body-soft);
+      box-shadow:
+        inset 0 -1px 0 rgba(255,255,255,0.045),
+        0 18px 42px rgba(0,0,0,0.13);
+      overflow: visible !important;
+    }
+
+    .section.physics .task-list {
+      --section-body-border: rgba(125, 211, 252, 0.18);
+      --section-body-glow: rgba(56, 189, 248, 0.105);
+      --section-body-soft: rgba(37, 99, 235, 0.045);
+    }
+
+    .section.math .task-list {
+      --section-body-border: rgba(196, 181, 253, 0.18);
+      --section-body-glow: rgba(139, 92, 246, 0.105);
+      --section-body-soft: rgba(79, 70, 229, 0.045);
+    }
+
+    .section.english .task-list {
+      --section-body-border: rgba(251, 113, 133, 0.17);
+      --section-body-glow: rgba(251, 113, 133, 0.095);
+      --section-body-soft: rgba(249, 115, 22, 0.035);
+    }
+
+    .section.review .task-list {
+      --section-body-border: rgba(52, 211, 153, 0.17);
+      --section-body-glow: rgba(52, 211, 153, 0.095);
+      --section-body-soft: rgba(14, 165, 233, 0.035);
+    }
+
+    .section .task-grid-head {
+      margin-top: 0;
+    }
+
+    .task-floating-menu {
+      position: fixed;
+      top: var(--floating-menu-top, 90px);
+      left: var(--floating-menu-left, 90px);
+      width: max-content;
+      min-width: 176px;
+      display: none;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 18px;
+      border: 1px solid rgba(157, 188, 255, 0.24);
+      background:
+        radial-gradient(circle at 18% 10%, rgba(96,165,250,0.16), transparent 28%),
+        linear-gradient(180deg, rgba(14, 22, 40, 0.985), rgba(9, 16, 31, 0.985)),
+        rgba(8, 13, 28, 0.98);
+      box-shadow:
+        0 30px 70px rgba(0,0,0,0.54),
+        0 0 0 1px rgba(255,255,255,0.045),
+        0 0 34px rgba(79,140,255,0.14);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      z-index: 2147483000;
+      pointer-events: auto;
+    }
+
+    .task-floating-menu.open {
+      display: grid;
+      animation: menuFloatIn .16s ease both;
+    }
+
+    .task-floating-menu .task-menu-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .task-action-menu {
+      display: none !important;
+    }
+
+    .task-actions.open .task-action-menu {
+      display: none !important;
+    }
+
+    .task-action-trigger[aria-expanded="true"] {
+      border-color: rgba(165, 243, 252, 0.38) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 12px 28px rgba(0,0,0,0.22),
+        0 0 20px rgba(56,189,248,0.16) !important;
+    }
+
+
+</style>
 </head>
 <body>
   <div class="universe">
@@ -3615,23 +4148,20 @@
       const focusCards = document.querySelectorAll(".hero-day-focus .hero-focus-card");
       if (focusCards[0]) {
         focusCards[0].innerHTML = `
-          <div class="hero-focus-label">Tong thoi gian da hoc</div>
+          <div class="hero-focus-label">Tổng thời gian đã học</div>
           <div class="hero-focus-value">${escapeHtml(formatStudyMinutes(learnedMinutes))}</div>
-          <div class="hero-focus-note">Tinh tu cac task da xong co gio hoc hop le.</div>
         `;
       }
       if (focusCards[1]) {
         focusCards[1].innerHTML = `
-          <div class="hero-focus-label">Tien do ngay dang chon</div>
+          <div class="hero-focus-label">Tiến độ ngày đang chọn</div>
           <div class="hero-focus-value">${currentDone}/${currentDayTasks.length}</div>
-          <div class="hero-focus-note">Chi tinh cho ngay ${escapeHtml(selectedDay.date)}.</div>
         `;
       }
       if (focusCards[2]) {
         focusCards[2].innerHTML = `
-          <div class="hero-focus-label">Tong task da xong</div>
+          <div class="hero-focus-label">Tổng task đã xong</div>
           <div class="hero-focus-value">${done}/${total}</div>
-          <div class="hero-focus-note">Theo toan bo lich hien co.</div>
         `;
       }
 
@@ -3654,16 +4184,28 @@
         const label = wrap.querySelector(".task-action-label");
         const trigger = wrap.querySelector("button");
         if (!trigger) return;
-        if (label) label.textContent = wrap.closest(".task-btn") && wrap.closest(".task-btn").classList.contains("done") ? "Hoàn tất" : "Tác vụ";
+        if (label) label.remove();
         trigger.className = "schedule-open-btn task-action-trigger";
         trigger.dataset.action = "toggle-task-menu";
-        trigger.textContent = "Tùy chọn";
+        trigger.setAttribute("aria-label", "Tùy chọn task");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.title = "Tùy chọn";
+        trigger.textContent = "⋯";
 
         if (!wrap.querySelector(".task-action-menu")) {
           const group = trigger.dataset.group;
           const index = trigger.dataset.index;
+          const taskCard = wrap.closest(".task-btn");
+          const isDone = taskCard && taskCard.classList.contains("done");
           wrap.insertAdjacentHTML("beforeend", `
             <div class="task-action-menu">
+              <button
+                type="button"
+                class="schedule-open-btn task-menu-btn"
+                data-action="toggle"
+                data-group="${escapeHtml(group)}"
+                data-index="${escapeHtml(index)}"
+              >${isDone ? "Đánh dấu đang làm" : "Đánh dấu xong"}</button>
               <button
                 type="button"
                 class="schedule-open-btn task-menu-btn task-edit-btn"
@@ -3684,7 +4226,7 @@
       });
 
       const sidebarDesc = document.querySelector(".sidebar .section-desc");
-      if (sidebarDesc) sidebarDesc.textContent = "Chọn ngày rồi thêm lịch học ở khung bên phải.";
+      if (sidebarDesc) sidebarDesc.textContent = "Lọc nhanh ngày, trạng thái và tiến độ học.";
     }
 
     function getCountdownParts(targetTime) {
@@ -4176,37 +4718,57 @@
 
     function sectionHtml(title, groupKey, items) {
       const icons = { physics: "◎", math: "◇", english: "△", review: "✓" };
-      const subjectLabels = { physics: "Physics", math: "Math", english: "English", review: "Recall" };
+      const subjectMood = {
+        physics: {
+          displayTitle: "Vật lí · Blue Orbit",
+          tagline: "Kích hoạt radar công thức: hiểu bản chất trước, bấm máy sau.",
+          emptyTitle: "Vật lí đang chờ khai hỏa",
+          emptyText: "Thêm một nhiệm vụ Vật lí để bắt đầu săn lực, điện, sóng và các bẫy đề.",
+          emptyHint: "Gợi ý: ghi rõ dạng bài + số câu + mốc thời gian để dễ kiểm soát."
+        },
+        math: {
+          displayTitle: "Toán · Violet Engine",
+          tagline: "Vào phòng máy chiến thuật: hàm số, tích phân, hình học xử gọn từng cửa.",
+          emptyTitle: "Toán chưa có trận đánh",
+          emptyText: "Thêm một nhiệm vụ Toán để biến phần khó thành từng bước nhỏ dễ xử lý.",
+          emptyHint: "Gợi ý: chia theo chuyên đề, mỗi task chỉ nên có một mục tiêu chính."
+        },
+        english: {
+          displayTitle: "Tiếng Anh · Rose Signal",
+          tagline: "Nạp từ vựng, né bẫy ngữ pháp, luyện phản xạ đọc hiểu thật lạnh.",
+          emptyTitle: "Tiếng Anh đang trống lịch",
+          emptyText: "Thêm một nhiệm vụ Tiếng Anh để gom từ mới, dạng câu và lỗi sai thường gặp.",
+          emptyHint: "Gợi ý: ghi Part + dạng bài + số câu/từ vựng cần xử lý."
+        },
+        review: {
+          displayTitle: "Ôn lỗi · Green Reset",
+          tagline: "Kho hồi sinh điểm số: lỗi sai hôm qua là điểm cộng của ngày mai.",
+          emptyTitle: "Kho ôn lỗi chưa có mục nào",
+          emptyText: "Thêm lỗi sai quan trọng để lần sau gặp lại không còn bị đề úp sọt.",
+          emptyHint: "Gợi ý: ghi nguyên nhân sai và cách né bẫy trong lần làm sau."
+        }
+      };
+      const mood = subjectMood[groupKey] || subjectMood.review;
       const doneCount = items.filter((item) => item.done).length;
-      const emptyTitle = groupKey === "physics"
-        ? "Vật lí chưa có lịch"
-        : groupKey === "math"
-          ? "Toán chưa có lịch"
-          : groupKey === "english"
-            ? "Tiếng Anh chưa có lịch"
-            : "Chưa có mục ôn lỗi";
-      const emptyText = groupKey === "physics"
-        ? "Chưa có lịch Vật lí. Thêm ở khung nhập bên dưới."
-        : groupKey === "math"
-          ? "Chưa có lịch Toán. Thêm ở khung nhập bên dưới."
-          : groupKey === "english"
-            ? "Chưa có lịch Tiếng Anh. Thêm ở khung nhập bên dưới."
-            : "Chưa có mục ôn lỗi/recall. Thêm khi cần rà lại lỗi sai.";
-      const emptyHint = groupKey === "review"
-        ? "Gợi ý: thêm các lỗi sai quan trọng hoặc câu cần làm lại sau mỗi buổi học."
-        : "Gợi ý: chọn đúng môn ở khung nhập bên dưới, thêm giờ học nếu cần rồi ghi nội dung học.";
 
       return `
-        <details class="section" open>
-          <summary>${icons[groupKey]} ${escapeHtml(title)}<span class="section-count">${doneCount}/${items.length}</span></summary>
+        <details class="section ${groupKey}" open>
+          <summary class="section-summary ${groupKey}">
+            <span class="section-summary-icon">${icons[groupKey]}</span>
+            <span class="section-summary-copy">
+              <span class="section-summary-title">${escapeHtml(mood.displayTitle || title)}</span>
+              <span class="section-summary-sub">${escapeHtml(mood.tagline)}</span>
+            </span>
+            <span class="section-count">${doneCount}/${items.length}</span>
+          </summary>
           <div class="task-list">
             ${items.length ? `
-              <div class="task-grid-head">
+              <div class="task-grid-head ${groupKey}">
                 <span>Check</span>
                 <span>STT</span>
-                <span>De / Noi dung</span>
-                <span>Time</span>
-                <span>Note</span>
+                <span>Nội dung</span>
+                <span>Giờ</span>
+                <span>Ghi chú</span>
                 <span>Action</span>
               </div>
             ` : ""}
@@ -4226,45 +4788,63 @@
                   <span class="task-cell">
                     <span class="task-copy">
                       <span class="task-title-row">
-                        <span class="task-subject-chip">
-                          <span class="task-subject-dot"></span>
-                          ${icons[groupKey]} ${escapeHtml(subjectLabels[groupKey])}
-                        </span>
-                        <span class="task-state-pill ${item.done ? "done" : "pending"}">${item.done ? "Xong" : "Dang lam"}</span>
+                        <span class="task-state-pill ${item.done ? "done" : "pending"}">${item.done ? "Xong" : "Đang làm"}</span>
                       </span>
-                      <span class="task-text">${escapeHtml(item.content || item.text || "Chua co noi dung")}</span>
-                      <span class="task-link-btn">Learn</span>
+                      <span class="task-text">${escapeHtml(item.content || item.text || "Chưa có nội dung")}</span>
                     </span>
                   </span>
                   <span class="task-cell">
-                    <span class="task-time-main">${escapeHtml(item.time || "--:--")}</span>
-                    <span class="task-time-sub">${item.time ? "Khung gio hoc" : "Them gio o form ben duoi"}</span>
+                    <span class="task-time-main">${escapeHtml(item.time || "—")}</span>
                   </span>
                   <span class="task-cell">
                     <span class="task-note-box">
-                      <span class="task-note-label">Note</span>
-                      <span class="task-note">${escapeHtml(item.note || "Chua co ghi chu rieng cho muc nay.")}</span>
+                      <span class="task-note">${escapeHtml(item.note || "—")}</span>
                     </span>
                   </span>
                 </button>
                 <div class="task-actions" data-task-menu-wrap="${groupKey}-${idx}">
-                  <div class="task-action-label">${item.done ? "Hoàn tất" : "Tác vụ"}</div>
                   <button
                     type="button"
                     class="schedule-open-btn task-action-trigger"
+                    aria-label="Tùy chọn task"
+                    aria-expanded="false"
+                    title="Tùy chọn"
                     data-action="toggle-task-menu"
                     data-group="${groupKey}"
                     data-index="${idx}"
-                >Xóa</button>
-              </div>
+                  >⋯</button>
+                  <div class="task-action-menu">
+                    <button
+                      type="button"
+                      class="schedule-open-btn task-menu-btn"
+                      data-action="toggle"
+                      data-group="${groupKey}"
+                      data-index="${idx}"
+                    >${item.done ? "Đánh dấu đang làm" : "Đánh dấu xong"}</button>
+                    <button
+                      type="button"
+                      class="schedule-open-btn task-menu-btn task-edit-btn"
+                      data-action="edit-task"
+                      data-group="${groupKey}"
+                      data-index="${idx}"
+                    >Sửa</button>
+                    <button
+                      type="button"
+                      class="schedule-open-btn task-menu-btn task-delete-btn"
+                      data-action="delete-task"
+                      data-group="${groupKey}"
+                      data-index="${idx}"
+                    >Xóa</button>
+                  </div>
+                </div>
               </div>
             `).join("") : `
               <div class="section-empty ${groupKey}">
                 <div class="section-empty-icon">${icons[groupKey]}</div>
                 <div class="section-empty-copy">
-                  <div class="section-empty-title">${escapeHtml(emptyTitle)}</div>
-                  <div class="section-empty-text">${escapeHtml(emptyText)}</div>
-                  <div class="section-empty-hint">${escapeHtml(emptyHint)}</div>
+                  <div class="section-empty-title">${escapeHtml(mood.emptyTitle)}</div>
+                  <div class="section-empty-text">${escapeHtml(mood.emptyText)}</div>
+                  <div class="section-empty-hint">${escapeHtml(mood.emptyHint)}</div>
                 </div>
               </div>
             `}
@@ -4414,7 +4994,7 @@
           <aside class="glass sidebar">
             <div>
               <div class="section-title">Radar điều hướng</div>
-              <div class="section-desc">Chọn ngày từ 12/05 đến 10/06, rồi thêm lịch học ở khung bên phải.</div>
+              <div class="section-desc">Lọc nhanh ngày, trạng thái và tiến độ học.</div>
             </div>
 
             <div style="display:grid; gap:12px;">
@@ -4433,7 +5013,7 @@
               <div class="radar-top">
                 <div>
                   <div class="section-title" style="font-size:18px;">Timeline</div>
-                  <div class="section-desc" style="margin-top:4px;">Chọn nhanh ngày cần xử lý.</div>
+                  <div class="section-desc" style="margin-top:4px;">Bấm ngày hoặc dùng menu ba chấm.</div>
                 </div>
                 <span class="badge ${paceClassMap[selectedTaskState.pace]}">${escapeHtml(selectedTaskState.pace)}</span>
               </div>
@@ -4475,7 +5055,7 @@
               <div class="mission-footer" style="grid-template-columns:1fr; align-items:stretch;">
                 <div>
                   <div class="section-title">Thêm lịch học cho ngày ${escapeHtml(selectedDay.date)}</div>
-                  <div class="section-desc">Chọn nhóm, nhập giờ nếu cần, rồi ghi nội dung học. Dữ liệu sẽ tự lưu trên trình duyệt.</div>
+
                 </div>
                 <div style="display:grid; grid-template-columns:180px 180px minmax(0,1fr) minmax(220px,0.9fr) auto; gap:12px; align-items:center;">
                   <select id="addGroup" class="select" aria-label="Chọn nhóm lịch học">
@@ -4527,7 +5107,7 @@
               <div class="schedule-head">
                 <div>
                   <div class="section-title">Thời Khóa Biểu Tổng Thể</div>
-                  <div class="section-desc">Bảng này bắt đầu từ 12/05 đến 10/06. Các ô ban đầu trống để người dùng tự nhập lịch học.</div>
+                  <div class="section-desc">Quét nhanh tiến độ từng ngày và mở menu ba chấm để thao tác.</div>
                 </div>
                 <div class="schedule-stats">
                   <span class="badge">${visibleDays.length} ngày</span>
@@ -4544,7 +5124,7 @@
                       <th>Lịch học theo môn</th>
                       <th>Tiến độ</th>
                       <th>Ghi chú</th>
-                      <th>Chọn nhanh</th>
+                      <th class="schedule-action-head">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -4554,12 +5134,20 @@
                       const mainDone = mainTasks.filter((item) => item.done).length;
                       const mainPercent = mainTasks.length ? Math.round((mainDone * 100) / mainTasks.length) : 0;
 
-                      const renderTaskPanel = (title, items, variant, icon) => `
+                      const renderTaskPanel = (title, items, variant, icon) => {
+                        const panelMood = {
+                          physics: "BLUE ORBIT",
+                          math: "VIOLET ENGINE",
+                          english: "ROSE SIGNAL",
+                          review: "GREEN RESET"
+                        }[variant] || "TASK";
+                        return `
                         <div class="schedule-task-panel ${variant}">
                           <div class="schedule-task-head">
                             <div class="schedule-task-headline">
                               <span class="schedule-task-icon">${icon}</span>
                               <div>
+                                <div class="schedule-task-eyebrow">${panelMood}</div>
                                 <div class="schedule-task-title">${title}</div>
                                 <div class="schedule-task-summary">${items.length ? `${items.filter((item) => item.done).length} / ${items.length} mục đã xong` : "Chưa nhập lịch"}</div>
                               </div>
@@ -4580,6 +5168,7 @@
                           </div>
                         </div>
                       `;
+                      };
 
                       return `
                         <tr class="${state.selectedDate === day.date ? "active-row" : ""}">
@@ -4614,9 +5203,19 @@
                             </div>
                           </td>
                           <td class="schedule-action-cell">
-                            <div class="schedule-action-stack">
-                              <button class="schedule-open-btn" data-action="select-date" data-date="${day.date}">Mở ngày</button>
-                              <div class="schedule-mini-note">Mở khung chi tiết để sửa nhanh lịch học và ghi chú.</div>
+                            <div class="schedule-row-actions">
+                              <button
+                                type="button"
+                                class="schedule-open-btn schedule-dot-btn"
+                                aria-label="Tùy chọn ngày ${day.date}"
+                                title="Tùy chọn"
+                                data-action="toggle-row-menu"
+                                data-date="${day.date}"
+                              >⋯</button>
+                              <div class="schedule-row-menu">
+                                <button type="button" class="schedule-open-btn task-menu-btn" data-action="select-date" data-date="${day.date}">Mở ngày</button>
+                                <button type="button" class="schedule-open-btn task-menu-btn task-edit-btn" data-action="open-day-editor" data-date="${day.date}">Sửa nhanh</button>
+                              </div>
                             </div>
                           </td>
                         </tr>
@@ -4662,10 +5261,108 @@
       });
     }
 
+
+    function ensureTaskFloatingMenu() {
+      let menu = document.getElementById("taskFloatingMenu");
+      if (!menu) {
+        menu = document.createElement("div");
+        menu.id = "taskFloatingMenu";
+        menu.className = "task-floating-menu";
+        menu.setAttribute("aria-hidden", "true");
+        app.appendChild(menu);
+      }
+      return menu;
+    }
+
+    function resetTaskMenuTriggers() {
+      document.querySelectorAll(".task-action-trigger[aria-expanded='true']").forEach((trigger) => {
+        trigger.setAttribute("aria-expanded", "false");
+      });
+    }
+
+    function closeFloatingMenus() {
+      document
+        .querySelectorAll(".task-actions.open, .schedule-row-actions.open")
+        .forEach((item) => item.classList.remove("open"));
+      resetTaskMenuTriggers();
+      const taskMenu = document.getElementById("taskFloatingMenu");
+      if (taskMenu) {
+        taskMenu.classList.remove("open");
+        taskMenu.setAttribute("aria-hidden", "true");
+        taskMenu.innerHTML = "";
+      }
+    }
+
+    function positionMenuByTrigger(trigger, menu) {
+      if (!trigger || !menu) return;
+      const triggerRect = trigger.getBoundingClientRect();
+      const menuRect = menu.getBoundingClientRect();
+      const gap = 8;
+      const viewportPadding = 12;
+      const menuWidth = Math.max(menuRect.width || 176, 150);
+      const menuHeight = Math.max(menuRect.height || 112, 86);
+
+      let left = triggerRect.right - menuWidth;
+      left = Math.max(viewportPadding, Math.min(left, window.innerWidth - menuWidth - viewportPadding));
+
+      let top = triggerRect.bottom + gap;
+      if (top + menuHeight > window.innerHeight - viewportPadding) {
+        top = Math.max(viewportPadding, triggerRect.top - menuHeight - gap);
+      }
+
+      menu.style.setProperty("--floating-menu-left", `${left}px`);
+      menu.style.setProperty("--floating-menu-top", `${top}px`);
+    }
+
+    function positionFloatingMenu(wrap, triggerSelector, menuSelector) {
+      const trigger = wrap && wrap.querySelector(triggerSelector);
+      const menu = wrap && wrap.querySelector(menuSelector);
+      positionMenuByTrigger(trigger, menu);
+    }
+
+    function openTaskFloatingMenu(trigger) {
+      const group = trigger.dataset.group;
+      const index = Number(trigger.dataset.index);
+      const taskState = ensureTaskState(state.selectedDate);
+      const item = taskState[group] && taskState[group][index];
+      if (!item) return;
+
+      const menu = ensureTaskFloatingMenu();
+      const safeGroup = escapeHtml(group);
+      const safeIndex = escapeHtml(index);
+      menu.innerHTML = `
+        <button
+          type="button"
+          class="schedule-open-btn task-menu-btn"
+          data-action="toggle"
+          data-group="${safeGroup}"
+          data-index="${safeIndex}"
+        >${item.done ? "Đánh dấu đang làm" : "Đánh dấu xong"}</button>
+        <button
+          type="button"
+          class="schedule-open-btn task-menu-btn task-edit-btn"
+          data-action="edit-task"
+          data-group="${safeGroup}"
+          data-index="${safeIndex}"
+        >Sửa</button>
+        <button
+          type="button"
+          class="schedule-open-btn task-menu-btn task-delete-btn"
+          data-action="delete-task"
+          data-group="${safeGroup}"
+          data-index="${safeIndex}"
+        >Xóa</button>
+      `;
+      menu.classList.add("open");
+      menu.setAttribute("aria-hidden", "false");
+      trigger.setAttribute("aria-expanded", "true");
+      positionMenuByTrigger(trigger, menu);
+    }
+
     function handleAppClick(event) {
       const target = event.target.closest("[data-tab], [data-action]");
       if (!target) {
-        document.querySelectorAll(".task-actions.open").forEach((item) => item.classList.remove("open"));
+        closeFloatingMenus();
         return;
       }
 
@@ -4673,6 +5370,30 @@
         state.tab = target.dataset.tab;
         saveState();
         scheduleRender();
+        return;
+      }
+
+      if (target.dataset.action === "toggle-row-menu") {
+        const wrap = target.closest(".schedule-row-actions");
+        if (!wrap) return;
+        const isOpen = wrap.classList.contains("open");
+        closeFloatingMenus();
+        if (!isOpen) {
+          wrap.classList.add("open");
+          positionFloatingMenu(wrap, ".schedule-dot-btn", ".schedule-row-menu");
+        }
+        return;
+      }
+
+      if (target.dataset.action === "open-day-editor") {
+        closeFloatingMenus();
+        state.selectedDate = target.dataset.date;
+        saveState();
+        scheduleRender();
+        window.setTimeout(() => {
+          const editor = document.querySelector(".mission-footer");
+          if (editor) editor.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 80);
         return;
       }
 
@@ -4684,27 +5405,35 @@
       }
 
       if (target.dataset.action === "toggle") {
+        closeFloatingMenus();
         toggleTask(target.dataset.group, Number(target.dataset.index));
         return;
       }
 
       if (target.dataset.action === "delete-task") {
-        document.querySelectorAll(".task-actions.open").forEach((item) => item.classList.remove("open"));
+        closeFloatingMenus();
         deleteTask(target.dataset.group, Number(target.dataset.index));
         return;
       }
 
       if (target.dataset.action === "toggle-task-menu") {
-        const wrap = target.closest(".task-actions");
-        if (!wrap) return;
-        const isOpen = wrap.classList.contains("open");
-        document.querySelectorAll(".task-actions.open").forEach((item) => item.classList.remove("open"));
-        if (!isOpen) wrap.classList.add("open");
+        const menu = document.getElementById("taskFloatingMenu");
+        const sameTaskOpen = menu
+          && menu.classList.contains("open")
+          && menu.dataset.group === target.dataset.group
+          && menu.dataset.index === target.dataset.index;
+        closeFloatingMenus();
+        if (!sameTaskOpen) {
+          const floatingMenu = ensureTaskFloatingMenu();
+          floatingMenu.dataset.group = target.dataset.group;
+          floatingMenu.dataset.index = target.dataset.index;
+          openTaskFloatingMenu(target);
+        }
         return;
       }
 
       if (target.dataset.action === "edit-task") {
-        document.querySelectorAll(".task-actions.open").forEach((item) => item.classList.remove("open"));
+        closeFloatingMenus();
         editTask(target.dataset.group, Number(target.dataset.index));
         return;
       }
