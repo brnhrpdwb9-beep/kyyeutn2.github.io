@@ -416,16 +416,21 @@
     }
 
     .hero-day-card {
-      padding: 24px;
-      border-radius: 30px;
+      padding: 28px;
+      border-radius: 34px;
       background:
+        radial-gradient(circle at top right, rgba(34,211,238,0.18), transparent 24%),
+        radial-gradient(circle at 18% 18%, rgba(79,140,255,0.16), transparent 26%),
         linear-gradient(135deg, rgba(79,140,255,0.14), rgba(139,92,246,0.12)),
         rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 32px 84px rgba(0,0,0,0.24);
       position: relative;
       overflow: visible;
       display: grid;
-      gap: 18px;
+      gap: 22px;
       height: 100%;
     }
 
@@ -468,18 +473,18 @@
 
     .hero-day-main {
       display: grid;
-      gap: 10px;
-      padding-right: 216px;
+      gap: 14px;
+      padding-right: 232px;
     }
 
     .hero-progress-inline {
-      width: min(220px, calc(100% - 40px));
-      margin-top: 4px;
+      width: min(320px, calc(100% - 40px));
+      margin-top: 2px;
     }
 
     .hero-day-focus {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
     }
 
@@ -487,11 +492,14 @@
       display: grid;
       gap: 8px;
       align-content: start;
-      min-height: 120px;
-      padding: 16px;
-      border-radius: 18px;
-      background: rgba(5, 10, 22, 0.42);
-      border: 1px solid rgba(255,255,255,0.08);
+      min-height: 122px;
+      padding: 16px 16px 15px;
+      border-radius: 20px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025)),
+        rgba(5, 10, 22, 0.42);
+      border: 1px solid rgba(255,255,255,0.09);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
     }
 
     .hero-focus-label {
@@ -511,6 +519,44 @@
     .hero-focus-note {
       color: var(--muted);
       font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .hero-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .hero-kpi-card {
+      display: grid;
+      gap: 6px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)),
+        rgba(5, 10, 22, 0.32);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .hero-kpi-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #c7d2fe;
+    }
+
+    .hero-kpi-value {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 26px;
+      line-height: 1;
+      color: #f8fbff;
+      letter-spacing: -0.05em;
+    }
+
+    .hero-kpi-note {
+      color: var(--muted);
+      font-size: 12px;
       line-height: 1.55;
     }
 
@@ -781,11 +827,17 @@
       align-self: stretch;
       display: grid;
       place-items: stretch;
-      border-radius: 30px;
-      padding: 22px 20px 26px;
-      background: transparent;
-      border: 0;
-      box-shadow: none;
+      border-radius: 34px;
+      padding: 22px 22px 24px;
+      background:
+        radial-gradient(circle at top left, rgba(251,191,36,0.16), transparent 24%),
+        radial-gradient(circle at 88% 12%, rgba(34,211,238,0.16), transparent 22%),
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
+        rgba(5, 10, 22, 0.4);
+      border: 1px solid rgba(255,255,255,0.09);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 28px 72px rgba(0,0,0,0.2);
       overflow: visible;
     }
 
@@ -902,6 +954,24 @@
       text-shadow: 0 4px 18px rgba(0,0,0,0.32);
       min-height: 18px;
       overflow: visible;
+    }
+
+    @media (max-width: 1180px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-day-main {
+        padding-right: 0;
+      }
+
+      .hero-day-focus {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-kpi-row {
+        grid-template-columns: 1fr;
+      }
     }
 
     .dashboard {
@@ -1407,27 +1477,32 @@
     }
 
     .schedule-table-wrap {
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.1);
       background:
-        radial-gradient(circle at top right, rgba(79,140,255,0.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(79,140,255,0.18), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
         rgba(255,255,255,0.03);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 26px 70px rgba(0,0,0,0.22);
       overflow: auto;
     }
 
     .schedule-table {
       width: 100%;
-      min-width: 1080px;
+      min-width: 1180px;
       border-collapse: separate;
-      border-spacing: 0;
+      border-spacing: 0 12px;
+      padding: 8px 14px 14px;
     }
 
     .schedule-table th,
     .schedule-table td {
-      padding: 14px 16px;
+      padding: 16px 18px;
       vertical-align: top;
       text-align: left;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 0;
     }
 
     .schedule-table th {
@@ -1435,37 +1510,61 @@
       top: 0;
       z-index: 2;
       background: rgba(8, 13, 28, 0.96);
-      color: #c7d2fe;
+      color: #d5defe;
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .schedule-table tr:last-child td {
-      border-bottom: 0;
+      letter-spacing: 0.12em;
+      backdrop-filter: blur(16px);
     }
 
     .schedule-table tbody tr {
-      transition: 0.22s ease;
+      transition: transform 0.22s ease, filter 0.22s ease;
     }
 
-    .schedule-table tbody tr:hover td {
-      background: rgba(255,255,255,0.035);
+    .schedule-table tbody tr:hover {
+      transform: translateY(-2px);
+      filter: saturate(1.08);
+    }
+
+    .schedule-table tbody td {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025)),
+        rgba(6, 10, 24, 0.72);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .schedule-table tbody td:first-child {
+      border-left: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px 0 0 22px;
+    }
+
+    .schedule-table tbody td:last-child {
+      border-right: 1px solid rgba(255,255,255,0.08);
+      border-radius: 0 22px 22px 0;
     }
 
     .schedule-table tr.active-row td {
-      background: rgba(79,140,255,0.1);
+      background:
+        linear-gradient(180deg, rgba(104, 142, 255, 0.14), rgba(34, 211, 238, 0.06)),
+        rgba(9, 16, 34, 0.9);
+      border-top-color: rgba(114, 153, 255, 0.26);
     }
 
     .schedule-date-cell {
       position: sticky;
       left: 0;
       z-index: 1;
-      min-width: 130px;
-      background: rgba(8, 13, 28, 0.94);
+      min-width: 150px;
+      background:
+        linear-gradient(180deg, rgba(79,140,255,0.14), rgba(255,255,255,0.03)),
+        rgba(8, 13, 28, 0.94);
     }
 
     .schedule-date-main {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 25px;
+      letter-spacing: -0.05em;
       font-weight: 700;
       color: #eef4ff;
     }
@@ -1480,7 +1579,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 10px;
+      margin-top: 14px;
     }
 
     .schedule-list {
@@ -1501,35 +1600,100 @@
     }
 
     .schedule-task-panel {
+      --subject-glow: rgba(255,255,255,0.12);
+      --subject-border: rgba(255,255,255,0.12);
+      --subject-accent: #dbe7ff;
+      --subject-soft: rgba(255,255,255,0.04);
       min-width: 240px;
       display: grid;
-      gap: 8px;
-      padding: 10px 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      gap: 10px;
+      padding: 14px;
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at top right, var(--subject-glow), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)),
+        rgba(255,255,255,0.03);
+      border: 1px solid var(--subject-border);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 16px 34px rgba(0,0,0,0.16);
+    }
+
+    .schedule-task-panel.physics {
+      --subject-glow: rgba(95, 143, 255, 0.25);
+      --subject-border: rgba(95, 143, 255, 0.24);
+      --subject-accent: #8ab5ff;
+      --subject-soft: rgba(95, 143, 255, 0.09);
+    }
+
+    .schedule-task-panel.math {
+      --subject-glow: rgba(251, 191, 36, 0.24);
+      --subject-border: rgba(251, 191, 36, 0.22);
+      --subject-accent: #ffd56f;
+      --subject-soft: rgba(251, 191, 36, 0.09);
+    }
+
+    .schedule-task-panel.english {
+      --subject-glow: rgba(34, 211, 238, 0.24);
+      --subject-border: rgba(34, 211, 238, 0.22);
+      --subject-accent: #79ecff;
+      --subject-soft: rgba(34, 211, 238, 0.09);
+    }
+
+    .schedule-task-panel.review {
+      --subject-glow: rgba(244, 114, 182, 0.22);
+      --subject-border: rgba(244, 114, 182, 0.2);
+      --subject-accent: #ff9ac7;
+      --subject-soft: rgba(244, 114, 182, 0.08);
     }
 
     .schedule-task-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      min-width: 220px;
       gap: 10px;
+    }
+
+    .schedule-task-headline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .schedule-task-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: var(--subject-soft);
+      border: 1px solid var(--subject-border);
+      color: var(--subject-accent);
+      font-size: 16px;
+      font-weight: 800;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
     }
 
     .schedule-task-title {
       color: #eef4ff;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.09em;
     }
 
     .schedule-task-meta {
-      color: #9fb0d3;
-      font-size: 12px;
+      color: var(--subject-accent);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
       white-space: nowrap;
+    }
+
+    .schedule-task-summary {
+      font-size: 12px;
+      color: var(--muted);
     }
 
     .schedule-task-divider {
@@ -1552,19 +1716,30 @@
 
     .schedule-subject-stack {
       display: grid;
-      gap: 12px;
-      min-width: 360px;
+      grid-template-columns: repeat(2, minmax(260px, 1fr));
+      gap: 14px;
+      min-width: 560px;
     }
 
     .schedule-task-item {
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: auto 1fr auto;
       gap: 10px;
-      align-items: center;
-      padding: 9px 10px;
+      align-items: start;
+      padding: 10px 11px;
       border-radius: 14px;
       background: rgba(255,255,255,0.035);
       border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .schedule-task-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      margin-top: 6px;
+      background: var(--subject-accent);
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.03);
+      flex: none;
     }
 
     .schedule-task-item.done {
@@ -1618,6 +1793,14 @@
       font-size: 12px;
     }
 
+    .schedule-progress-percent {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: -0.05em;
+      color: #eef4ff;
+    }
+
     .schedule-progress-bar {
       position: relative;
       width: 18px;
@@ -1643,14 +1826,33 @@
 
     .schedule-note-cell {
       min-width: 240px;
-      color: #dbe7ff;
-      font-size: 13px;
-      line-height: 1.6;
+    }
+
+    .schedule-note-card {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      min-height: 100%;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
+        rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .schedule-note-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #9fb0d3;
     }
 
     .schedule-note-snippet {
+      color: #dbe7ff;
+      font-size: 13px;
+      line-height: 1.7;
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 4;
       -webkit-box-orient: vertical;
       overflow: hidden;
       min-height: 0;
@@ -1661,22 +1863,46 @@
       display: none;
     }
 
+    .schedule-action-cell {
+      min-width: 140px;
+    }
+
+    .schedule-action-stack {
+      display: grid;
+      gap: 10px;
+      justify-items: start;
+    }
+
+    .schedule-mini-note {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
     .schedule-open-btn {
-      padding: 8px 12px;
+      padding: 10px 14px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.05);
+      background: linear-gradient(135deg, rgba(79,140,255,0.24), rgba(34,211,238,0.16));
       color: #eef4ff;
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
       transition: 0.22s ease;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.16);
     }
 
     .schedule-open-btn:hover {
       transform: translateY(-1px);
       border-color: rgba(96,165,250,0.32);
-      background: rgba(79,140,255,0.14);
+      background: linear-gradient(135deg, rgba(79,140,255,0.34), rgba(34,211,238,0.22));
+    }
+
+    @media (max-width: 1180px) {
+      .schedule-subject-stack {
+        grid-template-columns: minmax(260px, 1fr);
+        min-width: 340px;
+      }
     }
 
     .mission-top {
@@ -1991,36 +2217,267 @@
       margin-top: 14px;
     }
 
-    .task-btn {
-      width: 100%;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      text-align: left;
-      padding: 14px;
+    .task-grid-head {
+      --task-head-line: rgba(255,255,255,0.12);
+      display: grid;
+      grid-template-columns: 66px 74px minmax(240px, 1.45fr) minmax(120px, 0.7fr) minmax(160px, 0.9fr) 104px;
+      gap: 0;
+      align-items: center;
+      overflow: hidden;
       border-radius: 16px;
-      background: rgba(0,0,0,0.2);
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid rgba(132, 168, 255, 0.14);
+      background:
+        linear-gradient(135deg, rgba(74, 119, 255, 0.32), rgba(74, 119, 255, 0.08) 16%, rgba(58, 189, 248, 0.22) 34%, rgba(124, 92, 246, 0.24) 56%, rgba(255, 191, 90, 0.2) 78%, rgba(255, 128, 164, 0.2) 100%),
+        linear-gradient(180deg, rgba(14, 23, 46, 0.98), rgba(10, 18, 38, 0.98));
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.14),
+        0 18px 38px rgba(5, 12, 28, 0.22);
+    }
+
+    .task-grid-head span {
+      padding: 12px 14px;
+      border-right: 1px solid var(--task-head-line);
+      color: #eef4ff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+    }
+
+    .task-grid-head span:nth-child(1) { color: #dff7ff; }
+    .task-grid-head span:nth-child(2) { color: #d7e5ff; }
+    .task-grid-head span:nth-child(3) { color: #e3dcff; }
+    .task-grid-head span:nth-child(4) { color: #ffe0a8; }
+    .task-grid-head span:nth-child(5) { color: #ffd0e2; }
+    .task-grid-head span:nth-child(6) { color: #d8f5ff; }
+
+    .task-btn {
+      position: relative;
+    }
+
+    .task-grid-head span:last-child {
+      border-right: 0;
+      text-align: center;
+    }
+
+    .section-empty {
+      --empty-accent: rgba(255,255,255,0.18);
+      --empty-soft: rgba(255,255,255,0.05);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      padding: 16px;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025)),
+        rgba(0,0,0,0.16);
+      border: 1px dashed var(--empty-accent);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .section-empty.physics {
+      --empty-accent: rgba(95, 143, 255, 0.28);
+      --empty-soft: rgba(95, 143, 255, 0.1);
+    }
+
+    .section-empty.math {
+      --empty-accent: rgba(251, 191, 36, 0.28);
+      --empty-soft: rgba(251, 191, 36, 0.1);
+    }
+
+    .section-empty.english {
+      --empty-accent: rgba(34, 211, 238, 0.28);
+      --empty-soft: rgba(34, 211, 238, 0.1);
+    }
+
+    .section-empty.review {
+      --empty-accent: rgba(244, 114, 182, 0.26);
+      --empty-soft: rgba(244, 114, 182, 0.1);
+    }
+
+    .section-empty-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: var(--empty-soft);
+      border: 1px solid var(--empty-accent);
+      color: #eef4ff;
+      font-size: 15px;
+      font-weight: 800;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
+    .section-empty-copy {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .section-empty-title {
+      color: #eef4ff;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .section-empty-text {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+      display: none;
+    }
+
+    .section-empty-hint {
+      color: #cbd8f3;
+      font-size: 12px;
+      line-height: 1.55;
+      display: none;
+    }
+
+    .task-btn {
+      --task-glow: rgba(139,92,246,0.18);
+      --task-border: rgba(255,255,255,0.1);
+      --task-soft: rgba(255,255,255,0.04);
+      --task-accent: #dbe7ff;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 66px 74px minmax(240px, 1.45fr) minmax(120px, 0.7fr) minmax(160px, 0.9fr) 104px;
+      gap: 0;
+      align-items: center;
+      text-align: left;
+      padding: 0;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025)),
+        rgba(255,255,255,0.03);
+      border: 1px solid var(--task-border);
       color: white;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 16px 34px rgba(0,0,0,0.16);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
+    }
+
+    .task-btn.physics {
+      --task-glow: rgba(95, 143, 255, 0.2);
+      --task-border: rgba(95, 143, 255, 0.2);
+      --task-soft: rgba(95, 143, 255, 0.18);
+      --task-accent: #8ab5ff;
+    }
+
+    .task-btn.math {
+      --task-glow: rgba(251, 191, 36, 0.18);
+      --task-border: rgba(251, 191, 36, 0.18);
+      --task-soft: rgba(251, 191, 36, 0.16);
+      --task-accent: #ffd56f;
+    }
+
+    .task-btn.english {
+      --task-glow: rgba(34, 211, 238, 0.18);
+      --task-border: rgba(34, 211, 238, 0.18);
+      --task-soft: rgba(34, 211, 238, 0.16);
+      --task-accent: #79ecff;
+    }
+
+    .task-btn.review {
+      --task-glow: rgba(244, 114, 182, 0.16);
+      --task-border: rgba(244, 114, 182, 0.18);
+      --task-soft: rgba(244, 114, 182, 0.14);
+      --task-accent: #ff9ac7;
     }
 
     .task-btn:hover {
       transform: translateY(-1px);
-      background: rgba(255,255,255,0.05);
-      border-color: rgba(139,92,246,0.24);
+      border-color: color-mix(in srgb, var(--task-border) 72%, white);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 20px 42px rgba(0,0,0,0.2),
+        0 0 24px var(--task-soft);
     }
 
-    .task-btn.done { color: #64748b; }
+    .task-btn.done {
+      color: #8b9ab9;
+      background:
+        linear-gradient(180deg, rgba(52,211,153,0.08), rgba(255,255,255,0.02)),
+        rgba(8, 13, 28, 0.55);
+      border-color: rgba(52,211,153,0.16);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 16px 38px rgba(0,0,0,0.16),
+        0 0 18px rgba(52,211,153,0.08);
+    }
+
     .task-btn.done .task-text { text-decoration: line-through; }
 
+    .task-card { min-width: 0; }
+
+    .task-main {
+      display: grid;
+      grid-template-columns: 66px 74px minmax(240px, 1.45fr) minmax(120px, 0.7fr) minmax(160px, 0.9fr);
+      grid-column: 1 / 6;
+      align-items: stretch;
+      gap: 0;
+      min-width: 0;
+      text-align: left;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .task-cell {
+      min-width: 0;
+      padding: 14px 14px;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      align-content: center;
+      gap: 6px;
+      min-height: 82px;
+    }
+
+    .task-cell.check-col {
+      place-items: center;
+      padding: 14px 10px;
+    }
+
+    .task-cell.stt-col {
+      justify-items: center;
+      color: #f6fbff;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 20px;
+      letter-spacing: -0.04em;
+    }
+
+    .task-copy {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .task-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
     .check {
-      margin-top: 1px;
-      width: 18px;
-      height: 18px;
+      margin-top: 0;
+      width: 20px;
+      height: 20px;
       border-radius: 999px;
-      border: 2px solid #a78bfa;
+      border: 2px solid color-mix(in srgb, var(--task-border) 85%, var(--task-accent));
       flex: 0 0 auto;
       position: relative;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.03);
     }
 
     .task-btn.done .check::after {
@@ -2028,12 +2485,267 @@
       position: absolute;
       inset: 2px;
       border-radius: 999px;
-      background: linear-gradient(135deg, var(--violet), var(--cyan));
+      background: linear-gradient(135deg, var(--green), #8bf3c9);
     }
 
     .task-text {
-      line-height: 1.65;
+      line-height: 1.6;
       font-size: 14px;
+      color: #f4f7ff;
+      font-weight: 600;
+    }
+
+    .task-link-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.06);
+      color: #edf4ff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .task-time-main {
+      color: #f6fbff;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 16px;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+    }
+
+    .task-time-sub {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .task-note-box {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .task-note-label {
+      color: #c7d2fe;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .task-structured {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .task-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .task-meta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      color: #d9e6ff;
+      font-size: 11px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .task-subject-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--task-soft);
+      color: var(--task-accent);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .task-subject-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--task-accent);
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.03);
+      flex: none;
+    }
+
+    .task-meta-label {
+      opacity: 0.72;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 10px;
+    }
+
+    .task-note {
+      color: #cbd8f3;
+      font-size: 12px;
+      line-height: 1.55;
+      padding-top: 0;
+    }
+
+    .task-state-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: #e8f1ff;
+    }
+
+    .task-state-pill.done {
+      background: rgba(52,211,153,0.12);
+      border-color: rgba(52,211,153,0.28);
+      color: #b9f5dc;
+    }
+
+    .task-state-pill.pending {
+      background: rgba(79,140,255,0.12);
+      border-color: rgba(79,140,255,0.22);
+      color: #d8e7ff;
+    }
+
+    .task-actions {
+      position: relative;
+      display: grid;
+      align-content: center;
+      justify-items: end;
+      gap: 8px;
+      min-width: 122px;
+      padding: 14px 12px;
+    }
+
+    .task-action-label {
+      color: rgba(223, 233, 255, 0.72);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .task-action-trigger {
+      min-width: 92px;
+      justify-content: center;
+      background:
+        linear-gradient(135deg, rgba(79,140,255,0.18), rgba(34,211,238,0.12)),
+        rgba(255,255,255,0.04);
+      border-color: rgba(95, 143, 255, 0.22);
+    }
+
+    .task-action-menu {
+      position: absolute;
+      top: calc(100% - 6px);
+      right: 12px;
+      min-width: 168px;
+      display: none;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background:
+        linear-gradient(180deg, rgba(14, 22, 40, 0.98), rgba(9, 16, 31, 0.98)),
+        rgba(8, 13, 28, 0.96);
+      box-shadow: 0 20px 38px rgba(0,0,0,0.3);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 12;
+    }
+
+    .task-actions.open .task-action-menu {
+      display: grid;
+    }
+
+    .task-menu-btn {
+      width: 100%;
+      justify-content: center;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .task-edit-btn {
+      background:
+        linear-gradient(135deg, rgba(79,140,255,0.18), rgba(34,211,238,0.12)),
+        rgba(255,255,255,0.05);
+      border-color: rgba(79,140,255,0.22);
+    }
+
+    .task-delete-btn {
+      min-width: 108px;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(251,113,133,0.16), rgba(255,255,255,0.05));
+      border-color: rgba(251,113,133,0.22);
+    }
+
+    .task-delete-btn:hover {
+      border-color: rgba(251,113,133,0.38);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.18);
+    }
+
+    .task-btn.done .task-text,
+    .task-btn.done .task-note {
+      color: #99a9c8;
+    }
+
+    @media (max-width: 760px) {
+      .task-grid-head {
+        display: none;
+      }
+
+      .task-btn {
+        grid-template-columns: 1fr;
+      }
+
+      .task-main {
+        grid-template-columns: 1fr;
+      }
+
+      .task-cell {
+        min-height: auto;
+        padding: 12px 14px;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+      }
+
+      .task-cell.check-col,
+      .task-cell.stt-col {
+        justify-items: start;
+      }
+
+      .task-actions {
+        min-width: 0;
+        justify-items: stretch;
+        padding: 12px 14px 14px;
+      }
+
+      .task-delete-btn {
+        width: 100%;
+      }
     }
 
     .mission-footer {
@@ -2600,7 +3312,7 @@
       return days;
     }
 
-    const initialSchedule = buildScheduleRange(2026, 5, 12, 2026, 6, 10);
+    const initialSchedule = buildScheduleRange(2026, 5, 13, 2026, 6, 10);
 
     const paceClassMap = {
       "Nhanh hơn dự kiến": "pace-fast",
@@ -2653,6 +3365,7 @@
     let syncHeightRaf = 0;
     let searchInputTimer = 0;
     let importStatus = { type: "", message: "" };
+    let editingTask = null;
 
     function clone(value) {
       if (typeof structuredClone === "function") return structuredClone(value);
@@ -2680,31 +3393,50 @@
       return [normalized];
     }
 
-    function createTaskItems(list) {
-      return list.flatMap((text) => expandTaskEntry(text)).map((text) => ({ text, done: false }));
+    function createStructuredTaskItem({ date = "", group = "", time = "", content = "", note = "", text = "", done = false }) {
+      const rawText = String(text || "").trim();
+      const parsedTime = time || (rawText.includes(" · ") ? rawText.split(" · ")[0].trim() : "");
+      const parsedContent = content || (rawText.includes(" · ") ? rawText.split(" · ").slice(1).join(" · ").trim() : rawText);
+      return {
+        date: String(date || "").trim(),
+        group: String(group || "").trim(),
+        time: String(parsedTime || "").trim(),
+        content: String(parsedContent || "").trim(),
+        note: String(note || "").trim(),
+        text: String(parsedContent || rawText).trim(),
+        done: !!done
+      };
     }
 
-    function normalizeTaskItems(items) {
+    function createTaskItems(list) {
+      return list.flatMap((text) => expandTaskEntry(text)).map((text) => createStructuredTaskItem({ text, content: text }));
+    }
+
+    function normalizeTaskItems(items, date = "", group = "") {
       if (!Array.isArray(items)) return [];
       return items
-        .filter((item) => item && typeof item.text === "string" && item.text.trim())
-        .map((item) => ({ text: item.text.trim(), done: !!item.done }));
+        .filter((item) => item && ((typeof item.content === "string" && item.content.trim()) || (typeof item.text === "string" && item.text.trim())))
+        .map((item) => createStructuredTaskItem({ ...item, date: item.date || date, group: item.group || group, done: item.done }));
     }
 
-    function mergeTaskItems(savedItems, freshItems) {
-      const safeFresh = normalizeTaskItems(freshItems);
-      const safeSaved = normalizeTaskItems(savedItems);
+    function taskIdentity(item) {
+      return [item.date, item.group, item.time, item.content, item.note].join("|").trim();
+    }
+
+    function mergeTaskItems(savedItems, freshItems, date = "", group = "") {
+      const safeFresh = normalizeTaskItems(freshItems, date, group);
+      const safeSaved = normalizeTaskItems(savedItems, date, group);
       if (!safeSaved.length) return safeFresh;
       if (!safeFresh.length) return safeSaved;
 
-      const savedByText = new Map(safeSaved.map((item) => [item.text, !!item.done]));
+      const savedByText = new Map(safeSaved.map((item) => [taskIdentity(item), !!item.done]));
       const merged = safeFresh.map((item) => ({
         ...item,
-        done: savedByText.has(item.text) ? savedByText.get(item.text) : item.done
+        done: savedByText.has(taskIdentity(item)) ? savedByText.get(taskIdentity(item)) : item.done
       }));
 
       safeSaved.forEach((item) => {
-        if (!merged.some((fresh) => fresh.text === item.text)) merged.push(item);
+        if (!merged.some((fresh) => taskIdentity(fresh) === taskIdentity(item))) merged.push(item);
       });
 
       return merged;
@@ -2757,10 +3489,10 @@
       Object.keys(freshTasks).forEach((date) => {
         const savedDay = savedTasks && savedTasks[date] ? savedTasks[date] : {};
         merged[date] = {
-          physics: mergeTaskItems(savedDay.physics, freshTasks[date].physics),
-          math: mergeTaskItems(savedDay.math, freshTasks[date].math),
-          english: mergeTaskItems(savedDay.english, freshTasks[date].english),
-          review: mergeTaskItems(savedDay.review, freshTasks[date].review),
+          physics: mergeTaskItems(savedDay.physics, freshTasks[date].physics, date, "physics"),
+          math: mergeTaskItems(savedDay.math, freshTasks[date].math, date, "math"),
+          english: mergeTaskItems(savedDay.english, freshTasks[date].english, date, "english"),
+          review: mergeTaskItems(savedDay.review, freshTasks[date].review, date, "review"),
           dailyNote: typeof savedDay.dailyNote === "string" ? savedDay.dailyNote : "",
           pace: typeof savedDay.pace === "string" ? savedDay.pace : "Đúng nhịp",
           customAdd: typeof savedDay.customAdd === "string" ? savedDay.customAdd : ""
@@ -2879,6 +3611,82 @@
       return `${dd}/${mm}/${target.getFullYear()}`;
     }
 
+    function syncDynamicUi(selectedDay, currentDone, currentDayTasks, learnedMinutes, done, total) {
+      const focusCards = document.querySelectorAll(".hero-day-focus .hero-focus-card");
+      if (focusCards[0]) {
+        focusCards[0].innerHTML = `
+          <div class="hero-focus-label">Tong thoi gian da hoc</div>
+          <div class="hero-focus-value">${escapeHtml(formatStudyMinutes(learnedMinutes))}</div>
+          <div class="hero-focus-note">Tinh tu cac task da xong co gio hoc hop le.</div>
+        `;
+      }
+      if (focusCards[1]) {
+        focusCards[1].innerHTML = `
+          <div class="hero-focus-label">Tien do ngay dang chon</div>
+          <div class="hero-focus-value">${currentDone}/${currentDayTasks.length}</div>
+          <div class="hero-focus-note">Chi tinh cho ngay ${escapeHtml(selectedDay.date)}.</div>
+        `;
+      }
+      if (focusCards[2]) {
+        focusCards[2].innerHTML = `
+          <div class="hero-focus-label">Tong task da xong</div>
+          <div class="hero-focus-value">${done}/${total}</div>
+          <div class="hero-focus-note">Theo toan bo lich hien co.</div>
+        `;
+      }
+
+      const missionCopy = document.querySelector(".mission-copy");
+      if (missionCopy && !String(selectedDay.note || "").trim()) missionCopy.textContent = "";
+
+      const missionFooterGrid = document.querySelector(".mission-footer > div:nth-child(2)");
+      if (missionFooterGrid && !document.getElementById("addTaskNote")) {
+        missionFooterGrid.style.gridTemplateColumns = "180px 180px minmax(0,1fr) minmax(220px,0.9fr) auto";
+        const addBtn = missionFooterGrid.querySelector('[data-action="add-task"]');
+        if (addBtn) {
+          addBtn.insertAdjacentHTML("beforebegin", '<input id="addTaskNote" class="field" placeholder="Ghi chú cho task này..." />');
+        }
+      }
+
+      const addBtn = document.querySelector('[data-action="add-task"]');
+      if (addBtn) addBtn.textContent = editingTask ? "Cập nhật" : "Thêm";
+
+      document.querySelectorAll(".task-actions").forEach((wrap) => {
+        const label = wrap.querySelector(".task-action-label");
+        const trigger = wrap.querySelector("button");
+        if (!trigger) return;
+        if (label) label.textContent = wrap.closest(".task-btn") && wrap.closest(".task-btn").classList.contains("done") ? "Hoàn tất" : "Tác vụ";
+        trigger.className = "schedule-open-btn task-action-trigger";
+        trigger.dataset.action = "toggle-task-menu";
+        trigger.textContent = "Tùy chọn";
+
+        if (!wrap.querySelector(".task-action-menu")) {
+          const group = trigger.dataset.group;
+          const index = trigger.dataset.index;
+          wrap.insertAdjacentHTML("beforeend", `
+            <div class="task-action-menu">
+              <button
+                type="button"
+                class="schedule-open-btn task-menu-btn task-edit-btn"
+                data-action="edit-task"
+                data-group="${escapeHtml(group)}"
+                data-index="${escapeHtml(index)}"
+              >Sửa</button>
+              <button
+                type="button"
+                class="schedule-open-btn task-menu-btn task-delete-btn"
+                data-action="delete-task"
+                data-group="${escapeHtml(group)}"
+                data-index="${escapeHtml(index)}"
+              >Xóa</button>
+            </div>
+          `);
+        }
+      });
+
+      const sidebarDesc = document.querySelector(".sidebar .section-desc");
+      if (sidebarDesc) sidebarDesc.textContent = "Chọn ngày rồi thêm lịch học ở khung bên phải.";
+    }
+
     function getCountdownParts(targetTime) {
       const diff = Math.max(0, targetTime - Date.now());
       const totalSeconds = Math.floor(diff / 1000);
@@ -2979,6 +3787,45 @@
       return Object.values(state.tasks).flatMap((day) => [...day.physics, ...day.math, ...day.english, ...day.review]);
     }
 
+    function parseStudyMinutes(value) {
+      const text = String(value || "").trim();
+      if (!text) return 0;
+
+      const rangeMatch = text.match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+      if (rangeMatch) {
+        const start = Number(rangeMatch[1]) * 60 + Number(rangeMatch[2]);
+        const end = Number(rangeMatch[3]) * 60 + Number(rangeMatch[4]);
+        return end > start ? end - start : 0;
+      }
+
+      const hourMinuteMatch = text.match(/(\d+(?:[.,]\d+)?)\s*(h|gio|hr)\s*(?:(\d{1,2})\s*(p|phut|min))?/i);
+      if (hourMinuteMatch) {
+        const hours = Number(hourMinuteMatch[1].replace(",", "."));
+        const minutes = hourMinuteMatch[3] ? Number(hourMinuteMatch[3]) : 0;
+        return Math.round(hours * 60) + minutes;
+      }
+
+      const minuteMatch = text.match(/(\d+)\s*(p|phut|min)/i);
+      if (minuteMatch) return Number(minuteMatch[1]);
+
+      return 0;
+    }
+
+    function formatStudyMinutes(totalMinutes) {
+      const safeMinutes = Math.max(0, Number(totalMinutes) || 0);
+      const hours = Math.floor(safeMinutes / 60);
+      const minutes = safeMinutes % 60;
+      if (!hours) return `${minutes}p`;
+      if (!minutes) return `${hours}h`;
+      return `${hours}h ${minutes}p`;
+    }
+
+    function totalDoneStudyMinutes() {
+      return allTasks()
+        .filter((item) => item.done)
+        .reduce((sum, item) => sum + parseStudyMinutes(item.time), 0);
+    }
+
     function getProgress() {
       const tasks = allTasks();
       const total = tasks.length;
@@ -2986,8 +3833,8 @@
       return total ? Math.round((done * 100) / total) : 0;
     }
 
-    function groupProgress(key) {
-      const items = Object.values(state.tasks).flatMap((day) => day[key]);
+    function groupProgress(key, taskState = ensureTaskState(state.selectedDate)) {
+      const items = taskState[key] || [];
       const done = items.filter((item) => item.done).length;
       return items.length ? Math.round((done * 100) / items.length) : 0;
     }
@@ -3038,18 +3885,49 @@
     function deleteTask(group, index) {
       const taskState = ensureTaskState(state.selectedDate);
       if (!taskState[group] || !taskState[group][index]) return;
+      if (editingTask && editingTask.date === state.selectedDate && editingTask.group === group && editingTask.index === index) {
+        editingTask = null;
+      }
       taskState[group].splice(index, 1);
       saveState();
       scheduleRender();
+    }
+
+    function resetTaskEditor() {
+      editingTask = null;
+      const addBtn = document.querySelector('[data-action="add-task"]');
+      if (addBtn) addBtn.textContent = "Thêm";
+    }
+
+    function editTask(group, index) {
+      const taskState = ensureTaskState(state.selectedDate);
+      const item = taskState[group] && taskState[group][index];
+      if (!item) return;
+
+      editingTask = { date: state.selectedDate, group, index };
+      const groupInput = document.getElementById("addGroup");
+      const timeInput = document.getElementById("addTime");
+      const textInput = document.getElementById("addText");
+      const taskNoteInput = document.getElementById("addTaskNote");
+      const addBtn = document.querySelector('[data-action="add-task"]');
+
+      if (groupInput) groupInput.value = group;
+      if (timeInput) timeInput.value = item.time || "";
+      if (textInput) textInput.value = item.content || item.text || "";
+      if (taskNoteInput) taskNoteInput.value = item.note || "";
+      if (addBtn) addBtn.textContent = "Cập nhật";
+      if (textInput) textInput.focus();
     }
 
     function addTaskFromForm() {
       const groupInput = document.getElementById("addGroup");
       const timeInput = document.getElementById("addTime");
       const textInput = document.getElementById("addText");
+      const taskNoteInput = document.getElementById("addTaskNote");
       const group = groupInput ? groupInput.value : "physics";
       const time = timeInput ? timeInput.value.trim() : "";
       const text = textInput ? textInput.value.trim() : "";
+      const taskNote = taskNoteInput ? taskNoteInput.value.trim() : "";
 
       if (!text) {
         alert("Nhập nội dung lịch học trước đã. Ví dụ: Làm đề VSAT 1 hoặc Ôn dao động cơ.");
@@ -3058,11 +3936,31 @@
 
       const taskState = ensureTaskState(state.selectedDate);
       if (!Array.isArray(taskState[group])) taskState[group] = [];
-      const content = time ? `${time} · ${text}` : text;
-      taskState[group].push({ text: content, done: false });
+      const nextItem = createStructuredTaskItem({
+        date: state.selectedDate,
+        group,
+        time,
+        content: text,
+        note: taskNote,
+        done: false
+      });
+
+      if (editingTask && editingTask.date === state.selectedDate) {
+        const list = taskState[editingTask.group];
+        if (Array.isArray(list) && list[editingTask.index]) {
+          list[editingTask.index] = {
+            ...nextItem,
+            done: !!list[editingTask.index].done
+          };
+        }
+      } else {
+        taskState[group].push(nextItem);
+      }
 
       if (timeInput) timeInput.value = "";
       if (textInput) textInput.value = "";
+      if (taskNoteInput) taskNoteInput.value = "";
+      resetTaskEditor();
       saveState();
       scheduleRender();
     }
@@ -3134,7 +4032,7 @@
         const content = contentRaw.trim();
         const note = noteParts.join(" | ").trim();
 
-        if (!date) errors.push(`Dòng ${lineNumber}: ngày "${dateRaw}" không nằm trong khoảng 12/05 - 10/06/2026.`);
+        if (!date) errors.push(`Dòng ${lineNumber}: ngày "${dateRaw}" không nằm trong khoảng 13/05 - 10/06/2026.`);
         if (!group) errors.push(`Dòng ${lineNumber}: môn "${subjectRaw}" chưa đúng. Dùng Vật lí, Toán, Tiếng Anh hoặc Ôn lỗi.`);
         if (!content) errors.push(`Dòng ${lineNumber}: thiếu nội dung học.`);
         if (!date || !group || !content) return;
@@ -3143,7 +4041,8 @@
           lineNumber,
           date,
           group,
-          text: time ? `${time} · ${content}` : content,
+          time,
+          content,
           note
         });
       });
@@ -3197,16 +4096,21 @@
         const taskState = ensureTaskState(entry.date);
         if (!Array.isArray(taskState[entry.group])) taskState[entry.group] = [];
 
-        const duplicated = taskState[entry.group].some((item) => item.text === entry.text);
+        const nextItem = createStructuredTaskItem({
+          date: entry.date,
+          group: entry.group,
+          time: entry.time,
+          content: entry.content,
+          note: entry.note,
+          done: false
+        });
+        const duplicated = taskState[entry.group].some((item) => taskIdentity(createStructuredTaskItem(item)) === taskIdentity(nextItem));
         if (duplicated) {
           skipped += 1;
         } else {
-          taskState[entry.group].push({ text: entry.text, done: false });
+          taskState[entry.group].push(nextItem);
           added += 1;
         }
-
-        const day = state.schedule.find((item) => item.date === entry.date);
-        if (day) appendDayNote(day, entry.note);
       });
 
       state.selectedDate = entries[0].date;
@@ -3234,7 +4138,7 @@
     }
 
     function downloadImportTemplate() {
-      const template = `# CÔNG THỨC NHẬP LỊCH HỌC\n# Mỗi dòng: Ngày | Môn | Giờ | Nội dung học | Ghi chú\n# Ngày chỉ nhận từ 12/05 đến 10/06/2026.\n# Môn nhận: Vật lí / Toán / Tiếng Anh / Ôn lỗi. Có thể viết tắt: VL, Toán, TA, Recall.\n\nNgày | Môn | Giờ | Nội dung học | Ghi chú\n12/05 | Toán | 19:00-20:30 | Hàm số: khảo sát, cực trị, GTLN-GTNN | Làm xong thì đánh dấu câu sai\n12/05 | Vật lí | 20:45-22:00 | Dao động cơ: 30 câu trắc nghiệm | Ưu tiên câu vận dụng\n13/05 | TA | Sáng | Part 2 True/False + 20 từ vựng | Ghi lại bẫy sai\n13/05 | Recall | 21:30 | Ôn lại lỗi sai trong đề hôm trước |`; 
+      const template = `# CÔNG THỨC NHẬP LỊCH HỌC\n# Mỗi dòng: Ngày | Môn | Giờ | Nội dung học | Ghi chú\n# Ngày chỉ nhận từ 13/05 đến 10/06/2026.\n# Môn nhận: Vật lí / Toán / Tiếng Anh / Ôn lỗi. Có thể viết tắt: VL, Toán, TA, Recall.\n\nNgày | Môn | Giờ | Nội dung học | Ghi chú\n13/05 | Toán | 19:00-20:30 | Hàm số: khảo sát, cực trị, GTLN-GTNN | Làm xong thì đánh dấu câu sai\n13/05 | Vật lí | 20:45-22:00 | Dao động cơ: 30 câu trắc nghiệm | Ưu tiên câu vận dụng\n14/05 | TA | Sáng | Part 2 True/False + 20 từ vựng | Ghi lại bẫy sai\n14/05 | Recall | 21:30 | Ôn lại lỗi sai trong đề hôm trước |`; 
       const blob = new Blob([template], { type: "text/plain;charset=utf-8" });
       const link = document.createElement("a");
       const url = URL.createObjectURL(blob);
@@ -3272,7 +4176,15 @@
 
     function sectionHtml(title, groupKey, items) {
       const icons = { physics: "◎", math: "◇", english: "△", review: "✓" };
+      const subjectLabels = { physics: "Physics", math: "Math", english: "English", review: "Recall" };
       const doneCount = items.filter((item) => item.done).length;
+      const emptyTitle = groupKey === "physics"
+        ? "Vật lí chưa có lịch"
+        : groupKey === "math"
+          ? "Toán chưa có lịch"
+          : groupKey === "english"
+            ? "Tiếng Anh chưa có lịch"
+            : "Chưa có mục ôn lỗi";
       const emptyText = groupKey === "physics"
         ? "Chưa có lịch Vật lí. Thêm ở khung nhập bên dưới."
         : groupKey === "math"
@@ -3280,32 +4192,82 @@
           : groupKey === "english"
             ? "Chưa có lịch Tiếng Anh. Thêm ở khung nhập bên dưới."
             : "Chưa có mục ôn lỗi/recall. Thêm khi cần rà lại lỗi sai.";
+      const emptyHint = groupKey === "review"
+        ? "Gợi ý: thêm các lỗi sai quan trọng hoặc câu cần làm lại sau mỗi buổi học."
+        : "Gợi ý: chọn đúng môn ở khung nhập bên dưới, thêm giờ học nếu cần rồi ghi nội dung học.";
 
       return `
         <details class="section" open>
           <summary>${icons[groupKey]} ${escapeHtml(title)}<span class="section-count">${doneCount}/${items.length}</span></summary>
           <div class="task-list">
+            ${items.length ? `
+              <div class="task-grid-head">
+                <span>Check</span>
+                <span>STT</span>
+                <span>De / Noi dung</span>
+                <span>Time</span>
+                <span>Note</span>
+                <span>Action</span>
+              </div>
+            ` : ""}
             ${items.length ? items.map((item, idx) => `
-              <div class="task-btn ${item.done ? "done" : ""}" style="display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:10px;">
+              <div class="task-btn task-card ${groupKey} ${item.done ? "done" : ""}">
                 <button
                   type="button"
+                  class="task-main"
                   data-action="toggle"
                   data-group="${groupKey}"
                   data-index="${idx}"
-                  style="display:flex; align-items:flex-start; gap:12px; text-align:left; border:0; background:transparent; color:inherit; cursor:pointer; padding:0; min-width:0;"
                 >
-                  <span class="check"></span>
-                  <span class="task-text">${escapeHtml(item.text)}</span>
+                  <span class="task-cell check-col">
+                    <span class="check"></span>
+                  </span>
+                  <span class="task-cell stt-col">${idx + 1}</span>
+                  <span class="task-cell">
+                    <span class="task-copy">
+                      <span class="task-title-row">
+                        <span class="task-subject-chip">
+                          <span class="task-subject-dot"></span>
+                          ${icons[groupKey]} ${escapeHtml(subjectLabels[groupKey])}
+                        </span>
+                        <span class="task-state-pill ${item.done ? "done" : "pending"}">${item.done ? "Xong" : "Dang lam"}</span>
+                      </span>
+                      <span class="task-text">${escapeHtml(item.content || item.text || "Chua co noi dung")}</span>
+                      <span class="task-link-btn">Learn</span>
+                    </span>
+                  </span>
+                  <span class="task-cell">
+                    <span class="task-time-main">${escapeHtml(item.time || "--:--")}</span>
+                    <span class="task-time-sub">${item.time ? "Khung gio hoc" : "Them gio o form ben duoi"}</span>
+                  </span>
+                  <span class="task-cell">
+                    <span class="task-note-box">
+                      <span class="task-note-label">Note</span>
+                      <span class="task-note">${escapeHtml(item.note || "Chua co ghi chu rieng cho muc nay.")}</span>
+                    </span>
+                  </span>
                 </button>
-                <button
-                  type="button"
-                  class="schedule-open-btn"
-                  data-action="delete-task"
-                  data-group="${groupKey}"
-                  data-index="${idx}"
+                <div class="task-actions" data-task-menu-wrap="${groupKey}-${idx}">
+                  <div class="task-action-label">${item.done ? "Hoàn tất" : "Tác vụ"}</div>
+                  <button
+                    type="button"
+                    class="schedule-open-btn task-action-trigger"
+                    data-action="toggle-task-menu"
+                    data-group="${groupKey}"
+                    data-index="${idx}"
                 >Xóa</button>
               </div>
-            `).join("") : `<div class="muted" style="padding:12px 4px;">${escapeHtml(emptyText)}</div>`}
+              </div>
+            `).join("") : `
+              <div class="section-empty ${groupKey}">
+                <div class="section-empty-icon">${icons[groupKey]}</div>
+                <div class="section-empty-copy">
+                  <div class="section-empty-title">${escapeHtml(emptyTitle)}</div>
+                  <div class="section-empty-text">${escapeHtml(emptyText)}</div>
+                  <div class="section-empty-hint">${escapeHtml(emptyHint)}</div>
+                </div>
+              </div>
+            `}
           </div>
         </details>
       `;
@@ -3315,18 +4277,19 @@
       const selectedDay = getSelectedDay();
       const selectedTaskState = ensureTaskState(state.selectedDate);
       const visibleDays = filteredDays();
-      const all = allTasks();
-      const total = all.length;
-      const done = all.filter((item) => item.done).length;
-      const progress = total ? Math.round((done * 100) / total) : 0;
-      const physicsProgress = groupProgress("physics");
-      const mathProgress = groupProgress("math");
-      const englishProgress = groupProgress("english");
-      const reviewProgress = groupProgress("review");
-      const totalTaskLabel = `${done}/${total}`;
       const currentDayTasks = [...selectedTaskState.physics, ...selectedTaskState.math, ...selectedTaskState.english, ...selectedTaskState.review];
       const currentDone = currentDayTasks.filter((item) => item.done).length;
       const currentPercent = currentDayTasks.length ? Math.round((currentDone * 100) / currentDayTasks.length) : 0;
+      const all = allTasks();
+      const total = all.length;
+      const done = all.filter((item) => item.done).length;
+      const progress = currentPercent;
+      const physicsProgress = groupProgress("physics", selectedTaskState);
+      const mathProgress = groupProgress("math", selectedTaskState);
+      const englishProgress = groupProgress("english", selectedTaskState);
+      const reviewProgress = groupProgress("review", selectedTaskState);
+      const learnedMinutes = totalDoneStudyMinutes();
+      const totalTaskLabel = `${done}/${total}`;
 
       app.innerHTML = `
         <section class="hero-shell">
@@ -3514,7 +4477,7 @@
                   <div class="section-title">Thêm lịch học cho ngày ${escapeHtml(selectedDay.date)}</div>
                   <div class="section-desc">Chọn nhóm, nhập giờ nếu cần, rồi ghi nội dung học. Dữ liệu sẽ tự lưu trên trình duyệt.</div>
                 </div>
-                <div style="display:grid; grid-template-columns:180px 180px minmax(0,1fr) auto; gap:12px; align-items:center;">
+                <div style="display:grid; grid-template-columns:180px 180px minmax(0,1fr) minmax(220px,0.9fr) auto; gap:12px; align-items:center;">
                   <select id="addGroup" class="select" aria-label="Chọn nhóm lịch học">
                     <option value="physics">Vật lí</option>
                     <option value="math">Toán</option>
@@ -3591,10 +4554,16 @@
                       const mainDone = mainTasks.filter((item) => item.done).length;
                       const mainPercent = mainTasks.length ? Math.round((mainDone * 100) / mainTasks.length) : 0;
 
-                      const renderTaskPanel = (title, items) => `
-                        <div class="schedule-task-panel">
+                      const renderTaskPanel = (title, items, variant, icon) => `
+                        <div class="schedule-task-panel ${variant}">
                           <div class="schedule-task-head">
-                            <span class="schedule-task-title">${title}</span>
+                            <div class="schedule-task-headline">
+                              <span class="schedule-task-icon">${icon}</span>
+                              <div>
+                                <div class="schedule-task-title">${title}</div>
+                                <div class="schedule-task-summary">${items.length ? `${items.filter((item) => item.done).length} / ${items.length} mục đã xong` : "Chưa nhập lịch"}</div>
+                              </div>
+                            </div>
                             <span class="schedule-task-meta">${items.filter((item) => item.done).length}/${items.length}</span>
                           </div>
                           <div class="schedule-task-divider">
@@ -3603,6 +4572,7 @@
                           <div class="schedule-task-items">
                             ${items.length ? items.map((item) => `
                               <div class="schedule-task-item ${item.done ? "done" : ""}">
+                                <span class="schedule-task-dot"></span>
                                 <span class="schedule-task-text">${escapeHtml(item.text)}</span>
                                 <span class="schedule-task-state">${item.done ? "Xong" : "Chưa"}</span>
                               </div>
@@ -3622,26 +4592,32 @@
                           </td>
                           <td>
                             <div class="schedule-subject-stack">
-                              ${renderTaskPanel("Vật lí", taskState.physics)}
-                              ${renderTaskPanel("Toán", taskState.math)}
-                              ${renderTaskPanel("Tiếng Anh", taskState.english)}
-                              ${renderTaskPanel("Ôn lỗi", taskState.review)}
+                              ${renderTaskPanel("Vật lí", taskState.physics, "physics", "L")}
+                              ${renderTaskPanel("Toán", taskState.math, "math", "T")}
+                              ${renderTaskPanel("Tiếng Anh", taskState.english, "english", "A")}
+                              ${renderTaskPanel("Ôn lỗi", taskState.review, "review", "R")}
                             </div>
                           </td>
                           <td class="schedule-progress-cell">
                             <div class="schedule-progress-stack">
                               <div class="schedule-progress-meta">
-                                <span>${mainPercent}%</span>
-                                <span>${mainDone}/${mainTasks.length}</span>
+                                <span class="schedule-progress-percent">${mainPercent}%</span>
+                                <span>${mainDone}/${mainTasks.length} nhiệm vụ</span>
                               </div>
                               <div class="schedule-progress-bar"><span style="height:${mainPercent}%"></span></div>
                             </div>
                           </td>
                           <td class="schedule-note-cell">
-                            <div class="schedule-note-snippet">${escapeHtml(getDisplayNote(day))}</div>
+                            <div class="schedule-note-card">
+                              <div class="schedule-note-label">Ghi chú trong ngày</div>
+                              <div class="schedule-note-snippet">${escapeHtml(getDisplayNote(day))}</div>
+                            </div>
                           </td>
-                          <td>
-                            <button class="schedule-open-btn" data-action="select-date" data-date="${day.date}">Mở ngày</button>
+                          <td class="schedule-action-cell">
+                            <div class="schedule-action-stack">
+                              <button class="schedule-open-btn" data-action="select-date" data-date="${day.date}">Mở ngày</button>
+                              <div class="schedule-mini-note">Mở khung chi tiết để sửa nhanh lịch học và ghi chú.</div>
+                            </div>
                           </td>
                         </tr>
                       `;
@@ -3654,6 +4630,7 @@
       `;
 
       applyDailyPlanetPalette(selectedDay.date);
+      syncDynamicUi(selectedDay, currentDone, currentDayTasks, learnedMinutes, done, total);
       if (syncHeightRaf) cancelAnimationFrame(syncHeightRaf);
       syncHeightRaf = requestAnimationFrame(() => {
         syncHeightRaf = 0;
@@ -3687,7 +4664,10 @@
 
     function handleAppClick(event) {
       const target = event.target.closest("[data-tab], [data-action]");
-      if (!target) return;
+      if (!target) {
+        document.querySelectorAll(".task-actions.open").forEach((item) => item.classList.remove("open"));
+        return;
+      }
 
       if (target.dataset.tab) {
         state.tab = target.dataset.tab;
@@ -3709,7 +4689,23 @@
       }
 
       if (target.dataset.action === "delete-task") {
+        document.querySelectorAll(".task-actions.open").forEach((item) => item.classList.remove("open"));
         deleteTask(target.dataset.group, Number(target.dataset.index));
+        return;
+      }
+
+      if (target.dataset.action === "toggle-task-menu") {
+        const wrap = target.closest(".task-actions");
+        if (!wrap) return;
+        const isOpen = wrap.classList.contains("open");
+        document.querySelectorAll(".task-actions.open").forEach((item) => item.classList.remove("open"));
+        if (!isOpen) wrap.classList.add("open");
+        return;
+      }
+
+      if (target.dataset.action === "edit-task") {
+        document.querySelectorAll(".task-actions.open").forEach((item) => item.classList.remove("open"));
+        editTask(target.dataset.group, Number(target.dataset.index));
         return;
       }
 
@@ -3751,6 +4747,14 @@
         const day = getSelectedDay();
         day.note = event.target.value;
         saveState();
+        return;
+      }
+
+      if (event.target.id === "addTime" || event.target.id === "addText" || event.target.id === "addTaskNote" || event.target.id === "addGroup") {
+        if (editingTask) {
+          const addBtn = document.querySelector('[data-action="add-task"]');
+          if (addBtn) addBtn.textContent = "Cập nhật";
+        }
       }
     }
 
