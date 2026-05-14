@@ -1040,6 +1040,160 @@
       color: #64748b;
     }
 
+    .custom-subject-select {
+      position: relative;
+      min-width: 180px;
+    }
+
+    #addGroup {
+      position: absolute;
+      inset: auto;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .subject-select-trigger {
+      width: 100%;
+      min-height: 52px;
+      padding: 13px 46px 13px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(170, 194, 235, 0.14);
+      color: #d8e7ff;
+      cursor: pointer;
+      text-align: left;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.018) 34%, rgba(255,255,255,0.01)),
+        radial-gradient(circle at 14% 10%, rgba(220, 248, 255, 0.1), transparent 22%),
+        radial-gradient(circle at 82% 14%, rgba(103, 232, 249, 0.08), transparent 26%),
+        radial-gradient(circle at 72% 100%, rgba(129, 140, 248, 0.08), transparent 30%),
+        linear-gradient(160deg, rgba(8, 20, 39, 0.92), rgba(7, 17, 34, 0.94) 46%, rgba(8, 13, 26, 0.96));
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 0 0 1px rgba(255,255,255,0.02),
+        0 10px 24px rgba(0,0,0,0.14);
+      text-shadow: none;
+      transition: border-color .22s ease, box-shadow .22s ease, transform .22s ease;
+      position: relative;
+    }
+
+    .subject-select-trigger::after {
+      content: "";
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid rgba(154, 192, 245, 0.82);
+      border-bottom: 2px solid rgba(154, 192, 245, 0.82);
+      transform: translateY(-62%) rotate(45deg);
+      transition: transform .2s ease;
+      opacity: 0.72;
+    }
+
+    .custom-subject-select.open .subject-select-trigger::after {
+      transform: translateY(-36%) rotate(225deg);
+    }
+
+    .subject-select-trigger:hover {
+      border-color: rgba(192, 236, 255, 0.32);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 14px 28px rgba(0,0,0,0.18),
+        0 0 20px rgba(103, 232, 249, 0.12),
+        0 0 16px rgba(129, 140, 248, 0.09);
+      transform: translateY(-1px);
+    }
+
+    .subject-select-trigger:focus-visible,
+    .custom-subject-select.open .subject-select-trigger {
+      border-color: rgba(192, 236, 255, 0.36);
+      box-shadow:
+        0 0 0 3px rgba(56, 189, 248, 0.14),
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 0 22px rgba(103, 232, 249, 0.12);
+      outline: none;
+    }
+
+    .subject-select-value {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+
+    .subject-select-menu {
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 0;
+      width: 100%;
+      min-width: 188px;
+      display: grid;
+      gap: 7px;
+      padding: 9px;
+      border-radius: 20px;
+      border: 1px solid rgba(168, 188, 228, 0.16);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025) 34%, rgba(255,255,255,0.01)),
+        radial-gradient(circle at 16% 12%, rgba(220, 248, 255, 0.1), transparent 22%),
+        radial-gradient(circle at 82% 16%, rgba(103, 232, 249, 0.08), transparent 24%),
+        radial-gradient(circle at 74% 100%, rgba(129, 140, 248, 0.08), transparent 28%),
+        linear-gradient(160deg, rgba(8, 20, 39, 0.97), rgba(7, 17, 34, 0.975) 46%, rgba(8, 13, 26, 0.985));
+      box-shadow:
+        0 20px 44px rgba(0,0,0,0.34),
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 0 0 1px rgba(255,255,255,0.02);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(6px) scale(0.98);
+      transition: opacity .16s ease, transform .16s ease, visibility .16s ease;
+      z-index: 30;
+    }
+
+    .custom-subject-select.open .subject-select-menu {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .subject-select-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(164, 188, 226, 0.1);
+      color: #d8e7ff;
+      cursor: pointer;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.018) 42%, rgba(255,255,255,0.01)),
+        rgba(11, 22, 40, 0.78);
+      text-shadow: none;
+      transition: border-color .18s ease, background .18s ease, transform .18s ease, box-shadow .18s ease;
+    }
+
+    .subject-select-option:hover,
+    .subject-select-option:focus-visible,
+    .subject-select-option.active {
+      border-color: rgba(174, 207, 243, 0.2);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03) 40%, rgba(255,255,255,0.015)),
+        linear-gradient(135deg, rgba(144, 243, 255, 0.06), rgba(96, 165, 250, 0.045) 52%, rgba(129, 140, 248, 0.04)),
+        rgba(14, 26, 46, 0.82);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 10px 22px rgba(0,0,0,0.18);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
     .segmented {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -2280,6 +2434,17 @@
     .section-empty.physics {
       --empty-accent: rgba(95, 143, 255, 0.28);
       --empty-soft: rgba(95, 143, 255, 0.1);
+    }
+
+    .section-empty.physics .section-empty-hint {
+      display: block;
+      margin-top: 2px;
+    }
+
+    .section-empty.math .section-empty-hint,
+    .section-empty.english .section-empty-hint {
+      display: block;
+      margin-top: 2px;
     }
 
     .section-empty.math {
@@ -4368,7 +4533,7 @@
         missionFooterGrid.style.gridTemplateColumns = "180px 180px minmax(0,1fr) minmax(220px,0.9fr) auto";
         const addBtn = missionFooterGrid.querySelector('[data-action="add-task"]');
         if (addBtn) {
-          addBtn.insertAdjacentHTML("beforebegin", '<input id="addTaskNote" class="field" placeholder="Ghi chú cho task này..." />');
+          addBtn.insertAdjacentHTML("beforebegin", '<input id="addTaskNote" class="field" placeholder="Ghi chú riêng cho đầu việc này..." />');
         }
       }
 
@@ -4632,6 +4797,7 @@
 
     function resetTaskEditor() {
       editingTask = null;
+      syncSubjectSelectUi("physics");
       const addBtn = document.querySelector('[data-action="add-task"]');
       if (addBtn) addBtn.textContent = "Thêm";
     }
@@ -4649,6 +4815,7 @@
       const addBtn = document.querySelector('[data-action="add-task"]');
 
       if (groupInput) groupInput.value = group;
+      syncSubjectSelectUi(group);
       if (timeInput) timeInput.value = item.time || "";
       if (textInput) textInput.value = item.content || item.text || "";
       if (taskNoteInput) taskNoteInput.value = item.note || "";
@@ -4661,12 +4828,23 @@
       const timeInput = document.getElementById("addTime");
       const textInput = document.getElementById("addText");
       const taskNoteInput = document.getElementById("addTaskNote");
+      const dayNoteInput = document.getElementById("noteInput");
       const group = groupInput ? groupInput.value : "physics";
       const time = timeInput ? timeInput.value.trim() : "";
       const text = textInput ? textInput.value.trim() : "";
       const taskNote = taskNoteInput ? taskNoteInput.value.trim() : "";
+      const dayNote = dayNoteInput ? dayNoteInput.value.trim() : "";
 
       if (!text) {
+        if (!editingTask && dayNote) {
+          const day = getSelectedDay();
+          if (day) {
+            day.note = dayNoteInput.value;
+            saveState();
+            scheduleRender();
+          }
+          return;
+        }
         alert("Nhập nội dung lịch học trước đã. Ví dụ: Làm đề VSAT 1 hoặc Ôn dao động cơ.");
         return;
       }
@@ -4981,28 +5159,28 @@
       const subjectMood = {
         physics: {
           displayTitle: "Vật lí · Blue Orbit",
-          tagline: "Kích hoạt radar công thức: hiểu bản chất trước, bấm máy sau.",
+          tagline: "If you want to find the secrets of the universe, think in terms of energy, frequency and vibration - Tesla.",
           emptyTitle: "Vật lí đang chờ khai hỏa",
           emptyText: "Thêm một nhiệm vụ Vật lí để bắt đầu săn lực, điện, sóng và các bẫy đề.",
-          emptyHint: "Gợi ý: ghi rõ dạng bài + số câu + mốc thời gian để dễ kiểm soát."
+          emptyHint: "Newton đang ngồi chờ dưới gốc táo. Thêm một bài Vật Lí để ông ấy có việc làm."
         },
         math: {
           displayTitle: "Toán · Violet Engine",
-          tagline: "Vào phòng máy chiến thuật: hàm số, tích phân, hình học xử gọn từng cửa.",
+          tagline: "Mathematics is the language in which God has written the universe - Galilei.",
           emptyTitle: "Toán chưa có trận đánh",
           emptyText: "Thêm một nhiệm vụ Toán để biến phần khó thành từng bước nhỏ dễ xử lý.",
-          emptyHint: "Gợi ý: chia theo chuyên đề, mỗi task chỉ nên có một mục tiêu chính."
+          emptyHint: "Euler đang chờ bạn nạp một phương trình đầu tiên."
         },
         english: {
           displayTitle: "Tiếng Anh · Rose Signal",
-          tagline: "Nạp từ vựng, né bẫy ngữ pháp, luyện phản xạ đọc hiểu thật lạnh.",
-          emptyTitle: "Tiếng Anh đang trống lịch",
+          tagline: "Mandela: ngôn ngữ chạm vào trái tim - nạp từ vựng để mở khóa cả thế giới.",
+          emptyTitle: "Tiếng Anh chưa mở map",
           emptyText: "Thêm một nhiệm vụ Tiếng Anh để gom từ mới, dạng câu và lỗi sai thường gặp.",
-          emptyHint: "Gợi ý: ghi Part + dạng bài + số câu/từ vựng cần xử lý."
+          emptyHint: "Ngữ pháp đang cười thầm trong bóng tối."
         },
         review: {
           displayTitle: "Ôn lỗi · Green Reset",
-          tagline: "Kho hồi sinh điểm số: lỗi sai hôm qua là điểm cộng của ngày mai.",
+          tagline: "I have not failed. I've just found 10,000 ways that won't work.",
           emptyTitle: "Kho ôn lỗi chưa có mục nào",
           emptyText: "Thêm lỗi sai quan trọng để lần sau gặp lại không còn bị đề úp sọt.",
           emptyHint: "Gợi ý: ghi nguyên nhân sai và cách né bẫy trong lần làm sau."
@@ -5318,12 +5496,32 @@
 
                 </div>
                 <div style="display:grid; grid-template-columns:180px 180px minmax(0,1fr) minmax(220px,0.9fr) auto; gap:12px; align-items:center;">
-                  <select id="addGroup" class="select" aria-label="Chọn nhóm lịch học">
-                    <option value="physics">Vật lí</option>
-                    <option value="math">Toán</option>
-                    <option value="english">Tiếng Anh</option>
-                    <option value="review">Ôn lỗi / Recall</option>
-                  </select>
+                  <div class="custom-subject-select" data-subject-select>
+                    <input id="addGroup" type="hidden" value="${escapeHtml(editingTask && editingTask.date === state.selectedDate ? editingTask.group : "physics")}" />
+                    <button
+                      type="button"
+                      class="subject-select-trigger"
+                      data-action="toggle-subject-menu"
+                      aria-haspopup="listbox"
+                      aria-expanded="false"
+                      aria-label="Chọn nhóm lịch học"
+                    >
+                      <span class="subject-select-value">
+                        <span data-subject-label>${escapeHtml(({
+                          physics: "Vật lí",
+                          math: "Toán",
+                          english: "Tiếng Anh",
+                          review: "Ôn lỗi / Recall"
+                        })[(editingTask && editingTask.date === state.selectedDate ? editingTask.group : "physics")] || "Vật lí")}</span>
+                      </span>
+                    </button>
+                    <div class="subject-select-menu" role="listbox" aria-label="Danh sách môn học">
+                      <button type="button" class="subject-select-option active" data-action="select-subject-option" data-value="physics">Vật lí</button>
+                      <button type="button" class="subject-select-option" data-action="select-subject-option" data-value="math">Toán</button>
+                      <button type="button" class="subject-select-option" data-action="select-subject-option" data-value="english">Tiếng Anh</button>
+                      <button type="button" class="subject-select-option" data-action="select-subject-option" data-value="review">Ôn lỗi / Recall</button>
+                    </div>
+                  </div>
                   <input id="addTime" class="field" placeholder="Giờ: 19:00-21:00" />
                   <input id="addText" class="field" placeholder="Nội dung học: Làm đề, ôn chương, chữa lỗi..." />
                   <button type="button" class="primary-btn" data-action="add-task">Thêm</button>
@@ -5489,6 +5687,7 @@
       `;
 
       applyDailyPlanetPalette(selectedDay.date);
+      syncSubjectSelectUi(editingTask && editingTask.date === state.selectedDate ? editingTask.group : "physics");
       syncDynamicUi(selectedDay, currentDone, currentDayTasks, learnedMinutes, done, total);
       if (syncHeightRaf) cancelAnimationFrame(syncHeightRaf);
       syncHeightRaf = requestAnimationFrame(() => {
@@ -5546,6 +5745,36 @@
       return menu;
     }
 
+    function getSubjectLabel(value) {
+      const subjectLabels = {
+        physics: "Vật lí",
+        math: "Toán",
+        english: "Tiếng Anh",
+        review: "Ôn lỗi / Recall"
+      };
+      return subjectLabels[value] || subjectLabels.physics;
+    }
+
+    function syncSubjectSelectUi(value) {
+      const wrap = document.querySelector("[data-subject-select]");
+      if (!wrap) return;
+      const input = wrap.querySelector("#addGroup");
+      const label = wrap.querySelector("[data-subject-label]");
+      if (input) input.value = value;
+      if (label) label.textContent = getSubjectLabel(value);
+      wrap.querySelectorAll(".subject-select-option").forEach((option) => {
+        option.classList.toggle("active", option.dataset.value === value);
+      });
+    }
+
+    function closeSubjectMenu() {
+      document.querySelectorAll("[data-subject-select].open").forEach((wrap) => {
+        wrap.classList.remove("open");
+        const trigger = wrap.querySelector(".subject-select-trigger");
+        if (trigger) trigger.setAttribute("aria-expanded", "false");
+      });
+    }
+
     function resetTaskMenuTriggers() {
       document.querySelectorAll(".task-action-trigger[aria-expanded='true']").forEach((trigger) => {
         trigger.setAttribute("aria-expanded", "false");
@@ -5559,6 +5788,7 @@
     }
 
     function closeFloatingMenus() {
+      closeSubjectMenu();
       document
         .querySelectorAll(".task-actions.open, .schedule-row-actions.open")
         .forEach((item) => item.classList.remove("open"));
@@ -5678,19 +5908,19 @@
           class="schedule-open-btn task-menu-btn"
           data-action="select-date"
           data-date="${safeDate}"
-        >Mo ngay</button>
+        >Mở ngày</button>
         <button
           type="button"
           class="schedule-open-btn task-menu-btn task-edit-btn"
           data-action="open-day-editor"
           data-date="${safeDate}"
-        >Sua nhanh</button>
+        >Sửa nhanh</button>
         <button
           type="button"
           class="schedule-open-btn task-menu-btn"
           data-action="export-day-backup"
           data-date="${safeDate}"
-        >Xuat backup</button>
+        >Xuất backup</button>
       `;
       menu.classList.add("open");
       menu.setAttribute("aria-hidden", "false");
@@ -5709,6 +5939,29 @@
         state.tab = target.dataset.tab;
         saveState();
         scheduleRender();
+        return;
+      }
+
+      if (target.dataset.action === "toggle-subject-menu") {
+        const wrap = target.closest("[data-subject-select]");
+        if (!wrap) return;
+        const isOpen = wrap.classList.contains("open");
+        closeFloatingMenus();
+        if (!isOpen) {
+          wrap.classList.add("open");
+          target.setAttribute("aria-expanded", "true");
+        }
+        return;
+      }
+
+      if (target.dataset.action === "select-subject-option") {
+        const value = String(target.dataset.value || "physics");
+        syncSubjectSelectUi(value);
+        closeSubjectMenu();
+        if (editingTask) {
+          const addBtn = document.querySelector('[data-action="add-task"]');
+          if (addBtn) addBtn.textContent = "Cập nhật";
+        }
         return;
       }
 
