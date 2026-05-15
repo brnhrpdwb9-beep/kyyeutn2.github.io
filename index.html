@@ -4047,6 +4047,357 @@
     }
 
 
+    /* Fix form thêm lịch: giữ kích thước gần như cũ, chỉ kéo STT gọn và sát hơn */
+    .add-task-grid {
+      display: grid !important;
+      grid-template-columns: minmax(170px, 0.95fr) 68px minmax(165px, 0.92fr) minmax(340px, 1.85fr) minmax(185px, 1fr) 92px !important;
+      column-gap: 8px !important;
+      row-gap: 10px !important;
+      align-items: center !important;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .add-task-grid .custom-subject-select,
+    .add-task-grid .field,
+    .add-task-grid .primary-btn {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .add-task-grid .field,
+    .add-task-grid .subject-select-trigger,
+    .add-task-grid .primary-btn[data-action="add-task"] {
+      min-height: 52px;
+      height: 52px;
+      border-radius: 16px;
+      font-size: 14px;
+    }
+
+    .add-task-grid .field {
+      padding: 13px 15px;
+    }
+
+    .add-task-grid .subject-select-trigger {
+      padding: 13px 42px 13px 16px;
+      min-height: 52px;
+      border-radius: 18px;
+    }
+
+    .add-task-grid .subject-select-value,
+    .add-task-grid [data-subject-label] {
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .add-task-grid .subject-select-trigger::after {
+      right: 17px;
+      width: 10px;
+      height: 10px;
+    }
+
+    .add-task-grid .subject-select-menu {
+      min-width: 190px;
+      z-index: 80;
+    }
+
+    #addOrder {
+      text-align: center;
+      padding-left: 6px;
+      padding-right: 6px;
+      margin-left: -2px;
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+
+    #addOrder::-webkit-outer-spin-button,
+    #addOrder::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .add-task-grid #addText {
+      min-width: 340px;
+    }
+
+    .add-task-grid #addTaskNote {
+      min-width: 185px;
+    }
+
+    .add-task-grid .primary-btn[data-action="add-task"] {
+      padding: 0 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    .mission-footer .field#noteInput {
+      min-height: 82px;
+      padding: 13px 15px;
+    }
+
+    @media (max-width: 1280px) {
+      .add-task-grid {
+        grid-template-columns: minmax(160px, 1fr) 66px minmax(150px, 0.95fr) minmax(300px, 1.6fr) 90px !important;
+      }
+
+      .add-task-grid #addTaskNote {
+        grid-column: 1 / 5;
+        min-width: 0;
+      }
+
+      .add-task-grid .primary-btn[data-action="add-task"] {
+        grid-column: 5;
+        grid-row: 2;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .add-task-grid {
+        grid-template-columns: minmax(170px, 1fr) 66px minmax(150px, 1fr) !important;
+      }
+
+      .add-task-grid #addText,
+      .add-task-grid #addTaskNote,
+      .add-task-grid .primary-btn[data-action="add-task"] {
+        grid-column: 1 / -1;
+        grid-row: auto;
+        min-width: 0;
+      }
+    }
+
+
+
+
+    /* FIX 2: Nút "Thêm" không bị tràn chữ, form vẫn giữ kích thước lớn */
+    .add-task-grid {
+      display: grid !important;
+      grid-template-columns: minmax(178px, 0.95fr) 60px minmax(165px, 0.9fr) minmax(330px, 1.8fr) minmax(180px, 0.9fr) 112px !important;
+      grid-template-areas: "subject order time text note add" !important;
+      column-gap: 7px !important;
+      row-gap: 10px !important;
+      align-items: center !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+    }
+
+    .add-task-grid .custom-subject-select { grid-area: subject !important; }
+    .add-task-grid #addOrder { grid-area: order !important; }
+    .add-task-grid #addTime { grid-area: time !important; }
+    .add-task-grid #addText { grid-area: text !important; }
+    .add-task-grid #addTaskNote { grid-area: note !important; }
+    .add-task-grid .primary-btn[data-action="add-task"] { grid-area: add !important; }
+
+    .add-task-grid .field,
+    .add-task-grid .subject-select-trigger,
+    .add-task-grid .primary-btn[data-action="add-task"] {
+      height: 52px !important;
+      min-height: 52px !important;
+      font-size: 14px !important;
+      box-sizing: border-box !important;
+    }
+
+    .add-task-grid .field {
+      padding: 13px 14px !important;
+    }
+
+    .add-task-grid #addOrder {
+      width: 60px !important;
+      min-width: 60px !important;
+      max-width: 60px !important;
+      padding-left: 4px !important;
+      padding-right: 4px !important;
+      margin-left: -3px !important;
+      text-align: center !important;
+      appearance: textfield !important;
+      -moz-appearance: textfield !important;
+    }
+
+    .add-task-grid #addOrder::-webkit-outer-spin-button,
+    .add-task-grid #addOrder::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+      margin: 0 !important;
+    }
+
+    .add-task-grid #addText,
+    .add-task-grid #addTaskNote {
+      min-width: 0 !important;
+    }
+
+    .add-task-grid .primary-btn[data-action="add-task"] {
+      width: 112px !important;
+      min-width: 112px !important;
+      max-width: 112px !important;
+      padding: 0 16px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: clip !important;
+      line-height: 1 !important;
+    }
+
+    @media (max-width: 1350px) {
+      .add-task-grid {
+        grid-template-columns: minmax(178px, 1fr) 60px minmax(160px, 0.85fr) minmax(290px, 1.6fr) 112px !important;
+        grid-template-areas:
+          "subject order time text add"
+          "note note note note note" !important;
+      }
+
+      .add-task-grid #addTaskNote {
+        width: 100% !important;
+        max-width: none !important;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .add-task-grid {
+        grid-template-columns: minmax(170px, 1fr) 60px minmax(150px, 1fr) !important;
+        grid-template-areas:
+          "subject order time"
+          "text text text"
+          "note note note"
+          "add add add" !important;
+      }
+
+      .add-task-grid .primary-btn[data-action="add-task"] {
+        width: 100% !important;
+        max-width: none !important;
+      }
+    }
+
+
+    /* FIX CUỐI: chống tràn nút Thêm + giữ form to, cân hàng hơn */
+    .mission-footer {
+      overflow: visible !important;
+    }
+
+    .mission-footer > .add-task-grid {
+      display: grid !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+      grid-template-columns:
+        minmax(158px, 0.95fr)
+        52px
+        minmax(150px, 0.82fr)
+        minmax(260px, 1.65fr)
+        132px !important;
+      grid-template-areas:
+        "subject order time text add"
+        "note note note note note" !important;
+      column-gap: 6px !important;
+      row-gap: 9px !important;
+      align-items: center !important;
+    }
+
+    .mission-footer > .add-task-grid .custom-subject-select { grid-area: subject !important; }
+    .mission-footer > .add-task-grid #addOrder { grid-area: order !important; }
+    .mission-footer > .add-task-grid #addTime { grid-area: time !important; }
+    .mission-footer > .add-task-grid #addText { grid-area: text !important; }
+    .mission-footer > .add-task-grid #addTaskNote { grid-area: note !important; }
+    .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] { grid-area: add !important; }
+
+    .mission-footer > .add-task-grid .custom-subject-select,
+    .mission-footer > .add-task-grid .field,
+    .mission-footer > .add-task-grid .subject-select-trigger,
+    .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] {
+      min-width: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    .mission-footer > .add-task-grid .field,
+    .mission-footer > .add-task-grid .subject-select-trigger,
+    .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] {
+      height: 52px !important;
+      min-height: 52px !important;
+      border-radius: 16px !important;
+      font-size: 14px !important;
+    }
+
+    .mission-footer > .add-task-grid .field {
+      padding: 13px 13px !important;
+    }
+
+    .mission-footer > .add-task-grid .subject-select-trigger {
+      padding: 13px 39px 13px 15px !important;
+    }
+
+    .mission-footer > .add-task-grid #addOrder {
+      width: 52px !important;
+      min-width: 52px !important;
+      max-width: 52px !important;
+      padding-left: 2px !important;
+      padding-right: 2px !important;
+      margin-left: -4px !important;
+      text-align: center !important;
+      appearance: textfield !important;
+      -moz-appearance: textfield !important;
+    }
+
+    .mission-footer > .add-task-grid #addOrder::-webkit-outer-spin-button,
+    .mission-footer > .add-task-grid #addOrder::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+      margin: 0 !important;
+    }
+
+    .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] {
+      width: 132px !important;
+      min-width: 132px !important;
+      max-width: 132px !important;
+      padding: 0 12px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      justify-self: stretch !important;
+      align-self: center !important;
+      white-space: nowrap !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      line-height: 1.1 !important;
+      font-size: 14px !important;
+      border-radius: 16px !important;
+    }
+
+    @media (max-width: 1180px) {
+      .mission-footer > .add-task-grid {
+        grid-template-columns: minmax(150px, 1fr) 52px minmax(145px, 1fr) 132px !important;
+        grid-template-areas:
+          "subject order time add"
+          "text text text text"
+          "note note note note" !important;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .mission-footer > .add-task-grid {
+        grid-template-columns: minmax(0, 1fr) 52px !important;
+        grid-template-areas:
+          "subject order"
+          "time time"
+          "text text"
+          "note note"
+          "add add" !important;
+      }
+
+      .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        height: 52px !important;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -4529,10 +4880,12 @@
       if (missionCopy && !String(selectedDay.note || "").trim()) missionCopy.textContent = "";
 
       const missionFooterGrid = document.querySelector(".mission-footer > div:nth-child(2)");
-      if (missionFooterGrid && !document.getElementById("addTaskNote")) {
-        missionFooterGrid.style.gridTemplateColumns = "180px 180px minmax(0,1fr) minmax(220px,0.9fr) auto";
+      if (missionFooterGrid) {
+        missionFooterGrid.classList.add("add-task-grid");
+        missionFooterGrid.style.removeProperty("grid-template-columns");
+        missionFooterGrid.style.removeProperty("gap");
         const addBtn = missionFooterGrid.querySelector('[data-action="add-task"]');
-        if (addBtn) {
+        if (addBtn && !document.getElementById("addTaskNote")) {
           addBtn.insertAdjacentHTML("beforebegin", '<input id="addTaskNote" class="field" placeholder="Ghi chú riêng cho đầu việc này..." />');
         }
       }
@@ -4798,8 +5151,34 @@
     function resetTaskEditor() {
       editingTask = null;
       syncSubjectSelectUi("physics");
+      syncTaskOrderInput("physics");
       const addBtn = document.querySelector('[data-action="add-task"]');
       if (addBtn) addBtn.textContent = "Thêm";
+    }
+
+    function syncTaskOrderInput(group = "physics", value = null) {
+      const orderInput = document.getElementById("addOrder");
+      if (!orderInput) return;
+
+      if (value !== null && value !== undefined && value !== "") {
+        orderInput.value = String(value);
+        return;
+      }
+
+      const taskState = ensureTaskState(state.selectedDate);
+      const list = Array.isArray(taskState[group]) ? taskState[group] : [];
+      orderInput.value = String(list.length + 1);
+    }
+
+    function getNormalizedTaskOrder(rawValue, max) {
+      const parsed = Number.parseInt(String(rawValue || "").trim(), 10);
+      if (!Number.isFinite(parsed)) return max;
+      return Math.max(1, Math.min(parsed, max));
+    }
+
+    function insertTaskAt(list, item, order) {
+      const normalizedOrder = getNormalizedTaskOrder(order, list.length + 1);
+      list.splice(normalizedOrder - 1, 0, item);
     }
 
     function editTask(group, index) {
@@ -4809,6 +5188,7 @@
 
       editingTask = { date: state.selectedDate, group, index };
       const groupInput = document.getElementById("addGroup");
+      const orderInput = document.getElementById("addOrder");
       const timeInput = document.getElementById("addTime");
       const textInput = document.getElementById("addText");
       const taskNoteInput = document.getElementById("addTaskNote");
@@ -4816,6 +5196,7 @@
 
       if (groupInput) groupInput.value = group;
       syncSubjectSelectUi(group);
+      if (orderInput) orderInput.value = String(index + 1);
       if (timeInput) timeInput.value = item.time || "";
       if (textInput) textInput.value = item.content || item.text || "";
       if (taskNoteInput) taskNoteInput.value = item.note || "";
@@ -4825,11 +5206,13 @@
 
     function addTaskFromForm() {
       const groupInput = document.getElementById("addGroup");
+      const orderInput = document.getElementById("addOrder");
       const timeInput = document.getElementById("addTime");
       const textInput = document.getElementById("addText");
       const taskNoteInput = document.getElementById("addTaskNote");
       const dayNoteInput = document.getElementById("noteInput");
       const group = groupInput ? groupInput.value : "physics";
+      const taskOrder = orderInput ? orderInput.value.trim() : "";
       const time = timeInput ? timeInput.value.trim() : "";
       const text = textInput ? textInput.value.trim() : "";
       const taskNote = taskNoteInput ? taskNoteInput.value.trim() : "";
@@ -4861,17 +5244,18 @@
       });
 
       if (editingTask && editingTask.date === state.selectedDate) {
-        const list = taskState[editingTask.group];
-        if (Array.isArray(list) && list[editingTask.index]) {
-          list[editingTask.index] = {
-            ...nextItem,
-            done: !!list[editingTask.index].done
-          };
+        const sourceList = taskState[editingTask.group];
+        const targetList = taskState[group];
+        if (Array.isArray(sourceList) && sourceList[editingTask.index] && Array.isArray(targetList)) {
+          const preservedDone = !!sourceList[editingTask.index].done;
+          sourceList.splice(editingTask.index, 1);
+          insertTaskAt(targetList, { ...nextItem, done: preservedDone }, taskOrder);
         }
       } else {
-        taskState[group].push(nextItem);
+        insertTaskAt(taskState[group], nextItem, taskOrder);
       }
 
+      if (orderInput) syncTaskOrderInput(group);
       if (timeInput) timeInput.value = "";
       if (textInput) textInput.value = "";
       if (taskNoteInput) taskNoteInput.value = "";
@@ -5495,7 +5879,7 @@
                   <div class="section-title">Thêm lịch học cho ngày ${escapeHtml(selectedDay.date)}</div>
 
                 </div>
-                <div style="display:grid; grid-template-columns:180px 180px minmax(0,1fr) minmax(220px,0.9fr) auto; gap:12px; align-items:center;">
+                <div class="add-task-grid">
                   <div class="custom-subject-select" data-subject-select>
                     <input id="addGroup" type="hidden" value="${escapeHtml(editingTask && editingTask.date === state.selectedDate ? editingTask.group : "physics")}" />
                     <button
@@ -5522,8 +5906,10 @@
                       <button type="button" class="subject-select-option" data-action="select-subject-option" data-value="review">Ôn lỗi / Recall</button>
                     </div>
                   </div>
+                  <input id="addOrder" class="field" type="number" min="1" inputmode="numeric" placeholder="STT" value="${escapeHtml(editingTask && editingTask.date === state.selectedDate ? String(editingTask.index + 1) : String((selectedTaskState.physics || []).length + 1))}" />
                   <input id="addTime" class="field" placeholder="Giờ: 19:00-21:00" />
                   <input id="addText" class="field" placeholder="Nội dung học: Làm đề, ôn chương, chữa lỗi..." />
+                  <input id="addTaskNote" class="field" placeholder="Ghi chú task..." />
                   <button type="button" class="primary-btn" data-action="add-task">Thêm</button>
                 </div>
                 <textarea id="noteInput" class="field" rows="3" placeholder="Ghi chú riêng cho ngày ${escapeHtml(selectedDay.date)}...">${escapeHtml(selectedDay.note || "")}</textarea>
@@ -5957,6 +6343,7 @@
       if (target.dataset.action === "select-subject-option") {
         const value = String(target.dataset.value || "physics");
         syncSubjectSelectUi(value);
+        if (!editingTask) syncTaskOrderInput(value);
         closeSubjectMenu();
         if (editingTask) {
           const addBtn = document.querySelector('[data-action="add-task"]');
@@ -6077,7 +6464,7 @@
         return;
       }
 
-      if (event.target.id === "addTime" || event.target.id === "addText" || event.target.id === "addTaskNote" || event.target.id === "addGroup") {
+      if (event.target.id === "addTime" || event.target.id === "addText" || event.target.id === "addTaskNote" || event.target.id === "addGroup" || event.target.id === "addOrder") {
         if (editingTask) {
           const addBtn = document.querySelector('[data-action="add-task"]');
           if (addBtn) addBtn.textContent = "Cập nhật";
