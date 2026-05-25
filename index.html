@@ -1630,6 +1630,605 @@
       gap: 10px;
     }
 
+    .study-analytics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .analytics-shell {
+      padding: 20px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .analytics-stage {
+      width: 100%;
+    }
+
+    .analytics-card {
+      position: relative;
+      display: grid;
+      gap: 14px;
+      padding: 20px;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 88% 8%, rgba(148, 197, 255, 0.16), transparent 24%),
+        radial-gradient(circle at 16% 120%, rgba(34, 211, 238, 0.12), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025)),
+        rgba(255,255,255,0.03);
+      border: 1px solid rgba(196, 214, 255, 0.1);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 24px 60px rgba(0,0,0,0.2);
+      min-height: 280px;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .analytics-card::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.06), transparent 40%),
+        radial-gradient(circle at 18% 0%, rgba(255,255,255,0.04), transparent 24%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .analytics-card.wide {
+      grid-column: 1 / -1;
+    }
+
+    .analytics-card.hours {
+      background:
+        radial-gradient(circle at 88% 8%, rgba(96, 165, 250, 0.2), transparent 24%),
+        radial-gradient(circle at 12% 100%, rgba(34, 211, 238, 0.12), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025)),
+        rgba(255,255,255,0.03);
+    }
+
+    .analytics-card.growth {
+      background:
+        radial-gradient(circle at 86% 8%, rgba(167, 139, 250, 0.22), transparent 24%),
+        radial-gradient(circle at 16% 100%, rgba(34, 211, 238, 0.1), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025)),
+        rgba(255,255,255,0.03);
+    }
+
+    .analytics-card.nova {
+      background:
+        radial-gradient(circle at 86% 8%, rgba(251, 191, 36, 0.18), transparent 24%),
+        radial-gradient(circle at 10% 100%, rgba(52, 211, 153, 0.12), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025)),
+        rgba(255,255,255,0.03);
+    }
+
+    .analytics-card.tasks {
+      background:
+        radial-gradient(circle at 88% 8%, rgba(251, 191, 36, 0.16), transparent 24%),
+        radial-gradient(circle at 16% 100%, rgba(244, 114, 182, 0.14), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.025)),
+        rgba(255,255,255,0.03);
+    }
+
+    .analytics-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .analytics-kicker {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #9fb0d3;
+    }
+
+    .analytics-title {
+      margin-top: 4px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #eef4ff;
+    }
+
+    .analytics-highlight {
+      padding: 10px 14px;
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)),
+        rgba(8, 13, 28, 0.48);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 20px;
+      color: #fff;
+      white-space: nowrap;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .analytics-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .analytics-metric {
+      padding: 12px 14px;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
+        rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .analytics-metric span {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9fb0d3;
+    }
+
+    .analytics-metric strong {
+      display: block;
+      margin-top: 8px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 23px;
+      color: #fff;
+      letter-spacing: -0.04em;
+    }
+
+    .chart-board {
+      position: relative;
+      padding: 12px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(255,255,255,0.06), transparent 26%),
+        linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)),
+        rgba(6, 10, 24, 0.48);
+      border: 1px solid rgba(206, 221, 255, 0.1);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 14px 38px rgba(0,0,0,0.16);
+      overflow: hidden;
+    }
+
+    .chart-board::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 18% 14%, rgba(255,255,255,0.05), transparent 18%),
+        radial-gradient(circle at 84% 10%, rgba(103, 232, 249, 0.06), transparent 20%);
+      pointer-events: none;
+    }
+
+    .chart-scroll {
+      position: relative;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 6px;
+    }
+
+    .chart-scroll::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .chart-scroll::-webkit-scrollbar-thumb {
+      border-radius: 999px;
+      background: rgba(159, 176, 211, 0.28);
+    }
+
+    .chart-scroll::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.04);
+      border-radius: 999px;
+    }
+
+    .chart-svg {
+      display: block;
+      min-width: 100%;
+      height: auto;
+    }
+
+    .chart-y-label,
+    .chart-x-label,
+    .chart-value-label,
+    .chart-callout {
+      font-family: "Space Grotesk", sans-serif;
+    }
+
+    .chart-y-label {
+      fill: #8ea2cc;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+    }
+
+    .chart-x-label {
+      fill: #9fb0d3;
+      font-size: 10px;
+      letter-spacing: 0.03em;
+    }
+
+    .chart-x-label.today {
+      fill: #ffffff;
+    }
+
+    .chart-value-label {
+      fill: #eef4ff;
+      font-size: 10px;
+      letter-spacing: 0.03em;
+    }
+
+    .chart-callout {
+      fill: #ffffff;
+      font-size: 10px;
+      letter-spacing: 0.03em;
+    }
+
+    .chart-empty {
+      min-height: 280px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #a7b8de;
+      font-size: 13px;
+      line-height: 1.7;
+      border-radius: 24px;
+      border: 1px dashed rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .nova-panel {
+      display: grid;
+      gap: 14px;
+      align-items: start;
+      min-height: 100%;
+    }
+
+    .nova-orbit {
+      position: relative;
+      min-height: 210px;
+      display: grid;
+      place-items: center;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(251,191,36,0.08), transparent 28%),
+        radial-gradient(circle at 50% 50%, rgba(52,211,153,0.06), transparent 52%),
+        rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+      padding: 22px;
+    }
+
+    .nova-orbit::before,
+    .nova-orbit::after {
+      content: "";
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.86);
+      box-shadow: 0 0 18px rgba(255,255,255,0.18);
+    }
+
+    .nova-orbit::before {
+      top: 34px;
+      right: 62px;
+    }
+
+    .nova-orbit::after {
+      left: 56px;
+      bottom: 40px;
+      width: 7px;
+      height: 7px;
+      background: rgba(103, 232, 249, 0.86);
+      box-shadow: 0 0 18px rgba(34,211,238,0.22);
+    }
+
+    .nova-orbit-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.09);
+      box-shadow: 0 0 18px rgba(255,255,255,0.04);
+    }
+
+    .nova-orbit-ring.one {
+      width: 198px;
+      height: 198px;
+      transform: rotate(16deg);
+    }
+
+    .nova-orbit-ring.two {
+      width: 146px;
+      height: 146px;
+      transform: rotate(-18deg);
+      border-color: rgba(251,191,36,0.18);
+    }
+
+    .nova-core {
+      position: relative;
+      z-index: 1;
+      min-width: 164px;
+      min-height: 124px;
+      border-radius: 28px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04)),
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.18), transparent 38%),
+        rgba(8,13,28,0.92);
+      box-shadow:
+        0 0 24px rgba(52,211,153,0.12),
+        0 0 42px rgba(251,191,36,0.1),
+        inset 0 1px 0 rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 16px 18px;
+    }
+
+    .nova-core-kicker,
+    .nova-core-note {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #dce8ff;
+    }
+
+    .nova-core-date {
+      display: block;
+      margin-top: 6px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 18px;
+      color: #ffffff;
+      letter-spacing: -0.03em;
+    }
+
+    .nova-core-hours {
+      display: block;
+      margin: 8px 0 6px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 34px;
+      line-height: 1;
+      color: #fff;
+      letter-spacing: -0.05em;
+    }
+
+    .nova-copy {
+      display: grid;
+      gap: 10px;
+    }
+
+    .nova-orbit {
+      min-height: 282px;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(251,191,36,0.08), transparent 26%),
+        radial-gradient(circle at 50% 50%, rgba(52,211,153,0.05), transparent 52%),
+        rgba(255,255,255,0.02);
+      padding: 18px;
+    }
+
+    .nova-orbit::before,
+    .nova-orbit::after {
+      content: none;
+    }
+
+    .nova-planet-system {
+      --nova-task-ratio: 0;
+      --nova-active-ratio: 0;
+      position: relative;
+      width: min(100%, 430px);
+      min-height: 246px;
+      display: grid;
+      place-items: center;
+    }
+
+    .nova-planet-system::before,
+    .nova-planet-system::after {
+      content: "";
+      position: absolute;
+      inset: 50%;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .nova-planet-system::before {
+      width: 230px;
+      height: 230px;
+      background: conic-gradient(
+        from -90deg,
+        rgba(251,191,36,0.95) 0 calc(var(--nova-task-ratio) * 1%),
+        rgba(255,255,255,0.04) calc(var(--nova-task-ratio) * 1%) 100%
+      );
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+      mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+      opacity: 0.74;
+    }
+
+    .nova-planet-system::after {
+      width: 266px;
+      height: 266px;
+      background: conic-gradient(
+        from 90deg,
+        rgba(34,211,238,0.78) 0 calc(var(--nova-active-ratio) * 1%),
+        rgba(255,255,255,0.03) calc(var(--nova-active-ratio) * 1%) 100%
+      );
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+      mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+      opacity: 0.52;
+    }
+
+    .nova-orbit-ring {
+      pointer-events: none;
+    }
+
+    .nova-orbit-ring.one {
+      width: 206px;
+      height: 206px;
+    }
+
+    .nova-orbit-ring.two {
+      width: 156px;
+      height: 156px;
+    }
+
+    .nova-planet-wrap {
+      position: relative;
+      z-index: 1;
+      width: 170px;
+      height: 170px;
+      display: grid;
+      place-items: center;
+    }
+
+    .nova-planet-glow {
+      position: absolute;
+      inset: -24px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 42% 38%, rgba(103,232,249,0.2), transparent 36%),
+        radial-gradient(circle at 58% 58%, rgba(251,191,36,0.1), transparent 54%),
+        radial-gradient(circle at 50% 50%, rgba(59,130,246,0.1), transparent 68%);
+      filter: blur(16px);
+      opacity: 0.72;
+    }
+
+    .nova-planet {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      overflow: hidden;
+      isolation: isolate;
+      background:
+        radial-gradient(circle at 30% 24%, rgba(255,255,255,0.88), rgba(236,246,255,0.3) 11%, transparent 18%),
+        radial-gradient(circle at 42% 36%, rgba(116,200,255,0.22), transparent 24%),
+        radial-gradient(circle at 60% 62%, rgba(10,16,32,0.3), transparent 34%),
+        linear-gradient(148deg, #d8ecff 0%, #9fbdd7 16%, #5f7ca8 34%, #2e4266 56%, #16233f 74%, #070d1d 100%);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow:
+        inset -18px -22px 34px rgba(5, 10, 24, 0.52),
+        inset 14px 14px 24px rgba(255,255,255,0.06),
+        inset -4px -8px 16px rgba(0,0,0,0.16),
+        0 0 30px rgba(34,211,238,0.12),
+        0 0 40px rgba(59,130,246,0.08);
+    }
+
+    .nova-planet::before {
+      content: "";
+      position: absolute;
+      inset: 7%;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 28% 22%, rgba(255,255,255,0.22), transparent 20%),
+        radial-gradient(circle at 46% 44%, rgba(255,255,255,0.08), transparent 18%),
+        radial-gradient(circle at 72% 68%, rgba(0,0,0,0.18), transparent 20%);
+      filter: blur(4px);
+      opacity: 0.62;
+    }
+
+    .nova-planet::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 34% 28%, rgba(255,255,255,0.16), transparent 18%),
+        linear-gradient(124deg, transparent 34%, rgba(4,8,20,0.56) 78%);
+      opacity: 0.82;
+    }
+
+    .nova-core {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      min-width: 0;
+      min-height: 0;
+      border-radius: 0;
+      border: 0;
+      box-shadow: none;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      padding: 18px;
+      background: radial-gradient(circle at 50% 72%, rgba(7,12,26,0.34), transparent 42%);
+    }
+
+    .nova-core-date {
+      font-size: 16px;
+    }
+
+    .nova-core-hours {
+      text-shadow: 0 0 14px rgba(255,255,255,0.14);
+    }
+
+    .nova-data-pod {
+      position: absolute;
+      z-index: 3;
+      min-width: 98px;
+      padding: 9px 11px 8px;
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04)),
+        rgba(8,13,28,0.78);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow:
+        0 14px 32px rgba(0,0,0,0.2),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+      text-align: center;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .nova-data-pod.top {
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .nova-data-pod.left {
+      left: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .nova-data-pod.right {
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .nova-data-pod.bottom {
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .nova-data-label {
+      display: block;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #9fb0d3;
+    }
+
+    .nova-data-value {
+      display: block;
+      margin-top: 6px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 16px;
+      line-height: 1;
+      color: #fff;
+      letter-spacing: -0.04em;
+    }
+
     .schedule-table-wrap {
       border-radius: 28px;
       border: 1px solid rgba(255,255,255,0.1);
@@ -2053,6 +2652,43 @@
     }
 
     @media (max-width: 1180px) {
+      .study-analytics {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .analytics-card.wide {
+        grid-column: auto;
+      }
+
+      .analytics-head {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .analytics-metrics {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .nova-planet-system {
+        width: 100%;
+        min-height: 314px;
+      }
+
+      .nova-data-pod.left,
+      .nova-data-pod.right {
+        top: auto;
+        bottom: 58px;
+        transform: none;
+      }
+
+      .nova-data-pod.left {
+        left: 10px;
+      }
+
+      .nova-data-pod.right {
+        right: 10px;
+      }
+
       .schedule-subject-stack {
         grid-template-columns: minmax(260px, 1fr);
         min-width: 340px;
@@ -4047,357 +4683,6 @@
     }
 
 
-    /* Fix form thêm lịch: giữ kích thước gần như cũ, chỉ kéo STT gọn và sát hơn */
-    .add-task-grid {
-      display: grid !important;
-      grid-template-columns: minmax(170px, 0.95fr) 68px minmax(165px, 0.92fr) minmax(340px, 1.85fr) minmax(185px, 1fr) 92px !important;
-      column-gap: 8px !important;
-      row-gap: 10px !important;
-      align-items: center !important;
-      width: 100%;
-      min-width: 0;
-    }
-
-    .add-task-grid .custom-subject-select,
-    .add-task-grid .field,
-    .add-task-grid .primary-btn {
-      min-width: 0;
-      width: 100%;
-    }
-
-    .add-task-grid .field,
-    .add-task-grid .subject-select-trigger,
-    .add-task-grid .primary-btn[data-action="add-task"] {
-      min-height: 52px;
-      height: 52px;
-      border-radius: 16px;
-      font-size: 14px;
-    }
-
-    .add-task-grid .field {
-      padding: 13px 15px;
-    }
-
-    .add-task-grid .subject-select-trigger {
-      padding: 13px 42px 13px 16px;
-      min-height: 52px;
-      border-radius: 18px;
-    }
-
-    .add-task-grid .subject-select-value,
-    .add-task-grid [data-subject-label] {
-      min-width: 0;
-      max-width: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-
-    .add-task-grid .subject-select-trigger::after {
-      right: 17px;
-      width: 10px;
-      height: 10px;
-    }
-
-    .add-task-grid .subject-select-menu {
-      min-width: 190px;
-      z-index: 80;
-    }
-
-    #addOrder {
-      text-align: center;
-      padding-left: 6px;
-      padding-right: 6px;
-      margin-left: -2px;
-      appearance: textfield;
-      -moz-appearance: textfield;
-    }
-
-    #addOrder::-webkit-outer-spin-button,
-    #addOrder::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    .add-task-grid #addText {
-      min-width: 340px;
-    }
-
-    .add-task-grid #addTaskNote {
-      min-width: 185px;
-    }
-
-    .add-task-grid .primary-btn[data-action="add-task"] {
-      padding: 0 16px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      white-space: nowrap;
-    }
-
-    .mission-footer .field#noteInput {
-      min-height: 82px;
-      padding: 13px 15px;
-    }
-
-    @media (max-width: 1280px) {
-      .add-task-grid {
-        grid-template-columns: minmax(160px, 1fr) 66px minmax(150px, 0.95fr) minmax(300px, 1.6fr) 90px !important;
-      }
-
-      .add-task-grid #addTaskNote {
-        grid-column: 1 / 5;
-        min-width: 0;
-      }
-
-      .add-task-grid .primary-btn[data-action="add-task"] {
-        grid-column: 5;
-        grid-row: 2;
-      }
-    }
-
-    @media (max-width: 920px) {
-      .add-task-grid {
-        grid-template-columns: minmax(170px, 1fr) 66px minmax(150px, 1fr) !important;
-      }
-
-      .add-task-grid #addText,
-      .add-task-grid #addTaskNote,
-      .add-task-grid .primary-btn[data-action="add-task"] {
-        grid-column: 1 / -1;
-        grid-row: auto;
-        min-width: 0;
-      }
-    }
-
-
-
-
-    /* FIX 2: Nút "Thêm" không bị tràn chữ, form vẫn giữ kích thước lớn */
-    .add-task-grid {
-      display: grid !important;
-      grid-template-columns: minmax(178px, 0.95fr) 60px minmax(165px, 0.9fr) minmax(330px, 1.8fr) minmax(180px, 0.9fr) 112px !important;
-      grid-template-areas: "subject order time text note add" !important;
-      column-gap: 7px !important;
-      row-gap: 10px !important;
-      align-items: center !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      min-width: 0 !important;
-    }
-
-    .add-task-grid .custom-subject-select { grid-area: subject !important; }
-    .add-task-grid #addOrder { grid-area: order !important; }
-    .add-task-grid #addTime { grid-area: time !important; }
-    .add-task-grid #addText { grid-area: text !important; }
-    .add-task-grid #addTaskNote { grid-area: note !important; }
-    .add-task-grid .primary-btn[data-action="add-task"] { grid-area: add !important; }
-
-    .add-task-grid .field,
-    .add-task-grid .subject-select-trigger,
-    .add-task-grid .primary-btn[data-action="add-task"] {
-      height: 52px !important;
-      min-height: 52px !important;
-      font-size: 14px !important;
-      box-sizing: border-box !important;
-    }
-
-    .add-task-grid .field {
-      padding: 13px 14px !important;
-    }
-
-    .add-task-grid #addOrder {
-      width: 60px !important;
-      min-width: 60px !important;
-      max-width: 60px !important;
-      padding-left: 4px !important;
-      padding-right: 4px !important;
-      margin-left: -3px !important;
-      text-align: center !important;
-      appearance: textfield !important;
-      -moz-appearance: textfield !important;
-    }
-
-    .add-task-grid #addOrder::-webkit-outer-spin-button,
-    .add-task-grid #addOrder::-webkit-inner-spin-button {
-      -webkit-appearance: none !important;
-      margin: 0 !important;
-    }
-
-    .add-task-grid #addText,
-    .add-task-grid #addTaskNote {
-      min-width: 0 !important;
-    }
-
-    .add-task-grid .primary-btn[data-action="add-task"] {
-      width: 112px !important;
-      min-width: 112px !important;
-      max-width: 112px !important;
-      padding: 0 16px !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: clip !important;
-      line-height: 1 !important;
-    }
-
-    @media (max-width: 1350px) {
-      .add-task-grid {
-        grid-template-columns: minmax(178px, 1fr) 60px minmax(160px, 0.85fr) minmax(290px, 1.6fr) 112px !important;
-        grid-template-areas:
-          "subject order time text add"
-          "note note note note note" !important;
-      }
-
-      .add-task-grid #addTaskNote {
-        width: 100% !important;
-        max-width: none !important;
-      }
-    }
-
-    @media (max-width: 980px) {
-      .add-task-grid {
-        grid-template-columns: minmax(170px, 1fr) 60px minmax(150px, 1fr) !important;
-        grid-template-areas:
-          "subject order time"
-          "text text text"
-          "note note note"
-          "add add add" !important;
-      }
-
-      .add-task-grid .primary-btn[data-action="add-task"] {
-        width: 100% !important;
-        max-width: none !important;
-      }
-    }
-
-
-    /* FIX CUỐI: chống tràn nút Thêm + giữ form to, cân hàng hơn */
-    .mission-footer {
-      overflow: visible !important;
-    }
-
-    .mission-footer > .add-task-grid {
-      display: grid !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      min-width: 0 !important;
-      box-sizing: border-box !important;
-      grid-template-columns:
-        minmax(158px, 0.95fr)
-        52px
-        minmax(150px, 0.82fr)
-        minmax(260px, 1.65fr)
-        132px !important;
-      grid-template-areas:
-        "subject order time text add"
-        "note note note note note" !important;
-      column-gap: 6px !important;
-      row-gap: 9px !important;
-      align-items: center !important;
-    }
-
-    .mission-footer > .add-task-grid .custom-subject-select { grid-area: subject !important; }
-    .mission-footer > .add-task-grid #addOrder { grid-area: order !important; }
-    .mission-footer > .add-task-grid #addTime { grid-area: time !important; }
-    .mission-footer > .add-task-grid #addText { grid-area: text !important; }
-    .mission-footer > .add-task-grid #addTaskNote { grid-area: note !important; }
-    .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] { grid-area: add !important; }
-
-    .mission-footer > .add-task-grid .custom-subject-select,
-    .mission-footer > .add-task-grid .field,
-    .mission-footer > .add-task-grid .subject-select-trigger,
-    .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] {
-      min-width: 0 !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      box-sizing: border-box !important;
-    }
-
-    .mission-footer > .add-task-grid .field,
-    .mission-footer > .add-task-grid .subject-select-trigger,
-    .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] {
-      height: 52px !important;
-      min-height: 52px !important;
-      border-radius: 16px !important;
-      font-size: 14px !important;
-    }
-
-    .mission-footer > .add-task-grid .field {
-      padding: 13px 13px !important;
-    }
-
-    .mission-footer > .add-task-grid .subject-select-trigger {
-      padding: 13px 39px 13px 15px !important;
-    }
-
-    .mission-footer > .add-task-grid #addOrder {
-      width: 52px !important;
-      min-width: 52px !important;
-      max-width: 52px !important;
-      padding-left: 2px !important;
-      padding-right: 2px !important;
-      margin-left: -4px !important;
-      text-align: center !important;
-      appearance: textfield !important;
-      -moz-appearance: textfield !important;
-    }
-
-    .mission-footer > .add-task-grid #addOrder::-webkit-outer-spin-button,
-    .mission-footer > .add-task-grid #addOrder::-webkit-inner-spin-button {
-      -webkit-appearance: none !important;
-      margin: 0 !important;
-    }
-
-    .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] {
-      width: 132px !important;
-      min-width: 132px !important;
-      max-width: 132px !important;
-      padding: 0 12px !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      justify-self: stretch !important;
-      align-self: center !important;
-      white-space: nowrap !important;
-      overflow: visible !important;
-      text-overflow: clip !important;
-      line-height: 1.1 !important;
-      font-size: 14px !important;
-      border-radius: 16px !important;
-    }
-
-    @media (max-width: 1180px) {
-      .mission-footer > .add-task-grid {
-        grid-template-columns: minmax(150px, 1fr) 52px minmax(145px, 1fr) 132px !important;
-        grid-template-areas:
-          "subject order time add"
-          "text text text text"
-          "note note note note" !important;
-      }
-    }
-
-    @media (max-width: 760px) {
-      .mission-footer > .add-task-grid {
-        grid-template-columns: minmax(0, 1fr) 52px !important;
-        grid-template-areas:
-          "subject order"
-          "time time"
-          "text text"
-          "note note"
-          "add add" !important;
-      }
-
-      .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        height: 52px !important;
-      }
-    }
-
 </style>
 </head>
 <body>
@@ -4514,7 +4799,23 @@
       return days;
     }
 
-    const initialSchedule = buildScheduleRange(2026, 5, 13, 2026, 6, 10);
+    const SCHEDULE_RANGE = {
+      startYear: 2026,
+      startMonth: 5,
+      startDay: 13,
+      endYear: 2026,
+      endMonth: 6,
+      endDay: 10
+    };
+
+    const initialSchedule = buildScheduleRange(
+      SCHEDULE_RANGE.startYear,
+      SCHEDULE_RANGE.startMonth,
+      SCHEDULE_RANGE.startDay,
+      SCHEDULE_RANGE.endYear,
+      SCHEDULE_RANGE.endMonth,
+      SCHEDULE_RANGE.endDay
+    );
 
     const paceClassMap = {
       "Nhanh hơn dự kiến": "pace-fast",
@@ -4880,12 +5181,10 @@
       if (missionCopy && !String(selectedDay.note || "").trim()) missionCopy.textContent = "";
 
       const missionFooterGrid = document.querySelector(".mission-footer > div:nth-child(2)");
-      if (missionFooterGrid) {
-        missionFooterGrid.classList.add("add-task-grid");
-        missionFooterGrid.style.removeProperty("grid-template-columns");
-        missionFooterGrid.style.removeProperty("gap");
+      if (missionFooterGrid && !document.getElementById("addTaskNote")) {
+        missionFooterGrid.style.gridTemplateColumns = "160px 90px 180px minmax(0,1fr) minmax(220px,0.9fr) auto";
         const addBtn = missionFooterGrid.querySelector('[data-action="add-task"]');
-        if (addBtn && !document.getElementById("addTaskNote")) {
+        if (addBtn) {
           addBtn.insertAdjacentHTML("beforebegin", '<input id="addTaskNote" class="field" placeholder="Ghi chú riêng cho đầu việc này..." />');
         }
       }
@@ -5079,6 +5378,426 @@
       return allTasks()
         .filter((item) => item.done)
         .reduce((sum, item) => sum + parseStudyMinutes(item.time), 0);
+    }
+
+    function shortDateLabel(dateText) {
+      const parts = String(dateText || "").split("/");
+      if (parts.length >= 2) return `${parts[0]}/${parts[1]}`;
+      return String(dateText || "");
+    }
+
+    function parseScheduleDate(dateText) {
+      const [ddText, mmText] = String(dateText || "").split("/");
+      const day = Number(ddText);
+      const month = Number(mmText);
+      if (!day || !month) return null;
+
+      let year = SCHEDULE_RANGE.startYear;
+      if (SCHEDULE_RANGE.startYear !== SCHEDULE_RANGE.endYear && month < SCHEDULE_RANGE.startMonth) {
+        year = SCHEDULE_RANGE.endYear;
+      }
+      return new Date(year, month - 1, day, 12, 0, 0, 0);
+    }
+
+    function getTodayCutoffDate() {
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0, 0);
+    }
+
+    function formatAxisMinutesLabel(totalMinutes) {
+      const safeMinutes = Math.max(0, Number(totalMinutes) || 0);
+      const hours = safeMinutes / 60;
+      if (safeMinutes === 0) return "0h";
+      if (hours >= 1) return `${hours % 1 === 0 ? hours.toFixed(0) : hours.toFixed(1)}h`;
+      return `${safeMinutes}p`;
+    }
+
+    function formatCompactMinutes(totalMinutes) {
+      const safeMinutes = Math.max(0, Number(totalMinutes) || 0);
+      const hours = Math.floor(safeMinutes / 60);
+      const minutes = safeMinutes % 60;
+      if (!hours) return `${minutes}p`;
+      if (!minutes) return `${hours}h`;
+      if (hours >= 10) return `${hours}h`;
+      return `${hours}h${String(minutes).padStart(2, "0")}`;
+    }
+
+    function getNiceStep(maxValue, segments = 4, mode = "number") {
+      const safeMax = Math.max(0, Number(maxValue) || 0);
+      if (!safeMax) return mode === "minutes" ? 30 : 1;
+
+      const rough = safeMax / Math.max(1, segments);
+      const magnitude = 10 ** Math.floor(Math.log10(Math.max(rough, 1)));
+      const normalized = rough / magnitude;
+      let multiplier = 10;
+
+      if (normalized <= 1) multiplier = 1;
+      else if (normalized <= 2) multiplier = 2;
+      else if (normalized <= 2.5) multiplier = 2.5;
+      else if (normalized <= 4) multiplier = 4;
+      else if (normalized <= 5) multiplier = 5;
+
+      let step = multiplier * magnitude;
+      if (mode === "tasks") step = Math.max(1, Math.round(step));
+      return step;
+    }
+
+    function buildAxisModel(maxValue, segments = 4, mode = "number") {
+      const safeMax = Math.max(0, Number(maxValue) || 0);
+      if (!safeMax) {
+        const topValue = mode === "minutes" ? 60 : 4;
+        const step = topValue / segments;
+        const ticks = Array.from({ length: segments + 1 }, (_, index) => topValue - (step * index));
+        return { topValue, step, ticks };
+      }
+
+      const step = getNiceStep(maxValue, segments, mode);
+      let topValue = step * segments;
+
+      while (topValue < maxValue) topValue += step;
+      if (mode === "minutes" && maxValue > 0 && topValue < 60) topValue = 60;
+      if (mode === "tasks" && topValue < 4) topValue = 4;
+
+      const ticks = Array.from({ length: segments + 1 }, (_, index) => topValue - (step * index));
+      return { topValue, step, ticks };
+    }
+
+    function buildLinePath(points) {
+      if (!points.length) return "";
+      return points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ");
+    }
+
+    function buildAreaPath(points, baselineY) {
+      if (!points.length) return "";
+      return `M ${points[0].x} ${baselineY} L ${points.map((point) => `${point.x} ${point.y}`).join(" L ")} L ${points[points.length - 1].x} ${baselineY} Z`;
+    }
+
+    function renderChartEmptyState(message) {
+      return `<div class="chart-empty">${escapeHtml(message)}</div>`;
+    }
+
+    function renderOrbitalBarChart({
+      chartId,
+      stats,
+      valueKey,
+      maxValue,
+      axisMode = "number",
+      tickFormatter = (value) => String(value),
+      valueFormatter = (value) => String(value),
+      accent = {},
+      currentDate = "",
+      focusDate = "",
+      emptyMessage = "Chưa có dữ liệu trong vùng thời gian này."
+    }) {
+      if (!stats.length) return renderChartEmptyState(emptyMessage);
+
+      const axis = buildAxisModel(maxValue, 4, axisMode);
+      const slotWidth = 54;
+      const barWidth = valueKey === "doneCount" ? 22 : 24;
+      const chartHeight = 280;
+      const paddingTop = 20;
+      const paddingRight = 24;
+      const paddingBottom = 48;
+      const paddingLeft = 62;
+      const plotHeight = 186;
+      const plotWidth = stats.length * slotWidth;
+      const chartWidth = paddingLeft + paddingRight + plotWidth;
+      const baselineY = paddingTop + plotHeight;
+      const gradientId = `${chartId}-gradient`;
+      const beamId = `${chartId}-beam`;
+      const haloId = `${chartId}-halo`;
+      const lineId = `${chartId}-line`;
+      const bars = stats.map((item, index) => {
+        const value = Math.max(0, Number(item[valueKey]) || 0);
+        const centerX = paddingLeft + (index * slotWidth) + (slotWidth / 2);
+        const x = centerX - (barWidth / 2);
+        const rawHeight = axis.topValue ? (value / axis.topValue) * plotHeight : 0;
+        const height = value > 0 ? Math.max(10, rawHeight) : 0;
+        const y = baselineY - height;
+        const topLabelY = Math.max(paddingTop + 10, y - 10);
+        const isToday = currentDate && item.date === currentDate;
+        const isFocus = focusDate && item.date === focusDate;
+        return `
+          ${isToday ? `<rect x="${centerX - 18}" y="${paddingTop - 4}" width="36" height="${plotHeight + 18}" rx="18" fill="url(#${beamId})"></rect>` : ""}
+          ${isFocus ? `<circle cx="${centerX}" cy="${Math.max(paddingTop + 10, y)}" r="18" fill="url(#${haloId})"></circle>` : ""}
+          <line x1="${centerX}" y1="${baselineY}" x2="${centerX}" y2="${baselineY + 7}" stroke="rgba(226,234,255,0.28)" stroke-width="1"></line>
+          ${value > 0 ? `
+            <rect x="${x}" y="${y}" width="${barWidth}" height="${height}" rx="${barWidth / 2}" fill="url(#${gradientId})" stroke="rgba(255,255,255,0.22)" stroke-width="1"></rect>
+            <ellipse cx="${centerX}" cy="${y + 3}" rx="${Math.max(6, (barWidth / 2) - 2)}" ry="4.5" fill="rgba(255,255,255,0.22)"></ellipse>
+            <text x="${centerX}" y="${topLabelY}" text-anchor="middle" class="chart-value-label">${escapeHtml(valueFormatter(value))}</text>
+          ` : `<circle cx="${centerX}" cy="${baselineY}" r="2" fill="rgba(186,201,240,0.35)"></circle>`}
+          <text x="${centerX}" y="${baselineY + 22}" text-anchor="middle" class="chart-x-label ${isToday ? "today" : ""}">${escapeHtml(item.label)}</text>
+        `;
+      }).join("");
+
+      const gridLines = axis.ticks.map((tick) => {
+        const y = baselineY - ((tick / axis.topValue) * plotHeight);
+        return `
+          <line x1="${paddingLeft}" y1="${y}" x2="${chartWidth - paddingRight}" y2="${y}" stroke="url(#${lineId})" stroke-width="1"></line>
+          <text x="${paddingLeft - 10}" y="${y + 4}" text-anchor="end" class="chart-y-label">${escapeHtml(tickFormatter(tick))}</text>
+        `;
+      }).join("");
+
+      return `
+        <div class="chart-board">
+          <div class="chart-scroll">
+            <svg class="chart-svg" width="${chartWidth}" height="${chartHeight}" viewBox="0 0 ${chartWidth} ${chartHeight}" aria-hidden="true">
+              <defs>
+                <linearGradient id="${gradientId}" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stop-color="${accent.start || "#3b82f6"}"></stop>
+                  <stop offset="58%" stop-color="${accent.mid || "#22d3ee"}"></stop>
+                  <stop offset="100%" stop-color="${accent.end || "#f8fafc"}"></stop>
+                </linearGradient>
+                <linearGradient id="${lineId}" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="rgba(255,255,255,0.04)"></stop>
+                  <stop offset="14%" stop-color="rgba(255,255,255,0.14)"></stop>
+                  <stop offset="100%" stop-color="rgba(255,255,255,0.04)"></stop>
+                </linearGradient>
+                <linearGradient id="${beamId}" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="${accent.beam || "rgba(255,255,255,0.16)"}"></stop>
+                  <stop offset="100%" stop-color="rgba(255,255,255,0)"></stop>
+                </linearGradient>
+                <radialGradient id="${haloId}" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="${accent.glow || "rgba(255,255,255,0.5)"}"></stop>
+                  <stop offset="100%" stop-color="rgba(255,255,255,0)"></stop>
+                </radialGradient>
+              </defs>
+              <rect x="0" y="0" width="${chartWidth}" height="${chartHeight}" rx="26" fill="rgba(255,255,255,0.01)"></rect>
+              ${gridLines}
+              <line x1="${paddingLeft}" y1="${baselineY}" x2="${chartWidth - paddingRight}" y2="${baselineY}" stroke="rgba(226,234,255,0.34)" stroke-width="1.2"></line>
+              ${bars}
+            </svg>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderConstellationLineChart({
+      chartId,
+      stats,
+      valueKey,
+      maxValue,
+      tickFormatter = (value) => String(value),
+      valueFormatter = (value) => String(value),
+      accent = {},
+      currentDate = "",
+      emptyMessage = "Chưa có dữ liệu để vẽ đường tăng trưởng."
+    }) {
+      if (!stats.length) return renderChartEmptyState(emptyMessage);
+
+      const axis = buildAxisModel(maxValue, 4, "minutes");
+      const slotWidth = 54;
+      const chartHeight = 280;
+      const paddingTop = 20;
+      const paddingRight = 24;
+      const paddingBottom = 48;
+      const paddingLeft = 62;
+      const plotHeight = 186;
+      const plotWidth = stats.length * slotWidth;
+      const chartWidth = paddingLeft + paddingRight + plotWidth;
+      const baselineY = paddingTop + plotHeight;
+      const lineId = `${chartId}-line`;
+      const areaId = `${chartId}-area`;
+      const beamId = `${chartId}-beam`;
+      const points = stats.map((item, index) => {
+        const value = Math.max(0, Number(item[valueKey]) || 0);
+        const x = paddingLeft + (index * slotWidth) + (slotWidth / 2);
+        const y = baselineY - ((value / axis.topValue) * plotHeight);
+        return { ...item, value, x, y };
+      });
+
+      const path = buildLinePath(points);
+      const area = buildAreaPath(points, baselineY);
+      const gridLines = axis.ticks.map((tick) => {
+        const y = baselineY - ((tick / axis.topValue) * plotHeight);
+        return `
+          <line x1="${paddingLeft}" y1="${y}" x2="${chartWidth - paddingRight}" y2="${y}" stroke="rgba(255,255,255,0.08)" stroke-width="1"></line>
+          <text x="${paddingLeft - 10}" y="${y + 4}" text-anchor="end" class="chart-y-label">${escapeHtml(tickFormatter(tick))}</text>
+        `;
+      }).join("");
+
+      const pointNodes = points.map((point) => {
+        const isToday = currentDate && point.date === currentDate;
+        return `
+          ${isToday ? `<rect x="${point.x - 18}" y="${paddingTop - 4}" width="36" height="${plotHeight + 18}" rx="18" fill="url(#${beamId})"></rect>` : ""}
+          <circle cx="${point.x}" cy="${point.y}" r="${isToday ? 6.5 : 4.5}" fill="${accent.dot || "#f8fafc"}" stroke="${accent.stroke || "#22d3ee"}" stroke-width="${isToday ? "2.6" : "1.8"}"></circle>
+          <circle cx="${point.x}" cy="${point.y}" r="${isToday ? 14 : 10}" fill="rgba(255,255,255,0.03)"></circle>
+          <text x="${point.x}" y="${baselineY + 22}" text-anchor="middle" class="chart-x-label ${isToday ? "today" : ""}">${escapeHtml(point.label)}</text>
+        `;
+      }).join("");
+
+      const lastPoint = points[points.length - 1];
+
+      return `
+        <div class="chart-board">
+          <div class="chart-scroll">
+            <svg class="chart-svg" width="${chartWidth}" height="${chartHeight}" viewBox="0 0 ${chartWidth} ${chartHeight}" aria-hidden="true">
+              <defs>
+                <linearGradient id="${lineId}" x1="0" y1="1" x2="1" y2="0">
+                  <stop offset="0%" stop-color="${accent.start || "#8b5cf6"}"></stop>
+                  <stop offset="100%" stop-color="${accent.end || "#22d3ee"}"></stop>
+                </linearGradient>
+                <linearGradient id="${areaId}" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="${accent.area || "rgba(139,92,246,0.26)"}"></stop>
+                  <stop offset="100%" stop-color="rgba(34,211,238,0.02)"></stop>
+                </linearGradient>
+                <linearGradient id="${beamId}" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="${accent.beam || "rgba(255,255,255,0.14)"}"></stop>
+                  <stop offset="100%" stop-color="rgba(255,255,255,0)"></stop>
+                </linearGradient>
+              </defs>
+              ${gridLines}
+              <line x1="${paddingLeft}" y1="${baselineY}" x2="${chartWidth - paddingRight}" y2="${baselineY}" stroke="rgba(226,234,255,0.34)" stroke-width="1.2"></line>
+              <path d="${area}" fill="url(#${areaId})"></path>
+              <path d="${path}" fill="none" stroke="url(#${lineId})" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+              ${pointNodes}
+              ${lastPoint ? `
+                <g transform="translate(${lastPoint.x}, ${Math.max(30, lastPoint.y - 22)})">
+                  <rect x="-34" y="-20" width="68" height="24" rx="12" fill="rgba(8,13,28,0.84)" stroke="rgba(255,255,255,0.16)"></rect>
+                  <text x="0" y="-4" text-anchor="middle" class="chart-callout">${escapeHtml(valueFormatter(lastPoint.value))}</text>
+                </g>
+              ` : ""}
+            </svg>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderNovaSummary(analytics) {
+      if (!analytics.stats.length) {
+        return `
+          <div class="nova-panel">
+            <div class="chart-empty">Chưa có ngày nào đã đi qua trong bộ lọc hiện tại.</div>
+          </div>
+        `;
+      }
+
+      const taskRatio = analytics.maxDoneCount
+        ? Math.round((analytics.highlight.doneCount / analytics.maxDoneCount) * 100)
+        : 0;
+      const activeRatio = analytics.stats.length
+        ? Math.round((analytics.activeDays / analytics.stats.length) * 100)
+        : 0;
+      const activeDensityLabel = `${analytics.activeDays}/${analytics.stats.length}`;
+
+      return `
+        <div class="nova-panel">
+          <div class="nova-orbit">
+            <div
+              class="nova-planet-system"
+              style="--nova-task-ratio:${taskRatio}; --nova-active-ratio:${activeRatio};"
+            >
+              <div class="nova-orbit-ring one"></div>
+              <div class="nova-orbit-ring two"></div>
+              <div class="nova-data-pod top">
+                <span class="nova-data-label">Ngày đỉnh</span>
+                <span class="nova-data-value">${escapeHtml(analytics.highlight.date || "—")}</span>
+              </div>
+              <div class="nova-data-pod left">
+                <span class="nova-data-label">Ngày học</span>
+                <span class="nova-data-value">${escapeHtml(activeDensityLabel)}</span>
+              </div>
+              <div class="nova-data-pod right">
+                <span class="nova-data-label">Task xong</span>
+                <span class="nova-data-value">${escapeHtml(String(analytics.highlight.doneCount || 0))}</span>
+              </div>
+              <div class="nova-data-pod bottom">
+                <span class="nova-data-label">TB / ngày</span>
+                <span class="nova-data-value">${escapeHtml(formatCompactMinutes(analytics.averageDoneMinutes))}</span>
+              </div>
+              <div class="nova-planet-wrap">
+                <div class="nova-planet-glow"></div>
+                <div class="nova-planet">
+                  <div class="nova-core">
+                    <span class="nova-core-kicker">Nova Day</span>
+                    <strong class="nova-core-hours">${escapeHtml(formatCompactMinutes(analytics.highlight.doneMinutes))}</strong>
+                    <span class="nova-core-date">${escapeHtml(analytics.highlight.date || "—")}</span>
+                    <span class="nova-core-note">Đỉnh hoàn thành</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="nova-copy">
+            <div class="analytics-metrics">
+              <div class="analytics-metric">
+                <span>Tổng giờ xong</span>
+                <strong>${escapeHtml(formatCompactMinutes(analytics.totalDoneMinutes))}</strong>
+              </div>
+              <div class="analytics-metric">
+                <span>Đỉnh nhiệm vụ</span>
+                <strong>${escapeHtml(String(analytics.taskHighlight.doneCount || 0))}</strong>
+              </div>
+              <div class="analytics-metric">
+                <span>Hiện đến</span>
+                <strong>${escapeHtml(analytics.renderedThroughLabel || "—")}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildStudyAnalytics(days) {
+      const todayCutoff = getTodayCutoffDate();
+      const chartDays = days.filter((day) => {
+        const parsed = parseScheduleDate(day.date);
+        return parsed && parsed.getTime() <= todayCutoff.getTime();
+      });
+
+      let cumulativeDoneMinutes = 0;
+      const stats = chartDays.map((day) => {
+        const taskState = ensureTaskState(day.date);
+        const tasks = [...taskState.physics, ...taskState.math, ...taskState.english, ...taskState.review];
+        const plannedMinutes = tasks.reduce((sum, item) => sum + parseStudyMinutes(item.time), 0);
+        const doneTasks = tasks.filter((item) => item.done);
+        const doneMinutes = doneTasks.reduce((sum, item) => sum + parseStudyMinutes(item.time), 0);
+        cumulativeDoneMinutes += doneMinutes;
+        return {
+          date: day.date,
+          label: shortDateLabel(day.date),
+          tasks,
+          plannedMinutes,
+          doneMinutes,
+          doneCount: doneTasks.length,
+          cumulativeDoneMinutes
+        };
+      });
+
+      const maxPlannedMinutes = Math.max(...stats.map((item) => item.plannedMinutes), 0);
+      const maxDoneMinutes = Math.max(...stats.map((item) => item.doneMinutes), 0);
+      const maxDoneCount = Math.max(...stats.map((item) => item.doneCount), 0);
+      const maxCumulativeDoneMinutes = Math.max(...stats.map((item) => item.cumulativeDoneMinutes), 0);
+      const taskHighlight = stats.reduce((best, item) => item.doneCount > best.doneCount ? item : best, stats[0] || {
+        date: "",
+        doneCount: 0
+      });
+      const highlight = stats.reduce((best, item) => item.doneMinutes > best.doneMinutes ? item : best, stats[0] || {
+        date: "",
+        label: "",
+        plannedMinutes: 0,
+        doneMinutes: 0,
+        doneCount: 0,
+        cumulativeDoneMinutes: 0,
+        tasks: []
+      });
+
+      return {
+        stats,
+        cutoffLabel: shortDateLabel(`${String(todayCutoff.getDate()).padStart(2, "0")}/${String(todayCutoff.getMonth() + 1).padStart(2, "0")}`),
+        renderedThroughLabel: stats.length ? stats[stats.length - 1].date : "",
+        maxPlannedMinutes,
+        maxDoneMinutes,
+        maxDoneCount,
+        maxCumulativeDoneMinutes,
+        highlight,
+        taskHighlight,
+        totalPlannedMinutes: stats.reduce((sum, item) => sum + item.plannedMinutes, 0),
+        totalDoneMinutes: stats.reduce((sum, item) => sum + item.doneMinutes, 0),
+        activeDays: stats.filter((item) => item.doneMinutes > 0).length,
+        averageDoneMinutes: stats.length ? Math.round(stats.reduce((sum, item) => sum + item.doneMinutes, 0) / stats.length) : 0,
+        currentChartDate: stats.length ? stats[stats.length - 1].date : ""
+      };
     }
 
     function getProgress() {
@@ -5679,6 +6398,7 @@
       const selectedDay = getSelectedDay();
       const selectedTaskState = ensureTaskState(state.selectedDate);
       const visibleDays = filteredDays();
+      const analytics = buildStudyAnalytics(visibleDays);
       const currentDayTasks = [...selectedTaskState.physics, ...selectedTaskState.math, ...selectedTaskState.english, ...selectedTaskState.review];
       const currentDone = currentDayTasks.filter((item) => item.done).length;
       const currentPercent = currentDayTasks.length ? Math.round((currentDone * 100) / currentDayTasks.length) : 0;
@@ -5879,7 +6599,7 @@
                   <div class="section-title">Thêm lịch học cho ngày ${escapeHtml(selectedDay.date)}</div>
 
                 </div>
-                <div class="add-task-grid">
+                <div style="display:grid; grid-template-columns:160px 90px 180px minmax(0,1fr) minmax(220px,0.9fr) auto; gap:12px; align-items:center;">
                   <div class="custom-subject-select" data-subject-select>
                     <input id="addGroup" type="hidden" value="${escapeHtml(editingTask && editingTask.date === state.selectedDate ? editingTask.group : "physics")}" />
                     <button
@@ -5909,7 +6629,6 @@
                   <input id="addOrder" class="field" type="number" min="1" inputmode="numeric" placeholder="STT" value="${escapeHtml(editingTask && editingTask.date === state.selectedDate ? String(editingTask.index + 1) : String((selectedTaskState.physics || []).length + 1))}" />
                   <input id="addTime" class="field" placeholder="Giờ: 19:00-21:00" />
                   <input id="addText" class="field" placeholder="Nội dung học: Làm đề, ôn chương, chữa lỗi..." />
-                  <input id="addTaskNote" class="field" placeholder="Ghi chú task..." />
                   <button type="button" class="primary-btn" data-action="add-task">Thêm</button>
                 </div>
                 <textarea id="noteInput" class="field" rows="3" placeholder="Ghi chú riêng cho ngày ${escapeHtml(selectedDay.date)}...">${escapeHtml(selectedDay.note || "")}</textarea>
@@ -5944,6 +6663,119 @@
               </div>
             </section>
           </div>
+        </section>
+
+        <section class="schedule-divider analytics-stage">
+          <section class="glass analytics-shell">
+            <div class="schedule-head">
+              <div>
+                <div class="section-title">Biểu Đồ Thống Kê Học Tập</div>
+              </div>
+              <div class="schedule-stats">
+                <span class="badge">${analytics.stats.length} ngày đã qua</span>
+                <span class="badge">Đến ${escapeHtml(analytics.renderedThroughLabel || analytics.cutoffLabel || "—")}</span>
+              </div>
+            </div>
+
+            <div class="study-analytics">
+                <article class="analytics-card wide hours">
+                  <div class="analytics-head">
+                    <div>
+                      <div class="analytics-kicker">Orbit Hours</div>
+                      <div class="analytics-title">Quỹ đạo giờ học theo từng ngày</div>
+                    </div>
+                    <div class="analytics-highlight">${escapeHtml(formatStudyMinutes(analytics.totalPlannedMinutes))}</div>
+                  </div>
+                  ${renderOrbitalBarChart({
+                    chartId: "hours-orbit",
+                    stats: analytics.stats,
+                    valueKey: "plannedMinutes",
+                    maxValue: analytics.maxPlannedMinutes,
+                    axisMode: "minutes",
+                    tickFormatter: formatAxisMinutesLabel,
+                    valueFormatter: formatCompactMinutes,
+                    accent: {
+                      start: "#2f66ff",
+                      mid: "#22d3ee",
+                      end: "#f8fafc",
+                      beam: "rgba(79,140,255,0.2)",
+                      glow: "rgba(34,211,238,0.24)"
+                    },
+                    currentDate: analytics.currentChartDate,
+                    focusDate: analytics.currentChartDate,
+                    emptyMessage: "Chưa có ngày nào đã đi qua để dựng quỹ đạo giờ học."
+                  })}
+                </article>
+
+                <article class="analytics-card growth">
+                  <div class="analytics-head">
+                    <div>
+                      <div class="analytics-kicker">Constellation Growth</div>
+                      <div class="analytics-title">Đường tăng trưởng lũy kế</div>
+                    </div>
+                    <div class="analytics-highlight">${escapeHtml(formatStudyMinutes(analytics.totalDoneMinutes))}</div>
+                  </div>
+                  ${renderConstellationLineChart({
+                    chartId: "growth-constellation",
+                    stats: analytics.stats,
+                    valueKey: "cumulativeDoneMinutes",
+                    maxValue: analytics.maxCumulativeDoneMinutes,
+                    tickFormatter: formatAxisMinutesLabel,
+                    valueFormatter: formatCompactMinutes,
+                    accent: {
+                      start: "#8b5cf6",
+                      end: "#22d3ee",
+                      area: "rgba(139,92,246,0.26)",
+                      dot: "#eef4ff",
+                      stroke: "#22d3ee",
+                      beam: "rgba(139,92,246,0.18)"
+                    },
+                    currentDate: analytics.currentChartDate,
+                    emptyMessage: "Chưa đủ dữ liệu đã qua để vẽ đường tăng trưởng."
+                  })}
+                </article>
+
+                <article class="analytics-card nova">
+                  <div class="analytics-head">
+                    <div>
+                      <div class="analytics-kicker">Nova Day</div>
+                      <div class="analytics-title">Ngày học bùng sáng nhất</div>
+                    </div>
+                    <div class="analytics-highlight">${escapeHtml(analytics.highlight.date || "—")}</div>
+                  </div>
+                  ${renderNovaSummary(analytics)}
+                </article>
+
+                <article class="analytics-card wide tasks">
+                  <div class="analytics-head">
+                    <div>
+                      <div class="analytics-kicker">Mission Clears</div>
+                      <div class="analytics-title">Tháp nhiệm vụ hoàn tất theo ngày</div>
+                    </div>
+                    <div class="analytics-highlight">${done}/${total}</div>
+                  </div>
+                  ${renderOrbitalBarChart({
+                    chartId: "mission-clears",
+                    stats: analytics.stats,
+                    valueKey: "doneCount",
+                    maxValue: analytics.maxDoneCount,
+                    axisMode: "tasks",
+                    tickFormatter: (value) => String(value),
+                    valueFormatter: (value) => String(value),
+                    accent: {
+                      start: "#f59e0b",
+                      mid: "#fb7185",
+                      end: "#fff3d0",
+                      beam: "rgba(251,191,36,0.18)",
+                      glow: "rgba(244,114,182,0.2)"
+                    },
+                    currentDate: analytics.currentChartDate,
+                    focusDate: analytics.taskHighlight.date,
+                    emptyMessage: "Chưa có ngày đã qua để dựng tháp nhiệm vụ hoàn tất."
+                  })}
+                </article>
+            </div>
+          </section>
         </section>
 
         <section class="schedule-divider">
