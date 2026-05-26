@@ -4682,6 +4682,130 @@
         0 0 20px rgba(56,189,248,0.16) !important;
     }
 
+    /* FIX CUOI: chong tran nut Them + giu form to, can hang hon */
+    .mission-footer {
+      overflow: visible !important;
+    }
+
+    .mission-footer > .add-task-grid {
+      display: grid !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+      grid-template-columns:
+        minmax(158px, 0.95fr)
+        52px
+        minmax(150px, 0.82fr)
+        minmax(260px, 1.65fr)
+        132px !important;
+      grid-template-areas:
+        "subject order time text add"
+        "note note note note note" !important;
+      column-gap: 6px !important;
+      row-gap: 9px !important;
+      align-items: center !important;
+    }
+
+    .mission-footer > .add-task-grid .custom-subject-select { grid-area: subject !important; }
+    .mission-footer > .add-task-grid #addOrder { grid-area: order !important; }
+    .mission-footer > .add-task-grid #addTime { grid-area: time !important; }
+    .mission-footer > .add-task-grid #addText { grid-area: text !important; }
+    .mission-footer > .add-task-grid #addTaskNote { grid-area: note !important; }
+    .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] { grid-area: add !important; }
+
+    .mission-footer > .add-task-grid .custom-subject-select,
+    .mission-footer > .add-task-grid .field,
+    .mission-footer > .add-task-grid .subject-select-trigger,
+    .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] {
+      min-width: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    .mission-footer > .add-task-grid .field,
+    .mission-footer > .add-task-grid .subject-select-trigger,
+    .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] {
+      height: 52px !important;
+      min-height: 52px !important;
+      border-radius: 16px !important;
+      font-size: 14px !important;
+    }
+
+    .mission-footer > .add-task-grid .field {
+      padding: 13px 13px !important;
+    }
+
+    .mission-footer > .add-task-grid .subject-select-trigger {
+      padding: 13px 39px 13px 15px !important;
+    }
+
+    .mission-footer > .add-task-grid #addOrder {
+      width: 52px !important;
+      min-width: 52px !important;
+      max-width: 52px !important;
+      padding-left: 2px !important;
+      padding-right: 2px !important;
+      margin-left: -4px !important;
+      text-align: center !important;
+      appearance: textfield !important;
+      -moz-appearance: textfield !important;
+    }
+
+    .mission-footer > .add-task-grid #addOrder::-webkit-outer-spin-button,
+    .mission-footer > .add-task-grid #addOrder::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+      margin: 0 !important;
+    }
+
+    .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] {
+      width: 132px !important;
+      min-width: 132px !important;
+      max-width: 132px !important;
+      padding: 0 12px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      justify-self: stretch !important;
+      align-self: center !important;
+      white-space: nowrap !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      line-height: 1.1 !important;
+      font-size: 14px !important;
+      border-radius: 16px !important;
+    }
+
+    @media (max-width: 1180px) {
+      .mission-footer > .add-task-grid {
+        grid-template-columns: minmax(150px, 1fr) 52px minmax(145px, 1fr) 132px !important;
+        grid-template-areas:
+          "subject order time add"
+          "text text text text"
+          "note note note note" !important;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .mission-footer > .add-task-grid {
+        grid-template-columns: minmax(0, 1fr) 52px !important;
+        grid-template-areas:
+          "subject order"
+          "time time"
+          "text text"
+          "note note"
+          "add add" !important;
+      }
+
+      .mission-footer > .add-task-grid .primary-btn[data-action="add-task"] {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        height: 52px !important;
+      }
+    }
+
 
 </style>
 </head>
@@ -5181,10 +5305,12 @@
       if (missionCopy && !String(selectedDay.note || "").trim()) missionCopy.textContent = "";
 
       const missionFooterGrid = document.querySelector(".mission-footer > div:nth-child(2)");
-      if (missionFooterGrid && !document.getElementById("addTaskNote")) {
-        missionFooterGrid.style.gridTemplateColumns = "160px 90px 180px minmax(0,1fr) minmax(220px,0.9fr) auto";
+      if (missionFooterGrid) {
+        missionFooterGrid.classList.add("add-task-grid");
+        missionFooterGrid.style.removeProperty("grid-template-columns");
+        missionFooterGrid.style.removeProperty("gap");
         const addBtn = missionFooterGrid.querySelector('[data-action="add-task"]');
-        if (addBtn) {
+        if (addBtn && !document.getElementById("addTaskNote")) {
           addBtn.insertAdjacentHTML("beforebegin", '<input id="addTaskNote" class="field" placeholder="Ghi chú riêng cho đầu việc này..." />');
         }
       }
@@ -6599,7 +6725,7 @@
                   <div class="section-title">Thêm lịch học cho ngày ${escapeHtml(selectedDay.date)}</div>
 
                 </div>
-                <div style="display:grid; grid-template-columns:160px 90px 180px minmax(0,1fr) minmax(220px,0.9fr) auto; gap:12px; align-items:center;">
+                <div class="add-task-grid">
                   <div class="custom-subject-select" data-subject-select>
                     <input id="addGroup" type="hidden" value="${escapeHtml(editingTask && editingTask.date === state.selectedDate ? editingTask.group : "physics")}" />
                     <button
@@ -6629,6 +6755,7 @@
                   <input id="addOrder" class="field" type="number" min="1" inputmode="numeric" placeholder="STT" value="${escapeHtml(editingTask && editingTask.date === state.selectedDate ? String(editingTask.index + 1) : String((selectedTaskState.physics || []).length + 1))}" />
                   <input id="addTime" class="field" placeholder="Giờ: 19:00-21:00" />
                   <input id="addText" class="field" placeholder="Nội dung học: Làm đề, ôn chương, chữa lỗi..." />
+                  <input id="addTaskNote" class="field" placeholder="Ghi chú task..." />
                   <button type="button" class="primary-btn" data-action="add-task">Thêm</button>
                 </div>
                 <textarea id="noteInput" class="field" rows="3" placeholder="Ghi chú riêng cho ngày ${escapeHtml(selectedDay.date)}...">${escapeHtml(selectedDay.note || "")}</textarea>
