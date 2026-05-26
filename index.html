@@ -5851,6 +5851,18 @@
       }
     ];
     const LUCKY_COMET_RARITY_MAP = Object.fromEntries(LUCKY_COMET_RARITIES.map((item) => [item.key, item]));
+    const LUCKY_COMET_STUDY_TARGET_DEFAULT_MINUTES = 18 * 60;
+    const LUCKY_COMET_STUDY_TARGET_MIN_MINUTES = 4 * 60;
+    const LUCKY_COMET_STUDY_TARGET_MAX_MINUTES = 60 * 60;
+    const LUCKY_COMET_STUDY_TARGET_RATIO = 0.85;
+    const LUCKY_COMET_STUDY_EFFORT_CAP_MINUTES = 24 * 60;
+    const LUCKY_COMET_STUDY_WEIGHT_MULTIPLIERS = {
+      common: [1.4, 0.62],
+      uncommon: [1.15, 0.86],
+      rare: [0.62, 1.55],
+      epic: [0.36, 2.2],
+      mythic: [0.18, 3.35]
+    };
     const LUCKY_COMET_FORMATION_POOL = {
       uncommon: ["arrow", "twin"],
       rare: ["arrow", "twin", "spiral"],
@@ -5872,9 +5884,9 @@
       epic: { radius: 1, tail: 1, wake: 2.3, mainWake: 0.38, broadCurve: 0.62, broadLift: 1.25, headY: 0.54, bladeOuter: 0.44, bladeInner: 0.34, bladeHead: 0.18, broadAlpha: 0.78, bladeAlpha: 0.92 },
       mythic: { radius: 1.04, tail: 1.08, wake: 2.52, mainWake: 0.34, broadCurve: 0.66, broadLift: 1.36, headY: 0.62, bladeOuter: 0.48, bladeInner: 0.34, bladeHead: 0.2, broadAlpha: 0.76, bladeAlpha: 0.94 }
     };
-    const STUDY_TIME_RANGE_RE = /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/;
-    const STUDY_HOUR_MINUTE_RE = /(\d+(?:[.,]\d+)?)\s*(h|gio|hr)\s*(?:(\d{1,2})\s*(p|phut|min))?/i;
-    const STUDY_MINUTE_RE = /(\d+)\s*(p|phut|min)/i;
+    const STUDY_TIME_RANGE_RE = /(\d{1,2})\s*(?::|h|g|gio|giờ)?\s*(\d{2})?\s*(?:-|–|—|đến|den|to)\s*(\d{1,2})\s*(?::|h|g|gio|giờ)?\s*(\d{2})?/i;
+    const STUDY_HOUR_MINUTE_RE = /(\d+(?:[.,]\d+)?)\s*(h|gio|giờ|tieng|tiếng|hr|hour|hours)\s*(?:(\d{1,2})\s*(?:p|phut|phút|min|m)?)?/i;
+    const STUDY_MINUTE_RE = /(\d+)\s*(p|phut|phút|min|m)\b/i;
 
     const app = document.getElementById("app");
     let flagBurstTimer = 0;
@@ -6219,13 +6231,41 @@
       };
     }
 
-    function pickLuckyCometRarity() {
-      const roll = Math.random() * 100;
+    function getLuckyCometStudyTargetMinutes(plannedMinutes = totalPlannedStudyMinutes()) {
+      if (!plannedMinutes) return LUCKY_COMET_STUDY_TARGET_DEFAULT_MINUTES;
+
+      const targetFromPlan = Math.round(plannedMinutes * LUCKY_COMET_STUDY_TARGET_RATIO);
+      const minimumReachableTarget = Math.min(plannedMinutes, LUCKY_COMET_STUDY_TARGET_MIN_MINUTES);
+      return clampNumber(targetFromPlan, minimumReachableTarget, LUCKY_COMET_STUDY_TARGET_MAX_MINUTES);
+    }
+
+    function getLuckyCometStudyBoost(doneMinutes = totalDoneStudyMinutes(), plannedMinutes = totalPlannedStudyMinutes()) {
+      const studyTargetMinutes = getLuckyCometStudyTargetMinutes(plannedMinutes);
+      const reachableProgress = studyTargetMinutes ? clampNumber(doneMinutes / studyTargetMinutes, 0, 1) : 0;
+      const effortProgress = clampNumber(doneMinutes / LUCKY_COMET_STUDY_EFFORT_CAP_MINUTES, 0, 1);
+      const progress = clampNumber((reachableProgress * 0.72) + (effortProgress * 0.28), 0, 1);
+      return progress * progress * (3 - (2 * progress));
+    }
+
+    function getLuckyCometDynamicWeight(rarity, studyBoost) {
+      const [lowMultiplier, highMultiplier] = LUCKY_COMET_STUDY_WEIGHT_MULTIPLIERS[rarity.key] || [1, 1];
+      const multiplier = lowMultiplier + ((highMultiplier - lowMultiplier) * studyBoost);
+      return Math.max(0.1, rarity.weight * multiplier);
+    }
+
+    function pickLuckyCometRarity(doneMinutes = totalDoneStudyMinutes()) {
+      const studyBoost = getLuckyCometStudyBoost(doneMinutes);
+      const weightedRarities = LUCKY_COMET_RARITIES.map((rarity) => ({
+        rarity,
+        weight: getLuckyCometDynamicWeight(rarity, studyBoost)
+      }));
+      const totalWeight = weightedRarities.reduce((sum, item) => sum + item.weight, 0);
+      const roll = Math.random() * totalWeight;
       let total = 0;
 
-      for (const rarity of LUCKY_COMET_RARITIES) {
-        total += rarity.weight;
-        if (roll < total) return rarity;
+      for (const item of weightedRarities) {
+        total += item.weight;
+        if (roll < total) return item.rarity;
       }
 
       return LUCKY_COMET_RARITIES[0];
@@ -7609,15 +7649,28 @@
       return buildGlobalTaskStats({ collectAll: true }).all;
     }
 
+    function parseStudyClockMinutes(hoursText, minutesText = "0") {
+      const hours = Number(hoursText);
+      const minutes = Number(minutesText || 0);
+      if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return null;
+      if (hours === 24 && minutes === 0) return 24 * 60;
+      if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) return null;
+      return (hours * 60) + minutes;
+    }
+
     function parseStudyMinutes(value) {
       const text = String(value || "").trim();
       if (!text) return 0;
 
       const rangeMatch = text.match(STUDY_TIME_RANGE_RE);
       if (rangeMatch) {
-        const start = Number(rangeMatch[1]) * 60 + Number(rangeMatch[2]);
-        const end = Number(rangeMatch[3]) * 60 + Number(rangeMatch[4]);
-        return end > start ? end - start : 0;
+        const start = parseStudyClockMinutes(rangeMatch[1], rangeMatch[2]);
+        const end = parseStudyClockMinutes(rangeMatch[3], rangeMatch[4]);
+        if (start === null || end === null) return 0;
+
+        let duration = end - start;
+        if (duration < 0) duration += 24 * 60;
+        return duration > 0 && duration <= 16 * 60 ? duration : 0;
       }
 
       const hourMinuteMatch = text.match(STUDY_HOUR_MINUTE_RE);
@@ -7644,6 +7697,18 @@
 
     function totalDoneStudyMinutes() {
       return buildGlobalTaskStats().doneMinutes;
+    }
+
+    function totalPlannedStudyMinutes() {
+      let total = 0;
+      Object.values(state.tasks).forEach((day) => {
+        TASK_GROUPS.forEach((group) => {
+          (day[group] || []).forEach((item) => {
+            total += parseStudyMinutes(item.time);
+          });
+        });
+      });
+      return total;
     }
 
     function summarizeTaskItems(items) {
@@ -8943,7 +9008,7 @@
                     </div>
                   </div>
                   <input id="addOrder" class="field" type="number" min="1" inputmode="numeric" placeholder="STT" value="${escapeHtml(editingTask && editingTask.date === state.selectedDate ? String(editingTask.index + 1) : String((selectedTaskState.physics || []).length + 1))}" />
-                  <input id="addTime" class="field" placeholder="Giờ: 19:00-21:00" />
+                  <input id="addTime" class="field" placeholder="Giờ: 19:00-21:00 hoặc 1h30" />
                   <input id="addText" class="field" placeholder="Nội dung học: Làm đề, ôn chương, chữa lỗi..." />
                   <input id="addTaskNote" class="field" placeholder="Ghi chú task..." />
                   <button type="button" class="primary-btn" data-action="add-task">Thêm</button>
