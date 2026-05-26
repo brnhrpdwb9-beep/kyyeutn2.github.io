@@ -4800,6 +4800,708 @@
       }
     }
 
+    .lucky-comet-overlay {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 2147483647;
+      isolation: isolate;
+      contain: layout style paint;
+    }
+
+    .lucky-comet-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+    }
+
+    .lucky-comet,
+    .lucky-comet * {
+      pointer-events: none;
+    }
+
+    .lucky-comet {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 0;
+      opacity: 0;
+      will-change: transform, opacity;
+      animation: luckyCometFlight var(--comet-duration, 1400ms) cubic-bezier(.18, .72, .24, 1) var(--comet-delay, 0ms) forwards;
+    }
+
+    .lucky-comet-track {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: var(--comet-length, 190px);
+      height: var(--comet-shell-height, 48px);
+      transform: translate(-100%, -50%) rotate(var(--comet-angle, 0deg)) scale(var(--comet-scale, 1));
+      transform-origin: 100% 50%;
+      overflow: visible;
+      filter: drop-shadow(0 0 16px rgba(255,255,255,0.14));
+      animation: luckyCometPresence var(--comet-duration, 1400ms) ease-out var(--comet-delay, 0ms) forwards;
+    }
+
+    .lucky-comet.support .lucky-comet-track {
+      filter: drop-shadow(0 0 12px rgba(255,255,255,0.1));
+    }
+
+    .lucky-comet-plume,
+    .lucky-comet-glow-tail,
+    .lucky-comet-core-tail,
+    .lucky-comet-ribbon,
+    .lucky-comet-flare,
+    .lucky-comet-head,
+    .lucky-comet-halo,
+    .lucky-comet-crescent,
+    .lucky-comet-bloom,
+    .lucky-comet-dust {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .lucky-comet-plume {
+      left: 0;
+      right: 26px;
+      top: 50%;
+      height: calc(var(--comet-head-size, 16px) * 2.6);
+      transform: translateY(-50%);
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.02) 18%, var(--comet-plume, rgba(125, 211, 252, 0.16)) 64%, rgba(255,255,255,0.12));
+      filter: blur(18px);
+      opacity: 0.92;
+    }
+
+    .lucky-comet-glow-tail {
+      left: 0;
+      right: 20px;
+      top: 50%;
+      height: calc(var(--comet-head-size, 16px) * 1.42);
+      transform: translateY(-50%);
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.06) 14%, var(--comet-tail-soft, rgba(103, 232, 249, 0.46)) 60%, rgba(255,255,255,0.32));
+      filter: blur(10px);
+      opacity: 0.98;
+    }
+
+    .lucky-comet-core-tail {
+      left: 0;
+      right: 18px;
+      top: 50%;
+      height: 3px;
+      transform: translateY(-50%);
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.12) 28%, var(--comet-tail-soft, rgba(103, 232, 249, 0.46)) 56%, var(--comet-tail-strong, rgba(238, 244, 255, 0.96)) 88%, rgba(255,255,255,0.98));
+      box-shadow: 0 0 16px var(--comet-tail-soft, rgba(103, 232, 249, 0.46));
+      opacity: 0.98;
+    }
+
+    .lucky-comet-ribbon {
+      left: 18%;
+      right: 22px;
+      border-radius: 999px;
+      mix-blend-mode: screen;
+      opacity: 0.76;
+    }
+
+    .lucky-comet-ribbon.a {
+      top: 50%;
+      height: calc(var(--comet-head-size, 16px) * 0.42);
+      transform: translateY(calc(-50% - (var(--comet-head-size, 16px) * 0.44))) rotate(-2.5deg) scaleX(0.96);
+      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.02) 18%, color-mix(in srgb, var(--comet-tail-soft, rgba(103,232,249,0.46)) 88%, white) 70%, rgba(255,255,255,0.22));
+      filter: blur(5px);
+    }
+
+    .lucky-comet-ribbon.b {
+      top: 50%;
+      height: calc(var(--comet-head-size, 16px) * 0.34);
+      transform: translateY(calc(-50% + (var(--comet-head-size, 16px) * 0.46))) rotate(2.8deg) scaleX(0.88);
+      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.02) 18%, color-mix(in srgb, var(--comet-tail-soft, rgba(103,232,249,0.46)) 70%, rgba(255,255,255,0.65)) 66%, rgba(255,255,255,0.18));
+      filter: blur(6px);
+      opacity: 0.64;
+    }
+
+    .lucky-comet-flare {
+      right: -12px;
+      top: 50%;
+      width: calc(var(--comet-head-size, 16px) * 2.05);
+      height: calc(var(--comet-head-size, 16px) * 0.22);
+      transform: translate(50%, -50%);
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.95) 52%, rgba(255,255,255,0));
+      filter: blur(1px);
+      opacity: 0.82;
+    }
+
+    .lucky-comet-head {
+      right: -4px;
+      top: 50%;
+      width: var(--comet-head-size, 16px);
+      height: var(--comet-head-size, 16px);
+      transform: translate(50%, -50%);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 28% 28%, rgba(255,255,255,0.98), rgba(255,255,255,0.75) 24%, var(--comet-core, #f8fbff) 48%, var(--comet-core-edge, #9ed7ff) 78%, rgba(255,255,255,0) 100%);
+      box-shadow:
+        0 0 18px var(--comet-core-glow, rgba(255,255,255,0.58)),
+        0 0 34px var(--comet-tail-soft, rgba(103, 232, 249, 0.46)),
+        0 0 54px rgba(255,255,255,0.2);
+    }
+
+    .lucky-comet-head::before,
+    .lucky-comet-head::after {
+      content: "";
+      position: absolute;
+      border-radius: inherit;
+      pointer-events: none;
+    }
+
+    .lucky-comet-head::before {
+      inset: 16%;
+      background:
+        radial-gradient(circle at 30% 28%, rgba(255,255,255,0.98), rgba(255,255,255,0.3) 36%, rgba(255,255,255,0) 62%);
+      filter: blur(1px);
+      opacity: 0.92;
+    }
+
+    .lucky-comet-head::after {
+      inset: -22%;
+      background:
+        radial-gradient(circle, rgba(255,255,255,0.16), rgba(255,255,255,0) 68%);
+      filter: blur(5px);
+      opacity: 0.8;
+    }
+
+    .lucky-comet.rarity-rare .lucky-comet-head,
+    .lucky-comet.rarity-epic .lucky-comet-head,
+    .lucky-comet.rarity-mythic .lucky-comet-head {
+      border-radius: 4px;
+      clip-path: polygon(50% 0%, 92% 34%, 100% 60%, 50% 100%, 0% 60%, 8% 34%);
+    }
+
+    .lucky-comet-halo {
+      display: none;
+      right: -14px;
+      top: 50%;
+      width: calc(var(--comet-head-size, 16px) * 2.7);
+      height: calc(var(--comet-head-size, 16px) * 1.45);
+      transform: translate(50%, -50%) rotate(-12deg);
+      border-radius: 50%;
+      border: 1px solid var(--comet-halo-color, rgba(255,255,255,0.24));
+      border-left-color: rgba(255,255,255,0.72);
+      box-shadow: 0 0 16px rgba(255,255,255,0.12);
+      opacity: 0.74;
+      animation: luckyCometHaloSpin 2.2s linear infinite;
+    }
+
+    .lucky-comet.rarity-epic .lucky-comet-halo,
+    .lucky-comet.rarity-mythic .lucky-comet-halo {
+      display: block;
+    }
+
+    .lucky-comet-crescent {
+      display: none;
+      top: 50%;
+      width: calc(var(--comet-head-size, 16px) * 1.9);
+      height: calc(var(--comet-head-size, 16px) * 0.95);
+      border-radius: 50%;
+      border: 1px solid rgba(240, 249, 255, 0.5);
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      filter: drop-shadow(0 0 8px rgba(167, 243, 255, 0.16));
+      opacity: 0.74;
+    }
+
+    .lucky-comet.rarity-mythic .lucky-comet-crescent {
+      display: block;
+    }
+
+    .lucky-comet-crescent.a {
+      right: -10px;
+      transform: translate(50%, -145%) rotate(-22deg);
+    }
+
+    .lucky-comet-crescent.b {
+      right: -10px;
+      transform: translate(50%, 35%) rotate(156deg);
+    }
+
+    .lucky-comet-bloom {
+      display: none;
+      right: -10px;
+      top: 50%;
+      width: calc(var(--comet-head-size, 16px) * 4.8);
+      height: calc(var(--comet-head-size, 16px) * 4.8);
+      transform: translate(50%, -50%) scale(0.24);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, var(--comet-bloom-color, rgba(255,255,255,0.55)), rgba(255,255,255,0.1) 44%, rgba(255,255,255,0) 74%);
+      filter: blur(2px);
+      opacity: 0;
+      animation: luckyCometBloomPulse var(--comet-duration, 1400ms) ease-out var(--comet-delay, 0ms) forwards;
+    }
+
+    .lucky-comet.rarity-mythic .lucky-comet-bloom {
+      display: block;
+    }
+
+    .lucky-comet-dust {
+      width: var(--dust-size, 4px);
+      height: var(--dust-size, 4px);
+      border-radius: 50%;
+      background: var(--comet-dust-color, #d9f0ff);
+      box-shadow: 0 0 10px rgba(255,255,255,0.18);
+      opacity: 0.72;
+      animation: luckyCometDustPulse 760ms ease-in-out infinite alternate;
+    }
+
+    .lucky-comet-dust.crystal {
+      border-radius: 3px;
+      transform: rotate(45deg);
+      box-shadow: 0 0 12px rgba(255,255,255,0.2);
+    }
+
+    .lucky-comet.rarity-common .lucky-comet-dust.crystal,
+    .lucky-comet.rarity-uncommon .lucky-comet-dust.crystal {
+      display: none;
+    }
+
+    .lucky-comet-dust.d1 { right: 32%; top: 32%; --dust-size: 4px; animation-delay: 24ms; }
+    .lucky-comet-dust.d2 { right: 42%; top: 58%; --dust-size: 3px; animation-delay: 84ms; }
+    .lucky-comet-dust.d3 { right: 56%; top: 38%; --dust-size: 3px; animation-delay: 132ms; }
+    .lucky-comet-dust.d4 { right: 67%; top: 64%; --dust-size: 5px; animation-delay: 188ms; }
+    .lucky-comet-dust.d5 { right: 78%; top: 45%; --dust-size: 3px; animation-delay: 230ms; }
+
+    .lucky-comet-caption {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03)),
+        rgba(8, 13, 28, 0.62);
+      color: #eff8ff;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      text-shadow: 0 0 12px rgba(255,255,255,0.08);
+      box-shadow:
+        0 12px 26px rgba(0,0,0,0.18),
+        0 0 18px var(--comet-label-tone, rgba(184, 232, 255, 0.18));
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      opacity: 0;
+      animation: luckyCometCaptionFloat var(--comet-duration, 1400ms) ease var(--comet-delay, 0ms) forwards;
+      transform: translate3d(-50%, -50%, 0);
+    }
+
+    .lucky-comet-caption.rare {
+      border-color: rgba(190, 199, 222, 0.22);
+      color: #e6edf7;
+    }
+
+    .lucky-comet-caption.epic {
+      border-color: rgba(218, 197, 158, 0.24);
+      color: #f4ead7;
+    }
+
+    .lucky-comet-caption.mythic {
+      border-color: rgba(199, 214, 229, 0.26);
+      color: #f6f4ec;
+    }
+
+    @keyframes luckyCometFlight {
+      0% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0) scale(0.94);
+      }
+      12% {
+        opacity: 0.92;
+      }
+      22%,
+      64% {
+        opacity: 1;
+      }
+      82% {
+        opacity: 0.58;
+      }
+      100% {
+        opacity: 0;
+        transform: translate3d(var(--comet-dx, 0px), var(--comet-dy, 0px), 0) scale(1.05);
+      }
+    }
+
+    @keyframes luckyCometPresence {
+      0% {
+        opacity: 0;
+        filter: drop-shadow(0 0 8px rgba(255,255,255,0.08));
+      }
+      18% {
+        opacity: 1;
+      }
+      66% {
+        opacity: 1;
+        filter: drop-shadow(0 0 18px rgba(255,255,255,0.18));
+      }
+      100% {
+        opacity: 0;
+        filter: drop-shadow(0 0 30px rgba(255,255,255,0.12)) blur(1px);
+      }
+    }
+
+    @keyframes luckyCometDustPulse {
+      0% {
+        opacity: 0.24;
+        transform: scale(0.72);
+      }
+      100% {
+        opacity: 0.84;
+        transform: scale(1.14);
+      }
+    }
+
+    @keyframes luckyCometHaloSpin {
+      from {
+        transform: translate(50%, -50%) rotate(-12deg);
+      }
+      to {
+        transform: translate(50%, -50%) rotate(348deg);
+      }
+    }
+
+    @keyframes luckyCometBloomPulse {
+      0%,
+      74% {
+        opacity: 0;
+        transform: translate(50%, -50%) scale(0.24);
+      }
+      88% {
+        opacity: 0.72;
+        transform: translate(50%, -50%) scale(0.94);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(50%, -50%) scale(1.36);
+      }
+    }
+
+    @keyframes luckyCometCaptionFloat {
+      0% {
+        opacity: 0;
+        transform: translate3d(-50%, -42%, 0) scale(0.96);
+      }
+      12%,
+      74% {
+        opacity: 0.98;
+        transform: translate3d(-50%, -54%, 0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate3d(-50%, -64%, 0) scale(0.98);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .lucky-comet-dust,
+      .lucky-comet-halo,
+      .lucky-comet-bloom,
+      .lucky-comet-caption {
+        animation-duration: 440ms !important;
+      }
+
+      .lucky-comet-dust,
+      .lucky-comet-halo {
+        animation-iteration-count: 1 !important;
+      }
+    }
+
+    /* Lucky Comet redesign: gemstone head, layered comet blade and soft dissolve. */
+    .lucky-comet-track {
+      width: var(--comet-length, 300px);
+      height: var(--comet-shell-height, 86px);
+      transform: translate(-100%, -50%) rotate(var(--comet-angle, 0deg)) scale(var(--comet-scale, 1));
+      filter:
+        drop-shadow(0 0 14px var(--comet-tail-soft, rgba(103, 232, 249, 0.38)))
+        drop-shadow(0 0 24px rgba(255,255,255,0.08));
+      animation: luckyCometPresence var(--comet-duration, 1800ms) cubic-bezier(.2, .76, .24, 1) var(--comet-delay, 0ms) forwards;
+    }
+
+    .lucky-comet-atmosphere,
+    .lucky-comet-wake,
+    .lucky-comet-sheet,
+    .lucky-comet-spine,
+    .lucky-comet-star,
+    .lucky-comet-shard {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .lucky-comet-atmosphere {
+      left: 0;
+      right: calc(var(--comet-head-size, 24px) * .45);
+      top: 50%;
+      height: 120%;
+      transform: translateY(-50%);
+      clip-path: polygon(0 48%, 10% 38%, 45% 24%, 80% 18%, 100% 50%, 80% 82%, 45% 76%, 10% 62%);
+      background:
+        radial-gradient(ellipse at 92% 50%, var(--comet-core-glow, rgba(255,255,255,.45)), transparent 28%),
+        linear-gradient(90deg, rgba(255,255,255,0), var(--comet-plume, rgba(125,211,252,.18)) 56%, rgba(255,255,255,.13));
+      filter: blur(18px);
+      opacity: .82;
+      mix-blend-mode: screen;
+    }
+
+    .lucky-comet-wake {
+      left: 4%;
+      right: calc(var(--comet-head-size, 24px) * .7);
+      top: 50%;
+      border-radius: 999px;
+      mix-blend-mode: screen;
+      transform-origin: 100% 50%;
+    }
+
+    .lucky-comet-wake.far {
+      height: calc(var(--comet-head-size, 24px) * 2.35);
+      transform: translateY(-50%) skewX(-11deg);
+      clip-path: polygon(0 50%, 12% 36%, 48% 18%, 88% 22%, 100% 50%, 88% 78%, 48% 82%, 12% 64%);
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.03) 18%, var(--comet-tail-soft, rgba(103,232,249,.44)) 64%, rgba(255,255,255,.24)),
+        radial-gradient(ellipse at 84% 50%, var(--comet-core-edge, #a5f3fc), transparent 42%);
+      filter: blur(12px);
+      opacity: .72;
+    }
+
+    .lucky-comet-wake.near {
+      left: 16%;
+      height: calc(var(--comet-head-size, 24px) * 1.28);
+      transform: translateY(-50%) skewX(-7deg);
+      clip-path: polygon(0 50%, 12% 34%, 54% 20%, 92% 28%, 100% 50%, 92% 72%, 54% 80%, 12% 66%);
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.08) 24%, var(--comet-tail-soft, rgba(103,232,249,.46)) 62%, var(--comet-tail-strong, rgba(238,244,255,.96)) 92%);
+      filter: blur(5px);
+      opacity: .9;
+    }
+
+    .lucky-comet-sheet {
+      left: 24%;
+      right: calc(var(--comet-head-size, 24px) * .95);
+      height: calc(var(--comet-head-size, 24px) * .38);
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,255,255,0), color-mix(in srgb, var(--comet-tail-soft, rgba(103,232,249,.46)) 74%, white) 66%, rgba(255,255,255,.42));
+      filter: blur(4px);
+      opacity: .78;
+      mix-blend-mode: screen;
+    }
+
+    .lucky-comet-sheet.upper {
+      top: 27%;
+      transform: rotate(-5deg) scaleX(.94);
+    }
+
+    .lucky-comet-sheet.lower {
+      bottom: 27%;
+      transform: rotate(5deg) scaleX(.82);
+      opacity: .52;
+    }
+
+    .lucky-comet-spine {
+      left: 12%;
+      right: calc(var(--comet-head-size, 24px) * .54);
+      top: 50%;
+      height: 3px;
+      transform: translateY(-50%);
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.18) 26%, var(--comet-tail-soft, rgba(103,232,249,.44)) 58%, var(--comet-tail-strong, rgba(238,244,255,.98)) 88%, #fff);
+      box-shadow:
+        0 0 13px var(--comet-tail-soft, rgba(103,232,249,.38)),
+        0 0 2px rgba(255,255,255,.9);
+    }
+
+    .lucky-comet-head {
+      right: 0;
+      top: 50%;
+      width: calc(var(--comet-head-size, 24px) * 2.05);
+      height: calc(var(--comet-head-size, 24px) * 1.36);
+      transform: translate(42%, -50%);
+      border-radius: 50%;
+      clip-path: polygon(0 50%, 18% 16%, 58% 3%, 100% 50%, 58% 97%, 18% 84%);
+      background:
+        radial-gradient(circle at 74% 44%, #fff 0 10%, rgba(255,255,255,.66) 11% 20%, transparent 21%),
+        radial-gradient(circle at 38% 30%, rgba(255,255,255,.92), rgba(255,255,255,.2) 28%, transparent 48%),
+        linear-gradient(135deg, #fff, var(--comet-core, #f8fbff) 28%, var(--comet-core-edge, #9ed7ff) 68%, rgba(255,255,255,.5));
+      box-shadow:
+        inset -8px -7px 14px rgba(8,13,28,.22),
+        inset 7px 6px 12px rgba(255,255,255,.42),
+        0 0 18px rgba(255,255,255,.72),
+        0 0 36px var(--comet-tail-soft, rgba(103,232,249,.46)),
+        0 0 60px rgba(255,255,255,.16);
+    }
+
+    .lucky-comet.rarity-rare .lucky-comet-head,
+    .lucky-comet.rarity-epic .lucky-comet-head,
+    .lucky-comet.rarity-mythic .lucky-comet-head {
+      border-radius: 50%;
+      clip-path: polygon(0 50%, 18% 16%, 58% 3%, 100% 50%, 58% 97%, 18% 84%);
+    }
+
+    .lucky-comet-head::before {
+      inset: 18% 20% 18% 24%;
+      border-radius: 999px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,255,255,.08)),
+        radial-gradient(circle at 28% 24%, #fff, transparent 38%);
+      filter: blur(.4px);
+      transform: rotate(-12deg);
+      opacity: .88;
+    }
+
+    .lucky-comet-head::after {
+      inset: -36%;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, var(--comet-core-glow, rgba(255,255,255,.42)), transparent 64%);
+      filter: blur(8px);
+      opacity: .72;
+    }
+
+    .lucky-comet-flare {
+      right: calc(var(--comet-head-size, 24px) * -.42);
+      top: 50%;
+      width: calc(var(--comet-head-size, 24px) * 2.9);
+      height: 2px;
+      transform: translate(50%, -50%);
+      border-radius: 999px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.96), transparent);
+      filter: blur(.6px);
+      opacity: .7;
+    }
+
+    .lucky-comet-flare::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 2px;
+      height: calc(var(--comet-head-size, 24px) * 1.95);
+      transform: translate(-50%, -50%);
+      border-radius: 999px;
+      background: linear-gradient(180deg, transparent, rgba(255,255,255,.8), transparent);
+    }
+
+    .lucky-comet-halo {
+      right: calc(var(--comet-head-size, 24px) * -.22);
+      width: calc(var(--comet-head-size, 24px) * 3.18);
+      height: calc(var(--comet-head-size, 24px) * 1.46);
+      border-color: var(--comet-halo-color, rgba(255,255,255,.24));
+      border-right-color: transparent;
+      border-bottom-color: rgba(255,255,255,.07);
+      opacity: .66;
+    }
+
+    .lucky-comet-crescent {
+      width: calc(var(--comet-head-size, 24px) * 2.25);
+      height: calc(var(--comet-head-size, 24px) * 1.2);
+      border-width: 1.5px;
+      opacity: .72;
+    }
+
+    .lucky-comet-crescent.a {
+      right: calc(var(--comet-head-size, 24px) * -.15);
+      transform: translate(54%, -142%) rotate(-26deg);
+    }
+
+    .lucky-comet-crescent.b {
+      right: calc(var(--comet-head-size, 24px) * -.15);
+      transform: translate(54%, 34%) rotate(154deg);
+    }
+
+    .lucky-comet-bloom {
+      right: calc(var(--comet-head-size, 24px) * -.12);
+      width: calc(var(--comet-head-size, 24px) * 5.8);
+      height: calc(var(--comet-head-size, 24px) * 5.8);
+      background:
+        radial-gradient(circle, var(--comet-bloom-color, rgba(255,255,255,.48)), rgba(255,255,255,.11) 42%, transparent 70%),
+        conic-gradient(from 0deg, transparent, rgba(255,255,255,.24), transparent, rgba(255,255,255,.16), transparent);
+    }
+
+    .lucky-comet-star {
+      width: var(--star-size, 4px);
+      height: var(--star-size, 4px);
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 10px var(--comet-tail-soft, rgba(103,232,249,.46));
+      opacity: .68;
+      animation: luckyCometDustPulse 720ms ease-in-out infinite alternate;
+    }
+
+    .lucky-comet-star.s1 { right: 26%; top: 18%; --star-size: 4px; animation-delay: 20ms; }
+    .lucky-comet-star.s2 { right: 42%; top: 78%; --star-size: 3px; animation-delay: 120ms; }
+    .lucky-comet-star.s3 { right: 58%; top: 24%; --star-size: 5px; animation-delay: 180ms; }
+    .lucky-comet-star.s4 { right: 74%; top: 68%; --star-size: 3px; animation-delay: 260ms; }
+
+    .lucky-comet-shard {
+      width: var(--shard-size, 5px);
+      height: var(--shard-size, 5px);
+      background: var(--comet-dust-color, #d9f0ff);
+      clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+      box-shadow: 0 0 12px rgba(255,255,255,.18);
+      opacity: .62;
+      transform: rotate(45deg);
+      animation: luckyCometDustPulse 900ms ease-in-out infinite alternate;
+    }
+
+    .lucky-comet-shard.k1 { right: 35%; top: 30%; --shard-size: 5px; animation-delay: 80ms; }
+    .lucky-comet-shard.k2 { right: 64%; top: 58%; --shard-size: 4px; animation-delay: 210ms; }
+    .lucky-comet.rarity-common .lucky-comet-shard,
+    .lucky-comet.rarity-uncommon .lucky-comet-shard {
+      display: none;
+    }
+
+    .lucky-comet-dust {
+      background: transparent;
+      box-shadow: none;
+      opacity: 0;
+      animation: none;
+    }
+
+    .lucky-comet.rarity-mythic .lucky-comet-atmosphere {
+      filter: blur(20px) saturate(1.18);
+      opacity: .95;
+    }
+
+    .lucky-comet.rarity-mythic .lucky-comet-wake.far,
+    .lucky-comet.rarity-epic .lucky-comet-wake.far {
+      opacity: .86;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .lucky-comet-track {
+        animation-duration: 560ms !important;
+      }
+
+      .lucky-comet-star,
+      .lucky-comet-shard {
+        animation-iteration-count: 1 !important;
+      }
+    }
 
 </style>
 </head>
@@ -4890,6 +5592,7 @@
   </div>
 
   <div class="app" id="app"></div>
+  <div class="lucky-comet-overlay" id="luckyCometOverlay" aria-hidden="true"></div>
 
   <script>
     function buildScheduleRange(startYear, startMonth, startDay, endYear, endMonth, endDay) {
@@ -5019,6 +5722,120 @@
         emptyHint: "Gợi ý: ghi nguyên nhân sai và cách né bẫy trong lần làm sau."
       }
     };
+    const LUCKY_COMET_RARITIES = [
+      {
+        key: "common",
+        weight: 42,
+        label: "",
+        clusterChance: 0,
+        clusterSize: 1,
+        durationRange: [4300, 5400],
+        scale: 1,
+        length: 300,
+        shellHeight: 58,
+        headSize: 24,
+        core: "#f5f7fb",
+        coreEdge: "#9dacbd",
+        tailStrong: "rgba(232, 239, 247, 0.88)",
+        tailSoft: "rgba(150, 168, 188, 0.34)",
+        plume: "rgba(61, 72, 88, 0.15)",
+        dust: "#d4dee9",
+        halo: "rgba(197, 208, 222, 0.22)",
+        bloom: "rgba(223, 231, 240, 0.26)",
+        labelTone: "rgba(203, 213, 225, 0.14)"
+      },
+      {
+        key: "uncommon",
+        weight: 20,
+        label: "",
+        clusterChance: 8,
+        clusterSize: 2,
+        durationRange: [4300, 5400],
+        scale: 1.04,
+        length: 340,
+        shellHeight: 64,
+        headSize: 29,
+        core: "#edf8f5",
+        coreEdge: "#7fb5ad",
+        tailStrong: "rgba(225, 243, 238, 0.9)",
+        tailSoft: "rgba(63, 132, 129, 0.36)",
+        plume: "rgba(15, 67, 70, 0.15)",
+        dust: "#bfdfd8",
+        halo: "rgba(127, 181, 173, 0.24)",
+        bloom: "rgba(184, 219, 211, 0.26)",
+        labelTone: "rgba(139, 201, 192, 0.14)"
+      },
+      {
+        key: "rare",
+        weight: 22,
+        label: "Rare Comet",
+        clusterChance: 18,
+        clusterSize: 3,
+        durationRange: [4300, 5400],
+        scale: 1.08,
+        length: 390,
+        shellHeight: 72,
+        headSize: 34,
+        core: "#eef2fa",
+        coreEdge: "#99a6c1",
+        tailStrong: "rgba(231, 237, 247, 0.92)",
+        tailSoft: "rgba(112, 124, 157, 0.36)",
+        plume: "rgba(55, 68, 100, 0.15)",
+        dust: "#d3daea",
+        halo: "rgba(169, 179, 207, 0.25)",
+        bloom: "rgba(202, 211, 229, 0.28)",
+        labelTone: "rgba(181, 190, 216, 0.16)"
+      },
+      {
+        key: "epic",
+        weight: 11,
+        label: "Epic Comet",
+        clusterChance: 32,
+        clusterSize: 4,
+        durationRange: [4300, 5400],
+        scale: 1.12,
+        length: 420,
+        shellHeight: 82,
+        headSize: 36,
+        core: "#fffaf0",
+        coreEdge: "#d6c29a",
+        tailStrong: "rgba(252, 246, 232, 0.92)",
+        tailSoft: "rgba(181, 155, 105, 0.38)",
+        plume: "rgba(91, 107, 127, 0.14)",
+        dust: "#eadfc7",
+        halo: "rgba(218, 197, 158, 0.28)",
+        bloom: "rgba(239, 224, 191, 0.32)",
+        labelTone: "rgba(218, 197, 158, 0.16)"
+      },
+      {
+        key: "mythic",
+        weight: 5,
+        label: "Mythic Comet",
+        clusterChance: 48,
+        clusterSize: 5,
+        durationRange: [4300, 5400],
+        scale: 1.16,
+        length: 470,
+        shellHeight: 92,
+        headSize: 42,
+        core: "#fffaf1",
+        coreEdge: "#bfcbd8",
+        tailStrong: "rgba(250, 246, 235, 0.94)",
+        tailSoft: "rgba(128, 132, 164, 0.38)",
+        plume: "rgba(69, 112, 130, 0.16)",
+        dust: "#e2ded6",
+        halo: "rgba(190, 205, 224, 0.3)",
+        bloom: "rgba(230, 222, 203, 0.34)",
+        labelTone: "rgba(199, 214, 229, 0.18)"
+      }
+    ];
+    const LUCKY_COMET_RARITY_MAP = Object.fromEntries(LUCKY_COMET_RARITIES.map((item) => [item.key, item]));
+    const LUCKY_COMET_FORMATION_POOL = {
+      uncommon: ["arrow", "twin"],
+      rare: ["arrow", "twin", "spiral"],
+      epic: ["arrow", "crescent", "spiral", "twin"],
+      mythic: ["arrow", "crescent", "spiral", "twin"]
+    };
 
     const app = document.getElementById("app");
     let flagBurstTimer = 0;
@@ -5031,6 +5848,14 @@
     let searchInputTimer = 0;
     let importStatus = { type: "", message: "" };
     let editingTask = null;
+    let luckyCometCooldownUntil = 0;
+    let luckyClusterActive = false;
+    let luckyCometTimers = new Set();
+    let luckyCometFrames = new Set();
+    let luckyCometPointer = {
+      x: window.innerWidth ? window.innerWidth / 2 : 640,
+      y: window.innerHeight ? Math.min(window.innerHeight * 0.42, 360) : 320
+    };
 
     function clone(value) {
       if (typeof structuredClone === "function") return structuredClone(value);
@@ -5311,6 +6136,1090 @@
       planet.style.setProperty("--planet-glow-b", palette.glowB);
       planet.style.setProperty("--planet-band", palette.band);
       planet.setAttribute("data-planet-palette", palette.name);
+    }
+
+    function sampleBetween(min, max) {
+      return min + (Math.random() * (max - min));
+    }
+
+    function clampNumber(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function normalizeLuckyCometPointer(point) {
+      const width = window.innerWidth || document.documentElement.clientWidth || 1280;
+      const height = window.innerHeight || document.documentElement.clientHeight || 720;
+      const x = Number(point && point.x);
+      const y = Number(point && point.y);
+
+      return {
+        x: clampNumber(Number.isFinite(x) ? x : luckyCometPointer.x, 18, Math.max(18, width - 18)),
+        y: clampNumber(Number.isFinite(y) ? y : luckyCometPointer.y, 18, Math.max(18, height - 18))
+      };
+    }
+
+    function rememberLuckyCometPointer(event) {
+      if (event && Number.isFinite(event.clientX) && Number.isFinite(event.clientY)) {
+        luckyCometPointer = normalizeLuckyCometPointer({ x: event.clientX, y: event.clientY });
+      }
+      return luckyCometPointer;
+    }
+
+    function resolveLuckyCometCaptionPoint(anchor) {
+      const width = window.innerWidth || document.documentElement.clientWidth || 1280;
+      const height = window.innerHeight || document.documentElement.clientHeight || 720;
+      const point = normalizeLuckyCometPointer(anchor || luckyCometPointer);
+      const side = point.x > width - 210 ? -1 : 1;
+      const vertical = point.y < 92 ? 1 : -1;
+
+      return {
+        x: clampNumber(point.x + (side * 92), 84, Math.max(84, width - 84)),
+        y: clampNumber(point.y + (vertical * 42), 44, Math.max(44, height - 44))
+      };
+    }
+
+    function pickLuckyCometRarity() {
+      const roll = Math.random() * 100;
+      let total = 0;
+
+      for (const rarity of LUCKY_COMET_RARITIES) {
+        total += rarity.weight;
+        if (roll < total) return rarity;
+      }
+
+      return LUCKY_COMET_RARITIES[0];
+    }
+
+    function pickLuckyCometFormation(rarityKey) {
+      const pool = LUCKY_COMET_FORMATION_POOL[rarityKey] || ["arrow"];
+      return pool[Math.floor(Math.random() * pool.length)] || "arrow";
+    }
+
+    function prefersReducedMotionLuckyComet() {
+      return typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    }
+
+    function ensureLuckyCometOverlay() {
+      const existing = document.getElementById("luckyCometOverlay");
+      if (existing) return existing;
+
+      const overlay = document.createElement("div");
+      overlay.id = "luckyCometOverlay";
+      overlay.className = "lucky-comet-overlay";
+      overlay.setAttribute("aria-hidden", "true");
+      document.body.appendChild(overlay);
+      return overlay;
+    }
+
+    function setLuckyCometTimer(callback, delay) {
+      const timer = window.setTimeout(() => {
+        luckyCometTimers.delete(timer);
+        callback();
+      }, delay);
+      luckyCometTimers.add(timer);
+      return timer;
+    }
+
+    function clearLuckyCometEffects() {
+      luckyCometTimers.forEach((timer) => clearTimeout(timer));
+      luckyCometTimers.clear();
+      luckyCometFrames.forEach((frameId) => cancelAnimationFrame(frameId));
+      luckyCometFrames.clear();
+      luckyCometCooldownUntil = 0;
+      luckyClusterActive = false;
+
+      const overlay = document.getElementById("luckyCometOverlay");
+      if (overlay) overlay.replaceChildren();
+    }
+
+    function clearLuckyCometVisualLayer() {
+      luckyCometFrames.forEach((frameId) => cancelAnimationFrame(frameId));
+      luckyCometFrames.clear();
+
+      const overlay = document.getElementById("luckyCometOverlay");
+      if (overlay) overlay.replaceChildren();
+    }
+
+    function buildLuckyCometRoute(reducedMotion = false) {
+      const width = Math.max(window.innerWidth || 0, 960);
+      const height = Math.max(window.innerHeight || 0, 640);
+      const fromLeft = Math.random() < 0.5;
+
+      let startX;
+      let startY;
+      let endX;
+      let endY;
+
+      if (reducedMotion) {
+        startY = sampleBetween(height * 0.14, Math.min(height * 0.26, 190));
+        startX = fromLeft
+          ? sampleBetween(width * 0.18, width * 0.28)
+          : sampleBetween(width * 0.72, width * 0.82);
+        endX = startX + (fromLeft ? 1 : -1) * sampleBetween(92, 152);
+        endY = startY + sampleBetween(46, 88);
+      } else {
+        const entryPad = sampleBetween(180, 320);
+        const exitPad = sampleBetween(620, 760);
+        startY = sampleBetween(-70, Math.min(height * 0.1, 80));
+        startX = fromLeft
+          ? -entryPad
+          : width + entryPad;
+        endX = fromLeft
+          ? width + exitPad
+          : -exitPad;
+        endY = sampleBetween(height * 0.54, height + 120);
+      }
+
+      const dx = endX - startX;
+      const dy = endY - startY;
+      const length = Math.hypot(dx, dy) || 1;
+
+      return {
+        startX,
+        startY,
+        endX,
+        endY,
+        dx,
+        dy,
+        fromLeft,
+        angle: Math.atan2(dy, dx) * (180 / Math.PI),
+        unitX: dx / length,
+        unitY: dy / length,
+        perpX: -dy / length,
+        perpY: dx / length
+      };
+    }
+
+    function projectLuckyCometOffset(route, back = 0, side = 0) {
+      return {
+        x: (route.unitX * back) + (route.perpX * side),
+        y: (route.unitY * back) + (route.perpY * side)
+      };
+    }
+
+    function getLuckyCometSlots(formation, count) {
+      const safeCount = Math.max(1, Math.min(count, 5));
+      const main = { main: true, back: 0, side: 0, endBack: 0, endSide: 0, scale: 1, delay: 0 };
+      if (safeCount === 1) return [main];
+
+      const slots = [main];
+      const totalSubs = safeCount - 1;
+
+      if (formation === "twin") {
+        for (let index = 0; index < totalSubs; index += 1) {
+          const wave = Math.ceil((index + 1) / 2);
+          const side = (index % 2 === 0 ? 48 : -48) * wave;
+          slots.push({
+            back: -92 - (index * 68),
+            side,
+            endBack: -66 - (index * 56),
+            endSide: side * 0.5,
+            scale: Math.max(0.58, 0.78 - (index * 0.055)),
+            delay: 92 + (index * 86)
+          });
+        }
+        return slots;
+      }
+
+      if (formation === "crescent") {
+        const sideSets = {
+          2: [54],
+          3: [-58, 62],
+          4: [-72, 18, 78],
+          5: [-82, -34, 34, 86]
+        };
+        const sides = sideSets[safeCount] || sideSets[5];
+        sides.slice(0, totalSubs).forEach((side, index) => {
+          slots.push({
+            back: -78 - (index * 56),
+            side,
+            endBack: -52 - (index * 42),
+            endSide: side * 0.38,
+            scale: Math.max(0.58, 0.8 - (index * 0.05)),
+            delay: 84 + (index * 82)
+          });
+        });
+        return slots;
+      }
+
+      if (formation === "spiral") {
+        for (let index = 0; index < totalSubs; index += 1) {
+          const wave = index + 1;
+          const side = (index % 2 === 0 ? 58 : -50) * wave * 0.7;
+          slots.push({
+            back: -86 - (index * 64),
+            side,
+            endBack: -48 - (index * 48),
+            endSide: side * -0.34,
+            scale: Math.max(0.56, 0.78 - (index * 0.05)),
+            delay: 96 + (index * 78)
+          });
+        }
+        return slots;
+      }
+
+      for (let index = 0; index < totalSubs; index += 1) {
+        const wave = Math.ceil((index + 1) / 2);
+        const side = (index % 2 === 0 ? -42 : 42) * wave;
+        slots.push({
+          back: -84 - (index * 62),
+          side,
+          endBack: -58 - (index * 48),
+          endSide: side * 0.42,
+          scale: Math.max(0.58, 0.78 - (index * 0.055)),
+          delay: 82 + (index * 78)
+        });
+      }
+      return slots;
+    }
+
+    function createLuckyCometCaption({ rarity, x, y, delayMs, durationMs }) {
+      if (!rarity.label) return null;
+
+      const caption = document.createElement("div");
+      caption.className = `lucky-comet-caption ${rarity.key}`;
+      caption.setAttribute("aria-hidden", "true");
+      caption.textContent = rarity.label;
+      caption.style.left = `${x}px`;
+      caption.style.top = `${y}px`;
+      caption.style.setProperty("--comet-duration", `${durationMs}ms`);
+      caption.style.setProperty("--comet-delay", `${delayMs}ms`);
+      caption.style.setProperty("--comet-label-tone", rarity.labelTone);
+      caption.addEventListener("animationend", () => {
+        caption.remove();
+      });
+      return caption;
+    }
+
+    function easeLuckyComet(value) {
+      const safeValue = clampNumber(value, 0, 1);
+      return (safeValue * safeValue) * (3 - (2 * safeValue));
+    }
+
+    function fitLuckyCometCanvas(canvas) {
+      const width = window.innerWidth || document.documentElement.clientWidth || 1280;
+      const height = window.innerHeight || document.documentElement.clientHeight || 720;
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = Math.ceil(width * ratio);
+      canvas.height = Math.ceil(height * ratio);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      return { ctx, width, height, ratio };
+    }
+
+    function getLuckyCometTone(rarity) {
+      const toneMap = {
+        common: {
+          core: "#f5f7fb",
+          rim: "#9dacbd",
+          accent: "#c6d0dc",
+          mid: "#728294",
+          deep: "#273342",
+          glint: "rgba(252,253,255,0.82)",
+          facet: "rgba(226,233,241,0.18)",
+          warm: "rgba(222,230,240,0.46)",
+          trail: "rgba(150,168,188,0.34)",
+          wake: "rgba(61,72,88,0.15)",
+          shadow: "rgba(6,10,18,0.44)"
+        },
+        uncommon: {
+          core: "#edf8f5",
+          rim: "#7fb5ad",
+          accent: "#abc9c3",
+          mid: "#4f8d88",
+          deep: "#1b4547",
+          glint: "rgba(244,255,251,0.82)",
+          facet: "rgba(198,230,224,0.2)",
+          warm: "rgba(184,219,211,0.46)",
+          trail: "rgba(63,132,129,0.36)",
+          wake: "rgba(15,67,70,0.15)",
+          shadow: "rgba(4,22,28,0.44)"
+        },
+        rare: {
+          core: "#eef2fa",
+          rim: "#99a6c1",
+          accent: "#a79fba",
+          mid: "#66718e",
+          deep: "#30384f",
+          glint: "rgba(249,251,255,0.84)",
+          facet: "rgba(216,224,239,0.24)",
+          warm: "rgba(204,213,230,0.5)",
+          trail: "rgba(112,124,157,0.36)",
+          wake: "rgba(55,68,100,0.15)",
+          shadow: "rgba(9,12,22,0.46)"
+        },
+        epic: {
+          core: "#fffaf0",
+          rim: "#d6c29a",
+          accent: "#eadfc7",
+          glint: "rgba(255,252,244,0.82)",
+          facet: "rgba(247,235,210,0.2)",
+          warm: "rgba(232,215,178,0.54)",
+          trail: "rgba(181,155,105,0.38)",
+          wake: "rgba(91,107,127,0.14)",
+          shadow: "rgba(45,36,24,0.38)"
+        },
+        mythic: {
+          core: "#fffaf1",
+          rim: "#bfcbd8",
+          accent: "#aaa8cc",
+          mid: "#7e819e",
+          deep: "#29293e",
+          glint: "rgba(255,253,247,0.88)",
+          facet: "rgba(229,236,246,0.22)",
+          warm: "rgba(234,225,204,0.54)",
+          trail: "rgba(128,132,164,0.38)",
+          wake: "rgba(69,112,130,0.16)",
+          shadow: "rgba(16,16,30,0.48)"
+        }
+      };
+      return toneMap[rarity.key] || toneMap.common;
+    }
+
+    function createLuckyCometParticles(count, scale) {
+      return Array.from({ length: count }, () => ({
+        trail: sampleBetween(0.08, 1),
+        side: sampleBetween(-1, 1),
+        depth: sampleBetween(0.22, 1),
+        size: sampleBetween(1.1, 4.2) * scale,
+        alpha: sampleBetween(0.22, 0.86),
+        drift: sampleBetween(-14, 14),
+        phase: sampleBetween(0, Math.PI * 2)
+      }));
+    }
+
+    function drawLuckyCometParticles(ctx, comet, tone, progress, fade, radius, tailLength) {
+      const spread = radius * 2.15;
+      const sparkleFade = 1 - clampNumber((progress - 0.7) / 0.3, 0, 1);
+
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      comet.particles.forEach((particle) => {
+        const tailX = -tailLength * particle.trail * (0.68 + (progress * 0.2));
+        const wobble = Math.sin((progress * Math.PI * 2) + particle.phase) * particle.drift;
+        const x = tailX + wobble * 0.25;
+        const y = (particle.side * spread * particle.depth) + (wobble * 0.12);
+        const depthScale = 1.12 - (particle.depth * 0.46);
+        const raritySoftness = comet.rarityKey === "rare" ? 0.74 : 0.84;
+        const alpha = particle.alpha * fade * sparkleFade * (0.28 + (0.42 * particle.depth)) * raritySoftness;
+        const size = particle.size * depthScale;
+
+        if (alpha <= 0.02) return;
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = particle.depth > 0.72 ? tone.glint || tone.core : tone.accent || tone.rim;
+        ctx.beginPath();
+        if (particle.depth > 0.82 && comet.rarityKey !== "common") {
+          ctx.moveTo(x, y - size);
+          ctx.lineTo(x + size, y);
+          ctx.lineTo(x, y + size);
+          ctx.lineTo(x - size, y);
+          ctx.closePath();
+        } else {
+          ctx.arc(x, y, size, 0, Math.PI * 2);
+        }
+        ctx.fill();
+      });
+      ctx.restore();
+    }
+
+    function traceLuckyCometStone(ctx, radius, variant = "common") {
+      ctx.beginPath();
+
+      if (variant === "uncommon") {
+        ctx.moveTo(-radius * 1.28, radius * 0.02);
+        ctx.bezierCurveTo(-radius * 0.94, -radius * 0.92, radius * 0.36, -radius * 1.08, radius * 1.38, -radius * 0.36);
+        ctx.bezierCurveTo(radius * 1.86, 0, radius * 1.5, radius * 0.54, radius * 0.54, radius * 0.82);
+        ctx.bezierCurveTo(-radius * 0.44, radius * 0.86, -radius * 1.1, radius * 0.5, -radius * 1.28, radius * 0.02);
+      } else {
+        ctx.moveTo(-radius * 1.34, -radius * 0.08);
+        ctx.lineTo(-radius * 0.78, -radius * 0.66);
+        ctx.quadraticCurveTo(-radius * 0.08, -radius * 0.96, radius * 0.72, -radius * 0.68);
+        ctx.lineTo(radius * 1.5, -radius * 0.18);
+        ctx.quadraticCurveTo(radius * 1.76, radius * 0.14, radius * 1.22, radius * 0.52);
+        ctx.lineTo(radius * 0.24, radius * 0.78);
+        ctx.quadraticCurveTo(-radius * 0.62, radius * 0.64, -radius * 1.34, -radius * 0.08);
+      }
+
+      ctx.closePath();
+    }
+
+    function traceLuckyCometShard(ctx, radius, variant = "rare") {
+      const longNose = variant === "mythic" ? 1.58 : 1.78;
+      const back = variant === "epic" ? 1.04 : 1.42;
+      const top = variant === "epic" ? 0.84 : 0.72;
+      const bottom = variant === "epic" ? 0.78 : 0.72;
+
+      ctx.beginPath();
+      ctx.moveTo(-radius * back, 0);
+      ctx.lineTo(-radius * 0.48, -radius * top);
+      ctx.lineTo(radius * 0.56, -radius * (top * 0.9));
+      ctx.lineTo(radius * longNose, 0);
+      ctx.lineTo(radius * 0.56, radius * (bottom * 0.9));
+      ctx.lineTo(-radius * 0.48, radius * bottom);
+      ctx.closePath();
+    }
+
+    function drawCoreGlint(ctx, x, y, rx, ry, rotation, fade, alpha = 0.72) {
+      ctx.globalAlpha = fade * alpha;
+      ctx.fillStyle = "rgba(255,255,255,0.76)";
+      ctx.beginPath();
+      ctx.ellipse(x, y, rx, ry, rotation, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawCommonCometCore(ctx, radius, tone, progress, fade) {
+      const roll = Math.sin(progress * Math.PI * 0.8) * 0.08;
+      ctx.save();
+      ctx.rotate(roll);
+
+      ctx.globalAlpha = fade * 0.24;
+      ctx.fillStyle = "rgba(0,0,0,0.22)";
+      ctx.beginPath();
+      ctx.ellipse(radius * 0.08, radius * 0.34, radius * 1.36, radius * 0.48, -0.06, 0, Math.PI * 2);
+      ctx.fill();
+
+      const body = ctx.createLinearGradient(-radius * 1.34, -radius * 0.82, radius * 1.52, radius * 0.72);
+      body.addColorStop(0, tone.shadow);
+      body.addColorStop(0.24, tone.deep || tone.mid || tone.rim);
+      body.addColorStop(0.5, tone.mid || tone.rim);
+      body.addColorStop(0.76, tone.core);
+      body.addColorStop(1, tone.glint || "#ffffff");
+
+      ctx.globalAlpha = fade;
+      ctx.fillStyle = body;
+      traceLuckyCometStone(ctx, radius, "common");
+      ctx.fill();
+
+      const bevel = ctx.createLinearGradient(-radius * 0.9, -radius * 0.38, radius * 1.24, radius * 0.72);
+      bevel.addColorStop(0, "rgba(255,255,255,0.06)");
+      bevel.addColorStop(0.42, "rgba(255,255,255,0)");
+      bevel.addColorStop(1, "rgba(2,6,14,0.38)");
+      ctx.globalAlpha = fade * 0.78;
+      ctx.fillStyle = bevel;
+      traceLuckyCometStone(ctx, radius, "common");
+      ctx.fill();
+
+      ctx.globalAlpha = fade * 0.36;
+      ctx.strokeStyle = tone.facet || "rgba(226,233,241,0.18)";
+      ctx.lineWidth = Math.max(1, radius * 0.035);
+      traceLuckyCometStone(ctx, radius, "common");
+      ctx.stroke();
+
+      ctx.globalAlpha = fade * 0.26;
+      ctx.strokeStyle = "rgba(255,255,255,0.2)";
+      ctx.lineWidth = Math.max(1, radius * 0.026);
+      ctx.beginPath();
+      ctx.moveTo(-radius * 0.78, -radius * 0.1);
+      ctx.lineTo(-radius * 0.18, -radius * 0.5);
+      ctx.lineTo(radius * 0.78, -radius * 0.34);
+      ctx.moveTo(-radius * 0.14, -radius * 0.5);
+      ctx.lineTo(radius * 0.18, radius * 0.44);
+      ctx.moveTo(radius * 0.78, -radius * 0.34);
+      ctx.lineTo(radius * 1.24, radius * 0.16);
+      ctx.stroke();
+
+      ctx.globalAlpha = fade * 0.18;
+      ctx.fillStyle = "rgba(3,8,18,0.35)";
+      ctx.beginPath();
+      ctx.ellipse(-radius * 0.34, radius * 0.18, radius * 0.16, radius * 0.09, -0.4, 0, Math.PI * 2);
+      ctx.ellipse(radius * 0.32, radius * 0.26, radius * 0.12, radius * 0.07, 0.22, 0, Math.PI * 2);
+      ctx.fill();
+
+      drawCoreGlint(ctx, radius * 0.6, -radius * 0.28, radius * 0.32, radius * 0.1, -0.18, fade, 0.78);
+
+      ctx.restore();
+    }
+
+    function drawUncommonCometCore(ctx, radius, tone, progress, fade) {
+      const shimmer = 0.78 + (Math.sin(progress * Math.PI) * 0.14);
+      ctx.save();
+
+      ctx.globalAlpha = fade * 0.18 * shimmer;
+      ctx.strokeStyle = tone.facet || "rgba(198,230,224,0.2)";
+      ctx.lineWidth = Math.max(1, radius * 0.04);
+      ctx.beginPath();
+      ctx.ellipse(radius * 0.18, 0, radius * 2.02, radius * 0.7, -0.12, 0, Math.PI * 2);
+      ctx.stroke();
+
+      const glass = ctx.createLinearGradient(-radius * 1.24, -radius * 0.9, radius * 1.56, radius * 0.74);
+      glass.addColorStop(0, tone.shadow);
+      glass.addColorStop(0.22, tone.deep || tone.mid || tone.rim);
+      glass.addColorStop(0.48, tone.mid || tone.rim);
+      glass.addColorStop(0.72, tone.core);
+      glass.addColorStop(1, tone.glint || "#ffffff");
+
+      ctx.globalAlpha = fade * 0.98;
+      ctx.fillStyle = glass;
+      traceLuckyCometStone(ctx, radius, "uncommon");
+      ctx.fill();
+
+      const belly = ctx.createLinearGradient(-radius * 0.98, radius * 0.1, radius * 1.18, radius * 0.56);
+      belly.addColorStop(0, "rgba(0,0,0,0)");
+      belly.addColorStop(0.55, "rgba(8,34,40,0.12)");
+      belly.addColorStop(1, "rgba(2,10,16,0.34)");
+      ctx.globalAlpha = fade * 0.64;
+      ctx.fillStyle = belly;
+      traceLuckyCometStone(ctx, radius, "uncommon");
+      ctx.fill();
+
+      const inner = ctx.createLinearGradient(-radius * 0.9, -radius * 0.16, radius * 1.2, radius * 0.08);
+      inner.addColorStop(0, "rgba(255,255,255,0)");
+      inner.addColorStop(0.28, tone.trail);
+      inner.addColorStop(0.68, "rgba(255,255,255,0.16)");
+      inner.addColorStop(1, "rgba(255,255,255,0.5)");
+      ctx.globalAlpha = fade * 0.44;
+      ctx.fillStyle = inner;
+      ctx.beginPath();
+      ctx.moveTo(-radius * 0.84, radius * 0.02);
+      ctx.bezierCurveTo(-radius * 0.16, -radius * 0.34, radius * 0.78, -radius * 0.22, radius * 1.22, radius * 0.02);
+      ctx.bezierCurveTo(radius * 0.5, radius * 0.24, -radius * 0.24, radius * 0.24, -radius * 0.84, radius * 0.02);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.globalAlpha = fade * 0.58;
+      ctx.strokeStyle = "rgba(242,255,251,0.26)";
+      ctx.lineWidth = Math.max(1, radius * 0.028);
+      ctx.beginPath();
+      ctx.moveTo(-radius * 0.6, -radius * 0.32);
+      ctx.bezierCurveTo(radius * 0.04, -radius * 0.6, radius * 0.84, -radius * 0.44, radius * 1.2, -radius * 0.12);
+      ctx.stroke();
+
+      drawCoreGlint(ctx, radius * 0.68, -radius * 0.34, radius * 0.38, radius * 0.1, -0.22, fade, 0.76);
+
+      ctx.restore();
+    }
+
+    function drawRareCometCore(ctx, radius, tone, progress, fade) {
+      const shimmer = 0.76 + (Math.sin(progress * Math.PI) * 0.16);
+      ctx.save();
+
+      ctx.globalAlpha = fade * 0.22 * shimmer;
+      ctx.strokeStyle = tone.facet || "rgba(220,226,239,0.22)";
+      ctx.lineWidth = Math.max(1, radius * 0.045);
+      ctx.beginPath();
+      ctx.ellipse(radius * 0.14, 0, radius * 2.34, radius * 0.56, -0.14, 0, Math.PI * 2);
+      ctx.stroke();
+
+      const glass = ctx.createLinearGradient(-radius * 1.44, -radius * 0.72, radius * 1.78, radius * 0.66);
+      glass.addColorStop(0, tone.shadow);
+      glass.addColorStop(0.18, tone.deep || tone.rim);
+      glass.addColorStop(0.43, tone.rim);
+      glass.addColorStop(0.68, tone.core);
+      glass.addColorStop(0.9, tone.glint || "#ffffff");
+      glass.addColorStop(1, "rgba(255,255,255,0.72)");
+
+      ctx.globalAlpha = fade * 0.98;
+      ctx.fillStyle = glass;
+      traceLuckyCometShard(ctx, radius, "rare");
+      ctx.fill();
+
+      ctx.globalAlpha = fade * 0.36;
+      ctx.fillStyle = "rgba(2,6,16,0.24)";
+      ctx.beginPath();
+      ctx.moveTo(-radius * 1.42, 0);
+      ctx.lineTo(-radius * 0.48, radius * 0.72);
+      ctx.lineTo(radius * 0.2, radius * 0.22);
+      ctx.lineTo(-radius * 0.12, -radius * 0.06);
+      ctx.closePath();
+      ctx.fill();
+
+      const lowerFacet = ctx.createLinearGradient(-radius * 0.36, 0, radius * 1.04, radius * 0.78);
+      lowerFacet.addColorStop(0, "rgba(255,255,255,0.02)");
+      lowerFacet.addColorStop(0.5, tone.trail);
+      lowerFacet.addColorStop(1, "rgba(5,10,22,0.32)");
+      ctx.globalAlpha = fade * 0.5;
+      ctx.fillStyle = lowerFacet;
+      ctx.beginPath();
+      ctx.moveTo(-radius * 1.42, 0);
+      ctx.lineTo(radius * 0.56, radius * 0.65);
+      ctx.lineTo(radius * 1.78, 0);
+      ctx.lineTo(radius * 0.14, radius * 0.18);
+      ctx.closePath();
+      ctx.fill();
+
+      const upperFacet = ctx.createLinearGradient(-radius * 0.5, -radius * 0.72, radius * 1.08, -radius * 0.12);
+      upperFacet.addColorStop(0, "rgba(255,255,255,0.04)");
+      upperFacet.addColorStop(0.42, tone.facet || "rgba(255,255,255,0.18)");
+      upperFacet.addColorStop(1, "rgba(255,255,255,0.48)");
+      ctx.globalAlpha = fade * 0.42;
+      ctx.fillStyle = upperFacet;
+      ctx.beginPath();
+      ctx.moveTo(-radius * 1.42, 0);
+      ctx.lineTo(-radius * 0.48, -radius * 0.72);
+      ctx.lineTo(radius * 0.56, -radius * 0.65);
+      ctx.lineTo(radius * 0.14, -radius * 0.16);
+      ctx.closePath();
+      ctx.fill();
+
+      traceLuckyCometShard(ctx, radius, "rare");
+      ctx.globalAlpha = fade * 0.56;
+      ctx.strokeStyle = "rgba(239,244,250,0.4)";
+      ctx.lineWidth = Math.max(1, radius * 0.038);
+      ctx.stroke();
+
+      ctx.globalAlpha = fade * 0.3;
+      ctx.strokeStyle = "rgba(255,255,255,0.34)";
+      ctx.lineWidth = Math.max(1, radius * 0.024);
+      ctx.beginPath();
+      ctx.moveTo(-radius * 1.42, 0);
+      ctx.lineTo(radius * 0.16, -radius * 0.16);
+      ctx.lineTo(radius * 1.78, 0);
+      ctx.moveTo(radius * 0.16, -radius * 0.16);
+      ctx.lineTo(-radius * 0.48, -radius * 0.72);
+      ctx.moveTo(radius * 0.16, -radius * 0.16);
+      ctx.lineTo(-radius * 0.48, radius * 0.72);
+      ctx.moveTo(radius * 0.16, -radius * 0.16);
+      ctx.lineTo(radius * 0.56, radius * 0.65);
+      ctx.stroke();
+
+      drawCoreGlint(ctx, radius * 0.68, -radius * 0.25, radius * 0.5, radius * 0.07, -0.18, fade, 0.76);
+      drawCoreGlint(ctx, radius * 1.32, -radius * 0.04, radius * 0.2, radius * 0.055, -0.08, fade, 0.56);
+
+      ctx.restore();
+    }
+
+    function drawEpicCometCore(ctx, radius, tone, progress, fade) {
+      const pulse = 0.8 + (Math.sin(progress * Math.PI) * 0.12);
+      ctx.save();
+
+      ctx.globalAlpha = fade * 0.3 * pulse;
+      ctx.strokeStyle = "rgba(231,213,178,0.48)";
+      ctx.lineWidth = Math.max(1, radius * 0.05);
+      ctx.beginPath();
+      ctx.ellipse(radius * 0.04, 0, radius * 2.1, radius * 0.74, -0.22, 0, Math.PI * 2);
+      ctx.stroke();
+
+      const opal = ctx.createRadialGradient(-radius * 0.36, -radius * 0.38, radius * 0.16, 0, 0, radius * 1.48);
+      opal.addColorStop(0, "#ffffff");
+      opal.addColorStop(0.22, tone.core);
+      opal.addColorStop(0.5, tone.rim);
+      opal.addColorStop(0.78, tone.mid || tone.accent);
+      opal.addColorStop(1, tone.shadow);
+      ctx.globalAlpha = fade;
+      ctx.fillStyle = opal;
+      traceLuckyCometShard(ctx, radius, "epic");
+      ctx.fill();
+
+      const goldShade = ctx.createLinearGradient(-radius, -radius, radius * 1.2, radius);
+      goldShade.addColorStop(0, "rgba(255,255,255,0.22)");
+      goldShade.addColorStop(0.48, "rgba(255,255,255,0)");
+      goldShade.addColorStop(1, "rgba(58,42,20,0.32)");
+      ctx.globalAlpha = fade * 0.72;
+      ctx.fillStyle = goldShade;
+      traceLuckyCometShard(ctx, radius, "epic");
+      ctx.fill();
+
+      traceLuckyCometShard(ctx, radius, "epic");
+      ctx.globalAlpha = fade * 0.42;
+      ctx.strokeStyle = "rgba(255,246,224,0.36)";
+      ctx.lineWidth = Math.max(1, radius * 0.034);
+      ctx.stroke();
+
+      drawCoreGlint(ctx, radius * 0.36, -radius * 0.32, radius * 0.36, radius * 0.1, -0.28, fade, 0.78);
+
+      ctx.restore();
+    }
+
+    function drawMythicCometCore(ctx, radius, tone, progress, fade) {
+      const pulse = 0.84 + (Math.sin(progress * Math.PI) * 0.14);
+      ctx.save();
+
+      ctx.globalAlpha = fade * 0.32 * pulse;
+      ctx.strokeStyle = "rgba(224,232,242,0.5)";
+      ctx.lineWidth = Math.max(1, radius * 0.052);
+      ctx.beginPath();
+      ctx.ellipse(radius * 0.08, 0, radius * 2.48, radius * 0.78, -0.24, 0.08, Math.PI * 1.94);
+      ctx.stroke();
+
+      ctx.globalAlpha = fade * 0.2 * pulse;
+      ctx.strokeStyle = tone.accent || "rgba(170,168,204,0.32)";
+      ctx.lineWidth = Math.max(1, radius * 0.035);
+      ctx.beginPath();
+      ctx.ellipse(radius * 0.08, 0, radius * 2.9, radius * 1.02, 0.34, Math.PI * 0.12, Math.PI * 1.72);
+      ctx.stroke();
+
+      const aura = ctx.createRadialGradient(-radius * 0.2, -radius * 0.22, radius * 0.2, 0, 0, radius * 2.28);
+      aura.addColorStop(0, "rgba(255,255,255,0.3)");
+      aura.addColorStop(0.32, tone.warm);
+      aura.addColorStop(0.68, tone.trail);
+      aura.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.globalAlpha = fade * 0.42;
+      ctx.fillStyle = aura;
+      ctx.beginPath();
+      ctx.arc(0, 0, radius * 2.28, 0, Math.PI * 2);
+      ctx.fill();
+
+      const jewel = ctx.createRadialGradient(-radius * 0.46, -radius * 0.42, radius * 0.14, 0, 0, radius * 1.42);
+      jewel.addColorStop(0, "#ffffff");
+      jewel.addColorStop(0.2, tone.core);
+      jewel.addColorStop(0.46, tone.rim);
+      jewel.addColorStop(0.76, tone.mid || tone.accent);
+      jewel.addColorStop(1, tone.shadow);
+      ctx.globalAlpha = fade;
+      ctx.fillStyle = jewel;
+      traceLuckyCometShard(ctx, radius, "mythic");
+      ctx.fill();
+
+      const crescentShade = ctx.createLinearGradient(-radius, -radius * 0.86, radius * 1.18, radius);
+      crescentShade.addColorStop(0, "rgba(255,255,255,0.2)");
+      crescentShade.addColorStop(0.46, "rgba(255,255,255,0)");
+      crescentShade.addColorStop(1, "rgba(5,8,18,0.36)");
+      ctx.globalAlpha = fade * 0.76;
+      ctx.fillStyle = crescentShade;
+      traceLuckyCometShard(ctx, radius, "mythic");
+      ctx.fill();
+
+      traceLuckyCometShard(ctx, radius, "mythic");
+      ctx.globalAlpha = fade * 0.48;
+      ctx.strokeStyle = "rgba(255,255,255,0.28)";
+      ctx.lineWidth = Math.max(1, radius * 0.034);
+      ctx.stroke();
+
+      ctx.globalAlpha = fade * 0.34;
+      ctx.strokeStyle = "rgba(255,255,255,0.22)";
+      ctx.lineWidth = Math.max(1, radius * 0.025);
+      ctx.beginPath();
+      ctx.moveTo(-radius * 0.42, -radius * 0.72);
+      ctx.lineTo(radius * 0.12, -radius * 0.12);
+      ctx.lineTo(radius * 1.58, 0);
+      ctx.moveTo(radius * 0.12, -radius * 0.12);
+      ctx.lineTo(-radius * 0.42, radius * 0.72);
+      ctx.moveTo(radius * 0.12, -radius * 0.12);
+      ctx.lineTo(radius * 0.56, radius * 0.65);
+      ctx.stroke();
+
+      drawCoreGlint(ctx, radius * 0.34, -radius * 0.38, radius * 0.34, radius * 0.1, -0.34, fade, 0.78);
+
+      ctx.restore();
+    }
+
+    function drawLuckyCometBody(ctx, comet, rarity, tone, progress, fade) {
+      const isRare = rarity.key === "rare";
+      const shapeProfileMap = {
+        common: { radius: 0.96, tail: 0.94, wake: 1.74, mainWake: 0.22, broadCurve: 0.42, broadLift: 0.82, headY: 0.38, bladeOuter: 0.26, bladeInner: 0.18, bladeHead: 0.13, broadAlpha: 0.56, bladeAlpha: 0.88 },
+        uncommon: { radius: 1.02, tail: 1.02, wake: 2.16, mainWake: 0.28, broadCurve: 0.54, broadLift: 1.08, headY: 0.48, bladeOuter: 0.36, bladeInner: 0.26, bladeHead: 0.16, broadAlpha: 0.68, bladeAlpha: 0.9 },
+        rare: { radius: 0.98, tail: 1.05, wake: 2.0, mainWake: 0.26, broadCurve: 0.48, broadLift: 0.94, headY: 0.42, bladeOuter: 0.28, bladeInner: 0.22, bladeHead: 0.14, broadAlpha: 0.62, bladeAlpha: 0.88 },
+        epic: { radius: 1, tail: 1, wake: 2.3, mainWake: 0.38, broadCurve: 0.62, broadLift: 1.25, headY: 0.54, bladeOuter: 0.44, bladeInner: 0.34, bladeHead: 0.18, broadAlpha: 0.78, bladeAlpha: 0.92 },
+        mythic: { radius: 1.04, tail: 1.08, wake: 2.52, mainWake: 0.34, broadCurve: 0.66, broadLift: 1.36, headY: 0.62, bladeOuter: 0.48, bladeInner: 0.34, bladeHead: 0.2, broadAlpha: 0.76, bladeAlpha: 0.94 }
+      };
+      const profile = shapeProfileMap[rarity.key] || shapeProfileMap.common;
+      const radius = comet.radius * (1 + (Math.sin(progress * Math.PI) * 0.07)) * profile.radius;
+      const tailLength = comet.tailLength * (0.88 + (Math.sin(progress * Math.PI) * 0.12)) * profile.tail;
+      const wakeHeight = radius * (profile.wake + (comet.main ? profile.mainWake : 0));
+
+      ctx.save();
+      ctx.translate(comet.x, comet.y);
+      ctx.rotate(comet.angle);
+      ctx.globalCompositeOperation = "lighter";
+
+      const broadTrail = ctx.createLinearGradient(-tailLength, 0, radius * 0.7, 0);
+      broadTrail.addColorStop(0, "rgba(255,255,255,0)");
+      broadTrail.addColorStop(0.32, tone.wake);
+      broadTrail.addColorStop(0.78, tone.trail);
+      broadTrail.addColorStop(1, tone.facet || "rgba(255,255,255,0.28)");
+
+      ctx.globalAlpha = fade * profile.broadAlpha;
+      ctx.beginPath();
+      ctx.moveTo(-tailLength, 0);
+      ctx.bezierCurveTo(-tailLength * 0.7, -wakeHeight * profile.broadCurve, -tailLength * 0.18, -radius * profile.broadLift, radius * 0.38, -radius * profile.headY);
+      ctx.bezierCurveTo(radius * 0.92, -radius * 0.2, radius * 0.92, radius * 0.2, radius * 0.38, radius * 0.54);
+      ctx.bezierCurveTo(-tailLength * 0.18, radius * profile.broadLift, -tailLength * 0.7, wakeHeight * profile.broadCurve, -tailLength, 0);
+      ctx.closePath();
+      ctx.fillStyle = broadTrail;
+      ctx.fill();
+
+      const bladeTrail = ctx.createLinearGradient(-tailLength * 0.82, 0, radius * 0.8, 0);
+      bladeTrail.addColorStop(0, "rgba(255,255,255,0)");
+      bladeTrail.addColorStop(0.46, tone.trail);
+      bladeTrail.addColorStop(0.86, tone.rim);
+      bladeTrail.addColorStop(1, tone.glint || "#ffffff");
+
+      ctx.globalAlpha = fade * profile.bladeAlpha;
+      ctx.beginPath();
+      ctx.moveTo(-tailLength * 0.82, 0);
+      ctx.bezierCurveTo(-tailLength * 0.42, -radius * profile.bladeOuter, -tailLength * 0.12, -radius * profile.bladeInner, radius * 0.56, -radius * profile.bladeHead);
+      ctx.bezierCurveTo(radius * 0.86, -radius * 0.05, radius * 0.86, radius * 0.05, radius * 0.56, radius * 0.18);
+      ctx.bezierCurveTo(-tailLength * 0.12, radius * profile.bladeInner, -tailLength * 0.42, radius * profile.bladeOuter, -tailLength * 0.82, 0);
+      ctx.closePath();
+      ctx.fillStyle = bladeTrail;
+      ctx.fill();
+
+      if (rarity.key === "uncommon" || rarity.key === "mythic") {
+        ctx.globalAlpha = fade * (rarity.key === "mythic" ? 0.24 : 0.18);
+        ctx.strokeStyle = tone.facet || "rgba(255,255,255,0.18)";
+        ctx.lineWidth = Math.max(1, radius * 0.035);
+        ctx.beginPath();
+        ctx.moveTo(-tailLength * 0.76, -radius * 0.34);
+        ctx.bezierCurveTo(-tailLength * 0.5, -radius * 0.7, -tailLength * 0.14, -radius * 0.5, radius * 0.9, -radius * 0.24);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(-tailLength * 0.78, radius * 0.32);
+        ctx.bezierCurveTo(-tailLength * 0.52, radius * 0.66, -tailLength * 0.14, radius * 0.52, radius * 0.86, radius * 0.22);
+        ctx.stroke();
+      }
+
+      if (isRare) {
+        ctx.globalAlpha = fade * 0.24;
+        ctx.strokeStyle = tone.facet || "rgba(220,226,239,0.2)";
+        ctx.lineWidth = Math.max(1, radius * 0.03);
+        ctx.beginPath();
+        ctx.moveTo(-tailLength * 0.72, -radius * 0.26);
+        ctx.bezierCurveTo(-tailLength * 0.45, -radius * 0.44, -tailLength * 0.18, -radius * 0.32, radius * 0.82, -radius * 0.18);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(-tailLength * 0.74, radius * 0.24);
+        ctx.bezierCurveTo(-tailLength * 0.44, radius * 0.42, -tailLength * 0.2, radius * 0.34, radius * 0.78, radius * 0.16);
+        ctx.stroke();
+      }
+
+      drawLuckyCometParticles(ctx, comet, tone, progress, fade, radius, tailLength);
+
+      if (rarity.key === "epic" || rarity.key === "mythic") {
+        ctx.globalAlpha = fade * 0.42;
+        ctx.strokeStyle = rarity.key === "mythic" ? "rgba(216,226,238,0.62)" : "rgba(226,207,170,0.58)";
+        ctx.lineWidth = Math.max(1, radius * 0.055);
+        ctx.beginPath();
+        ctx.ellipse(radius * 0.08, 0, radius * 1.92, radius * 0.78, -0.22, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.globalAlpha = fade * 0.26;
+        ctx.beginPath();
+        ctx.ellipse(radius * 0.05, 0, radius * 2.5, radius * 1.04, 0.34, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      const bladeAura = ctx.createLinearGradient(-tailLength * 0.32, 0, radius * 1.72, 0);
+      bladeAura.addColorStop(0, "rgba(255,255,255,0)");
+      bladeAura.addColorStop(0.28, tone.wake);
+      bladeAura.addColorStop(0.58, tone.trail);
+      bladeAura.addColorStop(0.84, tone.warm);
+      bladeAura.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.globalAlpha = fade * 0.5;
+      ctx.fillStyle = bladeAura;
+      ctx.beginPath();
+      ctx.moveTo(-tailLength * 0.34, 0);
+      ctx.bezierCurveTo(-tailLength * 0.12, -radius * 1.18, radius * 0.88, -radius * 1.34, radius * 1.78, -radius * 0.28);
+      ctx.bezierCurveTo(radius * 2.04, radius * 0.02, radius * 1.82, radius * 0.34, radius * 1.22, radius * 0.54);
+      ctx.bezierCurveTo(radius * 0.24, radius * 1.02, -tailLength * 0.08, radius * 0.92, -tailLength * 0.34, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.globalAlpha = fade * 0.18;
+      ctx.strokeStyle = tone.facet || "rgba(255,255,255,0.18)";
+      ctx.lineWidth = Math.max(1, radius * 0.035);
+      ctx.beginPath();
+      ctx.moveTo(-tailLength * 0.18, -radius * 0.62);
+      ctx.bezierCurveTo(radius * 0.06, -radius * 1.06, radius * 0.92, -radius * 0.92, radius * 1.66, -radius * 0.22);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(-tailLength * 0.2, radius * 0.58);
+      ctx.bezierCurveTo(radius * 0.08, radius * 0.98, radius * 0.94, radius * 0.82, radius * 1.58, radius * 0.2);
+      ctx.stroke();
+
+      ctx.globalCompositeOperation = "source-over";
+      if (rarity.key === "common") {
+        drawCommonCometCore(ctx, radius, tone, progress, fade);
+      } else if (rarity.key === "uncommon") {
+        drawUncommonCometCore(ctx, radius, tone, progress, fade);
+      } else if (isRare) {
+        drawRareCometCore(ctx, radius, tone, progress, fade);
+      } else if (rarity.key === "epic") {
+        drawEpicCometCore(ctx, radius, tone, progress, fade);
+      } else if (rarity.key === "mythic") {
+        drawMythicCometCore(ctx, radius, tone, progress, fade);
+      } else {
+        const core = ctx.createRadialGradient(-radius * 0.34, -radius * 0.36, radius * 0.16, 0, 0, radius * 1.38);
+        core.addColorStop(0, "#ffffff");
+        core.addColorStop(0.22, tone.core);
+        core.addColorStop(0.64, tone.rim);
+        core.addColorStop(1, tone.shadow);
+        ctx.globalAlpha = fade;
+        ctx.fillStyle = core;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, radius * 1.28, radius * 0.92, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        const shade = ctx.createLinearGradient(-radius * 1.1, -radius, radius * 1.2, radius);
+        shade.addColorStop(0, "rgba(255,255,255,0.26)");
+        shade.addColorStop(0.48, "rgba(255,255,255,0)");
+        shade.addColorStop(1, "rgba(3,8,20,0.3)");
+        ctx.fillStyle = shade;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, radius * 1.28, radius * 0.92, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.globalAlpha = fade * 0.86;
+        ctx.fillStyle = tone.glint || "rgba(255,255,255,0.82)";
+        ctx.beginPath();
+        ctx.ellipse(-radius * 0.34, -radius * 0.28, radius * 0.28, radius * 0.13, -0.28, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      if (rarity.key === "mythic") {
+        ctx.globalCompositeOperation = "lighter";
+        ctx.globalAlpha = fade * (0.18 + (Math.sin(progress * Math.PI) * 0.3));
+        const bloom = ctx.createRadialGradient(0, 0, radius * 0.6, 0, 0, radius * 4.7);
+        bloom.addColorStop(0, "rgba(255,255,255,0.24)");
+        bloom.addColorStop(0.42, "rgba(190,199,222,0.16)");
+        bloom.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = bloom;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius * 4.7, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.restore();
+    }
+
+    function startLuckyCometCanvasEffect({ overlay, rarity, route, slots, baseDuration, reducedMotion, triggerPoint }) {
+      const canvas = document.createElement("canvas");
+      canvas.className = "lucky-comet-canvas";
+      canvas.setAttribute("aria-hidden", "true");
+      overlay.appendChild(canvas);
+
+      const { ctx } = fitLuckyCometCanvas(canvas);
+      const tone = getLuckyCometTone(rarity);
+      let longestLife = 0;
+
+      const comets = slots.map((slot, index) => {
+        const startOffset = projectLuckyCometOffset(route, slot.back || 0, slot.side || 0);
+        const endOffset = projectLuckyCometOffset(route, slot.endBack ?? slot.back ?? 0, slot.endSide ?? 0);
+        const startX = route.startX + startOffset.x;
+        const startY = route.startY + startOffset.y;
+        const endX = route.endX + endOffset.x;
+        const endY = route.endY + endOffset.y;
+        const dx = endX - startX;
+        const dy = endY - startY;
+        const durationMs = Math.round(baseDuration + (index * (reducedMotion ? 22 : 46)));
+        const delayMs = Math.round(slot.delay || 0);
+        const scale = (slot.scale || 1) * rarity.scale;
+        const particleCount = Math.round((slot.main ? 80 : 42) * clampNumber(scale, 0.62, 1.55));
+        longestLife = Math.max(longestLife, delayMs + durationMs);
+
+        return {
+          rarityKey: rarity.key,
+          main: !!slot.main,
+          startX,
+          startY,
+          dx,
+          dy,
+          angle: Math.atan2(dy, dx),
+          durationMs,
+          delayMs,
+          scale,
+          radius: rarity.headSize * 0.92 * scale,
+          tailLength: rarity.length * 0.82 * scale,
+          particles: createLuckyCometParticles(particleCount, scale)
+        };
+      });
+
+      let caption = null;
+      const mainComet = comets.find((item) => item.main);
+      if (mainComet && rarity.label) {
+        const captionPoint = resolveLuckyCometCaptionPoint(triggerPoint);
+        caption = createLuckyCometCaption({
+          rarity,
+          x: captionPoint.x,
+          y: captionPoint.y,
+          delayMs: Math.round(mainComet.delayMs + 90),
+          durationMs: Math.round(Math.min(1800, mainComet.durationMs * 0.48))
+        });
+        if (caption) overlay.appendChild(caption);
+      }
+
+      const startedAt = performance.now();
+      let frameId = 0;
+      const drawFrame = (now) => {
+        luckyCometFrames.delete(frameId);
+        const elapsed = now - startedAt;
+        const width = window.innerWidth || document.documentElement.clientWidth || 1280;
+        const height = window.innerHeight || document.documentElement.clientHeight || 720;
+        ctx.clearRect(0, 0, width, height);
+
+        comets
+          .slice()
+          .sort((a, b) => a.scale - b.scale)
+          .forEach((comet) => {
+            const local = (elapsed - comet.delayMs) / comet.durationMs;
+            if (local < 0 || local > 1) return;
+
+            const progress = easeLuckyComet(local);
+            const fadeIn = clampNumber(local / 0.16, 0, 1);
+            const fade = fadeIn;
+            const depthLift = Math.sin(local * Math.PI) * comet.radius * 0.34;
+
+            comet.x = comet.startX + (comet.dx * progress);
+            comet.y = comet.startY + (comet.dy * progress) - depthLift;
+            drawLuckyCometBody(ctx, comet, rarity, tone, progress, fade);
+          });
+
+        if (elapsed <= longestLife + 120) {
+          frameId = requestAnimationFrame(drawFrame);
+          luckyCometFrames.add(frameId);
+        } else {
+          canvas.remove();
+          if (caption) caption.remove();
+        }
+      };
+
+      frameId = requestAnimationFrame(drawFrame);
+      luckyCometFrames.add(frameId);
+      return longestLife;
+    }
+
+    function spawnLuckyCometEffect(rarityKey, useCluster, triggerPoint) {
+      const rarity = LUCKY_COMET_RARITY_MAP[rarityKey] || LUCKY_COMET_RARITY_MAP.common;
+      if (luckyClusterActive) return;
+      if (useCluster) clearLuckyCometVisualLayer();
+
+      const overlay = ensureLuckyCometOverlay();
+      if (!overlay) return;
+
+      const reducedMotion = prefersReducedMotionLuckyComet();
+      const route = buildLuckyCometRoute(reducedMotion);
+      const count = useCluster ? rarity.clusterSize : 1;
+      const formation = useCluster ? pickLuckyCometFormation(rarity.key) : "arrow";
+      const slots = getLuckyCometSlots(formation, count);
+      const baseDuration = Math.round(
+        reducedMotion
+          ? sampleBetween(420, 640)
+          : sampleBetween(rarity.durationRange[0], rarity.durationRange[1])
+      );
+
+      if (useCluster) luckyClusterActive = true;
+      const longestLife = startLuckyCometCanvasEffect({
+        overlay,
+        rarity,
+        route,
+        slots,
+        baseDuration,
+        reducedMotion,
+        triggerPoint
+      });
+
+      if (useCluster) {
+        setLuckyCometTimer(() => {
+          luckyClusterActive = false;
+        }, longestLife + 180);
+      }
+    }
+
+    function queueLuckyCometCompletion(triggerPoint) {
+      if (luckyClusterActive) return;
+
+      const now = Date.now();
+      if (now < luckyCometCooldownUntil) return;
+
+      const rarity = pickLuckyCometRarity();
+      const useCluster = rarity.clusterChance > 0 && (Math.random() * 100) < rarity.clusterChance;
+      const captionAnchor = normalizeLuckyCometPointer(triggerPoint || luckyCometPointer);
+      luckyCometCooldownUntil = now + (useCluster ? 3000 : 1900);
+
+      setLuckyCometTimer(() => {
+        spawnLuckyCometEffect(rarity.key, useCluster, captionAnchor);
+      }, Math.round(sampleBetween(80, 180)));
     }
 
     function getUpcomingExamDate(month, day) {
@@ -6010,11 +7919,15 @@
       return state.tasks[date];
     }
 
-    function toggleTask(group, index) {
+    function toggleTask(group, index, triggerPoint) {
       const taskState = ensureTaskState(state.selectedDate);
       const item = taskState[group] && taskState[group][index];
       if (!item) return;
+      const wasDone = !!item.done;
       item.done = !item.done;
+      if (!wasDone && item.done) {
+        queueLuckyCometCompletion(triggerPoint);
+      }
       saveState();
       scheduleRender();
     }
@@ -7269,6 +9182,7 @@
     }
 
     function handleAppClick(event) {
+      const cometPointer = rememberLuckyCometPointer(event);
       const target = event.target.closest("[data-tab], [data-action]");
       if (!target) {
         closeFloatingMenus();
@@ -7345,7 +9259,7 @@
 
       if (target.dataset.action === "toggle") {
         closeFloatingMenus();
-        toggleTask(target.dataset.group, Number(target.dataset.index));
+        toggleTask(target.dataset.group, Number(target.dataset.index), cometPointer);
         return;
       }
 
@@ -7478,6 +9392,7 @@
     app.addEventListener("click", handleAppClick);
     app.addEventListener("input", handleAppInput);
     app.addEventListener("change", handleAppChange);
+    window.addEventListener("pointermove", rememberLuckyCometPointer, { passive: true });
     window.addEventListener("resize", () => {
       if (syncHeightRaf) cancelAnimationFrame(syncHeightRaf);
       syncHeightRaf = requestAnimationFrame(() => {
@@ -7492,6 +9407,7 @@
         clearInterval(examCountdownTimer);
         examCountdownTimer = 0;
       }
+      clearLuckyCometEffects();
       flushState();
     });
     render();
