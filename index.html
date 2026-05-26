@@ -5851,12 +5851,9 @@
       }
     ];
     const LUCKY_COMET_RARITY_MAP = Object.fromEntries(LUCKY_COMET_RARITIES.map((item) => [item.key, item]));
-    const LUCKY_COMET_STUDY_TARGET_DEFAULT_MINUTES = 18 * 60;
-    const LUCKY_COMET_STUDY_TARGET_MIN_MINUTES = 4 * 60;
-    const LUCKY_COMET_STUDY_TARGET_MAX_MINUTES = 60 * 60;
-    const LUCKY_COMET_STUDY_TARGET_RATIO = 0.85;
-    const LUCKY_COMET_STUDY_EFFORT_CAP_MINUTES = 24 * 60;
-    const LUCKY_COMET_STUDY_WEIGHT_MULTIPLIERS = {
+    const LUCKY_COMET_TASK_BOOST_START_MINUTES = 30;
+    const LUCKY_COMET_TASK_BOOST_FULL_MINUTES = 180;
+    const LUCKY_COMET_TASK_WEIGHT_MULTIPLIERS = {
       common: [1.4, 0.62],
       uncommon: [1.15, 0.86],
       rare: [0.62, 1.55],
@@ -6231,33 +6228,26 @@
       };
     }
 
-    function getLuckyCometStudyTargetMinutes(plannedMinutes = totalPlannedStudyMinutes()) {
-      if (!plannedMinutes) return LUCKY_COMET_STUDY_TARGET_DEFAULT_MINUTES;
-
-      const targetFromPlan = Math.round(plannedMinutes * LUCKY_COMET_STUDY_TARGET_RATIO);
-      const minimumReachableTarget = Math.min(plannedMinutes, LUCKY_COMET_STUDY_TARGET_MIN_MINUTES);
-      return clampNumber(targetFromPlan, minimumReachableTarget, LUCKY_COMET_STUDY_TARGET_MAX_MINUTES);
-    }
-
-    function getLuckyCometStudyBoost(doneMinutes = totalDoneStudyMinutes(), plannedMinutes = totalPlannedStudyMinutes()) {
-      const studyTargetMinutes = getLuckyCometStudyTargetMinutes(plannedMinutes);
-      const reachableProgress = studyTargetMinutes ? clampNumber(doneMinutes / studyTargetMinutes, 0, 1) : 0;
-      const effortProgress = clampNumber(doneMinutes / LUCKY_COMET_STUDY_EFFORT_CAP_MINUTES, 0, 1);
-      const progress = clampNumber((reachableProgress * 0.72) + (effortProgress * 0.28), 0, 1);
+    function getLuckyCometTaskBoost(taskMinutes = 0) {
+      const safeMinutes = Math.max(0, Number(taskMinutes) || 0);
+      const boostRange = LUCKY_COMET_TASK_BOOST_FULL_MINUTES - LUCKY_COMET_TASK_BOOST_START_MINUTES;
+      const progress = boostRange
+        ? clampNumber((safeMinutes - LUCKY_COMET_TASK_BOOST_START_MINUTES) / boostRange, 0, 1)
+        : 0;
       return progress * progress * (3 - (2 * progress));
     }
 
-    function getLuckyCometDynamicWeight(rarity, studyBoost) {
-      const [lowMultiplier, highMultiplier] = LUCKY_COMET_STUDY_WEIGHT_MULTIPLIERS[rarity.key] || [1, 1];
-      const multiplier = lowMultiplier + ((highMultiplier - lowMultiplier) * studyBoost);
+    function getLuckyCometDynamicWeight(rarity, taskBoost) {
+      const [lowMultiplier, highMultiplier] = LUCKY_COMET_TASK_WEIGHT_MULTIPLIERS[rarity.key] || [1, 1];
+      const multiplier = lowMultiplier + ((highMultiplier - lowMultiplier) * taskBoost);
       return Math.max(0.1, rarity.weight * multiplier);
     }
 
-    function pickLuckyCometRarity(doneMinutes = totalDoneStudyMinutes()) {
-      const studyBoost = getLuckyCometStudyBoost(doneMinutes);
+    function pickLuckyCometRarity(taskMinutes = 0) {
+      const taskBoost = getLuckyCometTaskBoost(taskMinutes);
       const weightedRarities = LUCKY_COMET_RARITIES.map((rarity) => ({
         rarity,
-        weight: getLuckyCometDynamicWeight(rarity, studyBoost)
+        weight: getLuckyCometDynamicWeight(rarity, taskBoost)
       }));
       const totalWeight = weightedRarities.reduce((sum, item) => sum + item.weight, 0);
       const roll = Math.random() * totalWeight;
@@ -7431,13 +7421,13 @@
       }
     }
 
-    function queueLuckyCometCompletion(triggerPoint) {
+    function queueLuckyCometCompletion(triggerPoint, taskMinutes = 0) {
       if (luckyClusterActive) return;
 
       const now = Date.now();
       if (now < luckyCometCooldownUntil) return;
 
-      const rarity = pickLuckyCometRarity();
+      const rarity = pickLuckyCometRarity(taskMinutes);
       const useCluster = rarity.clusterChance > 0 && (Math.random() * 100) < rarity.clusterChance;
       const captionAnchor = normalizeLuckyCometPointer(triggerPoint || luckyCometPointer);
       luckyCometCooldownUntil = now + (useCluster ? 3600 : 2400);
@@ -7693,22 +7683,6 @@
       if (!hours) return `${minutes}p`;
       if (!minutes) return `${hours}h`;
       return `${hours}h ${minutes}p`;
-    }
-
-    function totalDoneStudyMinutes() {
-      return buildGlobalTaskStats().doneMinutes;
-    }
-
-    function totalPlannedStudyMinutes() {
-      let total = 0;
-      Object.values(state.tasks).forEach((day) => {
-        TASK_GROUPS.forEach((group) => {
-          (day[group] || []).forEach((item) => {
-            total += parseStudyMinutes(item.time);
-          });
-        });
-      });
-      return total;
     }
 
     function summarizeTaskItems(items) {
@@ -8264,7 +8238,7 @@
       const wasDone = !!item.done;
       item.done = !item.done;
       if (!wasDone && item.done) {
-        queueLuckyCometCompletion(triggerPoint);
+        queueLuckyCometCompletion(triggerPoint, parseStudyMinutes(item.time));
       }
       saveState();
       scheduleRender();
