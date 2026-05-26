@@ -5838,6 +5838,24 @@
       epic: ["arrow", "crescent", "spiral", "twin"],
       mythic: ["arrow", "crescent", "spiral", "twin"]
     };
+    const LUCKY_TWO_PI = Math.PI * 2;
+    const LUCKY_COMET_CORE_PROFILES = {
+      common: { halo: 1.92, core: 0.68, ring: 1.36, flare: 1.22, alpha: 0.72, sparks: 4 },
+      uncommon: { halo: 2.08, core: 0.74, ring: 1.52, flare: 1.34, alpha: 0.78, sparks: 5 },
+      rare: { halo: 2.18, core: 0.78, ring: 1.7, flare: 1.48, alpha: 0.82, sparks: 6 },
+      epic: { halo: 2.36, core: 0.86, ring: 1.9, flare: 1.62, alpha: 0.88, sparks: 7 },
+      mythic: { halo: 2.62, core: 0.94, ring: 2.16, flare: 1.82, alpha: 0.94, sparks: 9 }
+    };
+    const LUCKY_COMET_BODY_PROFILES = {
+      common: { radius: 0.96, tail: 0.94, wake: 1.74, mainWake: 0.22, broadCurve: 0.42, broadLift: 0.82, headY: 0.38, bladeOuter: 0.26, bladeInner: 0.18, bladeHead: 0.13, broadAlpha: 0.56, bladeAlpha: 0.88 },
+      uncommon: { radius: 1.02, tail: 1.02, wake: 2.16, mainWake: 0.28, broadCurve: 0.54, broadLift: 1.08, headY: 0.48, bladeOuter: 0.36, bladeInner: 0.26, bladeHead: 0.16, broadAlpha: 0.68, bladeAlpha: 0.9 },
+      rare: { radius: 0.98, tail: 1.05, wake: 2.0, mainWake: 0.26, broadCurve: 0.48, broadLift: 0.94, headY: 0.42, bladeOuter: 0.28, bladeInner: 0.22, bladeHead: 0.14, broadAlpha: 0.62, bladeAlpha: 0.88 },
+      epic: { radius: 1, tail: 1, wake: 2.3, mainWake: 0.38, broadCurve: 0.62, broadLift: 1.25, headY: 0.54, bladeOuter: 0.44, bladeInner: 0.34, bladeHead: 0.18, broadAlpha: 0.78, bladeAlpha: 0.92 },
+      mythic: { radius: 1.04, tail: 1.08, wake: 2.52, mainWake: 0.34, broadCurve: 0.66, broadLift: 1.36, headY: 0.62, bladeOuter: 0.48, bladeInner: 0.34, bladeHead: 0.2, broadAlpha: 0.76, bladeAlpha: 0.94 }
+    };
+    const STUDY_TIME_RANGE_RE = /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/;
+    const STUDY_HOUR_MINUTE_RE = /(\d+(?:[.,]\d+)?)\s*(h|gio|hr)\s*(?:(\d{1,2})\s*(p|phut|min))?/i;
+    const STUDY_MINUTE_RE = /(\d+)\s*(p|phut|min)/i;
 
     const app = document.getElementById("app");
     let flagBurstTimer = 0;
@@ -5847,6 +5865,7 @@
     let saveTimer = 0;
     let renderRaf = 0;
     let syncHeightRaf = 0;
+    let floatingMenuSyncRaf = 0;
     let searchInputTimer = 0;
     let importStatus = { type: "", message: "" };
     let editingTask = null;
@@ -5854,6 +5873,7 @@
     let luckyClusterActive = false;
     let luckyCometTimers = new Set();
     let luckyCometFrames = new Set();
+    const scheduleDateCache = new Map();
     let luckyCometPointer = {
       x: window.innerWidth ? window.innerWidth / 2 : 640,
       y: window.innerHeight ? Math.min(window.innerHeight * 0.42, 360) : 320
@@ -6503,20 +6523,23 @@
     function drawLuckyCometParticles(ctx, comet, tone, progress, fade, radius, tailLength) {
       const spread = radius * 2.15;
       const sparkleFade = 1 - clampNumber((progress - 0.7) / 0.3, 0, 1);
+      const particleCount = comet.particles.length;
+      const raritySoftness = comet.rarityKey === "rare" ? 0.74 : 0.84;
+      const wave = progress * LUCKY_TWO_PI;
 
       ctx.save();
       ctx.globalCompositeOperation = "lighter";
-      comet.particles.forEach((particle) => {
+      for (let index = 0; index < particleCount; index += 1) {
+        const particle = comet.particles[index];
         const tailX = -tailLength * particle.trail * (0.68 + (progress * 0.2));
-        const wobble = Math.sin((progress * Math.PI * 2) + particle.phase) * particle.drift;
+        const wobble = Math.sin(wave + particle.phase) * particle.drift;
         const x = tailX + wobble * 0.25;
         const y = (particle.side * spread * particle.depth) + (wobble * 0.12);
         const depthScale = 1.12 - (particle.depth * 0.46);
-        const raritySoftness = comet.rarityKey === "rare" ? 0.74 : 0.84;
         const alpha = particle.alpha * fade * sparkleFade * (0.28 + (0.42 * particle.depth)) * raritySoftness;
         const size = particle.size * depthScale;
 
-        if (alpha <= 0.02) return;
+        if (alpha <= 0.02) continue;
         ctx.globalAlpha = alpha;
         ctx.fillStyle = particle.depth > 0.72 ? tone.glint || tone.core : tone.accent || tone.rim;
         ctx.beginPath();
@@ -6530,7 +6553,7 @@
           ctx.arc(x, y, size, 0, Math.PI * 2);
         }
         ctx.fill();
-      });
+      }
       ctx.restore();
     }
 
@@ -6572,14 +6595,7 @@
     }
 
     function drawEnergyCometCore(ctx, radius, tone, progress, fade, variant = "common") {
-      const profiles = {
-        common: { halo: 1.92, core: 0.68, ring: 1.36, flare: 1.22, alpha: 0.72, sparks: 4 },
-        uncommon: { halo: 2.08, core: 0.74, ring: 1.52, flare: 1.34, alpha: 0.78, sparks: 5 },
-        rare: { halo: 2.18, core: 0.78, ring: 1.7, flare: 1.48, alpha: 0.82, sparks: 6 },
-        epic: { halo: 2.36, core: 0.86, ring: 1.9, flare: 1.62, alpha: 0.88, sparks: 7 },
-        mythic: { halo: 2.62, core: 0.94, ring: 2.16, flare: 1.82, alpha: 0.94, sparks: 9 }
-      };
-      const profile = profiles[variant] || profiles.common;
+      const profile = LUCKY_COMET_CORE_PROFILES[variant] || LUCKY_COMET_CORE_PROFILES.common;
       const pulse = 0.82 + (Math.sin(progress * Math.PI) * 0.18);
       const shimmer = 0.5 + (Math.sin((progress * Math.PI * 2.4) + radius) * 0.5);
       const centerX = radius * 0.42;
@@ -6663,7 +6679,7 @@
       ctx.fill();
 
       for (let index = 0; index < profile.sparks; index += 1) {
-        const angle = (index / profile.sparks) * Math.PI * 2 + (progress * Math.PI * 1.2);
+        const angle = (index / profile.sparks) * LUCKY_TWO_PI + (progress * Math.PI * 1.2);
         const orbitX = centerX + (Math.cos(angle) * radius * profile.ring * 0.72);
         const orbitY = Math.sin(angle) * radius * profile.ring * 0.26;
         const sparkSize = radius * (index % 3 === 0 ? 0.065 : 0.045);
@@ -7027,14 +7043,7 @@
 
     function drawLuckyCometBody(ctx, comet, rarity, tone, progress, fade) {
       const isRare = rarity.key === "rare";
-      const shapeProfileMap = {
-        common: { radius: 0.96, tail: 0.94, wake: 1.74, mainWake: 0.22, broadCurve: 0.42, broadLift: 0.82, headY: 0.38, bladeOuter: 0.26, bladeInner: 0.18, bladeHead: 0.13, broadAlpha: 0.56, bladeAlpha: 0.88 },
-        uncommon: { radius: 1.02, tail: 1.02, wake: 2.16, mainWake: 0.28, broadCurve: 0.54, broadLift: 1.08, headY: 0.48, bladeOuter: 0.36, bladeInner: 0.26, bladeHead: 0.16, broadAlpha: 0.68, bladeAlpha: 0.9 },
-        rare: { radius: 0.98, tail: 1.05, wake: 2.0, mainWake: 0.26, broadCurve: 0.48, broadLift: 0.94, headY: 0.42, bladeOuter: 0.28, bladeInner: 0.22, bladeHead: 0.14, broadAlpha: 0.62, bladeAlpha: 0.88 },
-        epic: { radius: 1, tail: 1, wake: 2.3, mainWake: 0.38, broadCurve: 0.62, broadLift: 1.25, headY: 0.54, bladeOuter: 0.44, bladeInner: 0.34, bladeHead: 0.18, broadAlpha: 0.78, bladeAlpha: 0.92 },
-        mythic: { radius: 1.04, tail: 1.08, wake: 2.52, mainWake: 0.34, broadCurve: 0.66, broadLift: 1.36, headY: 0.62, bladeOuter: 0.48, bladeInner: 0.34, bladeHead: 0.2, broadAlpha: 0.76, bladeAlpha: 0.94 }
-      };
-      const profile = shapeProfileMap[rarity.key] || shapeProfileMap.common;
+      const profile = LUCKY_COMET_BODY_PROFILES[rarity.key] || LUCKY_COMET_BODY_PROFILES.common;
       const radius = comet.radius * (1 + (Math.sin(progress * Math.PI) * 0.07)) * profile.radius;
       const tailLength = comet.tailLength * (0.88 + (Math.sin(progress * Math.PI) * 0.12)) * profile.tail;
       const wakeHeight = radius * (profile.wake + (comet.main ? profile.mainWake : 0));
@@ -7296,9 +7305,10 @@
         const elapsed = now - startedAt;
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        comets.forEach((comet) => {
+        for (let index = 0; index < comets.length; index += 1) {
+          const comet = comets[index];
           const local = (elapsed - comet.delayMs) / comet.durationMs;
-          if (local < 0 || local > 1) return;
+          if (local < 0 || local > 1) continue;
 
           const progress = easeLuckyComet(local);
           const fadeIn = clampNumber(local / 0.16, 0, 1);
@@ -7309,7 +7319,7 @@
           comet.x = comet.startX + (comet.dx * progress);
           comet.y = comet.startY + (comet.dy * progress) - depthLift;
           drawLuckyCometBody(ctx, comet, rarity, tone, progress, fade);
-        });
+        }
 
         if (elapsed <= longestLife + 120) {
           frameId = requestAnimationFrame(drawFrame);
@@ -7574,28 +7584,28 @@
     }
 
     function allTasks() {
-      return Object.values(state.tasks).flatMap((day) => getTaskList(day));
+      return buildGlobalTaskStats({ collectAll: true }).all;
     }
 
     function parseStudyMinutes(value) {
       const text = String(value || "").trim();
       if (!text) return 0;
 
-      const rangeMatch = text.match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+      const rangeMatch = text.match(STUDY_TIME_RANGE_RE);
       if (rangeMatch) {
         const start = Number(rangeMatch[1]) * 60 + Number(rangeMatch[2]);
         const end = Number(rangeMatch[3]) * 60 + Number(rangeMatch[4]);
         return end > start ? end - start : 0;
       }
 
-      const hourMinuteMatch = text.match(/(\d+(?:[.,]\d+)?)\s*(h|gio|hr)\s*(?:(\d{1,2})\s*(p|phut|min))?/i);
+      const hourMinuteMatch = text.match(STUDY_HOUR_MINUTE_RE);
       if (hourMinuteMatch) {
         const hours = Number(hourMinuteMatch[1].replace(",", "."));
         const minutes = hourMinuteMatch[3] ? Number(hourMinuteMatch[3]) : 0;
         return Math.round(hours * 60) + minutes;
       }
 
-      const minuteMatch = text.match(/(\d+)\s*(p|phut|min)/i);
+      const minuteMatch = text.match(STUDY_MINUTE_RE);
       if (minuteMatch) return Number(minuteMatch[1]);
 
       return 0;
@@ -7611,9 +7621,57 @@
     }
 
     function totalDoneStudyMinutes() {
-      return allTasks()
-        .filter((item) => item.done)
-        .reduce((sum, item) => sum + parseStudyMinutes(item.time), 0);
+      return buildGlobalTaskStats().doneMinutes;
+    }
+
+    function summarizeTaskItems(items) {
+      const summary = {
+        total: 0,
+        done: 0,
+        plannedMinutes: 0,
+        doneMinutes: 0
+      };
+
+      for (const item of items || []) {
+        summary.total += 1;
+        const minutes = parseStudyMinutes(item.time);
+        summary.plannedMinutes += minutes;
+        if (item.done) {
+          summary.done += 1;
+          summary.doneMinutes += minutes;
+        }
+      }
+
+      return summary;
+    }
+
+    function getTaskPercent(summary) {
+      return summary.total ? Math.round((summary.done * 100) / summary.total) : 0;
+    }
+
+    function buildGlobalTaskStats({ collectAll = false } = {}) {
+      const all = collectAll ? [] : null;
+      const summary = {
+        total: 0,
+        done: 0,
+        doneMinutes: 0
+      };
+
+      Object.values(state.tasks).forEach((day) => {
+        TASK_GROUPS.forEach((group) => {
+          const items = day[group] || [];
+          items.forEach((item) => {
+            if (collectAll) all.push(item);
+            summary.total += 1;
+            if (item.done) {
+              summary.done += 1;
+              summary.doneMinutes += parseStudyMinutes(item.time);
+            }
+          });
+        });
+      });
+
+      return collectAll ? { all, ...summary } : summary;
     }
 
     function shortDateLabel(dateText) {
@@ -7623,7 +7681,10 @@
     }
 
     function parseScheduleDate(dateText) {
-      const [ddText, mmText] = String(dateText || "").split("/");
+      const cacheKey = String(dateText || "");
+      if (scheduleDateCache.has(cacheKey)) return scheduleDateCache.get(cacheKey);
+
+      const [ddText, mmText] = cacheKey.split("/");
       const day = Number(ddText);
       const month = Number(mmText);
       if (!day || !month) return null;
@@ -7632,12 +7693,32 @@
       if (SCHEDULE_RANGE.startYear !== SCHEDULE_RANGE.endYear && month < SCHEDULE_RANGE.startMonth) {
         year = SCHEDULE_RANGE.endYear;
       }
-      return new Date(year, month - 1, day, 12, 0, 0, 0);
+      const parsedDate = new Date(year, month - 1, day, 12, 0, 0, 0);
+      scheduleDateCache.set(cacheKey, parsedDate);
+      return parsedDate;
     }
 
     function getTodayCutoffDate() {
       const now = new Date();
       return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12, 0, 0, 0);
+    }
+
+    function getNearestDayToToday(days) {
+      const todayTime = getTodayCutoffDate().getTime();
+      let nearestDay = null;
+      let nearestDistance = Infinity;
+
+      (days || []).forEach((day) => {
+        const parsed = parseScheduleDate(day.date);
+        if (!parsed) return;
+        const distance = Math.abs(parsed.getTime() - todayTime);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestDay = day;
+        }
+      });
+
+      return nearestDay;
     }
 
     function formatAxisMinutesLabel(totalMinutes) {
@@ -7985,9 +8066,9 @@
       const stats = chartDays.map((day) => {
         const taskState = ensureTaskState(day.date);
         const tasks = getTaskList(taskState);
-        const plannedMinutes = tasks.reduce((sum, item) => sum + parseStudyMinutes(item.time), 0);
-        const doneTasks = tasks.filter((item) => item.done);
-        const doneMinutes = doneTasks.reduce((sum, item) => sum + parseStudyMinutes(item.time), 0);
+        const summary = summarizeTaskItems(tasks);
+        const plannedMinutes = summary.plannedMinutes;
+        const doneMinutes = summary.doneMinutes;
         cumulativeDoneMinutes += doneMinutes;
         return {
           date: day.date,
@@ -7995,15 +8076,29 @@
           tasks,
           plannedMinutes,
           doneMinutes,
-          doneCount: doneTasks.length,
+          doneCount: summary.done,
           cumulativeDoneMinutes
         };
       });
 
-      const maxPlannedMinutes = Math.max(...stats.map((item) => item.plannedMinutes), 0);
-      const maxDoneMinutes = Math.max(...stats.map((item) => item.doneMinutes), 0);
-      const maxDoneCount = Math.max(...stats.map((item) => item.doneCount), 0);
-      const maxCumulativeDoneMinutes = Math.max(...stats.map((item) => item.cumulativeDoneMinutes), 0);
+      const analyticsSummary = {
+        maxPlannedMinutes: 0,
+        maxDoneMinutes: 0,
+        maxDoneCount: 0,
+        maxCumulativeDoneMinutes: 0,
+        totalPlannedMinutes: 0,
+        totalDoneMinutes: 0,
+        activeDays: 0
+      };
+      stats.forEach((item) => {
+        analyticsSummary.maxPlannedMinutes = Math.max(analyticsSummary.maxPlannedMinutes, item.plannedMinutes);
+        analyticsSummary.maxDoneMinutes = Math.max(analyticsSummary.maxDoneMinutes, item.doneMinutes);
+        analyticsSummary.maxDoneCount = Math.max(analyticsSummary.maxDoneCount, item.doneCount);
+        analyticsSummary.maxCumulativeDoneMinutes = Math.max(analyticsSummary.maxCumulativeDoneMinutes, item.cumulativeDoneMinutes);
+        analyticsSummary.totalPlannedMinutes += item.plannedMinutes;
+        analyticsSummary.totalDoneMinutes += item.doneMinutes;
+        if (item.doneMinutes > 0) analyticsSummary.activeDays += 1;
+      });
       const taskHighlight = stats.reduce((best, item) => item.doneCount > best.doneCount ? item : best, stats[0] || {
         date: "",
         doneCount: 0
@@ -8022,40 +8117,39 @@
         stats,
         cutoffLabel: shortDateLabel(`${String(todayCutoff.getDate()).padStart(2, "0")}/${String(todayCutoff.getMonth() + 1).padStart(2, "0")}`),
         renderedThroughLabel: stats.length ? stats[stats.length - 1].date : "",
-        maxPlannedMinutes,
-        maxDoneMinutes,
-        maxDoneCount,
-        maxCumulativeDoneMinutes,
+        maxPlannedMinutes: analyticsSummary.maxPlannedMinutes,
+        maxDoneMinutes: analyticsSummary.maxDoneMinutes,
+        maxDoneCount: analyticsSummary.maxDoneCount,
+        maxCumulativeDoneMinutes: analyticsSummary.maxCumulativeDoneMinutes,
         highlight,
         taskHighlight,
-        totalPlannedMinutes: stats.reduce((sum, item) => sum + item.plannedMinutes, 0),
-        totalDoneMinutes: stats.reduce((sum, item) => sum + item.doneMinutes, 0),
-        activeDays: stats.filter((item) => item.doneMinutes > 0).length,
-        averageDoneMinutes: stats.length ? Math.round(stats.reduce((sum, item) => sum + item.doneMinutes, 0) / stats.length) : 0,
+        totalPlannedMinutes: analyticsSummary.totalPlannedMinutes,
+        totalDoneMinutes: analyticsSummary.totalDoneMinutes,
+        activeDays: analyticsSummary.activeDays,
+        averageDoneMinutes: stats.length ? Math.round(analyticsSummary.totalDoneMinutes / stats.length) : 0,
         currentChartDate: stats.length ? stats[stats.length - 1].date : ""
       };
     }
 
     function getProgress() {
-      const tasks = allTasks();
-      const total = tasks.length;
-      const done = tasks.filter((item) => item.done).length;
-      return total ? Math.round((done * 100) / total) : 0;
+      return getTaskPercent(buildGlobalTaskStats());
     }
 
     function groupProgress(key, taskState = ensureTaskState(state.selectedDate)) {
-      const items = taskState[key] || [];
-      const done = items.filter((item) => item.done).length;
-      return items.length ? Math.round((done * 100) / items.length) : 0;
+      return getTaskPercent(summarizeTaskItems(taskState[key] || []));
     }
 
     function filteredDays() {
+      const normalizedQuery = state.query.toLowerCase();
       return state.schedule.filter((day) => {
         const taskGroup = state.tasks[day.date] || createEmptyTaskState();
         const tasks = getTaskList(taskGroup);
-        const taskTexts = tasks.map((task) => task.text);
-        const haystack = [day.date, day.weekday, day.phase, day.note, ...taskTexts].join(" ").toLowerCase();
-        const queryMatch = !state.query || haystack.includes(state.query.toLowerCase());
+        let haystack = `${day.date || ""} ${day.weekday || ""} ${day.phase || ""} ${day.note || ""}`;
+        tasks.forEach((task) => {
+          haystack += ` ${task.text || ""}`;
+        });
+        haystack = haystack.toLowerCase();
+        const queryMatch = !normalizedQuery || haystack.includes(normalizedQuery);
         const phaseMatch = state.phaseFilter === "Tất cả" || day.phase === state.phaseFilter;
         let tabMatch = true;
         if (state.tab === "active") tabMatch = tasks.some((task) => !task.done);
@@ -8488,7 +8582,7 @@
 
     function sectionHtml(title, groupKey, items) {
       const mood = SUBJECT_MOODS[groupKey] || SUBJECT_MOODS.review;
-      const doneCount = items.filter((item) => item.done).length;
+      const doneCount = summarizeTaskItems(items).done;
 
       return `
         <details class="section ${groupKey}" open>
@@ -8596,19 +8690,21 @@
       const selectedDay = getSelectedDay();
       const selectedTaskState = ensureTaskState(state.selectedDate);
       const visibleDays = filteredDays();
+      const radarFocusDate = getNearestDayToToday(visibleDays)?.date || "";
       const analytics = buildStudyAnalytics(visibleDays);
       const currentDayTasks = getTaskList(selectedTaskState);
-      const currentDone = currentDayTasks.filter((item) => item.done).length;
-      const currentPercent = currentDayTasks.length ? Math.round((currentDone * 100) / currentDayTasks.length) : 0;
-      const all = allTasks();
-      const total = all.length;
-      const done = all.filter((item) => item.done).length;
+      const currentDaySummary = summarizeTaskItems(currentDayTasks);
+      const currentDone = currentDaySummary.done;
+      const currentPercent = getTaskPercent(currentDaySummary);
+      const globalStats = buildGlobalTaskStats();
+      const total = globalStats.total;
+      const done = globalStats.done;
       const progress = currentPercent;
       const physicsProgress = groupProgress("physics", selectedTaskState);
       const mathProgress = groupProgress("math", selectedTaskState);
       const englishProgress = groupProgress("english", selectedTaskState);
       const reviewProgress = groupProgress("review", selectedTaskState);
-      const learnedMinutes = totalDoneStudyMinutes();
+      const learnedMinutes = globalStats.doneMinutes;
 
       app.innerHTML = `
         <section class="hero-shell">
@@ -8761,11 +8857,12 @@
                 ${visibleDays.map((day) => {
                   const taskState = ensureTaskState(day.date);
                   const dayTasks = getTaskList(taskState);
-                  const dayDone = dayTasks.filter((item) => item.done).length;
-                  const dayPercent = dayTasks.length ? Math.round((dayDone * 100) / dayTasks.length) : 0;
+                  const daySummary = summarizeTaskItems(dayTasks);
+                  const dayDone = daySummary.done;
+                  const dayPercent = getTaskPercent(daySummary);
 
                   return `
-                    <button class="date-btn ${state.selectedDate === day.date ? "active" : ""}" data-action="select-date" data-date="${day.date}">
+                    <button class="date-btn ${state.selectedDate === day.date ? "active" : ""}" data-action="select-date" data-date="${day.date}" ${radarFocusDate === day.date ? 'data-radar-focus="today"' : ""}>
                       <div class="date-top">
                         <div>
                           <div class="date-date">${escapeHtml(day.date)}</div>
@@ -9004,10 +9101,12 @@
                     ${visibleDays.map((day) => {
                       const taskState = ensureTaskState(day.date);
                       const mainTasks = getTaskList(taskState);
-                      const mainDone = mainTasks.filter((item) => item.done).length;
-                      const mainPercent = mainTasks.length ? Math.round((mainDone * 100) / mainTasks.length) : 0;
+                      const mainSummary = summarizeTaskItems(mainTasks);
+                      const mainDone = mainSummary.done;
+                      const mainPercent = getTaskPercent(mainSummary);
 
                       const renderTaskPanel = (title, items, variant, icon) => {
+                        const itemSummary = summarizeTaskItems(items);
                         const panelMood = {
                           physics: "BLUE ORBIT",
                           math: "VIOLET ENGINE",
@@ -9022,10 +9121,10 @@
                               <div>
                                 <div class="schedule-task-eyebrow">${panelMood}</div>
                                 <div class="schedule-task-title">${title}</div>
-                                <div class="schedule-task-summary">${items.length ? `${items.filter((item) => item.done).length} / ${items.length} mục đã xong` : "Chưa nhập lịch"}</div>
+                                <div class="schedule-task-summary">${items.length ? `${itemSummary.done} / ${items.length} mục đã xong` : "Chưa nhập lịch"}</div>
                               </div>
                             </div>
-                            <span class="schedule-task-meta">${items.filter((item) => item.done).length}/${items.length}</span>
+                            <span class="schedule-task-meta">${itemSummary.done}/${items.length}</span>
                           </div>
                           <div class="schedule-task-divider">
                             <span class="schedule-task-line"></span>
@@ -9108,8 +9207,21 @@
       syncHeightRaf = requestAnimationFrame(() => {
         syncHeightRaf = 0;
         syncHeroOrbitHeight();
+        syncRadarDateListPosition();
       });
       initExamCountdowns();
+    }
+
+    function syncRadarDateListPosition() {
+      const list = document.querySelector(".date-list");
+      const target = list && list.querySelector("[data-radar-focus='today']");
+      if (!list || !target) return;
+
+      const listRect = list.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const targetOffset = (targetRect.top - listRect.top) + list.scrollTop;
+      const centeredTop = targetOffset - ((list.clientHeight - targetRect.height) / 2);
+      list.scrollTop = Math.max(0, centeredTop);
     }
 
     function syncHeroOrbitHeight() {
@@ -9256,6 +9368,14 @@
       if (openScheduleTrigger && scheduleMenu && scheduleMenu.classList.contains("open")) {
         positionMenuByTrigger(openScheduleTrigger, scheduleMenu);
       }
+    }
+
+    function scheduleFloatingMenuSync() {
+      if (floatingMenuSyncRaf) return;
+      floatingMenuSyncRaf = requestAnimationFrame(() => {
+        floatingMenuSyncRaf = 0;
+        syncOpenFloatingMenus();
+      });
     }
 
     function openTaskFloatingMenu(trigger) {
@@ -9557,8 +9677,20 @@
         syncOpenFloatingMenus();
       });
     });
-    window.addEventListener("scroll", syncOpenFloatingMenus, { passive: true });
+    window.addEventListener("scroll", scheduleFloatingMenuSync, { passive: true });
     window.addEventListener("pagehide", () => {
+      if (renderRaf) {
+        cancelAnimationFrame(renderRaf);
+        renderRaf = 0;
+      }
+      if (syncHeightRaf) {
+        cancelAnimationFrame(syncHeightRaf);
+        syncHeightRaf = 0;
+      }
+      if (floatingMenuSyncRaf) {
+        cancelAnimationFrame(floatingMenuSyncRaf);
+        floatingMenuSyncRaf = 0;
+      }
       if (examCountdownTimer) {
         clearInterval(examCountdownTimer);
         examCountdownTimer = 0;
