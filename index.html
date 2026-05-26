@@ -7944,10 +7944,11 @@
       }).join("");
 
       const lastPoint = points[points.length - 1];
+      const focusPoint = (currentDate && points.find((point) => point.date === currentDate)) || lastPoint;
 
       return `
         <div class="chart-board">
-          <div class="chart-scroll">
+          <div class="chart-scroll" data-chart-scroll="${escapeHtml(chartId)}" data-chart-focus-x="${focusPoint ? Math.round(focusPoint.x) : 0}">
             <svg class="chart-svg" width="${chartWidth}" height="${chartHeight}" viewBox="0 0 ${chartWidth} ${chartHeight}" aria-hidden="true">
               <defs>
                 <linearGradient id="${lineId}" x1="0" y1="1" x2="1" y2="0">
@@ -9208,6 +9209,7 @@
         syncHeightRaf = 0;
         syncHeroOrbitHeight();
         syncRadarDateListPosition();
+        syncGrowthChartScrollPosition();
       });
       initExamCountdowns();
     }
@@ -9222,6 +9224,19 @@
       const targetOffset = (targetRect.top - listRect.top) + list.scrollTop;
       const centeredTop = targetOffset - ((list.clientHeight - targetRect.height) / 2);
       list.scrollTop = Math.max(0, centeredTop);
+    }
+
+    function syncGrowthChartScrollPosition() {
+      const scroll = document.querySelector('[data-chart-scroll="growth-constellation"]');
+      if (!scroll) return;
+
+      const focusX = Number(scroll.dataset.chartFocusX || 0);
+      if (!Number.isFinite(focusX) || focusX <= 0) return;
+
+      const maxScrollLeft = Math.max(0, scroll.scrollWidth - scroll.clientWidth);
+      const rightPadding = 96;
+      const targetLeft = focusX - scroll.clientWidth + rightPadding;
+      scroll.scrollLeft = clampNumber(targetLeft, 0, maxScrollLeft);
     }
 
     function syncHeroOrbitHeight() {
