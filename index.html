@@ -3566,12 +3566,6 @@
       font-size: 14px;
     }
 
-    .mission-footer .hint {
-      color: var(--muted);
-      line-height: 1.75;
-      font-size: 14px;
-    }
-
     .action-links {
       display: flex;
       align-items: center;
@@ -4981,6 +4975,50 @@
       { name: "Tử đinh hương lạnh", highlight: "#faf5ff", soft: "#ddd6fe", mid: "#aaa4cf", deep: "#5b537a", shadow: "#17162a", glowA: "rgba(196, 181, 253, .17)", glowB: "rgba(139, 233, 255, .09)", band: "rgba(237, 233, 254, .28)" },
       { name: "Sương xanh đại dương", highlight: "#ecfeff", soft: "#bddfe7", mid: "#7eb4c8", deep: "#386073", shadow: "#101d27", glowA: "rgba(139, 233, 255, .17)", glowB: "rgba(45, 212, 191, .10)", band: "rgba(207, 250, 254, .27)" }
     ];
+    const DEFAULT_PACE = "Đúng nhịp";
+    const TASK_GROUPS = ["physics", "math", "english", "review"];
+    const SUBJECT_LABELS = {
+      physics: "Vật lí",
+      math: "Toán",
+      english: "Tiếng Anh",
+      review: "Ôn lỗi / Recall"
+    };
+    const SUBJECT_ICONS = {
+      physics: "◎",
+      math: "◇",
+      english: "△",
+      review: "✓"
+    };
+    const SUBJECT_MOODS = {
+      physics: {
+        displayTitle: "Vật lí · Blue Orbit",
+        tagline: "If you want to find the secrets of the universe, think in terms of energy, frequency and vibration - Tesla.",
+        emptyTitle: "Vật lí đang chờ khai hỏa",
+        emptyText: "Thêm một nhiệm vụ Vật lí để bắt đầu săn lực, điện, sóng và các bẫy đề.",
+        emptyHint: "Newton đang ngồi chờ dưới gốc táo. Thêm một bài Vật Lí để ông ấy có việc làm."
+      },
+      math: {
+        displayTitle: "Toán · Violet Engine",
+        tagline: "Mathematics is the language in which God has written the universe - Galilei.",
+        emptyTitle: "Toán chưa có trận đánh",
+        emptyText: "Thêm một nhiệm vụ Toán để biến phần khó thành từng bước nhỏ dễ xử lý.",
+        emptyHint: "Euler đang chờ bạn nạp một phương trình đầu tiên."
+      },
+      english: {
+        displayTitle: "Tiếng Anh · Rose Signal",
+        tagline: "Mandela: ngôn ngữ chạm vào trái tim - nạp từ vựng để mở khóa cả thế giới.",
+        emptyTitle: "Tiếng Anh chưa mở map",
+        emptyText: "Thêm một nhiệm vụ Tiếng Anh để gom từ mới, dạng câu và lỗi sai thường gặp.",
+        emptyHint: "Ngữ pháp đang cười thầm trong bóng tối."
+      },
+      review: {
+        displayTitle: "Ôn lỗi · Green Reset",
+        tagline: "I have not failed. I've just found 10,000 ways that won't work.",
+        emptyTitle: "Kho ôn lỗi chưa có mục nào",
+        emptyText: "Thêm lỗi sai quan trọng để lần sau gặp lại không còn bị đề úp sọt.",
+        emptyHint: "Gợi ý: ghi nguyên nhân sai và cách né bẫy trong lần làm sau."
+      }
+    };
 
     const app = document.getElementById("app");
     let flagBurstTimer = 0;
@@ -5050,6 +5088,22 @@
       return [item.date, item.group, item.time, item.content, item.note].join("|").trim();
     }
 
+    function createEmptyTaskState() {
+      return {
+        physics: [],
+        math: [],
+        english: [],
+        review: [],
+        dailyNote: "",
+        pace: DEFAULT_PACE,
+        customAdd: ""
+      };
+    }
+
+    function getTaskList(taskState) {
+      return TASK_GROUPS.flatMap((group) => taskState[group] || []);
+    }
+
     function mergeTaskItems(savedItems, freshItems, date = "", group = "") {
       const safeFresh = normalizeTaskItems(freshItems, date, group);
       const safeSaved = normalizeTaskItems(savedItems, date, group);
@@ -5072,15 +5126,11 @@
     function createTaskMap() {
       const map = {};
       initialSchedule.forEach((day) => {
-        map[day.date] = {
-          physics: createTaskItems(day.physics),
-          math: createTaskItems(day.math),
-          english: createTaskItems(day.english),
-          review: createTaskItems(day.review),
-          dailyNote: "",
-          pace: "Đúng nhịp",
-          customAdd: ""
-        };
+        const nextState = createEmptyTaskState();
+        TASK_GROUPS.forEach((group) => {
+          nextState[group] = createTaskItems(day[group]);
+        });
+        map[day.date] = nextState;
       });
       return map;
     }
@@ -5115,15 +5165,14 @@
       const merged = {};
       Object.keys(freshTasks).forEach((date) => {
         const savedDay = savedTasks && savedTasks[date] ? savedTasks[date] : {};
-        merged[date] = {
-          physics: mergeTaskItems(savedDay.physics, freshTasks[date].physics, date, "physics"),
-          math: mergeTaskItems(savedDay.math, freshTasks[date].math, date, "math"),
-          english: mergeTaskItems(savedDay.english, freshTasks[date].english, date, "english"),
-          review: mergeTaskItems(savedDay.review, freshTasks[date].review, date, "review"),
-          dailyNote: typeof savedDay.dailyNote === "string" ? savedDay.dailyNote : "",
-          pace: typeof savedDay.pace === "string" ? savedDay.pace : "Đúng nhịp",
-          customAdd: typeof savedDay.customAdd === "string" ? savedDay.customAdd : ""
-        };
+        const mergedDay = createEmptyTaskState();
+        TASK_GROUPS.forEach((group) => {
+          mergedDay[group] = mergeTaskItems(savedDay[group], freshTasks[date][group], date, group);
+        });
+        mergedDay.dailyNote = typeof savedDay.dailyNote === "string" ? savedDay.dailyNote : "";
+        mergedDay.pace = typeof savedDay.pace === "string" ? savedDay.pace : DEFAULT_PACE;
+        mergedDay.customAdd = typeof savedDay.customAdd === "string" ? savedDay.customAdd : "";
+        merged[date] = mergedDay;
       });
       return merged;
     }
@@ -5309,10 +5358,6 @@
         missionFooterGrid.classList.add("add-task-grid");
         missionFooterGrid.style.removeProperty("grid-template-columns");
         missionFooterGrid.style.removeProperty("gap");
-        const addBtn = missionFooterGrid.querySelector('[data-action="add-task"]');
-        if (addBtn && !document.getElementById("addTaskNote")) {
-          addBtn.insertAdjacentHTML("beforebegin", '<input id="addTaskNote" class="field" placeholder="Ghi chú riêng cho đầu việc này..." />');
-        }
       }
 
       const addBtn = document.querySelector('[data-action="add-task"]');
@@ -5464,7 +5509,7 @@
     }
 
     function allTasks() {
-      return Object.values(state.tasks).flatMap((day) => [...day.physics, ...day.math, ...day.english, ...day.review]);
+      return Object.values(state.tasks).flatMap((day) => getTaskList(day));
     }
 
     function parseStudyMinutes(value) {
@@ -5874,7 +5919,7 @@
       let cumulativeDoneMinutes = 0;
       const stats = chartDays.map((day) => {
         const taskState = ensureTaskState(day.date);
-        const tasks = [...taskState.physics, ...taskState.math, ...taskState.english, ...taskState.review];
+        const tasks = getTaskList(taskState);
         const plannedMinutes = tasks.reduce((sum, item) => sum + parseStudyMinutes(item.time), 0);
         const doneTasks = tasks.filter((item) => item.done);
         const doneMinutes = doneTasks.reduce((sum, item) => sum + parseStudyMinutes(item.time), 0);
@@ -5941,8 +5986,8 @@
 
     function filteredDays() {
       return state.schedule.filter((day) => {
-        const taskGroup = state.tasks[day.date] || { physics: [], math: [], english: [], review: [] };
-        const tasks = [...taskGroup.physics, ...taskGroup.math, ...taskGroup.english, ...taskGroup.review];
+        const taskGroup = state.tasks[day.date] || createEmptyTaskState();
+        const tasks = getTaskList(taskGroup);
         const taskTexts = tasks.map((task) => task.text);
         const haystack = [day.date, day.weekday, day.phase, day.note, ...taskTexts].join(" ").toLowerCase();
         const queryMatch = !state.query || haystack.includes(state.query.toLowerCase());
@@ -5960,15 +6005,7 @@
 
     function ensureTaskState(date) {
       if (!state.tasks[date]) {
-        state.tasks[date] = {
-          physics: [],
-          math: [],
-          english: [],
-          review: [],
-          dailyNote: "",
-          pace: "Đúng nhịp",
-          customAdd: ""
-        };
+        state.tasks[date] = createEmptyTaskState();
       }
       return state.tasks[date];
     }
@@ -6202,11 +6239,10 @@
       state.schedule.forEach((day) => {
         day.note = "";
         const taskState = ensureTaskState(day.date);
-        taskState.physics = [];
-        taskState.math = [];
-        taskState.english = [];
-        taskState.review = [];
-        taskState.pace = "Đúng nhịp";
+        TASK_GROUPS.forEach((group) => {
+          taskState[group] = [];
+        });
+        taskState.pace = DEFAULT_PACE;
       });
     }
 
@@ -6260,15 +6296,14 @@
         return true;
       }
 
-      state.tasks[date] = {
-        physics: normalizeTaskItems(backupTasks.physics, date, "physics"),
-        math: normalizeTaskItems(backupTasks.math, date, "math"),
-        english: normalizeTaskItems(backupTasks.english, date, "english"),
-        review: normalizeTaskItems(backupTasks.review, date, "review"),
-        dailyNote: typeof backupTasks.dailyNote === "string" ? backupTasks.dailyNote : "",
-        pace: typeof backupTasks.pace === "string" && backupTasks.pace.trim() ? backupTasks.pace : "Đúng nhịp",
-        customAdd: typeof backupTasks.customAdd === "string" ? backupTasks.customAdd : ""
-      };
+      const restoredTaskState = createEmptyTaskState();
+      TASK_GROUPS.forEach((group) => {
+        restoredTaskState[group] = normalizeTaskItems(backupTasks[group], date, group);
+      });
+      restoredTaskState.dailyNote = typeof backupTasks.dailyNote === "string" ? backupTasks.dailyNote : "";
+      restoredTaskState.pace = typeof backupTasks.pace === "string" && backupTasks.pace.trim() ? backupTasks.pace : DEFAULT_PACE;
+      restoredTaskState.customAdd = typeof backupTasks.customAdd === "string" ? backupTasks.customAdd : "";
+      state.tasks[date] = restoredTaskState;
 
       targetDay.note = typeof backupDay.note === "string" ? backupDay.note : targetDay.note;
       if (typeof backupDay.phase === "string" && backupDay.phase.trim()) targetDay.phase = backupDay.phase;
@@ -6362,16 +6397,15 @@
     function clearSelectedDay() {
       const day = getSelectedDay();
       const taskState = ensureTaskState(state.selectedDate);
-      const hasData = taskState.physics.length || taskState.math.length || taskState.english.length || taskState.review.length || day.note;
+      const hasData = getTaskList(taskState).length || day.note;
       if (!hasData) return;
       const ok = confirm(`Xóa toàn bộ lịch và ghi chú của ngày ${day.date}?`);
       if (!ok) return;
 
-      taskState.physics = [];
-      taskState.math = [];
-      taskState.english = [];
-      taskState.review = [];
-      taskState.pace = "Đúng nhịp";
+      TASK_GROUPS.forEach((group) => {
+        taskState[group] = [];
+      });
+      taskState.pace = DEFAULT_PACE;
       day.note = "";
       saveState();
       scheduleRender();
@@ -6384,44 +6418,13 @@
     }
 
     function sectionHtml(title, groupKey, items) {
-      const icons = { physics: "◎", math: "◇", english: "△", review: "✓" };
-      const subjectMood = {
-        physics: {
-          displayTitle: "Vật lí · Blue Orbit",
-          tagline: "If you want to find the secrets of the universe, think in terms of energy, frequency and vibration - Tesla.",
-          emptyTitle: "Vật lí đang chờ khai hỏa",
-          emptyText: "Thêm một nhiệm vụ Vật lí để bắt đầu săn lực, điện, sóng và các bẫy đề.",
-          emptyHint: "Newton đang ngồi chờ dưới gốc táo. Thêm một bài Vật Lí để ông ấy có việc làm."
-        },
-        math: {
-          displayTitle: "Toán · Violet Engine",
-          tagline: "Mathematics is the language in which God has written the universe - Galilei.",
-          emptyTitle: "Toán chưa có trận đánh",
-          emptyText: "Thêm một nhiệm vụ Toán để biến phần khó thành từng bước nhỏ dễ xử lý.",
-          emptyHint: "Euler đang chờ bạn nạp một phương trình đầu tiên."
-        },
-        english: {
-          displayTitle: "Tiếng Anh · Rose Signal",
-          tagline: "Mandela: ngôn ngữ chạm vào trái tim - nạp từ vựng để mở khóa cả thế giới.",
-          emptyTitle: "Tiếng Anh chưa mở map",
-          emptyText: "Thêm một nhiệm vụ Tiếng Anh để gom từ mới, dạng câu và lỗi sai thường gặp.",
-          emptyHint: "Ngữ pháp đang cười thầm trong bóng tối."
-        },
-        review: {
-          displayTitle: "Ôn lỗi · Green Reset",
-          tagline: "I have not failed. I've just found 10,000 ways that won't work.",
-          emptyTitle: "Kho ôn lỗi chưa có mục nào",
-          emptyText: "Thêm lỗi sai quan trọng để lần sau gặp lại không còn bị đề úp sọt.",
-          emptyHint: "Gợi ý: ghi nguyên nhân sai và cách né bẫy trong lần làm sau."
-        }
-      };
-      const mood = subjectMood[groupKey] || subjectMood.review;
+      const mood = SUBJECT_MOODS[groupKey] || SUBJECT_MOODS.review;
       const doneCount = items.filter((item) => item.done).length;
 
       return `
         <details class="section ${groupKey}" open>
           <summary class="section-summary ${groupKey}">
-            <span class="section-summary-icon">${icons[groupKey]}</span>
+            <span class="section-summary-icon">${SUBJECT_ICONS[groupKey]}</span>
             <span class="section-summary-copy">
               <span class="section-summary-title">${escapeHtml(mood.displayTitle || title)}</span>
               <span class="section-summary-sub">${escapeHtml(mood.tagline)}</span>
@@ -6507,7 +6510,7 @@
               </div>
             `).join("") : `
               <div class="section-empty ${groupKey}">
-                <div class="section-empty-icon">${icons[groupKey]}</div>
+                <div class="section-empty-icon">${SUBJECT_ICONS[groupKey]}</div>
                 <div class="section-empty-copy">
                   <div class="section-empty-title">${escapeHtml(mood.emptyTitle)}</div>
                   <div class="section-empty-text">${escapeHtml(mood.emptyText)}</div>
@@ -6525,7 +6528,7 @@
       const selectedTaskState = ensureTaskState(state.selectedDate);
       const visibleDays = filteredDays();
       const analytics = buildStudyAnalytics(visibleDays);
-      const currentDayTasks = [...selectedTaskState.physics, ...selectedTaskState.math, ...selectedTaskState.english, ...selectedTaskState.review];
+      const currentDayTasks = getTaskList(selectedTaskState);
       const currentDone = currentDayTasks.filter((item) => item.done).length;
       const currentPercent = currentDayTasks.length ? Math.round((currentDone * 100) / currentDayTasks.length) : 0;
       const all = allTasks();
@@ -6537,7 +6540,6 @@
       const englishProgress = groupProgress("english", selectedTaskState);
       const reviewProgress = groupProgress("review", selectedTaskState);
       const learnedMinutes = totalDoneStudyMinutes();
-      const totalTaskLabel = `${done}/${total}`;
 
       app.innerHTML = `
         <section class="hero-shell">
@@ -6689,7 +6691,7 @@
               <div class="date-list">
                 ${visibleDays.map((day) => {
                   const taskState = ensureTaskState(day.date);
-                  const dayTasks = [...taskState.physics, ...taskState.math, ...taskState.english, ...taskState.review];
+                  const dayTasks = getTaskList(taskState);
                   const dayDone = dayTasks.filter((item) => item.done).length;
                   const dayPercent = dayTasks.length ? Math.round((dayDone * 100) / dayTasks.length) : 0;
 
@@ -6737,19 +6739,18 @@
                       aria-label="Chọn nhóm lịch học"
                     >
                       <span class="subject-select-value">
-                        <span data-subject-label>${escapeHtml(({
-                          physics: "Vật lí",
-                          math: "Toán",
-                          english: "Tiếng Anh",
-                          review: "Ôn lỗi / Recall"
-                        })[(editingTask && editingTask.date === state.selectedDate ? editingTask.group : "physics")] || "Vật lí")}</span>
+                        <span data-subject-label>${escapeHtml(getSubjectLabel((editingTask && editingTask.date === state.selectedDate ? editingTask.group : "physics")))}</span>
                       </span>
                     </button>
                     <div class="subject-select-menu" role="listbox" aria-label="Danh sách môn học">
-                      <button type="button" class="subject-select-option active" data-action="select-subject-option" data-value="physics">Vật lí</button>
-                      <button type="button" class="subject-select-option" data-action="select-subject-option" data-value="math">Toán</button>
-                      <button type="button" class="subject-select-option" data-action="select-subject-option" data-value="english">Tiếng Anh</button>
-                      <button type="button" class="subject-select-option" data-action="select-subject-option" data-value="review">Ôn lỗi / Recall</button>
+                      ${TASK_GROUPS.map((group) => `
+                        <button
+                          type="button"
+                          class="subject-select-option ${group === (editingTask && editingTask.date === state.selectedDate ? editingTask.group : "physics") ? "active" : ""}"
+                          data-action="select-subject-option"
+                          data-value="${group}"
+                        >${escapeHtml(getSubjectLabel(group))}</button>
+                      `).join("")}
                     </div>
                   </div>
                   <input id="addOrder" class="field" type="number" min="1" inputmode="numeric" placeholder="STT" value="${escapeHtml(editingTask && editingTask.date === state.selectedDate ? String(editingTask.index + 1) : String((selectedTaskState.physics || []).length + 1))}" />
@@ -6933,7 +6934,7 @@
                   <tbody>
                     ${visibleDays.map((day) => {
                       const taskState = ensureTaskState(day.date);
-                      const mainTasks = [...taskState.physics, ...taskState.math, ...taskState.english, ...taskState.review];
+                      const mainTasks = getTaskList(taskState);
                       const mainDone = mainTasks.filter((item) => item.done).length;
                       const mainPercent = mainTasks.length ? Math.round((mainDone * 100) / mainTasks.length) : 0;
 
@@ -7091,13 +7092,7 @@
     }
 
     function getSubjectLabel(value) {
-      const subjectLabels = {
-        physics: "Vật lí",
-        math: "Toán",
-        english: "Tiếng Anh",
-        review: "Ôn lỗi / Recall"
-      };
-      return subjectLabels[value] || subjectLabels.physics;
+      return SUBJECT_LABELS[value] || SUBJECT_LABELS.physics;
     }
 
     function syncSubjectSelectUi(value) {
