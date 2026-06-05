@@ -109,6 +109,10 @@
       background-repeat: repeat;
       animation-timing-function: linear;
       animation-iteration-count: infinite;
+      backface-visibility: hidden;
+      contain: paint;
+      transform: translateZ(0);
+      will-change: transform, opacity;
     }
 
     .stars {
@@ -158,6 +162,8 @@
       pointer-events: none;
       transform: rotate(-25deg);
       animation: shooting 9s ease-in-out infinite;
+      backface-visibility: hidden;
+      contain: paint;
       will-change: transform, opacity;
     }
 
@@ -4981,6 +4987,8 @@
       height: 100%;
       display: block;
       pointer-events: none;
+      contain: strict;
+      transform: translateZ(0);
     }
 
     .lucky-comet,
@@ -6039,6 +6047,10 @@
       mythic: ["arrow", "crescent", "spiral", "twin"]
     };
     const LUCKY_TWO_PI = Math.PI * 2;
+    const LUCKY_COMET_MAX_CANVAS_PIXELS = 1800000;
+    const LUCKY_COMET_LOW_POWER_MAX_CANVAS_PIXELS = 1250000;
+    const LUCKY_COMET_MAX_RENDER_RATIO = 1.2;
+    const LUCKY_COMET_MIN_RENDER_RATIO = 0.66;
     const LUCKY_COMET_CORE_PROFILES = {
       common: { halo: 1.92, core: 0.68, ring: 1.36, flare: 1.22, alpha: 0.72, sparks: 4 },
       uncommon: { halo: 2.08, core: 0.74, ring: 1.52, flare: 1.34, alpha: 0.78, sparks: 5 },
@@ -6644,18 +6656,51 @@
       );
     }
 
-    function fitLuckyCometCanvas(canvas) {
+    function getLuckyCometRenderProfile(width, height, reducedMotion = false) {
+      const area = Math.max(1, width * height);
+      const nav = typeof navigator === "object" ? navigator : {};
+      const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+      const cores = Number(nav.hardwareConcurrency);
+      const memory = Number(nav.deviceMemory);
+      const hasCoreHint = Number.isFinite(cores) && cores > 0;
+      const hasMemoryHint = Number.isFinite(memory) && memory > 0;
+      const lowPower = reducedMotion
+        || !!(connection && connection.saveData)
+        || (hasCoreHint && cores <= 4)
+        || (hasMemoryHint && memory <= 4);
+      const maxPixels = lowPower ? LUCKY_COMET_LOW_POWER_MAX_CANVAS_PIXELS : LUCKY_COMET_MAX_CANVAS_PIXELS;
+      const ratioBudget = Math.sqrt(maxPixels / area);
+      const ratio = clampNumber(
+        Math.min(window.devicePixelRatio || 1, LUCKY_COMET_MAX_RENDER_RATIO, ratioBudget),
+        LUCKY_COMET_MIN_RENDER_RATIO,
+        LUCKY_COMET_MAX_RENDER_RATIO
+      );
+      const viewportScale = area > 1600000 ? 0.86 : 1;
+      const powerScale = lowPower ? 0.78 : 1;
+
+      return {
+        ratio,
+        particleScale: reducedMotion ? 0.42 : clampNumber(0.92 * viewportScale * powerScale, 0.56, 0.92),
+        supportParticleScale: reducedMotion ? 0.34 : clampNumber(0.72 * viewportScale * powerScale, 0.42, 0.72)
+      };
+    }
+
+    function fitLuckyCometCanvas(canvas, reducedMotion = false) {
       const width = window.innerWidth || document.documentElement.clientWidth || 1280;
       const height = window.innerHeight || document.documentElement.clientHeight || 720;
-      const ratio = Math.min(window.devicePixelRatio || 1, 1.35);
-      const ctx = canvas.getContext("2d");
+      const profile = getLuckyCometRenderProfile(width, height, reducedMotion);
+      const ratio = profile.ratio;
+      const ctx = canvas.getContext("2d", { alpha: true, desynchronized: true }) || canvas.getContext("2d");
+      if (!ctx) return { ctx: null, width, height, ratio, profile };
 
       canvas.width = Math.ceil(width * ratio);
       canvas.height = Math.ceil(height * ratio);
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-      return { ctx, width, height, ratio };
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "low";
+      return { ctx, width, height, ratio, profile };
     }
 
     function getLuckyCometTone(rarity) {
@@ -7358,7 +7403,9 @@
         ctx.stroke();
       }
 
-      drawLuckyCometParticles(ctx, comet, tone, progress, fade, radius, tailLength);
+      if (fade > 0.06 && comet.particles.length) {
+        drawLuckyCometParticles(ctx, comet, tone, progress, fade, radius, tailLength);
+      }
 
       if (rarity.key === "epic" || rarity.key === "mythic") {
         ctx.globalAlpha = fade * 0.42;
@@ -7467,7 +7514,17 @@
       canvas.setAttribute("aria-hidden", "true");
       overlay.appendChild(canvas);
 
-      const { ctx, width: canvasWidth, height: canvasHeight } = fitLuckyCometCanvas(canvas);
+      const {
+        ctx,
+        width: canvasWidth,
+        height: canvasHeight,
+        profile: renderProfile
+      } = fitLuckyCometCanvas(canvas, reducedMotion);
+      if (!ctx) {
+        canvas.remove();
+        return 0;
+      }
+
       const tone = getLuckyCometTone(rarity);
       let longestLife = 0;
 
@@ -7484,7 +7541,12 @@
         const delayMs = Math.round(slot.delay || 0);
         const scale = (slot.scale || 1) * rarity.scale;
         const particleBase = reducedMotion ? (slot.main ? 22 : 12) : (slot.main ? 44 : 22);
-        const particleCount = Math.round(particleBase * clampNumber(scale, 0.62, 1.35));
+        const particleScale = slot.main ? renderProfile.particleScale : renderProfile.supportParticleScale;
+        const minParticles = reducedMotion ? (slot.main ? 8 : 4) : (slot.main ? 18 : 8);
+        const particleCount = Math.max(
+          minParticles,
+          Math.round(particleBase * particleScale * clampNumber(scale, 0.62, 1.35))
+        );
         longestLife = Math.max(longestLife, delayMs + durationMs);
 
         return {
@@ -7523,7 +7585,15 @@
       let frameId = 0;
       const drawFrame = (now) => {
         luckyCometFrames.delete(frameId);
+        if (document.hidden) {
+          canvas.remove();
+          if (caption) caption.remove();
+          return;
+        }
+
         const elapsed = now - startedAt;
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = "source-over";
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
         for (let index = 0; index < comets.length; index += 1) {
@@ -7535,6 +7605,8 @@
           const fadeIn = clampNumber(local / 0.16, 0, 1);
           const fadeOut = 1 - clampNumber((local - 0.86) / 0.14, 0, 1);
           const fade = fadeIn * fadeOut;
+          if (fade <= 0.01) continue;
+
           const depthLift = Math.sin(local * Math.PI) * comet.radius * 0.34;
 
           comet.x = comet.startX + (comet.dx * progress);
