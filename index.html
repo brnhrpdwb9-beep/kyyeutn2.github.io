@@ -5887,6 +5887,17 @@
       english: "Tiếng Anh",
       review: "Ôn lỗi / Recall"
     };
+    let lastSelectedAddGroup = "physics";
+
+    function normalizeTaskGroup(value, fallback = "physics") {
+      const safeFallback = TASK_GROUPS.includes(fallback) ? fallback : "physics";
+      return TASK_GROUPS.includes(value) ? value : safeFallback;
+    }
+
+    function getPreferredAddGroup() {
+      return normalizeTaskGroup(lastSelectedAddGroup, "physics");
+    }
+
     const SUBJECT_ICONS = {
       physics: "◎",
       math: "◇",
@@ -8114,6 +8125,7 @@
       accent = {},
       currentDate = "",
       focusDate = "",
+      scrollFocusDate = "",
       emptyMessage = "Chưa có dữ liệu trong vùng thời gian này."
     }) {
       if (!stats.length) return renderChartEmptyState(emptyMessage);
@@ -8134,6 +8146,11 @@
       const beamId = `${chartId}-beam`;
       const haloId = `${chartId}-halo`;
       const lineId = `${chartId}-line`;
+      const scrollFocusIndex = scrollFocusDate ? stats.findIndex((item) => item.date === scrollFocusDate) : -1;
+      const scrollFocusX = scrollFocusIndex >= 0 ? paddingLeft + (scrollFocusIndex * slotWidth) + (slotWidth / 2) : 0;
+      const scrollAttrs = scrollFocusX > 0
+        ? ` data-chart-scroll="${escapeHtml(chartId)}" data-chart-focus-x="${Math.round(scrollFocusX)}"`
+        : "";
       const bars = stats.map((item, index) => {
         const value = Math.max(0, Number(item[valueKey]) || 0);
         const centerX = paddingLeft + (index * slotWidth) + (slotWidth / 2);
@@ -8167,7 +8184,7 @@
 
       return `
         <div class="chart-board">
-          <div class="chart-scroll">
+          <div class="chart-scroll"${scrollAttrs}>
             <svg class="chart-svg" width="${chartWidth}" height="${chartHeight}" viewBox="0 0 ${chartWidth} ${chartHeight}" aria-hidden="true">
               <defs>
                 <linearGradient id="${gradientId}" x1="0" y1="1" x2="0" y2="0">
@@ -8505,9 +8522,10 @@
     }
 
     function resetTaskEditor() {
+      const addGroup = getPreferredAddGroup();
       editingTask = null;
-      syncSubjectSelectUi("physics");
-      syncTaskOrderInput("physics");
+      syncSubjectSelectUi(addGroup);
+      syncTaskOrderInput(addGroup);
       const addBtn = document.querySelector('[data-action="add-task"]');
       if (addBtn) addBtn.textContent = "Thêm";
     }
@@ -8567,12 +8585,13 @@
       const textInput = document.getElementById("addText");
       const taskNoteInput = document.getElementById("addTaskNote");
       const dayNoteInput = document.getElementById("noteInput");
-      const group = groupInput ? groupInput.value : "physics";
+      const group = normalizeTaskGroup(groupInput ? groupInput.value : "", getPreferredAddGroup());
       const taskOrder = orderInput ? orderInput.value.trim() : "";
       const time = timeInput ? timeInput.value.trim() : "";
       const text = textInput ? textInput.value.trim() : "";
       const taskNote = taskNoteInput ? taskNoteInput.value.trim() : "";
       const dayNote = dayNoteInput ? dayNoteInput.value.trim() : "";
+      lastSelectedAddGroup = group;
 
       if (!text) {
         if (!editingTask && dayNote) {
@@ -9000,6 +9019,9 @@
     function render() {
       const selectedDay = getSelectedDay();
       const selectedTaskState = ensureTaskState(state.selectedDate);
+      const isEditingSelectedDay = editingTask && editingTask.date === state.selectedDate;
+      const addFormGroup = isEditingSelectedDay ? normalizeTaskGroup(editingTask.group, getPreferredAddGroup()) : getPreferredAddGroup();
+      const addOrderValue = isEditingSelectedDay ? String(editingTask.index + 1) : String((selectedTaskState[addFormGroup] || []).length + 1);
       const visibleDays = filteredDays();
       const radarFocusDate = getNearestDayToToday(visibleDays)?.date || "";
       const analytics = buildStudyAnalytics(visibleDays);
@@ -9206,7 +9228,7 @@
                 </div>
                 <div class="add-task-grid">
                   <div class="custom-subject-select" data-subject-select>
-                    <input id="addGroup" type="hidden" value="${escapeHtml(editingTask && editingTask.date === state.selectedDate ? editingTask.group : "physics")}" />
+                    <input id="addGroup" type="hidden" value="${escapeHtml(addFormGroup)}" />
                     <button
                       type="button"
                       class="subject-select-trigger"
@@ -9216,21 +9238,21 @@
                       aria-label="Chọn nhóm lịch học"
                     >
                       <span class="subject-select-value">
-                        <span data-subject-label>${escapeHtml(getSubjectLabel((editingTask && editingTask.date === state.selectedDate ? editingTask.group : "physics")))}</span>
+                        <span data-subject-label>${escapeHtml(getSubjectLabel(addFormGroup))}</span>
                       </span>
                     </button>
                     <div class="subject-select-menu" role="listbox" aria-label="Danh sách môn học">
                       ${TASK_GROUPS.map((group) => `
                         <button
                           type="button"
-                          class="subject-select-option ${group === (editingTask && editingTask.date === state.selectedDate ? editingTask.group : "physics") ? "active" : ""}"
+                          class="subject-select-option ${group === addFormGroup ? "active" : ""}"
                           data-action="select-subject-option"
                           data-value="${group}"
                         >${escapeHtml(getSubjectLabel(group))}</button>
                       `).join("")}
                     </div>
                   </div>
-                  <input id="addOrder" class="field" type="number" min="1" inputmode="numeric" placeholder="STT" value="${escapeHtml(editingTask && editingTask.date === state.selectedDate ? String(editingTask.index + 1) : String((selectedTaskState.physics || []).length + 1))}" />
+                  <input id="addOrder" class="field" type="number" min="1" inputmode="numeric" placeholder="STT" value="${escapeHtml(addOrderValue)}" />
                   <input id="addTime" class="field" placeholder="Giờ: 19:00-21:00 hoặc 1h30" />
                   <input id="addText" class="field" placeholder="Nội dung học: Làm đề, ôn chương, chữa lỗi..." />
                   <input id="addTaskNote" class="field" placeholder="Ghi chú task..." />
@@ -9308,6 +9330,7 @@
                     },
                     currentDate: analytics.currentChartDate,
                     focusDate: analytics.currentChartDate,
+                    scrollFocusDate: analytics.currentChartDate,
                     emptyMessage: "Chưa có ngày nào đã đi qua để dựng quỹ đạo giờ học."
                   })}
                 </article>
@@ -9376,6 +9399,7 @@
                     },
                     currentDate: analytics.currentChartDate,
                     focusDate: analytics.taskHighlight.date,
+                    scrollFocusDate: analytics.currentChartDate,
                     emptyMessage: "Chưa có ngày đã qua để dựng tháp nhiệm vụ hoàn tất."
                   })}
                 </article>
@@ -9512,14 +9536,14 @@
       `;
 
       applyDailyPlanetPalette(selectedDay.date);
-      syncSubjectSelectUi(editingTask && editingTask.date === state.selectedDate ? editingTask.group : "physics");
+      syncSubjectSelectUi(addFormGroup);
       syncDynamicUi(selectedDay, currentDone, currentDayTasks, learnedMinutes, done, total);
       if (syncHeightRaf) cancelAnimationFrame(syncHeightRaf);
       syncHeightRaf = requestAnimationFrame(() => {
         syncHeightRaf = 0;
         syncHeroOrbitHeight();
         syncRadarDateListPosition();
-        syncGrowthChartScrollPosition();
+        syncChartScrollPositions();
       });
       initExamCountdowns();
     }
@@ -9536,17 +9560,16 @@
       list.scrollTop = Math.max(0, centeredTop);
     }
 
-    function syncGrowthChartScrollPosition() {
-      const scroll = document.querySelector('[data-chart-scroll="growth-constellation"]');
-      if (!scroll) return;
+    function syncChartScrollPositions() {
+      document.querySelectorAll("[data-chart-scroll][data-chart-focus-x]").forEach((scroll) => {
+        const focusX = Number(scroll.dataset.chartFocusX || 0);
+        if (!Number.isFinite(focusX) || focusX <= 0) return;
 
-      const focusX = Number(scroll.dataset.chartFocusX || 0);
-      if (!Number.isFinite(focusX) || focusX <= 0) return;
-
-      const maxScrollLeft = Math.max(0, scroll.scrollWidth - scroll.clientWidth);
-      const rightPadding = 96;
-      const targetLeft = focusX - scroll.clientWidth + rightPadding;
-      scroll.scrollLeft = clampNumber(targetLeft, 0, maxScrollLeft);
+        const maxScrollLeft = Math.max(0, scroll.scrollWidth - scroll.clientWidth);
+        const rightPadding = 96;
+        const targetLeft = focusX - scroll.clientWidth + rightPadding;
+        scroll.scrollLeft = clampNumber(targetLeft, 0, maxScrollLeft);
+      });
     }
 
     function syncHeroOrbitHeight() {
@@ -9602,14 +9625,15 @@
     }
 
     function syncSubjectSelectUi(value) {
+      const safeValue = normalizeTaskGroup(value, "physics");
       const wrap = document.querySelector("[data-subject-select]");
       if (!wrap) return;
       const input = wrap.querySelector("#addGroup");
       const label = wrap.querySelector("[data-subject-label]");
-      if (input) input.value = value;
-      if (label) label.textContent = getSubjectLabel(value);
+      if (input) input.value = safeValue;
+      if (label) label.textContent = getSubjectLabel(safeValue);
       wrap.querySelectorAll(".subject-select-option").forEach((option) => {
-        option.classList.toggle("active", option.dataset.value === value);
+        option.classList.toggle("active", option.dataset.value === safeValue);
       });
     }
 
@@ -9810,7 +9834,8 @@
       }
 
       if (target.dataset.action === "select-subject-option") {
-        const value = String(target.dataset.value || "physics");
+        const value = normalizeTaskGroup(target.dataset.value, getPreferredAddGroup());
+        lastSelectedAddGroup = value;
         syncSubjectSelectUi(value);
         if (!editingTask) syncTaskOrderInput(value);
         closeSubjectMenu();
@@ -9999,6 +10024,7 @@
       syncHeightRaf = requestAnimationFrame(() => {
         syncHeightRaf = 0;
         syncHeroOrbitHeight();
+        syncChartScrollPositions();
         syncOpenFloatingMenus();
       });
     });
