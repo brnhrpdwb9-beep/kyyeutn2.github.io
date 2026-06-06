@@ -596,6 +596,12 @@
       --planet-band: rgba(232,236,242,.28);
       --planet-crater-light: rgba(255,255,255,.16);
       --planet-crater-dark: rgba(0,0,0,.14);
+      --planet-shell-glow: rgba(119,166,255,.10);
+      --planet-orbit: rgba(220,226,236,.22);
+      --planet-orbit-glow: rgba(220,226,236,.14);
+      --planet-orbit-dash: rgba(186,194,206,.22);
+      --planet-ring: rgba(255,255,255,.10);
+      --planet-ring-lit: rgba(230,235,242,.34);
       position: absolute;
       top: 16px;
       right: 92px;
@@ -605,6 +611,7 @@
       z-index: 1;
       transform-style: preserve-3d;
       animation: heroPlanetFloat 8s ease-in-out infinite;
+      transition: filter .45s ease;
     }
 
     .hero-planet-ball {
@@ -624,6 +631,7 @@
         radial-gradient(circle at 28% 24%, rgba(255,255,255,.98), rgba(255,255,255,.18) 12%, transparent 18%),
         radial-gradient(circle at 52% 58%, color-mix(in srgb, var(--planet-soft) 34%, transparent), transparent 26%),
         linear-gradient(155deg, var(--planet-highlight) 0%, var(--planet-soft) 36%, var(--planet-mid) 58%, var(--planet-deep) 76%, var(--planet-shadow) 100%);
+      transition: background .45s ease, box-shadow .45s ease;
     }
 
     .hero-planet-ball::before {
@@ -645,8 +653,8 @@
       position: absolute;
       inset: -8px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,.10);
-      box-shadow: 0 0 22px rgba(119,166,255,.10), inset 0 0 18px rgba(255,255,255,.04);
+      border: 1px solid var(--planet-ring);
+      box-shadow: 0 0 22px var(--planet-shell-glow), inset 0 0 18px rgba(255,255,255,.04);
       pointer-events: none;
       z-index: 2;
     }
@@ -767,8 +775,8 @@
       position: absolute;
       inset: 0;
       border-radius: inherit;
-      border: 1px solid rgba(220,226,236,.22);
-      box-shadow: 0 0 10px rgba(220,226,236,.14);
+      border: 1px solid var(--planet-orbit);
+      box-shadow: 0 0 10px var(--planet-orbit-glow);
     }
 
     .hero-planet-orbit::after {
@@ -776,7 +784,7 @@
       position: absolute;
       inset: -2px;
       border-radius: inherit;
-      border: 1px dashed rgba(186,194,206,.22);
+      border: 1px dashed var(--planet-orbit-dash);
       filter: blur(.5px);
     }
 
@@ -802,8 +810,8 @@
       height: 210%;
       transform: translate(-50%, -50%) rotateX(72deg) rotateY(15deg);
       border-radius: 50%;
-      border: 2px solid rgba(255,255,255,.10);
-      border-left-color: rgba(230,235,242,.34);
+      border: 2px solid var(--planet-ring);
+      border-left-color: var(--planet-ring-lit);
       z-index: 1;
     }
 
@@ -843,6 +851,69 @@
       background: radial-gradient(circle, rgba(0,0,0,0.38), transparent 72%);
       filter: blur(10px);
       opacity: 0.8;
+    }
+
+    .hero-planet[data-planet-mode="six-hour"],
+    .hero-planet[data-planet-mode="exam-eve"] {
+      filter:
+        saturate(1.18)
+        drop-shadow(0 0 18px var(--planet-glow-a))
+        drop-shadow(0 0 26px var(--planet-glow-b));
+    }
+
+    .hero-planet[data-planet-mode="exam-eve"] {
+      animation:
+        heroPlanetFloat 8s ease-in-out infinite,
+        planetExamGlow 5.6s ease-in-out infinite;
+    }
+
+    .hero-planet[data-planet-mode="six-hour"] .hero-planet-ball,
+    .hero-planet[data-planet-mode="exam-eve"] .hero-planet-ball {
+      box-shadow:
+        inset -28px -34px 48px rgba(0,0,0,.46),
+        inset 13px 12px 26px rgba(255,255,255,.16),
+        inset -6px -8px 14px rgba(0,0,0,.2),
+        0 28px 50px rgba(0,0,0,.4),
+        0 0 28px var(--planet-glow-a),
+        0 0 42px var(--planet-glow-b);
+      background:
+        radial-gradient(circle at 28% 24%, rgba(255,255,255,.98), rgba(255,255,255,.22) 12%, transparent 18%),
+        radial-gradient(circle at 12% 18%, rgba(34,211,238,.22), transparent 28%),
+        radial-gradient(circle at 78% 12%, rgba(251,191,36,.20), transparent 26%),
+        radial-gradient(circle at 92% 82%, rgba(244,114,182,.18), transparent 30%),
+        conic-gradient(from 218deg at 48% 52%, rgba(34,211,238,.34), rgba(251,191,36,.26), rgba(244,114,182,.26), rgba(139,92,246,.32), rgba(34,211,238,.34)),
+        linear-gradient(155deg, var(--planet-highlight) 0%, var(--planet-soft) 34%, var(--planet-mid) 58%, var(--planet-deep) 78%, var(--planet-shadow) 100%);
+    }
+
+    .hero-planet[data-planet-mode="exam-eve"] .hero-planet-ball {
+      background:
+        radial-gradient(circle at 28% 24%, rgba(255,255,255,.98), rgba(255,255,255,.24) 12%, transparent 18%),
+        radial-gradient(circle at 14% 20%, rgba(34,211,238,.28), transparent 30%),
+        radial-gradient(circle at 76% 14%, rgba(251,191,36,.27), transparent 28%),
+        radial-gradient(circle at 88% 80%, rgba(244,114,182,.24), transparent 32%),
+        radial-gradient(circle at 52% 62%, rgba(139,92,246,.2), transparent 32%),
+        conic-gradient(from 198deg at 50% 52%, rgba(34,211,238,.42), rgba(251,191,36,.34), rgba(244,114,182,.34), rgba(139,92,246,.4), rgba(34,211,238,.42)),
+        linear-gradient(155deg, var(--planet-highlight) 0%, var(--planet-soft) 32%, var(--planet-mid) 56%, var(--planet-deep) 78%, var(--planet-shadow) 100%);
+    }
+
+    .hero-planet[data-planet-mode="six-hour"] .hero-planet-atmosphere,
+    .hero-planet[data-planet-mode="exam-eve"] .hero-planet-atmosphere {
+      opacity: .96;
+      background:
+        radial-gradient(circle at 26% 24%, rgba(255,255,255,.16), transparent 32%),
+        conic-gradient(from 0deg, rgba(255,255,255,0) 0deg, rgba(34,211,238,.25) 82deg, rgba(251,191,36,.22) 146deg, rgba(244,114,182,.2) 224deg, rgba(139,92,246,.2) 290deg, rgba(255,255,255,0) 360deg);
+    }
+
+    .hero-planet[data-planet-mode="six-hour"] .hero-planet-band,
+    .hero-planet[data-planet-mode="exam-eve"] .hero-planet-band {
+      opacity: .88;
+      background: linear-gradient(90deg, transparent, rgba(34,211,238,.36), rgba(251,191,36,.34), rgba(244,114,182,.34), transparent);
+    }
+
+    .hero-planet[data-planet-mode="six-hour"] .hero-planet-shadow,
+    .hero-planet[data-planet-mode="exam-eve"] .hero-planet-shadow {
+      background: radial-gradient(circle, rgba(34,211,238,.24), rgba(251,191,36,.12) 42%, rgba(0,0,0,.24) 72%, transparent 78%);
+      opacity: .92;
     }
 
     .hero-orbit {
@@ -3817,6 +3888,21 @@
       50% { transform: translateY(-10px) rotate(2deg); }
     }
 
+    @keyframes planetExamGlow {
+      0%, 100% {
+        filter:
+          saturate(1.18)
+          drop-shadow(0 0 18px var(--planet-glow-a))
+          drop-shadow(0 0 26px var(--planet-glow-b));
+      }
+      50% {
+        filter:
+          saturate(1.34)
+          drop-shadow(0 0 24px var(--planet-glow-a))
+          drop-shadow(0 0 38px var(--planet-glow-b));
+      }
+    }
+
     @keyframes auraPulse {
       0%,100% { transform: scale(1); opacity: .72; }
       50% { transform: scale(1.08); opacity: 1; }
@@ -5879,6 +5965,44 @@
       { name: "Tử đinh hương lạnh", highlight: "#faf5ff", soft: "#ddd6fe", mid: "#aaa4cf", deep: "#5b537a", shadow: "#17162a", glowA: "rgba(196, 181, 253, .17)", glowB: "rgba(139, 233, 255, .09)", band: "rgba(237, 233, 254, .28)" },
       { name: "Sương xanh đại dương", highlight: "#ecfeff", soft: "#bddfe7", mid: "#7eb4c8", deep: "#386073", shadow: "#101d27", glowA: "rgba(139, 233, 255, .17)", glowB: "rgba(45, 212, 191, .10)", band: "rgba(207, 250, 254, .27)" }
     ];
+    const HERO_PLANET_SIX_HOUR_MINUTES = 6 * 60;
+    const HERO_PLANET_EXAM_EVE_DATE = "10/06";
+    const HERO_PLANET_SPECIAL_PALETTES = {
+      "six-hour": {
+        name: "THPTQG Six-Hour Aurora",
+        highlight: "#fef3c7",
+        soft: "#7dd3fc",
+        mid: "#f472b6",
+        deep: "#6d28d9",
+        shadow: "#0f172a",
+        glowA: "rgba(34, 211, 238, .36)",
+        glowB: "rgba(251, 191, 36, .24)",
+        band: "rgba(244, 114, 182, .40)",
+        shellGlow: "rgba(34, 211, 238, .24)",
+        orbit: "rgba(34, 211, 238, .38)",
+        orbitGlow: "rgba(251, 191, 36, .24)",
+        orbitDash: "rgba(244, 114, 182, .36)",
+        ring: "rgba(255,255,255,.18)",
+        ringLit: "rgba(251, 191, 36, .58)"
+      },
+      "exam-eve": {
+        name: "THPTQG Exam-Eve Aurora",
+        highlight: "#fff7d6",
+        soft: "#67e8f9",
+        mid: "#f0abfc",
+        deep: "#4c1d95",
+        shadow: "#08111f",
+        glowA: "rgba(34, 211, 238, .42)",
+        glowB: "rgba(251, 191, 36, .32)",
+        band: "rgba(244, 114, 182, .46)",
+        shellGlow: "rgba(251, 191, 36, .28)",
+        orbit: "rgba(34, 211, 238, .46)",
+        orbitGlow: "rgba(244, 114, 182, .28)",
+        orbitDash: "rgba(251, 191, 36, .42)",
+        ring: "rgba(255,255,255,.22)",
+        ringLit: "rgba(251, 191, 36, .68)"
+      }
+    };
     const DEFAULT_PACE = "Đúng nhịp";
     const TASK_GROUPS = ["physics", "math", "english", "review"];
     const SUBJECT_LABELS = {
@@ -6366,12 +6490,20 @@
       return String(seed).split("").reduce((hash, char) => ((hash << 5) - hash + char.charCodeAt(0)) >>> 0, 2166136261);
     }
 
-    function applyDailyPlanetPalette(seed) {
+    function getHeroPlanetMode(day, summary) {
+      const date = String(day && day.date ? day.date : "");
+      if (date === HERO_PLANET_EXAM_EVE_DATE) return "exam-eve";
+      const plannedMinutes = Math.max(0, Number(summary && summary.plannedMinutes) || 0);
+      return plannedMinutes >= HERO_PLANET_SIX_HOUR_MINUTES ? "six-hour" : "daily";
+    }
+
+    function applyDailyPlanetPalette(seed, mode = "daily") {
       const planet = document.querySelector(".hero-planet");
       if (!planet) return;
 
       const daySeed = seed || new Date().toLocaleDateString("vi-VN");
-      const palette = DAILY_PLANET_PALETTES[hashPlanetSeed(daySeed) % DAILY_PLANET_PALETTES.length];
+      const safeMode = HERO_PLANET_SPECIAL_PALETTES[mode] ? mode : "daily";
+      const palette = HERO_PLANET_SPECIAL_PALETTES[safeMode] || DAILY_PLANET_PALETTES[hashPlanetSeed(daySeed) % DAILY_PLANET_PALETTES.length];
       planet.style.setProperty("--planet-highlight", palette.highlight);
       planet.style.setProperty("--planet-soft", palette.soft);
       planet.style.setProperty("--planet-mid", palette.mid);
@@ -6380,6 +6512,13 @@
       planet.style.setProperty("--planet-glow-a", palette.glowA);
       planet.style.setProperty("--planet-glow-b", palette.glowB);
       planet.style.setProperty("--planet-band", palette.band);
+      planet.style.setProperty("--planet-shell-glow", palette.shellGlow || "rgba(119,166,255,.10)");
+      planet.style.setProperty("--planet-orbit", palette.orbit || "rgba(220,226,236,.22)");
+      planet.style.setProperty("--planet-orbit-glow", palette.orbitGlow || "rgba(220,226,236,.14)");
+      planet.style.setProperty("--planet-orbit-dash", palette.orbitDash || "rgba(186,194,206,.22)");
+      planet.style.setProperty("--planet-ring", palette.ring || "rgba(255,255,255,.10)");
+      planet.style.setProperty("--planet-ring-lit", palette.ringLit || "rgba(230,235,242,.34)");
+      planet.dataset.planetMode = safeMode;
       planet.setAttribute("data-planet-palette", palette.name);
     }
 
@@ -9027,6 +9166,7 @@
       const analytics = buildStudyAnalytics(visibleDays);
       const currentDayTasks = getTaskList(selectedTaskState);
       const currentDaySummary = summarizeTaskItems(currentDayTasks);
+      const heroPlanetMode = getHeroPlanetMode(selectedDay, currentDaySummary);
       const currentDone = currentDaySummary.done;
       const currentPercent = getTaskPercent(currentDaySummary);
       const globalStats = buildGlobalTaskStats();
@@ -9044,7 +9184,7 @@
           <div class="hero">
             <div class="hero-copy">
               <div class="hero-day-card">
-                <div class="hero-planet" data-planet-seed="${escapeHtml(selectedDay.date)}" aria-hidden="true">
+                <div class="hero-planet" data-planet-seed="${escapeHtml(selectedDay.date)}" data-planet-mode="${escapeHtml(heroPlanetMode)}" aria-hidden="true">
                   <div class="hero-planet-ball">
                     <div class="hero-planet-aura"></div>
                     <div class="hero-planet-atmosphere"></div>
@@ -9535,7 +9675,7 @@
         </section>
       `;
 
-      applyDailyPlanetPalette(selectedDay.date);
+      applyDailyPlanetPalette(selectedDay.date, heroPlanetMode);
       syncSubjectSelectUi(addFormGroup);
       syncDynamicUi(selectedDay, currentDone, currentDayTasks, learnedMinutes, done, total);
       if (syncHeightRaf) cancelAnimationFrame(syncHeightRaf);
