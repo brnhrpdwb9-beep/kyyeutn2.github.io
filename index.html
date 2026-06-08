@@ -6186,6 +6186,9 @@
     const LUCKY_COMET_LOW_POWER_MAX_CANVAS_PIXELS = 1250000;
     const LUCKY_COMET_MAX_RENDER_RATIO = 1.2;
     const LUCKY_COMET_MIN_RENDER_RATIO = 0.66;
+    const LUCKY_COMET_MAIN_SPRITE_FRAMES = 8;
+    const LUCKY_COMET_SUPPORT_SPRITE_FRAMES = 5;
+    const LUCKY_COMET_LOW_POWER_SPRITE_FRAMES = 4;
     const LUCKY_COMET_CORE_PROFILES = {
       common: { halo: 1.92, core: 0.68, ring: 1.36, flare: 1.22, alpha: 0.72, sparks: 4 },
       uncommon: { halo: 2.08, core: 0.74, ring: 1.52, flare: 1.34, alpha: 0.78, sparks: 5 },
@@ -6829,7 +6832,11 @@
       const powerScale = lowPower ? 0.78 : 1;
 
       return {
+        lowPower,
         ratio,
+        spriteRatio: clampNumber(Math.min(ratio, lowPower ? 0.84 : 1), LUCKY_COMET_MIN_RENDER_RATIO, 1),
+        mainSpriteFrames: lowPower ? LUCKY_COMET_LOW_POWER_SPRITE_FRAMES : LUCKY_COMET_MAIN_SPRITE_FRAMES,
+        supportSpriteFrames: lowPower ? Math.max(3, LUCKY_COMET_LOW_POWER_SPRITE_FRAMES - 1) : LUCKY_COMET_SUPPORT_SPRITE_FRAMES,
         particleScale: reducedMotion ? 0.42 : clampNumber(0.92 * viewportScale * powerScale, 0.56, 0.92),
         supportParticleScale: reducedMotion ? 0.34 : clampNumber(0.72 * viewportScale * powerScale, 0.42, 0.72)
       };
@@ -6934,6 +6941,125 @@
         drift: sampleBetween(-14, 14),
         phase: sampleBetween(0, Math.PI * 2)
       }));
+    }
+
+    function getLuckyCometSizing(comet, rarity, progress) {
+      const profile = LUCKY_COMET_BODY_PROFILES[rarity.key] || LUCKY_COMET_BODY_PROFILES.common;
+      const pulse = Math.sin(progress * Math.PI);
+      const radius = comet.radius * (1 + (pulse * 0.07)) * profile.radius;
+      const tailLength = comet.tailLength * (0.88 + (pulse * 0.12)) * profile.tail;
+      const wakeHeight = radius * (profile.wake + (comet.main ? profile.mainWake : 0));
+
+      return {
+        profile,
+        radius,
+        tailLength,
+        wakeHeight
+      };
+    }
+
+    function createLuckyCometSpriteCanvas(width, height) {
+      if (typeof OffscreenCanvas === "function") {
+        return new OffscreenCanvas(width, height);
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      return canvas;
+    }
+
+    function buildLuckyCometSpriteFrames(comet, rarity, tone, renderProfile) {
+      const frameCount = comet.main ? renderProfile.mainSpriteFrames : renderProfile.supportSpriteFrames;
+      if (!frameCount || frameCount < 2) return null;
+
+      const ratio = clampNumber(renderProfile.spriteRatio || 1, LUCKY_COMET_MIN_RENDER_RATIO, 1);
+      const peakSizing = getLuckyCometSizing(comet, rarity, 0.5);
+      const endSizing = getLuckyCometSizing(comet, rarity, 1);
+      const maxRadius = Math.max(peakSizing.radius, endSizing.radius, comet.radius * 1.14);
+      const maxTail = Math.max(peakSizing.tailLength, endSizing.tailLength, comet.tailLength * 1.08);
+      const leadPad = maxRadius * (rarity.key === "mythic" ? 5.35 : rarity.key === "epic" ? 4.35 : 3.7);
+      const tailPad = maxTail + (maxRadius * 2.45);
+      const verticalPad = maxRadius * (rarity.key === "mythic" ? 5.35 : rarity.key === "epic" ? 4.25 : 3.65);
+      const cssWidth = Math.ceil(tailPad + leadPad);
+      const cssHeight = Math.ceil(verticalPad * 2);
+      const pixelWidth = Math.max(1, Math.ceil(cssWidth * ratio));
+      const pixelHeight = Math.max(1, Math.ceil(cssHeight * ratio));
+      const frames = [];
+
+      try {
+        for (let index = 0; index < frameCount; index += 1) {
+          const progress = frameCount === 1 ? 0.5 : index / (frameCount - 1);
+          const sprite = createLuckyCometSpriteCanvas(pixelWidth, pixelHeight);
+          const spriteCtx = sprite.getContext("2d", { alpha: true });
+          if (!spriteCtx) return null;
+
+          spriteCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+          spriteCtx.imageSmoothingEnabled = true;
+          spriteCtx.imageSmoothingQuality = "low";
+          drawLuckyCometBodyDirect(
+            spriteCtx,
+            { ...comet, x: tailPad, y: verticalPad, angle: 0, particles: [] },
+            rarity,
+            tone,
+            progress,
+            1,
+            { drawParticles: false }
+          );
+          frames.push({
+            canvas: sprite,
+            width: cssWidth,
+            height: cssHeight,
+            offsetX: tailPad,
+            offsetY: verticalPad
+          });
+        }
+      } catch (error) {
+        return null;
+      }
+
+      return frames;
+    }
+
+    function drawLuckyCometSprite(ctx, comet, progress, fade) {
+      const frames = comet.spriteFrames;
+      if (!frames || !frames.length) return false;
+
+      const framePosition = clampNumber(progress, 0, 1) * (frames.length - 1);
+      const firstIndex = Math.floor(framePosition);
+      const secondIndex = Math.min(frames.length - 1, firstIndex + 1);
+      const mix = framePosition - firstIndex;
+      const firstFrame = frames[firstIndex];
+      const secondFrame = frames[secondIndex];
+
+      ctx.save();
+      ctx.translate(comet.x, comet.y);
+      ctx.rotate(comet.angle);
+      ctx.globalCompositeOperation = "lighter";
+
+      if (firstFrame && (!secondFrame || firstFrame === secondFrame || mix < 0.01)) {
+        ctx.globalAlpha = fade;
+        ctx.drawImage(firstFrame.canvas, -firstFrame.offsetX, -firstFrame.offsetY, firstFrame.width, firstFrame.height);
+      } else {
+        ctx.globalAlpha = fade * (1 - mix);
+        ctx.drawImage(firstFrame.canvas, -firstFrame.offsetX, -firstFrame.offsetY, firstFrame.width, firstFrame.height);
+        ctx.globalAlpha = fade * mix;
+        ctx.drawImage(secondFrame.canvas, -secondFrame.offsetX, -secondFrame.offsetY, secondFrame.width, secondFrame.height);
+      }
+
+      ctx.restore();
+      return true;
+    }
+
+    function drawLuckyCometDynamicParticles(ctx, comet, rarity, tone, progress, fade) {
+      if (fade <= 0.06 || !comet.particles.length) return;
+
+      const { radius, tailLength } = getLuckyCometSizing(comet, rarity, progress);
+      ctx.save();
+      ctx.translate(comet.x, comet.y);
+      ctx.rotate(comet.angle);
+      drawLuckyCometParticles(ctx, comet, tone, progress, fade, radius, tailLength);
+      ctx.restore();
     }
 
     function drawLuckyCometParticles(ctx, comet, tone, progress, fade, radius, tailLength) {
@@ -7457,12 +7583,9 @@
       ctx.restore();
     }
 
-    function drawLuckyCometBody(ctx, comet, rarity, tone, progress, fade) {
+    function drawLuckyCometBodyDirect(ctx, comet, rarity, tone, progress, fade, options = {}) {
       const isRare = rarity.key === "rare";
-      const profile = LUCKY_COMET_BODY_PROFILES[rarity.key] || LUCKY_COMET_BODY_PROFILES.common;
-      const radius = comet.radius * (1 + (Math.sin(progress * Math.PI) * 0.07)) * profile.radius;
-      const tailLength = comet.tailLength * (0.88 + (Math.sin(progress * Math.PI) * 0.12)) * profile.tail;
-      const wakeHeight = radius * (profile.wake + (comet.main ? profile.mainWake : 0));
+      const { profile, radius, tailLength, wakeHeight } = getLuckyCometSizing(comet, rarity, progress);
 
       ctx.save();
       ctx.translate(comet.x, comet.y);
@@ -7553,7 +7676,7 @@
         ctx.stroke();
       }
 
-      if (fade > 0.06 && comet.particles.length) {
+      if (options.drawParticles !== false && fade > 0.06 && comet.particles.length) {
         drawLuckyCometParticles(ctx, comet, tone, progress, fade, radius, tailLength);
       }
 
@@ -7658,6 +7781,15 @@
       ctx.restore();
     }
 
+    function drawLuckyCometBody(ctx, comet, rarity, tone, progress, fade) {
+      if (drawLuckyCometSprite(ctx, comet, progress, fade)) {
+        drawLuckyCometDynamicParticles(ctx, comet, rarity, tone, progress, fade);
+        return;
+      }
+
+      drawLuckyCometBodyDirect(ctx, comet, rarity, tone, progress, fade);
+    }
+
     function startLuckyCometCanvasEffect({ overlay, rarity, route, slots, baseDuration, reducedMotion, triggerPoint }) {
       const canvas = document.createElement("canvas");
       canvas.className = "lucky-comet-canvas";
@@ -7712,10 +7844,14 @@
           scale,
           radius: rarity.headSize * 0.92 * scale,
           tailLength: rarity.length * 0.82 * scale,
-          particles: createLuckyCometParticles(particleCount, scale)
+          particles: createLuckyCometParticles(particleCount, scale),
+          spriteFrames: null
         };
       });
       comets.sort((a, b) => a.scale - b.scale);
+      comets.forEach((comet) => {
+        comet.spriteFrames = buildLuckyCometSpriteFrames(comet, rarity, tone, renderProfile);
+      });
 
       let caption = null;
       const mainComet = comets.find((item) => item.main);
@@ -7731,13 +7867,24 @@
         if (caption) overlay.appendChild(caption);
       }
 
+      let cleanedUp = false;
+      const cleanupLuckyCometRun = () => {
+        if (cleanedUp) return;
+        cleanedUp = true;
+        canvas.remove();
+        if (caption) caption.remove();
+        comets.forEach((comet) => {
+          comet.spriteFrames = null;
+          comet.particles = [];
+        });
+      };
+
       const startedAt = performance.now();
       let frameId = 0;
       const drawFrame = (now) => {
         luckyCometFrames.delete(frameId);
         if (document.hidden) {
-          canvas.remove();
-          if (caption) caption.remove();
+          cleanupLuckyCometRun();
           return;
         }
 
@@ -7768,8 +7915,7 @@
           frameId = requestAnimationFrame(drawFrame);
           luckyCometFrames.add(frameId);
         } else {
-          canvas.remove();
-          if (caption) caption.remove();
+          cleanupLuckyCometRun();
         }
       };
 
