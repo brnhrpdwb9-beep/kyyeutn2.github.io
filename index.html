@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=1280" />
   <meta name="theme-color" content="#050918" />
-  <title>Lịch học 12/05 - 10/06</title>
+  <title>FINAL VSAT · 20/06 - 05/07</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -971,7 +971,7 @@
 
     .orbit-progress-columns {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 14px;
       align-items: stretch;
       min-height: 226px;
@@ -1531,18 +1531,18 @@
 
     .countdown-bridge {
       display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       justify-content: center;
       gap: 16px;
       width: 100%;
-      max-width: 1280px;
+      max-width: 1120px;
       align-items: stretch;
       margin: 0 auto;
     }
 
     .countdown-card {
       position: relative;
-      grid-column: span 2;
+      grid-column: auto;
       overflow: hidden;
       min-height: 146px;
       padding: 17px 18px 16px;
@@ -1592,9 +1592,8 @@
     }
 
     .countdown-card.thpt {
-      grid-column: 3 / span 2;
-      justify-self: center;
-      width: min(540px, calc(100% + 120px));
+      justify-self: stretch;
+      width: 100%;
       min-height: 152px;
       padding: 18px 20px 17px;
       border-color: rgba(255, 255, 255, 0.2);
@@ -1706,29 +1705,97 @@
     }
 
     .countdown-card.vsat-dong-thap-6 {
-      --countdown-glow: rgba(139, 92, 246, 0.24);
-      --countdown-line: rgba(196, 181, 253, 0.84);
-      --countdown-strong: #ddd6fe;
-      --countdown-soft: rgba(139, 92, 246, 0.14);
-      --countdown-border: rgba(196, 181, 253, 0.18);
-      --countdown-bg-glow: rgba(139, 92, 246, 0.105);
-      --countdown-bg-a: rgba(109, 40, 217, 0.095);
-      --countdown-bg-b: rgba(96, 165, 250, 0.04);
-      --countdown-sheen: rgba(196, 181, 253, 0.11);
-      --countdown-bg-wash: rgba(59, 130, 246, 0.045);
+      --countdown-glow: rgba(192, 132, 252, 0.23);
+      --countdown-line: rgba(216, 180, 254, 0.86);
+      --countdown-strong: #f5d0fe;
+      --countdown-soft: rgba(217, 70, 239, 0.14);
+      --countdown-border: rgba(216, 180, 254, 0.2);
+      --countdown-bg-glow: rgba(192, 132, 252, 0.1);
+      --countdown-bg-a: rgba(109, 40, 217, 0.09);
+      --countdown-bg-b: rgba(190, 24, 93, 0.045);
+      --countdown-sheen: rgba(244, 114, 182, 0.1);
+      --countdown-bg-wash: rgba(217, 70, 239, 0.05);
     }
 
     .countdown-card.vsat-can-tho-7 {
-      --countdown-glow: rgba(248, 113, 113, 0.23);
-      --countdown-line: rgba(251, 146, 60, 0.86);
-      --countdown-strong: #fed7aa;
-      --countdown-soft: rgba(248, 113, 113, 0.14);
-      --countdown-border: rgba(251, 146, 60, 0.18);
-      --countdown-bg-glow: rgba(248, 113, 113, 0.1);
-      --countdown-bg-a: rgba(234, 88, 12, 0.085);
-      --countdown-bg-b: rgba(244, 63, 94, 0.045);
-      --countdown-sheen: rgba(251, 146, 60, 0.1);
-      --countdown-bg-wash: rgba(248, 113, 113, 0.05);
+      --countdown-glow: rgba(250, 204, 21, 0.22);
+      --countdown-line: rgba(253, 224, 71, 0.88);
+      --countdown-strong: #fef3c7;
+      --countdown-soft: rgba(245, 158, 11, 0.14);
+      --countdown-border: rgba(253, 224, 71, 0.21);
+      --countdown-bg-glow: rgba(250, 204, 21, 0.1);
+      --countdown-bg-a: rgba(180, 83, 9, 0.085);
+      --countdown-bg-b: rgba(120, 53, 15, 0.045);
+      --countdown-sheen: rgba(254, 240, 138, 0.1);
+      --countdown-bg-wash: rgba(245, 158, 11, 0.05);
+    }
+
+    .countdown-card.thpt.vsat-dong-thap-6 {
+      border-color: rgba(216, 180, 254, 0.23);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(99, 102, 241, 0.2), transparent 29%),
+        radial-gradient(circle at 78% 12%, rgba(192, 132, 252, 0.19), transparent 28%),
+        radial-gradient(circle at 92% 82%, rgba(244, 114, 182, 0.15), transparent 31%),
+        linear-gradient(135deg, rgba(49, 46, 129, 0.19), rgba(126, 34, 206, 0.12) 48%, rgba(76, 5, 25, 0.82)),
+        rgba(8, 13, 28, 0.88);
+      box-shadow:
+        0 24px 62px rgba(0,0,0,0.3),
+        0 0 34px rgba(139, 92, 246, 0.09),
+        0 0 42px rgba(217, 70, 239, 0.075),
+        inset 0 1px 0 rgba(255,255,255,0.11);
+    }
+
+    .countdown-card.thpt.vsat-dong-thap-6::before {
+      background:
+        radial-gradient(circle at 28% 42%, rgba(129, 140, 248, 0.25), transparent 32%),
+        radial-gradient(circle at 62% 40%, rgba(192, 132, 252, 0.24), transparent 34%),
+        radial-gradient(circle at 56% 70%, rgba(244, 114, 182, 0.2), transparent 38%);
+    }
+
+    .countdown-card.thpt.vsat-dong-thap-6::after {
+      background:
+        linear-gradient(90deg, rgba(129, 140, 248, 0.84), rgba(168, 85, 247, 0.8), rgba(217, 70, 239, 0.76), rgba(244, 114, 182, 0.7)) 0 0 / 100% 2px no-repeat,
+        linear-gradient(120deg, rgba(255,255,255,0.1), transparent 30%),
+        radial-gradient(circle at 82% 22%, rgba(192, 132, 252, 0.14), transparent 24%),
+        radial-gradient(circle at 18% 88%, rgba(129, 140, 248, 0.12), transparent 28%);
+    }
+
+    .countdown-card.thpt.vsat-dong-thap-6 .countdown-badge {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.13), rgba(192, 132, 252, 0.12), rgba(244, 114, 182, 0.1)), rgba(255,255,255,0.05);
+    }
+
+    .countdown-card.thpt.vsat-can-tho-7 {
+      border-color: rgba(253, 224, 71, 0.23);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(253, 224, 71, 0.2), transparent 29%),
+        radial-gradient(circle at 78% 12%, rgba(245, 158, 11, 0.19), transparent 28%),
+        radial-gradient(circle at 92% 82%, rgba(253, 186, 116, 0.14), transparent 31%),
+        linear-gradient(135deg, rgba(146, 64, 14, 0.17), rgba(120, 53, 15, 0.1) 48%, rgba(41, 30, 22, 0.84)),
+        rgba(17, 14, 24, 0.9);
+      box-shadow:
+        0 24px 62px rgba(0,0,0,0.3),
+        0 0 34px rgba(250, 204, 21, 0.09),
+        0 0 42px rgba(245, 158, 11, 0.075),
+        inset 0 1px 0 rgba(255,255,255,0.11);
+    }
+
+    .countdown-card.thpt.vsat-can-tho-7::before {
+      background:
+        radial-gradient(circle at 28% 42%, rgba(254, 240, 138, 0.25), transparent 32%),
+        radial-gradient(circle at 62% 40%, rgba(250, 204, 21, 0.24), transparent 34%),
+        radial-gradient(circle at 56% 70%, rgba(251, 146, 60, 0.18), transparent 38%);
+    }
+
+    .countdown-card.thpt.vsat-can-tho-7::after {
+      background:
+        linear-gradient(90deg, rgba(254, 240, 138, 0.86), rgba(253, 224, 71, 0.82), rgba(245, 158, 11, 0.76), rgba(253, 186, 116, 0.68)) 0 0 / 100% 2px no-repeat,
+        linear-gradient(120deg, rgba(255,255,255,0.1), transparent 30%),
+        radial-gradient(circle at 82% 22%, rgba(250, 204, 21, 0.14), transparent 24%),
+        radial-gradient(circle at 18% 88%, rgba(245, 158, 11, 0.11), transparent 28%);
+    }
+
+    .countdown-card.thpt.vsat-can-tho-7 .countdown-badge {
+      background: linear-gradient(135deg, rgba(253, 224, 71, 0.13), rgba(245, 158, 11, 0.12), rgba(253, 186, 116, 0.09)), rgba(255,255,255,0.05);
     }
 
     .countdown-card:hover {
@@ -1910,6 +1977,7 @@
     }
 
     .analytics-card.hours {
+      order: 1;
       background:
         radial-gradient(circle at 88% 8%, rgba(96, 165, 250, 0.2), transparent 24%),
         radial-gradient(circle at 12% 100%, rgba(34, 211, 238, 0.12), transparent 28%),
@@ -1918,6 +1986,7 @@
     }
 
     .analytics-card.growth {
+      order: 4;
       background:
         radial-gradient(circle at 86% 8%, rgba(167, 139, 250, 0.22), transparent 24%),
         radial-gradient(circle at 16% 100%, rgba(34, 211, 238, 0.1), transparent 28%),
@@ -1926,6 +1995,7 @@
     }
 
     .analytics-card.nova {
+      order: 3;
       background:
         radial-gradient(circle at 86% 8%, rgba(251, 191, 36, 0.18), transparent 24%),
         radial-gradient(circle at 10% 100%, rgba(52, 211, 153, 0.12), transparent 28%),
@@ -1934,6 +2004,7 @@
     }
 
     .analytics-card.tasks {
+      order: 2;
       background:
         radial-gradient(circle at 88% 8%, rgba(251, 191, 36, 0.16), transparent 24%),
         radial-gradient(circle at 16% 100%, rgba(244, 114, 182, 0.14), transparent 28%),
@@ -2052,6 +2123,15 @@
     .chart-scroll::-webkit-scrollbar-track {
       background: rgba(255,255,255,0.04);
       border-radius: 999px;
+    }
+
+    .constellation-chart-scroll .chart-svg {
+      margin-inline: auto;
+    }
+
+    .constellation-chart-scroll .chart-x-label,
+    .constellation-chart-scroll .chart-callout {
+      font-size: 9px;
     }
 
     .chart-svg {
@@ -4199,7 +4279,7 @@
       }
 
       .countdown-bridge {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         max-width: 100%;
       }
 
@@ -4220,8 +4300,8 @@
       }
 
       .countdown-card.thpt {
-        grid-column: 1 / -1;
-        width: min(540px, 100%);
+        grid-column: auto;
+        width: 100%;
       }
     }
 
@@ -5056,6 +5136,510 @@
       }
     }
 
+    .course-progress-section {
+      margin-top: 22px;
+    }
+
+    .course-progress-shell {
+      padding: 22px;
+      gap: 18px;
+    }
+
+    .course-progress-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .course-progress-heading {
+      display: grid;
+      gap: 6px;
+    }
+
+    .course-progress-overall {
+      flex: 0 0 auto;
+      display: grid;
+      justify-items: end;
+      gap: 3px;
+      padding: 10px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(139, 233, 255, 0.18);
+      background: rgba(139, 233, 255, 0.07);
+    }
+
+    .course-progress-overall strong {
+      font-size: 22px;
+      color: #f4f8ff;
+    }
+
+    .course-progress-overall span {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    .course-subject-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      align-items: start;
+    }
+
+    .course-subject-card {
+      --course-accent: #8be9ff;
+      --course-accent-rgb: 139, 233, 255;
+      min-width: 0;
+      border-radius: 20px;
+      border: 1px solid rgba(var(--course-accent-rgb), .18);
+      background:
+        radial-gradient(circle at 90% 0%, rgba(var(--course-accent-rgb), .1), transparent 36%),
+        rgba(5, 10, 23, .52);
+      overflow: hidden;
+    }
+
+    .course-subject-card.math {
+      --course-accent: #c4b5fd;
+      --course-accent-rgb: 196, 181, 253;
+    }
+
+    .course-subject-card.english {
+      --course-accent: #f9a8d4;
+      --course-accent-rgb: 249, 168, 212;
+    }
+
+    .course-subject-summary {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      cursor: pointer;
+    }
+
+    .course-subject-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .course-subject-title {
+      display: block;
+      color: #f4f7ff;
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .course-subject-meta {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .course-subject-score {
+      display: grid;
+      justify-items: end;
+      color: var(--course-accent);
+      font-weight: 800;
+    }
+
+    .course-subject-score small {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .course-list {
+      display: grid;
+      gap: 10px;
+      padding: 0 12px 12px;
+    }
+
+    .course-card {
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.035);
+    }
+
+    .course-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .course-source {
+      color: #eaf1ff;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .course-range {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .course-count {
+      flex: 0 0 auto;
+      color: var(--course-accent);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .course-test-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+      gap: 7px;
+    }
+
+    .course-test-check {
+      min-height: 36px;
+      padding: 5px 4px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.045);
+      color: #aebbd5;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, color .18s ease;
+    }
+
+    .course-test-check:hover {
+      transform: translateY(-1px);
+      border-color: rgba(var(--course-accent-rgb), .4);
+      color: #f4f8ff;
+    }
+
+    .course-test-check.done {
+      border-color: rgba(var(--course-accent-rgb), .55);
+      background: rgba(var(--course-accent-rgb), .16);
+      color: var(--course-accent);
+      box-shadow: inset 0 0 18px rgba(var(--course-accent-rgb), .06);
+    }
+
+    .course-note {
+      margin-top: 9px;
+      color: #90a0bf;
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 1080px) {
+      .course-subject-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .course-progress-shell {
+        padding: 16px;
+      }
+
+      .course-progress-head {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .course-progress-overall {
+        justify-items: start;
+      }
+    }
+
+    .subject-progress-launch {
+      margin-bottom: 12px;
+    }
+
+    .subject-progress-launch-btn {
+      width: 100%;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 10px 14px;
+      border-radius: 15px;
+      border: 1px solid rgba(139, 233, 255, .16);
+      background:
+        linear-gradient(135deg, rgba(139, 233, 255, .1), rgba(139, 92, 246, .06)),
+        rgba(255,255,255,.025);
+      color: #eaf2ff;
+      font: inherit;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .section.math .subject-progress-launch-btn {
+      border-color: rgba(196, 181, 253, .2);
+      background: linear-gradient(135deg, rgba(196, 181, 253, .1), rgba(139, 92, 246, .06));
+    }
+
+    .section.english .subject-progress-launch-btn {
+      border-color: rgba(249, 168, 212, .2);
+      background: linear-gradient(135deg, rgba(249, 168, 212, .1), rgba(251, 113, 133, .05));
+    }
+
+    .subject-progress-launch-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(139, 233, 255, .38);
+      background: linear-gradient(135deg, rgba(139, 233, 255, .15), rgba(139, 92, 246, .09));
+    }
+
+    .subject-progress-launch-label {
+      display: grid;
+      gap: 3px;
+      text-align: left;
+    }
+
+    .subject-progress-launch-label strong {
+      font-size: 13px;
+    }
+
+    .subject-progress-launch-label small {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .subject-progress-launch-score {
+      flex: 0 0 auto;
+      color: #f4f8ff;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    body.course-progress-modal-open {
+      overflow: hidden;
+    }
+
+    .course-progress-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: rgba(1, 5, 15, .76);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      animation: courseModalFadeIn .18s ease-out;
+    }
+
+    .course-progress-modal-panel {
+      width: min(920px, 100%);
+      max-height: min(86vh, 820px);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
+      border-radius: 26px;
+      border: 1px solid rgba(139, 233, 255, .2);
+      background:
+        radial-gradient(circle at 90% 0%, rgba(139, 233, 255, .12), transparent 34%),
+        linear-gradient(180deg, rgba(12, 20, 40, .98), rgba(5, 10, 24, .98));
+      box-shadow: 0 34px 100px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
+      animation: courseModalLiftIn .22s ease-out;
+    }
+
+    .course-progress-modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 20px 22px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .course-progress-modal-title {
+      margin-top: 4px;
+      color: #f8fbff;
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 800;
+    }
+
+    .course-progress-modal-meta {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .course-progress-modal-close {
+      flex: 0 0 auto;
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: #eef4ff;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .course-progress-modal-body {
+      overflow: auto;
+      padding: 16px;
+    }
+
+    .course-completion-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10020;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(1, 5, 15, .72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      animation: courseModalFadeIn .16s ease-out;
+    }
+
+    .course-completion-modal-panel {
+      width: min(560px, 100%);
+      max-height: 92vh;
+      overflow: auto;
+      padding: 22px;
+      border-radius: 24px;
+      border: 1px solid rgba(139, 233, 255, .24);
+      background:
+        radial-gradient(circle at 90% 0%, rgba(139, 233, 255, .13), transparent 34%),
+        linear-gradient(180deg, rgba(13, 22, 43, .99), rgba(6, 11, 25, .99));
+      box-shadow: 0 34px 100px rgba(0,0,0,.58), inset 0 1px 0 rgba(255,255,255,.08);
+      animation: courseModalLiftIn .2s ease-out;
+    }
+
+    .course-completion-kicker {
+      color: #8be9ff;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+    }
+
+    .course-completion-title {
+      margin-top: 6px;
+      color: #f8fbff;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .course-completion-copy {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .course-completion-form {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .course-completion-field {
+      display: grid;
+      gap: 7px;
+      color: #dce8ff;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .course-completion-input {
+      width: 100%;
+      min-height: 46px;
+      padding: 11px 13px;
+      border-radius: 13px;
+      border: 1px solid rgba(255,255,255,.11);
+      outline: none;
+      background: rgba(255,255,255,.045);
+      color: #f3f7ff;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    textarea.course-completion-input {
+      min-height: 82px;
+      resize: vertical;
+    }
+
+    .course-completion-input:focus {
+      border-color: rgba(139, 233, 255, .42);
+      box-shadow: 0 0 0 3px rgba(139, 233, 255, .07);
+    }
+
+    .course-completion-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .course-completion-btn {
+      min-height: 42px;
+      padding: 9px 15px;
+      border-radius: 13px;
+      border: 1px solid rgba(255,255,255,.11);
+      background: rgba(255,255,255,.055);
+      color: #e8f0ff;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .course-completion-btn.primary {
+      border-color: rgba(139, 233, 255, .28);
+      background: linear-gradient(135deg, rgba(79, 140, 255, .34), rgba(34, 211, 238, .2));
+      color: #fff;
+    }
+
+    .course-progress-modal-panel .course-subject-card {
+      border: 0;
+      background: transparent;
+      overflow: visible;
+    }
+
+    .course-progress-modal-panel .course-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      padding: 0;
+    }
+
+    @keyframes courseModalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes courseModalLiftIn {
+      from { opacity: 0; transform: translateY(12px) scale(.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (max-width: 700px) {
+      .course-progress-modal-overlay {
+        padding: 10px;
+      }
+
+      .course-progress-modal-panel {
+        max-height: 92vh;
+        border-radius: 20px;
+      }
+
+      .course-progress-modal-head {
+        padding: 16px;
+      }
+
+      .course-progress-modal-panel .course-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .lucky-comet-overlay {
       position: fixed;
       inset: 0;
@@ -5855,10 +6439,22 @@
   <div class="lucky-comet-overlay" id="luckyCometOverlay" aria-hidden="true"></div>
 
   <script>
+    const FINAL_VSAT_PHASE = "FINAL VSAT";
+    const FINAL_VSAT_START = { year: 2026, month: 6, day: 20 };
+    const FINAL_VSAT_END = { year: 2026, month: 7, day: 5 };
+
+    function isFinalVsatScheduleDate(dateText) {
+      const [dayText, monthText] = String(dateText || "").split("/");
+      const value = (Number(monthText) * 100) + Number(dayText);
+      return Number.isFinite(value) && value >= 620 && value <= 705;
+    }
+
     function buildScheduleRange(startYear, startMonth, startDay, endYear, endMonth, endDay) {
       const days = [];
       const cursor = new Date(startYear, startMonth - 1, startDay, 12, 0, 0, 0);
       const end = new Date(endYear, endMonth - 1, endDay, 12, 0, 0, 0);
+      const finalVsatStart = new Date(FINAL_VSAT_START.year, FINAL_VSAT_START.month - 1, FINAL_VSAT_START.day, 12, 0, 0, 0);
+      const finalVsatEnd = new Date(FINAL_VSAT_END.year, FINAL_VSAT_END.month - 1, FINAL_VSAT_END.day, 12, 0, 0, 0);
       const weekdayMap = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
 
       while (cursor <= end) {
@@ -5866,7 +6462,7 @@
         const mm = String(cursor.getMonth() + 1).padStart(2, "0");
         days.push({
           date: `${dd}/${mm}`,
-          phase: "Lịch tự nhập",
+          phase: cursor >= finalVsatStart && cursor <= finalVsatEnd ? FINAL_VSAT_PHASE : "Lịch tự nhập",
           weekday: weekdayMap[cursor.getDay()],
           physics: [],
           math: [],
@@ -5885,8 +6481,8 @@
       startMonth: 5,
       startDay: 13,
       endYear: 2026,
-      endMonth: 6,
-      endDay: 10
+      endMonth: 7,
+      endDay: 5
     };
 
     const initialSchedule = buildScheduleRange(
@@ -5908,31 +6504,8 @@
     const STORAGE_KEY = "study_schedule_dashboard_1205_1006_v3_math_collapsible";
     const EXAM_COUNTDOWNS = [
       {
-        id: "thptqg",
-        type: "thpt",
-        kicker: "Countdown Mốc Lớn",
-        title: "Thi THPTQG",
-        badge: "11/06",
-        year: 2026,
-        month: 6,
-        day: 11,
-        note: ""
-      },
-      {
-        id: "vsat-can-tho-dot-6",
-        type: "vsat",
-        theme: "vsat-can-tho-6",
-        kicker: "Đại Học Cần Thơ",
-        title: "V-SAT ĐỢT 6",
-        badge: "21/06",
-        year: 2026,
-        month: 6,
-        day: 21,
-        note: ""
-      },
-      {
         id: "vsat-dong-thap-dot-6",
-        type: "vsat",
+        type: "thpt",
         theme: "vsat-dong-thap-6",
         kicker: "Đại Học Đồng Tháp",
         title: "V-SAT ĐỢT 6",
@@ -5944,7 +6517,7 @@
       },
       {
         id: "vsat-can-tho-dot-7",
-        type: "vsat",
+        type: "thpt",
         theme: "vsat-can-tho-7",
         kicker: "Đại Học Cần Thơ",
         title: "V-SAT ĐỢT 7",
@@ -5966,7 +6539,7 @@
       { name: "Sương xanh đại dương", highlight: "#ecfeff", soft: "#bddfe7", mid: "#7eb4c8", deep: "#386073", shadow: "#101d27", glowA: "rgba(139, 233, 255, .17)", glowB: "rgba(45, 212, 191, .10)", band: "rgba(207, 250, 254, .27)" }
     ];
     const HERO_PLANET_SIX_HOUR_MINUTES = 6 * 60;
-    const HERO_PLANET_EXAM_EVE_DATE = "10/06";
+    const HERO_PLANET_EXAM_EVE_DATE = "04/07";
     const HERO_PLANET_SPECIAL_PALETTES = {
       "six-hour": {
         name: "THPTQG Six-Hour Aurora",
@@ -6011,7 +6584,22 @@
       english: "Tiếng Anh",
       review: "Ôn lỗi / Recall"
     };
+    const COURSE_PROGRESS_CATALOG = [
+      { id: "physics-empire", subject: "physics", source: "KHÓA EMPIRE", start: 1, end: 10, total: 10, note: "Tick sau khi làm và chữa lỗi" },
+      { id: "physics-peda", subject: "physics", source: "KHÓA PEDA", start: 11, end: 23, total: 13, note: "Tick sau khi làm và chữa lỗi" },
+      { id: "physics-cao-tri", subject: "physics", source: "KHÓA CAO TRÍ", start: 24, end: 48, total: 25, note: "Tick sau khi làm và chữa lỗi" },
+      { id: "math-empire", subject: "math", source: "KHÓA EMPIRE", start: 1, end: 20, total: 20, note: "Tick sau khi làm và chữa lỗi" },
+      { id: "math-peda", subject: "math", source: "KHÓA PEDA", start: 21, end: 36, total: 16, note: "Tick sau khi làm và chữa lỗi" },
+      { id: "math-duy-hoang", subject: "math", source: "KHÓA DUY HOÀNG", start: 37, end: 49, total: 13, note: "Tick sau khi làm và chữa lỗi" },
+      { id: "math-luong-pho", subject: "math", source: "CỤM 15 ĐỀ LƯƠNG PHO", start: 50, end: 64, total: 15, note: "Tick sau khi làm và chữa lỗi" },
+      { id: "math-thay-hung-ctu", subject: "math", source: "KHÓA THẦY HÙNG CTU", start: 65, end: 72, total: 8, note: "Tick sau khi làm và chữa lỗi" },
+      { id: "english-empire", subject: "english", source: "KHÓA EMPIRE", start: 1, end: 15, total: 15, note: "Tick sau khi làm và chữa lỗi" },
+      { id: "english-thien-tue", subject: "english", source: "ĐỀ THIÊN TUỆ", start: 16, end: 44, total: 29, note: "" }
+    ];
+    const COURSE_PROGRESS_SUBJECTS = ["physics", "math", "english"];
     let lastSelectedAddGroup = "physics";
+    let activeCourseProgressSubject = "";
+    let pendingCourseCompletion = null;
 
     function normalizeTaskGroup(value, fallback = "physics") {
       const safeFallback = TASK_GROUPS.includes(fallback) ? fallback : "physics";
@@ -6255,7 +6843,7 @@
       return [normalized];
     }
 
-    function createStructuredTaskItem({ date = "", group = "", time = "", content = "", note = "", text = "", done = false }) {
+    function createStructuredTaskItem({ date = "", group = "", time = "", content = "", note = "", text = "", done = false, courseTestKey = "" }) {
       const rawText = String(text || "").trim();
       const parsedTime = time || (rawText.includes(" · ") ? rawText.split(" · ")[0].trim() : "");
       const parsedContent = content || (rawText.includes(" · ") ? rawText.split(" · ").slice(1).join(" · ").trim() : rawText);
@@ -6266,7 +6854,8 @@
         content: String(parsedContent || "").trim(),
         note: String(note || "").trim(),
         text: String(parsedContent || rawText).trim(),
-        done: !!done
+        done: !!done,
+        courseTestKey: String(courseTestKey || "").trim()
       };
     }
 
@@ -6282,7 +6871,7 @@
     }
 
     function taskIdentity(item) {
-      return [item.date, item.group, item.time, item.content, item.note].join("|").trim();
+      return [item.date, item.group, item.time, item.content, item.note, item.courseTestKey].join("|").trim();
     }
 
     function createEmptyTaskState() {
@@ -6332,30 +6921,67 @@
       return map;
     }
 
+    function courseTestKey(courseId, number) {
+      return `${courseId}-${String(number).padStart(2, "0")}`;
+    }
+
+    function createCourseProgressState(savedProgress = {}) {
+      const safeSaved = savedProgress && typeof savedProgress === "object" ? savedProgress : {};
+      const progressState = {};
+      COURSE_PROGRESS_CATALOG.forEach((course) => {
+        for (let number = course.start; number <= course.end; number += 1) {
+          const key = courseTestKey(course.id, number);
+          progressState[key] = safeSaved[key] === true;
+        }
+      });
+      return progressState;
+    }
+
     const defaultState = {
       schedule: clone(initialSchedule),
-      selectedDate: initialSchedule[0].date,
+      selectedDate: "20/06",
       query: "",
-      phaseFilter: "Tất cả",
+      phaseFilter: FINAL_VSAT_PHASE,
       tab: "all",
-      tasks: createTaskMap()
+      tasks: createTaskMap(),
+      courseProgress: createCourseProgressState()
     };
 
     function normalizeSchedule(savedSchedule) {
+      const safeSavedSchedule = Array.isArray(savedSchedule)
+        ? savedSchedule.filter((day) => day && typeof day.date === "string")
+        : [];
       const savedByDate = new Map(
-        Array.isArray(savedSchedule)
-          ? savedSchedule.filter((day) => day && typeof day.date === "string").map((day) => [day.date, day])
-          : []
+        safeSavedSchedule.map((day) => [day.date, day])
       );
 
-      return initialSchedule.map((freshDay) => {
+      const normalized = initialSchedule.map((freshDay) => {
         const savedDay = savedByDate.get(freshDay.date) || {};
         return {
           ...freshDay,
-          phase: typeof savedDay.phase === "string" && savedDay.phase.trim() ? savedDay.phase : freshDay.phase,
+          phase: isFinalVsatScheduleDate(freshDay.date)
+            ? FINAL_VSAT_PHASE
+            : (typeof savedDay.phase === "string" && savedDay.phase.trim() ? savedDay.phase : freshDay.phase),
           note: typeof savedDay.note === "string" ? savedDay.note : freshDay.note
         };
       });
+
+      const normalizedDates = new Set(normalized.map((day) => day.date));
+      safeSavedSchedule.forEach((savedDay) => {
+        if (normalizedDates.has(savedDay.date)) return;
+        normalized.push({
+          date: savedDay.date,
+          phase: typeof savedDay.phase === "string" && savedDay.phase.trim() ? savedDay.phase : "Lịch đã lưu",
+          weekday: typeof savedDay.weekday === "string" ? savedDay.weekday : "",
+          physics: [],
+          math: [],
+          english: [],
+          review: [],
+          note: typeof savedDay.note === "string" ? savedDay.note : ""
+        });
+      });
+
+      return normalized;
     }
 
     function mergeTasks(savedTasks, freshTasks) {
@@ -6371,6 +6997,20 @@
         mergedDay.customAdd = typeof savedDay.customAdd === "string" ? savedDay.customAdd : "";
         merged[date] = mergedDay;
       });
+
+      Object.keys(savedTasks || {}).forEach((date) => {
+        if (merged[date]) return;
+        const savedDay = savedTasks[date] || {};
+        const archivedDay = createEmptyTaskState();
+        TASK_GROUPS.forEach((group) => {
+          archivedDay[group] = normalizeTaskItems(savedDay[group], date, group);
+        });
+        archivedDay.dailyNote = typeof savedDay.dailyNote === "string" ? savedDay.dailyNote : "";
+        archivedDay.pace = typeof savedDay.pace === "string" ? savedDay.pace : DEFAULT_PACE;
+        archivedDay.customAdd = typeof savedDay.customAdd === "string" ? savedDay.customAdd : "";
+        merged[date] = archivedDay;
+      });
+
       return merged;
     }
 
@@ -6380,15 +7020,17 @@
         if (!raw) return clone(defaultState);
         const saved = JSON.parse(raw);
         const schedule = normalizeSchedule(saved.schedule);
-        const validDates = new Set(schedule.map((day) => day.date));
+        const visibleDates = new Set(schedule.filter((day) => isFinalVsatScheduleDate(day.date)).map((day) => day.date));
+        const alreadyInFinalVsat = saved.phaseFilter === FINAL_VSAT_PHASE;
 
         return {
           schedule,
-          selectedDate: validDates.has(saved.selectedDate) ? saved.selectedDate : initialSchedule[0].date,
-          query: typeof saved.query === "string" ? saved.query : "",
-          phaseFilter: typeof saved.phaseFilter === "string" ? saved.phaseFilter : "Tất cả",
-          tab: typeof saved.tab === "string" ? saved.tab : "all",
-          tasks: mergeTasks(saved.tasks, createTaskMap())
+          selectedDate: visibleDates.has(saved.selectedDate) ? saved.selectedDate : "20/06",
+          query: alreadyInFinalVsat && typeof saved.query === "string" ? saved.query : "",
+          phaseFilter: FINAL_VSAT_PHASE,
+          tab: alreadyInFinalVsat && typeof saved.tab === "string" ? saved.tab : "all",
+          tasks: mergeTasks(saved.tasks, createTaskMap()),
+          courseProgress: createCourseProgressState(saved.courseProgress)
         };
       } catch (err) {
         console.error("Không đọc được dữ liệu localStorage, dùng trạng thái mặc định:", err);
@@ -6482,7 +7124,9 @@
     }
 
     function getSelectedDay() {
-      return state.schedule.find((day) => day.date === state.selectedDate) || state.schedule[0];
+      return state.schedule.find((day) => day.date === state.selectedDate && isFinalVsatScheduleDate(day.date))
+        || state.schedule.find((day) => isFinalVsatScheduleDate(day.date))
+        || state.schedule[0];
     }
 
     function getDisplayNote(day) {
@@ -7998,21 +8642,21 @@
       return `${dd}/${mm}/${target.getFullYear()}`;
     }
 
-    function syncDynamicUi(selectedDay, currentDone, currentDayTasks, learnedMinutes, done, total) {
+    function syncDynamicUi(selectedDay, done, total, courseStats) {
       const focusCards = document.querySelectorAll(".hero-day-focus .hero-focus-card");
       focusCards.forEach((card, index) => {
         card.classList.toggle("hero-stat-card", index < 3);
       });
       if (focusCards[0]) {
         focusCards[0].innerHTML = `
-          <div class="hero-focus-label">Tổng thời gian đã học</div>
-          <div class="hero-focus-value">${escapeHtml(formatStudyMinutes(learnedMinutes))}</div>
+          <div class="hero-focus-label">Tổng đề hoàn tất</div>
+          <div class="hero-focus-value">${courseStats.done}/${courseStats.total}</div>
         `;
       }
       if (focusCards[1]) {
         focusCards[1].innerHTML = `
-          <div class="hero-focus-label">Tiến độ ngày đang chọn</div>
-          <div class="hero-focus-value">${currentDone}/${currentDayTasks.length}</div>
+          <div class="hero-focus-label">Nguồn / khóa</div>
+          <div class="hero-focus-value">${COURSE_PROGRESS_CATALOG.length}</div>
         `;
       }
       if (focusCards[2]) {
@@ -8081,7 +8725,7 @@
       });
 
       const sidebarDesc = document.querySelector(".sidebar .section-desc");
-      if (sidebarDesc) sidebarDesc.textContent = "Lọc nhanh ngày, trạng thái và tiến độ học.";
+      if (sidebarDesc) sidebarDesc.textContent = "Lọc nhanh ngày, trạng thái và nội dung học.";
     }
 
     function getCountdownParts(targetTime) {
@@ -8263,7 +8907,8 @@
         doneMinutes: 0
       };
 
-      Object.values(state.tasks).forEach((day) => {
+      Object.entries(state.tasks).forEach(([date, day]) => {
+        if (!isFinalVsatScheduleDate(date)) return;
         TASK_GROUPS.forEach((group) => {
           const items = day[group] || [];
           items.forEach((item) => {
@@ -8515,7 +9160,7 @@
       if (!stats.length) return renderChartEmptyState(emptyMessage);
 
       const axis = buildAxisModel(maxValue, 4, "minutes");
-      const slotWidth = 54;
+      const slotWidth = 64;
       const chartHeight = 280;
       const paddingTop = 20;
       const paddingRight = 24;
@@ -8548,9 +9193,9 @@
       const pointNodes = points.map((point) => {
         const isToday = currentDate && point.date === currentDate;
         return `
-          ${isToday ? `<rect x="${point.x - 18}" y="${paddingTop - 4}" width="36" height="${plotHeight + 18}" rx="18" fill="url(#${beamId})"></rect>` : ""}
-          <circle cx="${point.x}" cy="${point.y}" r="${isToday ? 6.5 : 4.5}" fill="${accent.dot || "#f8fafc"}" stroke="${accent.stroke || "#22d3ee"}" stroke-width="${isToday ? "2.6" : "1.8"}"></circle>
-          <circle cx="${point.x}" cy="${point.y}" r="${isToday ? 14 : 10}" fill="rgba(255,255,255,0.03)"></circle>
+          ${isToday ? `<rect x="${point.x - 16}" y="${paddingTop - 4}" width="32" height="${plotHeight + 18}" rx="16" fill="url(#${beamId})"></rect>` : ""}
+          <circle cx="${point.x}" cy="${point.y}" r="${isToday ? 5.5 : 3.8}" fill="${accent.dot || "#f8fafc"}" stroke="${accent.stroke || "#22d3ee"}" stroke-width="${isToday ? "2.2" : "1.5"}"></circle>
+          <circle cx="${point.x}" cy="${point.y}" r="${isToday ? 12 : 8}" fill="rgba(255,255,255,0.03)"></circle>
           <text x="${point.x}" y="${baselineY + 22}" text-anchor="middle" class="chart-x-label ${isToday ? "today" : ""}">${escapeHtml(point.label)}</text>
         `;
       }).join("");
@@ -8560,7 +9205,7 @@
 
       return `
         <div class="chart-board">
-          <div class="chart-scroll" data-chart-scroll="${escapeHtml(chartId)}" data-chart-focus-x="${focusPoint ? Math.round(focusPoint.x) : 0}">
+          <div class="chart-scroll constellation-chart-scroll" data-chart-scroll="${escapeHtml(chartId)}" data-chart-focus-x="${focusPoint ? Math.round(focusPoint.x) : 0}">
             <svg class="chart-svg" width="${chartWidth}" height="${chartHeight}" viewBox="0 0 ${chartWidth} ${chartHeight}" aria-hidden="true">
               <defs>
                 <linearGradient id="${lineId}" x1="0" y1="1" x2="1" y2="0">
@@ -8579,7 +9224,7 @@
               ${gridLines}
               <line x1="${paddingLeft}" y1="${baselineY}" x2="${chartWidth - paddingRight}" y2="${baselineY}" stroke="rgba(226,234,255,0.34)" stroke-width="1.2"></line>
               <path d="${area}" fill="url(#${areaId})"></path>
-              <path d="${path}" fill="none" stroke="url(#${lineId})" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="${path}" fill="none" stroke="url(#${lineId})" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
               ${pointNodes}
               ${lastPoint ? `
                 <g transform="translate(${lastPoint.x}, ${Math.max(30, lastPoint.y - 22)})">
@@ -8597,7 +9242,7 @@
       if (!analytics.stats.length) {
         return `
           <div class="nova-panel">
-            <div class="chart-empty">Chưa có ngày nào đã đi qua trong bộ lọc hiện tại.</div>
+            <div class="chart-empty">Không có ngày nào trong bộ lọc hiện tại.</div>
           </div>
         `;
       }
@@ -8670,10 +9315,7 @@
 
     function buildStudyAnalytics(days) {
       const todayCutoff = getTodayCutoffDate();
-      const chartDays = days.filter((day) => {
-        const parsed = parseScheduleDate(day.date);
-        return parsed && parsed.getTime() <= todayCutoff.getTime();
-      });
+      const chartDays = [...days];
 
       let cumulativeDoneMinutes = 0;
       const stats = chartDays.map((day) => {
@@ -8740,21 +9382,112 @@
         totalDoneMinutes: analyticsSummary.totalDoneMinutes,
         activeDays: analyticsSummary.activeDays,
         averageDoneMinutes: stats.length ? Math.round(analyticsSummary.totalDoneMinutes / stats.length) : 0,
-        currentChartDate: stats.length ? stats[stats.length - 1].date : ""
+        currentChartDate: getNearestDayToToday(chartDays)?.date || (stats.length ? stats[0].date : "")
       };
     }
 
-    function getProgress() {
-      return getTaskPercent(buildGlobalTaskStats());
+    function getCourseProgressStats(subject = "") {
+      const courses = COURSE_PROGRESS_CATALOG
+        .filter((course) => !subject || course.subject === subject)
+        .map((course) => {
+          let done = 0;
+          for (let number = course.start; number <= course.end; number += 1) {
+            if (state.courseProgress[courseTestKey(course.id, number)]) done += 1;
+          }
+          const total = course.end - course.start + 1;
+          return { ...course, done, total, percent: total ? Math.round((done / total) * 100) : 0 };
+        });
+      const total = courses.reduce((sum, course) => sum + course.total, 0);
+      const done = courses.reduce((sum, course) => sum + course.done, 0);
+      return {
+        subject,
+        courses,
+        total,
+        done,
+        percent: total ? Math.round((done / total) * 100) : 0
+      };
     }
 
-    function groupProgress(key, taskState = ensureTaskState(state.selectedDate)) {
-      return getTaskPercent(summarizeTaskItems(taskState[key] || []));
+    function findLinkedCourseTask(key) {
+      for (const [date, taskState] of Object.entries(state.tasks || {})) {
+        for (const group of TASK_GROUPS) {
+          const list = Array.isArray(taskState[group]) ? taskState[group] : [];
+          const index = list.findIndex((item) => item.courseTestKey === key);
+          if (index >= 0) return { date, group, index, item: list[index] };
+        }
+      }
+      return null;
+    }
+
+    function syncLinkedCourseTaskDone(key, done) {
+      const linked = findLinkedCourseTask(key);
+      if (linked) linked.item.done = !!done;
+    }
+
+    function toggleCourseTest(courseId, number) {
+      const course = COURSE_PROGRESS_CATALOG.find((item) => item.id === courseId);
+      if (!course || number < course.start || number > course.end) return;
+      const key = courseTestKey(course.id, number);
+      const wasDone = state.courseProgress[key] === true;
+
+      if (!wasDone) {
+        pendingCourseCompletion = { courseId: course.id, number };
+        render();
+        return;
+      }
+
+      state.courseProgress[key] = false;
+      syncLinkedCourseTaskDone(key, false);
+      saveState();
+      render();
+    }
+
+    function confirmPendingCourseCompletion() {
+      if (!pendingCourseCompletion) return;
+      const form = document.getElementById("courseCompletionForm");
+      if (!form || !form.reportValidity()) return;
+
+      const course = COURSE_PROGRESS_CATALOG.find((item) => item.id === pendingCourseCompletion.courseId);
+      const number = Number(pendingCourseCompletion.number);
+      if (!course || number < course.start || number > course.end) return;
+
+      const time = String(document.getElementById("courseCompletionTime")?.value || "").trim();
+      const content = String(document.getElementById("courseCompletionContent")?.value || "").trim();
+      const note = String(document.getElementById("courseCompletionNote")?.value || "").trim();
+      const key = courseTestKey(course.id, number);
+      const linked = findLinkedCourseTask(key);
+      const targetState = ensureTaskState(state.selectedDate);
+      const targetList = targetState[course.subject];
+      let targetIndex = targetList.length;
+
+      if (linked) {
+        const sourceList = state.tasks[linked.date] && state.tasks[linked.date][linked.group];
+        if (Array.isArray(sourceList)) {
+          if (linked.date === state.selectedDate && linked.group === course.subject) targetIndex = linked.index;
+          sourceList.splice(linked.index, 1);
+        }
+      }
+
+      const taskItem = createStructuredTaskItem({
+        date: state.selectedDate,
+        group: course.subject,
+        time,
+        content,
+        note,
+        done: true,
+        courseTestKey: key
+      });
+      targetList.splice(Math.min(targetIndex, targetList.length), 0, taskItem);
+      state.courseProgress[key] = true;
+      pendingCourseCompletion = null;
+      queueLuckyCometCompletion(luckyCometPointer, parseStudyMinutes(time));
+      saveState();
+      render();
     }
 
     function filteredDays() {
       const normalizedQuery = state.query.toLowerCase();
-      return state.schedule.filter((day) => {
+      return state.schedule.filter((day) => isFinalVsatScheduleDate(day.date)).filter((day) => {
         const taskGroup = state.tasks[day.date] || createEmptyTaskState();
         const tasks = getTaskList(taskGroup);
         let haystack = `${day.date || ""} ${day.weekday || ""} ${day.phase || ""} ${day.note || ""}`;
@@ -8772,7 +9505,7 @@
     }
 
     function phases() {
-      return ["Tất cả", ...new Set(state.schedule.map((day) => day.phase))];
+      return ["Tất cả", ...new Set(state.schedule.filter((day) => isFinalVsatScheduleDate(day.date)).map((day) => day.phase))];
     }
 
     function ensureTaskState(date) {
@@ -8788,6 +9521,9 @@
       if (!item) return;
       const wasDone = !!item.done;
       item.done = !item.done;
+      if (item.courseTestKey && Object.prototype.hasOwnProperty.call(state.courseProgress, item.courseTestKey)) {
+        state.courseProgress[item.courseTestKey] = item.done;
+      }
       if (!wasDone && item.done) {
         queueLuckyCometCompletion(triggerPoint, parseStudyMinutes(item.time));
       }
@@ -8798,10 +9534,14 @@
     function deleteTask(group, index) {
       const taskState = ensureTaskState(state.selectedDate);
       if (!taskState[group] || !taskState[group][index]) return;
+      const removedItem = taskState[group][index];
       if (editingTask && editingTask.date === state.selectedDate && editingTask.group === group && editingTask.index === index) {
         editingTask = null;
       }
       taskState[group].splice(index, 1);
+      if (removedItem.courseTestKey && Object.prototype.hasOwnProperty.call(state.courseProgress, removedItem.courseTestKey)) {
+        state.courseProgress[removedItem.courseTestKey] = false;
+      }
       saveState();
       scheduleRender();
     }
@@ -8908,8 +9648,9 @@
         const targetList = taskState[group];
         if (Array.isArray(sourceList) && sourceList[editingTask.index] && Array.isArray(targetList)) {
           const preservedDone = !!sourceList[editingTask.index].done;
+          const preservedCourseTestKey = sourceList[editingTask.index].courseTestKey || "";
           sourceList.splice(editingTask.index, 1);
-          insertTaskAt(targetList, { ...nextItem, done: preservedDone }, taskOrder);
+          insertTaskAt(targetList, { ...nextItem, done: preservedDone, courseTestKey: preservedCourseTestKey }, taskOrder);
         }
       } else {
         insertTaskAt(taskState[group], nextItem, taskOrder);
@@ -8955,7 +9696,7 @@
       const year = match[3] ? Number(match[3].length === 2 ? `20${match[3]}` : match[3]) : 2026;
       if (year !== 2026 || day < 1 || day > 31 || month < 1 || month > 12) return "";
       const normalized = `${String(day).padStart(2, "0")}/${String(month).padStart(2, "0")}`;
-      return state.schedule.some((dayItem) => dayItem.date === normalized) ? normalized : "";
+      return isFinalVsatScheduleDate(normalized) && state.schedule.some((dayItem) => dayItem.date === normalized) ? normalized : "";
     }
 
     function parseScheduleImportText(rawText) {
@@ -8991,7 +9732,7 @@
         const content = contentRaw.trim();
         const note = noteParts.join(" | ").trim();
 
-        if (!date) errors.push(`Dòng ${lineNumber}: ngày "${dateRaw}" không nằm trong khoảng 13/05 - 10/06/2026.`);
+        if (!date) errors.push(`Dòng ${lineNumber}: ngày "${dateRaw}" không nằm trong giai đoạn FINAL VSAT 20/06 - 05/07/2026.`);
         if (!group) errors.push(`Dòng ${lineNumber}: môn "${subjectRaw}" chưa đúng. Dùng Vật lí, Toán, Tiếng Anh hoặc Ôn lỗi.`);
         if (!content) errors.push(`Dòng ${lineNumber}: thiếu nội dung học.`);
         if (!date || !group || !content) return;
@@ -9015,8 +9756,14 @@
 
     function clearAllImportedScheduleData() {
       state.schedule.forEach((day) => {
+        if (!isFinalVsatScheduleDate(day.date)) return;
         day.note = "";
         const taskState = ensureTaskState(day.date);
+        getTaskList(taskState).forEach((item) => {
+          if (item.courseTestKey && Object.prototype.hasOwnProperty.call(state.courseProgress, item.courseTestKey)) {
+            state.courseProgress[item.courseTestKey] = false;
+          }
+        });
         TASK_GROUPS.forEach((group) => {
           taskState[group] = [];
         });
@@ -9081,12 +9828,26 @@
       restoredTaskState.dailyNote = typeof backupTasks.dailyNote === "string" ? backupTasks.dailyNote : "";
       restoredTaskState.pace = typeof backupTasks.pace === "string" && backupTasks.pace.trim() ? backupTasks.pace : DEFAULT_PACE;
       restoredTaskState.customAdd = typeof backupTasks.customAdd === "string" ? backupTasks.customAdd : "";
+      getTaskList(ensureTaskState(date)).forEach((item) => {
+        if (item.courseTestKey && Object.prototype.hasOwnProperty.call(state.courseProgress, item.courseTestKey)) {
+          state.courseProgress[item.courseTestKey] = false;
+        }
+      });
       state.tasks[date] = restoredTaskState;
+      getTaskList(restoredTaskState).forEach((item) => {
+        if (item.courseTestKey && Object.prototype.hasOwnProperty.call(state.courseProgress, item.courseTestKey)) {
+          state.courseProgress[item.courseTestKey] = !!item.done;
+        }
+      });
 
       targetDay.note = typeof backupDay.note === "string" ? backupDay.note : targetDay.note;
-      if (typeof backupDay.phase === "string" && backupDay.phase.trim()) targetDay.phase = backupDay.phase;
+      if (isFinalVsatScheduleDate(date)) {
+        targetDay.phase = FINAL_VSAT_PHASE;
+      } else if (typeof backupDay.phase === "string" && backupDay.phase.trim()) {
+        targetDay.phase = backupDay.phase;
+      }
 
-      state.selectedDate = date;
+      if (isFinalVsatScheduleDate(date)) state.selectedDate = date;
       importStatus = {
         type: "success",
         message: `Da phuc hoi backup ngay ${date} vao web thanh cong.`
@@ -9135,7 +9896,8 @@
         }
       });
 
-      state.selectedDate = entries[0].date;
+      const firstVisibleEntry = entries.find((entry) => isFinalVsatScheduleDate(entry.date));
+      if (firstVisibleEntry) state.selectedDate = firstVisibleEntry.date;
       importStatus = {
         type: "success",
         message: `Đã nhập ${added} lịch học từ file. ${skipped ? `Bỏ qua ${skipped} dòng bị trùng.` : "Không có dòng trùng."}`
@@ -9160,7 +9922,7 @@
     }
 
     function downloadImportTemplate() {
-      const template = `# CÔNG THỨC NHẬP LỊCH HỌC\n# Mỗi dòng: Ngày | Môn | Giờ | Nội dung học | Ghi chú\n# Ngày chỉ nhận từ 13/05 đến 10/06/2026.\n# Môn nhận: Vật lí / Toán / Tiếng Anh / Ôn lỗi. Có thể viết tắt: VL, Toán, TA, Recall.\n\nNgày | Môn | Giờ | Nội dung học | Ghi chú\n13/05 | Toán | 19:00-20:30 | Hàm số: khảo sát, cực trị, GTLN-GTNN | Làm xong thì đánh dấu câu sai\n13/05 | Vật lí | 20:45-22:00 | Dao động cơ: 30 câu trắc nghiệm | Ưu tiên câu vận dụng\n14/05 | TA | Sáng | Part 2 True/False + 20 từ vựng | Ghi lại bẫy sai\n14/05 | Recall | 21:30 | Ôn lại lỗi sai trong đề hôm trước |`; 
+      const template = `# CÔNG THỨC NHẬP LỊCH HỌC\n# Mỗi dòng: Ngày | Môn | Giờ | Nội dung học | Ghi chú\n# Ngày chỉ nhận trong giai đoạn FINAL VSAT từ 20/06 đến 05/07/2026.\n# Môn nhận: Vật lí / Toán / Tiếng Anh / Ôn lỗi. Có thể viết tắt: VL, Toán, TA, Recall.\n\nNgày | Môn | Giờ | Nội dung học | Ghi chú\n20/06 | Toán | 19:00-20:30 | Luyện đề V-SAT: Toán | Đánh dấu câu sai để ôn lại\n20/06 | Vật lí | 20:45-22:00 | Luyện đề V-SAT: Vật lí | Ưu tiên câu vận dụng\n21/06 | TA | Sáng | Luyện đề V-SAT: Tiếng Anh | Ghi lại bẫy sai\n21/06 | Recall | 21:30 | Ôn lại lỗi sai trong đề hôm trước |`; 
       const blob = new Blob([template], { type: "text/plain;charset=utf-8" });
       const link = document.createElement("a");
       const url = URL.createObjectURL(blob);
@@ -9180,6 +9942,11 @@
       const ok = confirm(`Xóa toàn bộ lịch và ghi chú của ngày ${day.date}?`);
       if (!ok) return;
 
+      getTaskList(taskState).forEach((item) => {
+        if (item.courseTestKey && Object.prototype.hasOwnProperty.call(state.courseProgress, item.courseTestKey)) {
+          state.courseProgress[item.courseTestKey] = false;
+        }
+      });
       TASK_GROUPS.forEach((group) => {
         taskState[group] = [];
       });
@@ -9198,6 +9965,7 @@
     function sectionHtml(title, groupKey, items) {
       const mood = SUBJECT_MOODS[groupKey] || SUBJECT_MOODS.review;
       const doneCount = summarizeTaskItems(items).done;
+      const courseProgress = COURSE_PROGRESS_SUBJECTS.includes(groupKey) ? getCourseProgressStats(groupKey) : null;
 
       return `
         <details class="section ${groupKey}" open>
@@ -9210,6 +9978,22 @@
             <span class="section-count">${doneCount}/${items.length}</span>
           </summary>
           <div class="task-list">
+            ${courseProgress ? `
+              <div class="subject-progress-launch">
+                <button
+                  type="button"
+                  class="subject-progress-launch-btn"
+                  data-action="open-course-progress"
+                  data-subject="${groupKey}"
+                >
+                  <span class="subject-progress-launch-label">
+                    <strong>Tiến độ đề ${escapeHtml(SUBJECT_LABELS[groupKey])}</strong>
+                    <small>${courseProgress.courses.length} nguồn · tick sau khi làm và chữa lỗi</small>
+                  </span>
+                  <span class="subject-progress-launch-score">${courseProgress.done}/${courseProgress.total} · ${courseProgress.percent}%</span>
+                </button>
+              </div>
+            ` : ""}
             ${items.length ? `
               <div class="task-grid-head ${groupKey}">
                 <span>Check</span>
@@ -9301,8 +10085,112 @@
       `;
     }
 
+    function renderCourseProgressModal(subject) {
+      if (!COURSE_PROGRESS_SUBJECTS.includes(subject)) return "";
+      const stats = getCourseProgressStats(subject);
+      return `
+        <div class="course-progress-modal-overlay" data-action="close-course-progress" aria-hidden="false">
+          <section
+            class="course-progress-modal-panel"
+            data-action="course-progress-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="course-progress-modal-title"
+          >
+            <div class="course-progress-modal-head">
+              <div>
+                <div class="section-desc">Tiến độ tổng theo môn</div>
+                <div class="course-progress-modal-title" id="course-progress-modal-title">${escapeHtml(SUBJECT_LABELS[subject])} · ${stats.done}/${stats.total}</div>
+                <div class="course-progress-modal-meta">${stats.courses.length} nguồn · ${stats.percent}% hoàn tất · chỉ tick sau khi đã làm và chữa lỗi.</div>
+              </div>
+              <button type="button" class="course-progress-modal-close" data-action="close-course-progress" aria-label="Đóng cửa sổ tiến độ">×</button>
+            </div>
+            <div class="course-progress-modal-body">
+              <article class="course-subject-card ${subject}">
+                <div class="course-list">
+                  ${stats.courses.map((course) => `
+                    <article class="course-card">
+                      <div class="course-card-head">
+                        <div>
+                          <div class="course-source">${escapeHtml(course.source)}</div>
+                          <div class="course-range">STT ${String(course.start).padStart(2, "0")} – ${String(course.end).padStart(2, "0")} · ${course.total} đề</div>
+                        </div>
+                        <span class="course-count">${course.done}/${course.total}</span>
+                      </div>
+                      <div class="course-test-grid">
+                        ${Array.from({ length: course.total }, (_, index) => course.start + index).map((number) => {
+                          const isDone = state.courseProgress[courseTestKey(course.id, number)] === true;
+                          const numberLabel = String(number).padStart(2, "0");
+                          return `
+                            <button
+                              type="button"
+                              class="course-test-check ${isDone ? "done" : ""}"
+                              data-action="toggle-course-test"
+                              data-course-id="${escapeHtml(course.id)}"
+                              data-number="${number}"
+                              aria-pressed="${isDone}"
+                              aria-label="${isDone ? "Bỏ hoàn tất" : "Đánh dấu hoàn tất"} đề ${numberLabel} · ${escapeHtml(course.source)}"
+                              title="${isDone ? "Đã làm và chữa lỗi" : "Tick sau khi làm và chữa lỗi"}"
+                            >${isDone ? "✓ " : ""}${numberLabel}</button>
+                          `;
+                        }).join("")}
+                      </div>
+                      ${course.note ? `<div class="course-note">${escapeHtml(course.note)}</div>` : ""}
+                    </article>
+                  `).join("")}
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    function renderCourseCompletionModal(pending) {
+      if (!pending) return "";
+      const course = COURSE_PROGRESS_CATALOG.find((item) => item.id === pending.courseId);
+      const number = Number(pending.number);
+      if (!course || number < course.start || number > course.end) return "";
+
+      const key = courseTestKey(course.id, number);
+      const linked = findLinkedCourseTask(key);
+      const numberLabel = String(number).padStart(2, "0");
+      const defaultContent = linked?.item.content || linked?.item.text || `${course.source} · Đề ${numberLabel}`;
+      const defaultTime = linked?.item.time || "";
+      const defaultNote = linked?.item.note || "Đã làm và chữa lỗi.";
+
+      return `
+        <div class="course-completion-modal-overlay" data-action="cancel-course-completion">
+          <section class="course-completion-modal-panel" data-action="course-completion-panel" role="dialog" aria-modal="true" aria-labelledby="course-completion-title">
+            <div class="course-completion-kicker">Đồng bộ vào lịch học</div>
+            <div class="course-completion-title" id="course-completion-title">Hoàn tất đề ${numberLabel} · ${escapeHtml(SUBJECT_LABELS[course.subject])}</div>
+            <div class="course-completion-copy">Mục này sẽ được thêm ở trạng thái đã xong vào ngày ${escapeHtml(state.selectedDate)}. Nhập giờ và thông tin muốn hiển thị trong lịch.</div>
+            <form class="course-completion-form" id="courseCompletionForm">
+              <label class="course-completion-field">
+                Giờ học
+                <input id="courseCompletionTime" class="course-completion-input" type="text" value="${escapeHtml(defaultTime)}" placeholder="Ví dụ: 19:00-20:30" required autofocus />
+              </label>
+              <label class="course-completion-field">
+                Thông tin / nội dung
+                <input id="courseCompletionContent" class="course-completion-input" type="text" value="${escapeHtml(defaultContent)}" required />
+              </label>
+              <label class="course-completion-field">
+                Ghi chú
+                <textarea id="courseCompletionNote" class="course-completion-input" placeholder="Thông tin thêm để xem lại sau">${escapeHtml(defaultNote)}</textarea>
+              </label>
+              <div class="course-completion-actions">
+                <button type="button" class="course-completion-btn" data-action="cancel-course-completion">Hủy</button>
+                <button type="button" class="course-completion-btn primary" data-action="confirm-course-completion">Lưu và đánh dấu xong</button>
+              </div>
+            </form>
+          </section>
+        </div>
+      `;
+    }
+
     function render() {
       const selectedDay = getSelectedDay();
+      if (state.selectedDate !== selectedDay.date) state.selectedDate = selectedDay.date;
       const selectedTaskState = ensureTaskState(state.selectedDate);
       const isEditingSelectedDay = editingTask && editingTask.date === state.selectedDate;
       const addFormGroup = isEditingSelectedDay ? normalizeTaskGroup(editingTask.group, getPreferredAddGroup()) : getPreferredAddGroup();
@@ -9313,17 +10201,17 @@
       const currentDayTasks = getTaskList(selectedTaskState);
       const currentDaySummary = summarizeTaskItems(currentDayTasks);
       const heroPlanetMode = getHeroPlanetMode(selectedDay, currentDaySummary);
-      const currentDone = currentDaySummary.done;
-      const currentPercent = getTaskPercent(currentDaySummary);
       const globalStats = buildGlobalTaskStats();
       const total = globalStats.total;
       const done = globalStats.done;
-      const progress = currentPercent;
-      const physicsProgress = groupProgress("physics", selectedTaskState);
-      const mathProgress = groupProgress("math", selectedTaskState);
-      const englishProgress = groupProgress("english", selectedTaskState);
-      const reviewProgress = groupProgress("review", selectedTaskState);
-      const learnedMinutes = globalStats.doneMinutes;
+      const courseStats = getCourseProgressStats();
+      const courseSubjectStats = Object.fromEntries(
+        COURSE_PROGRESS_SUBJECTS.map((subject) => [subject, getCourseProgressStats(subject)])
+      );
+      const progress = courseStats.percent;
+      const physicsProgress = courseSubjectStats.physics.percent;
+      const mathProgress = courseSubjectStats.math.percent;
+      const englishProgress = courseSubjectStats.english.percent;
 
       app.innerHTML = `
         <section class="hero-shell">
@@ -9349,26 +10237,25 @@
                   <div class="hero-planet-shadow"></div>
                 </div>
                 <div class="hero-day-main">
-                  <div class="pill">Study Mission Control</div>
+                  <div class="pill">${escapeHtml(selectedDay.phase)}</div>
                   <div class="mission-kicker">Ngày đang học</div>
                   <div class="mission-title">${escapeHtml(selectedDay.date)} · ${escapeHtml(selectedDay.weekday || selectedDay.phase)}</div>
-                  <div class="progress hero-progress-inline"><span style="width:${currentPercent}%"></span></div>
                   <div class="mission-copy">${escapeHtml(getDisplayNote(selectedDay))}</div>
                 </div>
                 <div class="hero-day-focus">
                   <div class="hero-focus-card hero-stat-card">
-                    <div class="hero-focus-label">Khoảng ngày</div>
-                    <div class="hero-focus-value">12/05 → 10/06</div>
+                    <div class="hero-focus-label">Tổng đề hoàn tất</div>
+                    <div class="hero-focus-value">${courseStats.done}/${courseStats.total}</div>
                   </div>
                   <div class="hero-focus-card hero-stat-card">
-                    <div class="hero-focus-label">Đầu việc đã xong</div>
+                    <div class="hero-focus-label">Nguồn / khóa</div>
+                    <div class="hero-focus-value">${COURSE_PROGRESS_CATALOG.length}</div>
+                    <div class="hero-focus-note">Tổng hợp cả 3 môn.</div>
+                  </div>
+                  <div class="hero-focus-card hero-stat-card">
+                    <div class="hero-focus-label">Task lịch đã xong</div>
                     <div class="hero-focus-value">${done}/${total}</div>
-                    <div class="hero-focus-note">Tiến độ tổng hợp của toàn bộ kế hoạch.</div>
-                  </div>
-                  <div class="hero-focus-card hero-stat-card">
-                    <div class="hero-focus-label">Ngày ${escapeHtml(selectedDay.date)}</div>
-                    <div class="hero-focus-value">${currentDone}/${currentDayTasks.length}</div>
-                    <div class="hero-focus-note">Số đầu việc đã tick trong ngày đang chọn.</div>
+                    <div class="hero-focus-note">Không dùng để tính tiến độ đề.</div>
                   </div>
                   <div class="hero-focus-card focus-chip pace-chip">
                     <div class="hero-focus-label">Nhịp hiện tại</div>
@@ -9401,35 +10288,32 @@
                     <div class="orbit-progress-track">
                       <div class="orbit-progress-fill" style="height:${progress}%"></div>
                     </div>
-                    <div class="orbit-progress-name">Tổng nhịp</div>
+                    <div class="orbit-progress-name">Tổng đề 
+                       ${courseStats.done}/${courseStats.total}</div>
                   </div>
                   <div class="orbit-progress-item">
                     <div class="orbit-progress-value">${physicsProgress}%</div>
                     <div class="orbit-progress-track">
                       <div class="orbit-progress-fill physics" style="height:${physicsProgress}%"></div>
                     </div>
-                    <div class="orbit-progress-name">Vật lí</div>
+                    <div class="orbit-progress-name">Vật lí 
+                       ${courseSubjectStats.physics.done}/${courseSubjectStats.physics.total}</div>
                   </div>
                   <div class="orbit-progress-item">
                     <div class="orbit-progress-value">${mathProgress}%</div>
                     <div class="orbit-progress-track">
                       <div class="orbit-progress-fill math" style="height:${mathProgress}%"></div>
                     </div>
-                    <div class="orbit-progress-name">Toán</div>
+                    <div class="orbit-progress-name">Toán 
+                       ${courseSubjectStats.math.done}/${courseSubjectStats.math.total}</div>
                   </div>
                   <div class="orbit-progress-item">
                     <div class="orbit-progress-value">${englishProgress}%</div>
                     <div class="orbit-progress-track">
                       <div class="orbit-progress-fill english" style="height:${englishProgress}%"></div>
                     </div>
-                    <div class="orbit-progress-name">Tiếng Anh</div>
-                  </div>
-                  <div class="orbit-progress-item">
-                    <div class="orbit-progress-value">${reviewProgress}%</div>
-                    <div class="orbit-progress-track">
-                      <div class="orbit-progress-fill tasks" style="height:${reviewProgress}%"></div>
-                    </div>
-                    <div class="orbit-progress-name">Ôn lỗi</div>
+                    <div class="orbit-progress-name">Tiếng Anh 
+                       ${courseSubjectStats.english.done}/${courseSubjectStats.english.total}</div>
                   </div>
                 </div>
               </div>
@@ -9448,7 +10332,7 @@
           <aside class="glass sidebar">
             <div>
               <div class="section-title">Radar điều hướng</div>
-              <div class="section-desc">Lọc nhanh ngày, trạng thái và tiến độ học.</div>
+              <div class="section-desc">Lọc nhanh ngày, trạng thái và nội dung học.</div>
             </div>
 
             <div style="display:grid; gap:12px;">
@@ -9478,7 +10362,6 @@
                   const dayTasks = getTaskList(taskState);
                   const daySummary = summarizeTaskItems(dayTasks);
                   const dayDone = daySummary.done;
-                  const dayPercent = getTaskPercent(daySummary);
 
                   return `
                     <button class="date-btn ${state.selectedDate === day.date ? "active" : ""}" data-action="select-date" data-date="${day.date}" ${radarFocusDate === day.date ? 'data-radar-focus="today"' : ""}>
@@ -9490,7 +10373,6 @@
                         <span class="badge ${paceClassMap[taskState.pace]}">${escapeHtml(taskState.pace)}</span>
                       </div>
                       <div class="date-count">${dayDone}/${dayTasks.length} đầu việc xong</div>
-                      <div class="progress" style="margin-top:10px;"><span style="width:${dayPercent}%"></span></div>
                     </button>
                   `;
                 }).join("")}
@@ -9585,8 +10467,8 @@
                 <div class="section-title">Biểu Đồ Thống Kê Học Tập</div>
               </div>
               <div class="schedule-stats">
-                <span class="badge">${analytics.stats.length} ngày đã qua</span>
-                <span class="badge">Đến ${escapeHtml(analytics.renderedThroughLabel || analytics.cutoffLabel || "—")}</span>
+                <span class="badge">${analytics.stats.length} ngày trong giai đoạn</span>
+                <span class="badge">20/06 → 05/07</span>
               </div>
             </div>
 
@@ -9595,15 +10477,15 @@
                   <div class="analytics-head">
                     <div>
                       <div class="analytics-kicker">Orbit Hours</div>
-                      <div class="analytics-title">Quỹ đạo giờ học theo từng ngày</div>
+                      <div class="analytics-title">Quỹ đạo giờ học đã hoàn thành theo từng ngày</div>
                     </div>
-                    <div class="analytics-highlight">${escapeHtml(formatStudyMinutes(analytics.totalPlannedMinutes))}</div>
+                    <div class="analytics-highlight">${escapeHtml(formatStudyMinutes(analytics.totalDoneMinutes))}</div>
                   </div>
                   ${renderOrbitalBarChart({
                     chartId: "hours-orbit",
                     stats: analytics.stats,
-                    valueKey: "plannedMinutes",
-                    maxValue: analytics.maxPlannedMinutes,
+                    valueKey: "doneMinutes",
+                    maxValue: analytics.maxDoneMinutes,
                     axisMode: "minutes",
                     tickFormatter: formatAxisMinutesLabel,
                     valueFormatter: formatCompactMinutes,
@@ -9617,11 +10499,11 @@
                     currentDate: analytics.currentChartDate,
                     focusDate: analytics.currentChartDate,
                     scrollFocusDate: analytics.currentChartDate,
-                    emptyMessage: "Chưa có ngày nào đã đi qua để dựng quỹ đạo giờ học."
+                    emptyMessage: "Chưa có ngày nào để dựng quỹ đạo giờ học."
                   })}
                 </article>
 
-                <article class="analytics-card growth">
+                <article class="analytics-card wide growth">
                   <div class="analytics-head">
                     <div>
                       <div class="analytics-kicker">Constellation Growth</div>
@@ -9645,7 +10527,7 @@
                       beam: "rgba(139,92,246,0.18)"
                     },
                     currentDate: analytics.currentChartDate,
-                    emptyMessage: "Chưa đủ dữ liệu đã qua để vẽ đường tăng trưởng."
+                    emptyMessage: "Chưa đủ dữ liệu để vẽ đường tăng trưởng."
                   })}
                 </article>
 
@@ -9660,7 +10542,7 @@
                   ${renderNovaSummary(analytics)}
                 </article>
 
-                <article class="analytics-card wide tasks">
+                <article class="analytics-card tasks">
                   <div class="analytics-head">
                     <div>
                       <div class="analytics-kicker">Mission Clears</div>
@@ -9686,7 +10568,7 @@
                     currentDate: analytics.currentChartDate,
                     focusDate: analytics.taskHighlight.date,
                     scrollFocusDate: analytics.currentChartDate,
-                    emptyMessage: "Chưa có ngày đã qua để dựng tháp nhiệm vụ hoàn tất."
+                    emptyMessage: "Chưa có ngày để dựng tháp nhiệm vụ hoàn tất."
                   })}
                 </article>
             </div>
@@ -9698,7 +10580,7 @@
               <div class="schedule-head">
                 <div>
                   <div class="section-title">Thời Khóa Biểu Tổng Thể</div>
-                  <div class="section-desc">Quét nhanh tiến độ từng ngày và mở menu ba chấm để thao tác.</div>
+                  <div class="section-desc">Quét nhanh lịch từng ngày và mở menu ba chấm để thao tác.</div>
                 </div>
                 <div class="schedule-stats">
                   <span class="badge">${visibleDays.length} ngày</span>
@@ -9713,7 +10595,6 @@
                     <tr>
                       <th>Ngày</th>
                       <th>Lịch học theo môn</th>
-                      <th>Tiến độ</th>
                       <th>Ghi chú</th>
                       <th class="schedule-action-head">Action</th>
                     </tr>
@@ -9721,10 +10602,6 @@
                   <tbody>
                     ${visibleDays.map((day) => {
                       const taskState = ensureTaskState(day.date);
-                      const mainTasks = getTaskList(taskState);
-                      const mainSummary = summarizeTaskItems(mainTasks);
-                      const mainDone = mainSummary.done;
-                      const mainPercent = getTaskPercent(mainSummary);
 
                       const renderTaskPanel = (title, items, variant, icon) => {
                         const itemSummary = summarizeTaskItems(items);
@@ -9780,15 +10657,6 @@
                               ${renderTaskPanel("Ôn lỗi", taskState.review, "review", "R")}
                             </div>
                           </td>
-                          <td class="schedule-progress-cell">
-                            <div class="schedule-progress-stack">
-                              <div class="schedule-progress-meta">
-                                <span class="schedule-progress-percent">${mainPercent}%</span>
-                                <span>${mainDone}/${mainTasks.length} nhiệm vụ</span>
-                              </div>
-                              <div class="schedule-progress-bar"><span style="height:${mainPercent}%"></span></div>
-                            </div>
-                          </td>
                           <td class="schedule-note-cell">
                             <div class="schedule-note-card">
                               <div class="schedule-note-label">Ghi chú trong ngày</div>
@@ -9819,11 +10687,14 @@
               </div>
             </section>
         </section>
+        ${renderCourseProgressModal(activeCourseProgressSubject)}
+        ${renderCourseCompletionModal(pendingCourseCompletion)}
       `;
 
+      document.body.classList.toggle("course-progress-modal-open", !!activeCourseProgressSubject || !!pendingCourseCompletion);
       applyDailyPlanetPalette(selectedDay.date, heroPlanetMode);
       syncSubjectSelectUi(addFormGroup);
-      syncDynamicUi(selectedDay, currentDone, currentDayTasks, learnedMinutes, done, total);
+      syncDynamicUi(selectedDay, done, total, courseStats);
       if (syncHeightRaf) cancelAnimationFrame(syncHeightRaf);
       syncHeightRaf = requestAnimationFrame(() => {
         syncHeightRaf = 0;
@@ -10169,6 +11040,42 @@
         return;
       }
 
+      if (target.dataset.action === "open-course-progress") {
+        const subject = String(target.dataset.subject || "");
+        if (!COURSE_PROGRESS_SUBJECTS.includes(subject)) return;
+        pendingCourseCompletion = null;
+        activeCourseProgressSubject = subject;
+        render();
+        return;
+      }
+
+      if (target.dataset.action === "close-course-progress") {
+        pendingCourseCompletion = null;
+        activeCourseProgressSubject = "";
+        render();
+        return;
+      }
+
+      if (target.dataset.action === "course-progress-panel") return;
+
+      if (target.dataset.action === "cancel-course-completion") {
+        pendingCourseCompletion = null;
+        render();
+        return;
+      }
+
+      if (target.dataset.action === "course-completion-panel") return;
+
+      if (target.dataset.action === "confirm-course-completion") {
+        confirmPendingCourseCompletion();
+        return;
+      }
+
+      if (target.dataset.action === "toggle-course-test") {
+        toggleCourseTest(target.dataset.courseId, Number(target.dataset.number));
+        return;
+      }
+
       if (target.dataset.action === "toggle") {
         closeFloatingMenus();
         toggleTask(target.dataset.group, Number(target.dataset.index), cometPointer);
@@ -10264,6 +11171,12 @@
       scheduleRender();
     }
 
+    function handleAppSubmit(event) {
+      if (event.target.id !== "courseCompletionForm") return;
+      event.preventDefault();
+      confirmPendingCourseCompletion();
+    }
+
     function randomizeFlagBurstPose() {
       const flagBurst = document.querySelector(".flag-burst");
       if (!flagBurst) return;
@@ -10304,6 +11217,7 @@
     app.addEventListener("click", handleAppClick);
     app.addEventListener("input", handleAppInput);
     app.addEventListener("change", handleAppChange);
+    app.addEventListener("submit", handleAppSubmit);
     window.addEventListener("pointermove", rememberLuckyCometPointer, { passive: true });
     window.addEventListener("resize", () => {
       if (syncHeightRaf) cancelAnimationFrame(syncHeightRaf);
@@ -10315,6 +11229,17 @@
       });
     });
     window.addEventListener("scroll", scheduleFloatingMenuSync, { passive: true });
+    window.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+      if (pendingCourseCompletion) {
+        pendingCourseCompletion = null;
+      } else if (activeCourseProgressSubject) {
+        activeCourseProgressSubject = "";
+      } else {
+        return;
+      }
+      render();
+    });
     window.addEventListener("pagehide", () => {
       if (renderRaf) {
         cancelAnimationFrame(renderRaf);
