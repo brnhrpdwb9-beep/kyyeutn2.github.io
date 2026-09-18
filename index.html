@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TYS Cafe - Sơ Đồ & Quản Lý Thanh Toán</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        tys: {
+                            50: '#fdfbf7',
+                            100: '#f7f1e5',
+                            200: '#edd8b5',
+                            500: '#c69214', // Official TYS Gold
+                            600: '#a8780c',
+                            700: '#855b08',
+                            800: '#3a2707',
+                            900: '#211604',
+                        },
+                        espresso: {
+                            800: '#231d19',
+                            850: '#1c1714',
+                            900: '#14110f',
+                            950: '#0c0a09',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0c0a09;
+            color: #f5f5f4;
+            user-select: none;
+        }
+
+        .floorplan-container {
+            background: radial-gradient(circle at center, #261f1b 0%, #0c0a09 100%);
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.8), 0 0 30px rgba(198, 146, 20, 0.05);
+        }
+
+        .pulse-unpaid {
+            animation: pulse-red 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7), 0 0 15px rgba(239, 68, 68, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0), 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .table-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .table-btn:hover {
+            transform: scale(1.06);
+            z-index: 20;
+            box-shadow: 0 0 15px rgba(198, 146, 20, 0.3);
+        }
+        .table-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1c1714;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #443831;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased overflow-x-hidden bg-espresso-950">
+
+    <!-- Header Controls -->
+    <header class="bg-espresso-900/95 backdrop-blur-md border-b border-tys-500/20 sticky top-0 z-40 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
+            
+            <!-- Brand & Clock -->
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3.5">
+                    <!-- TYS Transparent Brand Logo -->
+                    <div class="w-12 h-12 rounded-xl bg-espresso-900/90 p-1.5 flex items-center justify-center shadow-lg shadow-tys-500/10 border border-tys-500/30 group hover:border-tys-500 transition-all">
+                        <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md" xmlns="http://www.w3.org/2000/svg">
+                            <g fill="#c69214">
+                                <!-- T Stem & Bird perched on top -->
+                                <path d="M 12 92 C 12 74 35 66 72 66 C 79 66 85 70 87 77 C 82 81 72 85 64 91 C 55 97 48 106 46 112 L 32 112 C 32 100 22 93 12 92 Z"/>
+                                <rect x="32" y="112" width="18" height="74" rx="1"/>
+                                
+                                <!-- Y Stem & Cup pour motif -->
+                                <rect x="60" y="112" width="16" height="74" rx="1"/>
+                                <path d="M 80 66 L 98 66 L 98 118 C 88 118 80 108 80 98 Z"/>
+                                
+                                <!-- Coffee Cup in center negative space -->
+                                <g transform="rotate(-25 105 125)">
+                                    <rect x="90" y="110" width="28" height="34" rx="4" fill="#c69214"/>
+                                    <path d="M 118 118 C 128 118 128 134 118 134" stroke="#c69214" stroke-width="5" fill="none" stroke-linecap="round"/>
+                                </g>
+                                
+                                <!-- S Block with bear silhouette top right cutout -->
+                                <path d="M 106 66 L 156 66 C 156 76 149 82 143 83 C 138 84 137 89 141 93 C 147 99 156 108 156 124 L 156 168 C 156 181 143 186 128 186 L 106 186 L 106 152 L 138 152 L 138 132 C 138 122 128 118 106 118 Z"/>
+                                <!-- Bear ear & eye inside S top cutout -->
+                                <circle cx="147" cy="78" r="3.5" fill="#14110f"/>
+                                <circle cx="138" cy="86" r="1.8" fill="#14110f"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="font-extrabold text-xl tracking-tight leading-none text-amber-100">TYS CAFE</h1>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-tys-500/20 text-tys-500 border border-tys-500/30 uppercase tracking-widest">Sơ Đồ & Thu Tiền</span>
+                        </div>
+                        <p class="text-xs text-stone-400 mt-1" id="liveClock">--:--:--</p>
+                    </div>
+                </div>
+
+                <!-- Mobile Quick Stats -->
+                <div class="md:hidden text-right">
+                    <span id="unpaidBadgeMobile" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/30">
+                        <i class="fa-solid fa-triangle-exclamation mr-1"></i> <span id="unpaidCountMobile">0</span> Chưa trả
+                    </span>
+                </div>
+            </div>
+
+            <!-- Header Quick Dashboard Counters -->
+            <div class="grid grid-cols-4 gap-2 text-center text-xs">
+                <div class="bg-stone-900/80 p-2 rounded-lg border border-stone-800">
+                    <div class="text-stone-400">Tổng bàn</div>
+                    <div class="text-base font-bold text-stone-200" id="totalTablesCount">30</div>
+                </div>
+                <div class="bg-emerald-950/40 p-2 rounded-lg border border-emerald-500/30">
+                    <div class="text-emerald-400">Đã trả trước</div>
+                    <div class="text-base font-bold text-emerald-300" id="paidCount">0</div>
+                </div>
+                <div class="bg-red-950/40 p-2 rounded-lg border border-red-500/40 animate-pulse">
+                    <div class="text-red-400 font-semibold">Chưa thanh toán</div>
+                    <div class="text-base font-black text-red-300" id="unpaidCount">0</div>
+                </div>
+                <div class="bg-tys-900/50 p-2 rounded-lg border border-tys-500/30">
+                    <div class="text-tys-500">Doanh thu tạm</div>
+                    <div class="text-base font-bold text-amber-300" id="totalRevenue">0k</div>
+                </div>
+            </div>
+
+            <!-- Controls & View Toggle -->
+            <div class="flex items-center space-x-2">
+                <button onclick="toggleView('map')" id="btnViewMap" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-tys-500 text-stone-950 shadow transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-map"></i> Sơ đồ
+                </button>
+                <button onclick="toggleView('list')" id="btnViewList" class="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-stone-900 text-stone-300 hover:bg-stone-800 transition-colors flex items-center gap-1.5 border border-stone-800">
+                    <i class="fa-solid fa-list-check"></i> Danh sách
+                </button>
+                <button onclick="resetAllData()" title="Đặt lại tất cả bàn" class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-stone-900 text-stone-400 hover:text-red-400 hover:bg-stone-800 border border-stone-800 transition">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filter & Legend Toolbar -->
+    <div class="bg-espresso-900/80 border-b border-stone-800/80 px-4 py-2.5">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+            
+            <!-- Quick Filters -->
+            <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 md:pb-0">
+                <span class="text-stone-400 mr-1 font-medium"><i class="fa-solid fa-filter"></i> Lọc:</span>
+                <button onclick="filterStatus('all')" class="filter-btn active-filter px-3 py-1 rounded-md bg-stone-800 text-stone-200 border border-stone-700" data-filter="all">Tất cả (30)</button>
+                <button onclick="filterStatus('unpaid')" class="filter-btn px-3 py-1 rounded-md bg-stone-800 text-red-400 border border-stone-700 flex items-center gap-1" data-filter="unpaid">
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> Cần Thu Tiền
+                </button>
+                <button onclick="filterStatus('paid')" class="filter-btn px-3 py-1 rounded-md bg-stone-800 text-emerald-400 border border-stone-700" data-filter="paid">Đã Thanh Toán</button>
+                <button onclick="filterStatus('empty')" class="filter-btn px-3 py-1 rounded-md bg-stone-800 text-stone-400 border border-stone-700" data-filter="empty">Bàn Trống</button>
+                <button onclick="filterStatus('dirty')" class="filter-btn px-3 py-1 rounded-md bg-stone-800 text-purple-400 border border-stone-700" data-filter="dirty">Cần Dọn</button>
+            </div>
+
+            <!-- Legend Status Map -->
+            <div class="hidden lg:flex items-center space-x-4 text-stone-400">
+                <div class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded bg-stone-800 border border-stone-600"></span> Trống
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded bg-emerald-500/30 border border-emerald-500"></span> Đã trả trước
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded bg-red-500/30 border border-red-500 animate-pulse"></span> Chưa trả (Thu khi về)
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded bg-purple-500/30 border border-purple-500"></span> Khách đã về (Cần dọn)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Interactive Area -->
+    <main class="flex-1 p-3 md:p-6 overflow-y-auto">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- MAP VIEW -->
+            <div id="mapView" class="relative">
+                <!-- Outer Layout Container simulating exact coffee shop layout -->
+                <div class="floorplan-container relative w-full min-h-[750px] rounded-2xl border border-tys-500/20 p-4 md:p-6 overflow-x-auto select-none">
+                    
+                    <!-- Background Grid -->
+                    <div class="absolute inset-0 bg-[radial-gradient(#3a302a_1px,transparent_1px)] [background-size:24px_24px] opacity-40 rounded-2xl pointer-events-none"></div>
+
+                    <!-- Layout Map Wrapper (Fixed Aspect Ratio Desktop Canvas) -->
+                    <div class="relative w-[1000px] h-[700px] mx-auto scale-90 sm:scale-95 md:scale-100 transform-origin-top-left transition-transform">
+                        
+                        <!-- ================= ROOM & ARCHITECTURAL ELEMENTS ================= -->
+                        
+                        <!-- Top Left Room (Tables 15, 16) -->
+                        <div class="absolute top-[20px] left-[230px] w-[135px] h-[180px] rounded-2xl border-2 border-stone-600 bg-stone-900/40"></div>
+
+                        <!-- Main Counter Area -->
+                        <div class="absolute top-[20px] left-[365px] w-[435px] h-[200px] border-2 border-stone-600 bg-stone-900/30"></div>
+
+                        <!-- Counter Ledge Room Box (Tables 17, 18) -->
+                        <div class="absolute top-[220px] left-[530px] w-[270px] h-[76px] rounded-2xl border-2 border-stone-600 bg-stone-900/40"></div>
+                        <div class="absolute top-[302px] left-[570px] w-[230px] h-[8px] border-2 border-stone-600 bg-stone-800/60"></div>
+
+                        <!-- Entrance / Corridor Arch Nubs -->
+                        <div class="absolute top-[220px] left-[365px] w-[28px] h-[35px] border-2 border-t-0 border-stone-600 rounded-b-full bg-stone-900/40"></div>
+                        <div class="absolute top-[220px] left-[457px] w-[28px] h-[35px] border-2 border-t-0 border-stone-600 rounded-b-full bg-stone-900/40"></div>
+
+                        <!-- Main Vertical Corridor -->
+                        <div class="absolute top-[220px] left-[393px] w-[64px] h-[470px] border-x-2 border-stone-600"></div>
+
+                        <!-- Decor Circles -->
+                        <div class="absolute top-[160px] left-[100px] w-12 h-12 rounded-full border-2 border-stone-600 bg-stone-900/50 flex items-center justify-center text-tys-500/40"><i class="fa-solid fa-tree text-xs"></i></div>
+                        <div class="absolute top-[360px] left-[100px] w-12 h-12 rounded-full border-2 border-stone-600 bg-stone-900/50 flex items-center justify-center text-tys-500/40"><i class="fa-solid fa-tree text-xs"></i></div>
+                        <div class="absolute top-[520px] left-[155px] w-12 h-12 rounded-full border-2 border-stone-600 bg-stone-900/50 flex items-center justify-center text-tys-500/40"><i class="fa-solid fa-tree text-xs"></i></div>
+                        <div class="absolute top-[575px] left-[650px] w-12 h-12 rounded-full border-2 border-stone-600 bg-stone-900/50 flex items-center justify-center text-tys-500/40"><i class="fa-solid fa-tree text-xs"></i></div>
+
+                        <!-- Bottom Benches -->
+                        <div class="absolute top-[660px] left-[180px] w-[200px] h-5 border-2 border-stone-600 bg-stone-800/80 rounded-sm"></div>
+                        <div class="absolute top-[660px] left-[565px] w-[75px] h-5 border-2 border-stone-600 bg-stone-800/80 rounded-sm"></div>
+                        <div class="absolute top-[660px] left-[705px] w-[90px] h-5 border-2 border-stone-600 bg-stone-800/80 rounded-sm"></div>
+
+                        <!-- ================= TABLES MAP INJECTION ================= -->
+
+                        <!-- Top Left Area: 1, 2, 3 -->
+                        <div class="absolute top-[60px] left-[55px]" id="table-node-1"></div>
+                        <div class="absolute top-[35px] left-[135px]" id="table-node-2"></div>
+                        <div class="absolute top-[90px] left-[135px]" id="table-node-3"></div>
+
+                        <!-- Room Tables: 15, 16 -->
+                        <div class="absolute top-[85px] left-[245px]" id="table-node-15"></div>
+                        <div class="absolute top-[85px] left-[305px]" id="table-node-16"></div>
+
+                        <!-- Mid Left Area: 4, 5 (vertical pair), 6 -->
+                        <div class="absolute top-[260px] left-[55px]" id="table-node-4"></div>
+                        <div class="absolute top-[315px] left-[55px]" id="table-node-5"></div>
+                        <div class="absolute top-[285px] left-[135px]" id="table-node-6"></div>
+
+                        <!-- Mid Left Center: 9, 10 -->
+                        <div class="absolute top-[370px] left-[165px]" id="table-node-9"></div>
+                        <div class="absolute top-[370px] left-[225px]" id="table-node-10"></div>
+
+                        <!-- Lower Left Area: 7, 8 -->
+                        <div class="absolute top-[460px] left-[85px]" id="table-node-7"></div>
+                        <div class="absolute top-[535px] left-[100px]" id="table-node-8"></div>
+
+                        <!-- Bottom Left Area: 12, 13 -->
+                        <div class="absolute top-[590px] left-[225px]" id="table-node-12"></div>
+                        <div class="absolute top-[590px] left-[305px]" id="table-node-13"></div>
+
+                        <!-- Counter Ledge Inner Tables: 17, 18 -->
+                        <div class="absolute top-[234px] left-[560px]" id="table-node-17"></div>
+                        <div class="absolute top-[234px] left-[715px]" id="table-node-18"></div>
+
+                        <!-- Counter Front Bar Seats: 19, 20, 21 -->
+                        <div class="absolute top-[322px] left-[610px]" id="table-node-19"></div>
+                        <div class="absolute top-[322px] left-[670px]" id="table-node-20"></div>
+                        <div class="absolute top-[322px] left-[730px]" id="table-node-21"></div>
+
+                        <!-- Bottom Right Area: 11, 22, 23, 24, 25, 26, 27 -->
+                        <div class="absolute top-[590px] left-[530px]" id="table-node-11"></div>
+                        <div class="absolute top-[590px] left-[590px]" id="table-node-22"></div>
+
+                        <div class="absolute top-[590px] left-[725px]" id="table-node-23"></div>
+                        <div class="absolute top-[590px] left-[775px]" id="table-node-24"></div>
+                        <div class="absolute top-[590px] left-[825px]" id="table-node-25"></div>
+                        <div class="absolute top-[590px] left-[875px]" id="table-node-26"></div>
+                        <div class="absolute top-[590px] left-[925px]" id="table-node-27"></div>
+
+                        <!-- Top-most Right Row: 30, 29, 28 -->
+                        <div class="absolute top-[510px] left-[825px]" id="table-node-30"></div>
+                        <div class="absolute top-[510px] left-[875px]" id="table-node-29"></div>
+                        <div class="absolute top-[510px] left-[925px]" id="table-node-28"></div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIST VIEW (Alternative view mode) -->
+            <div id="listView" class="hidden">
+                <div class="bg-espresso-900 rounded-2xl border border-stone-800 p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-base font-bold text-stone-200">Danh Sách Chi Tiết 30 Bàn</h2>
+                        <input type="text" id="searchInput" onkeyup="renderListView()" placeholder="Tìm bàn hoặc món..." class="px-3 py-1.5 rounded-lg bg-stone-800 border border-stone-700 text-xs text-stone-200 focus:outline-none focus:border-tys-500 w-48">
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="listGrid">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Table Detail & Payment Action Modal -->
+    <div id="tableModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3">
+        <div class="bg-espresso-900 border border-tys-500/30 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            
+            <!-- Modal Header -->
+            <div class="bg-stone-900 px-5 py-3.5 border-b border-stone-800 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div id="modalTableBadge" class="w-10 h-10 rounded-xl bg-tys-500 font-extrabold text-lg flex items-center justify-center text-stone-950 shadow-md shadow-tys-500/20">
+                        0
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-amber-100 text-base" id="modalTitle">Chi Tiết Bàn</h3>
+                        <p class="text-xs text-stone-400" id="modalSubtitle">TYS Cafe - Cập nhật trạng thái & thu tiền</p>
+                    </div>
+                </div>
+                <button onclick="closeModal()" class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-5 overflow-y-auto space-y-4 flex-1">
+                
+                <!-- Status Switch Selector -->
+                <div>
+                    <label class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-2">Trạng thái bàn hiện tại</label>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <button type="button" onclick="setSelectStatus('empty')" id="btnStatusEmpty" class="status-option-btn p-3 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center gap-2 text-left">
+                            <div class="w-3 h-3 rounded-full bg-stone-500"></div>
+                            <div>
+                                <div class="font-bold text-stone-300">Trống</div>
+                                <div class="text-[10px] text-stone-500">Chưa có khách</div>
+                            </div>
+                        </button>
+
+                        <button type="button" onclick="setSelectStatus('unpaid')" id="btnStatusUnpaid" class="status-option-btn p-3 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center gap-2 text-left">
+                            <div class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+                            <div>
+                                <div class="font-bold text-red-400">Đang ngồi (Chưa trả)</div>
+                                <div class="text-[10px] text-stone-500">Thanh toán khi về</div>
+                            </div>
+                        </button>
+
+                        <button type="button" onclick="setSelectStatus('paid')" id="btnStatusPaid" class="status-option-btn p-3 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center gap-2 text-left">
+                            <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                            <div>
+                                <div class="font-bold text-emerald-400">Đã trả tiền trước</div>
+                                <div class="text-[10px] text-stone-500">Đã thanh toán tại quầy</div>
+                            </div>
+                        </button>
+
+                        <button type="button" onclick="setSelectStatus('dirty')" id="btnStatusDirty" class="status-option-btn p-3 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center gap-2 text-left">
+                            <div class="w-3 h-3 rounded-full bg-purple-500"></div>
+                            <div>
+                                <div class="font-bold text-purple-400">Khách về (Cần dọn)</div>
+                                <div class="text-[10px] text-stone-500">Cần lau dọn bàn</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Menu Add Items -->
+                <div class="bg-stone-900/80 p-3.5 rounded-xl border border-stone-800 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-stone-300 uppercase tracking-wide"><i class="fa-solid fa-mug-hot text-tys-500 mr-1"></i> Gọi món TYS Signature</span>
+                        <span class="text-xs text-tys-500 font-bold" id="totalAmountDisplay">Tổng: 0đ</span>
+                    </div>
+
+                    <!-- Menu Preset Pills -->
+                    <div class="flex flex-wrap gap-1.5 text-xs">
+                        <button onclick="addPresetItem('Cà phê TYS Cold Brew', 45)" class="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-tys-500 hover:text-stone-950 text-stone-300 transition">+ TYS Cold Brew (45k)</button>
+                        <button onclick="addPresetItem('Cà phê sữa đá', 30)" class="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-tys-500 hover:text-stone-950 text-stone-300 transition">+ Cà phê sữa (30k)</button>
+                        <button onclick="addPresetItem('Bạc xỉu', 35)" class="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-tys-500 hover:text-stone-950 text-stone-300 transition">+ Bạc xỉu (35k)</button>
+                        <button onclick="addPresetItem('Trà đào sả', 40)" class="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-tys-500 hover:text-stone-950 text-stone-300 transition">+ Trà đào sả (40k)</button>
+                        <button onclick="addPresetItem('Matcha Latte', 45)" class="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-tys-500 hover:text-stone-950 text-stone-300 transition">+ Matcha (45k)</button>
+                        <button onclick="addPresetItem('Bánh Ngọt TYS', 40)" class="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-tys-500 hover:text-stone-950 text-stone-300 transition">+ Bánh ngọt (40k)</button>
+                    </div>
+
+                    <!-- Ordered Items List -->
+                    <div id="modalOrderList" class="min-h-[60px] max-h-[140px] overflow-y-auto space-y-1.5 text-xs bg-espresso-950 p-2 rounded-lg border border-stone-850">
+                        <!-- Items rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- Payment Method & Notes -->
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block font-medium text-stone-400 mb-1">Hình thức thanh toán</label>
+                        <select id="paymentMethodSelect" class="w-full bg-stone-900 border border-stone-800 rounded-lg p-2 text-stone-200 focus:outline-none focus:border-tys-500">
+                            <option value="Tiền mặt">💵 Tiền mặt</option>
+                            <option value="Chuyển khoản QR">📱 Chuyển khoản QR (VietQR)</option>
+                            <option value="MoMo / Ví điện tử">💜 MoMo / Ví điện tử</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-medium text-stone-400 mb-1">Ghi chú bàn (Số khách...)</label>
+                        <input type="text" id="tableNoteInput" placeholder="Ví dụ: 3 khách, quầy bar" class="w-full bg-stone-900 border border-stone-800 rounded-lg p-2 text-stone-200 focus:outline-none focus:border-tys-500">
+                    </div>
+                </div>
+
+                <!-- Quick Action Buttons inside modal -->
+                <div id="quickPaymentActions" class="p-3 bg-red-950/40 border border-red-500/30 rounded-xl flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-bold text-red-300"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> Khách đang chuẩn bị về?</div>
+                        <div class="text-[11px] text-stone-400">Xác nhận thu tiền để chuyển sang bàn dọn.</div>
+                    </div>
+                    <button onclick="markAsPaidAndClose()" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow flex items-center gap-1.5">
+                        <i class="fa-solid fa-check"></i> Thu Tiền Ngay
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-stone-900 px-5 py-3 border-t border-stone-800 flex items-center justify-between">
+                <button onclick="clearTableData()" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-red-400 hover:bg-red-500/10 transition">
+                    <i class="fa-solid fa-trash mr-1"></i> Xoá bàn
+                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-stone-800 hover:bg-stone-700 text-stone-300 transition">Hủy</button>
+                    <button onclick="saveModalChanges()" class="px-5 py-2 rounded-xl text-xs font-bold bg-tys-500 hover:bg-tys-600 text-stone-950 shadow transition">Lưu thay đổi</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        // Data Structure for 30 Tables
+        const TOTAL_TABLES = 30;
+        let tablesData = {};
+        let activeTableId = null;
+        let currentFilter = 'all';
+
+        // Custom styling for specific special layout tables
+        const specialTableProps = {
+            15: { room: 'VIP' },
+            16: { room: 'VIP' }
+        };
+
+        // Initialize Data on Load
+        function initData() {
+            const saved = localStorage.getItem('cafe_tables_tys');
+            if (saved) {
+                try {
+                    tablesData = JSON.parse(saved);
+                } catch(e) {
+                    console.error("Error loading stored data", e);
+                    generateDefaultData();
+                }
+            } else {
+                generateDefaultData();
+            }
+            
+            // Fill any missing tables
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                if (!tablesData[i]) {
+                    tablesData[i] = {
+                        id: i,
+                        status: 'empty',
+                        items: [],
+                        total: 0,
+                        startTime: null,
+                        paymentMethod: 'Tiền mặt',
+                        note: ''
+                    };
+                }
+            }
+        }
+
+        function generateDefaultData() {
+            tablesData = {};
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                tablesData[i] = {
+                    id: i,
+                    status: 'empty',
+                    items: [],
+                    total: 0,
+                    startTime: null,
+                    paymentMethod: 'Tiền mặt',
+                    note: ''
+                };
+            }
+
+            // Demo mock items for immediate visual feedback
+            tablesData[2] = { id: 2, status: 'unpaid', items: [{name: 'Cà phê sữa', price: 30}], total: 30, startTime: Date.now() - 25*60*1000, paymentMethod: 'Tiền mặt', note: '2 người' };
+            tablesData[4] = { id: 4, status: 'paid', items: [{name: 'Bạc xỉu', price: 35}, {name: 'Trà đào sả', price: 40}], total: 75, startTime: Date.now() - 40*60*1000, paymentMethod: 'Chuyển khoản QR', note: 'Đã CK Momo' };
+            tablesData[9] = { id: 9, status: 'unpaid', items: [{name: 'Matcha Latte', price: 45}], total: 45, startTime: Date.now() - 12*60*1000, paymentMethod: 'Tiền mặt', note: '' };
+            tablesData[17] = { id: 17, status: 'paid', items: [{name: 'TYS Cold Brew', price: 45}], total: 45, startTime: Date.now() - 5*60*1000, paymentMethod: 'Tiền mặt', note: 'Quầy bar' };
+            tablesData[25] = { id: 25, status: 'dirty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: 'Vừa đi' };
+        }
+
+        function saveData() {
+            localStorage.setItem('cafe_tables_tys', JSON.stringify(tablesData));
+            updateDashboardStats();
+        }
+
+        function renderMap() {
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                const container = document.getElementById(`table-node-${i}`);
+                if (!container) continue;
+
+                const data = tablesData[i];
+                
+                // Status styles
+                let bgStyle = "bg-stone-900/90 border-stone-700 text-stone-300";
+                let badgeHTML = "";
+                let timerText = "";
+
+                if (data.status === 'unpaid') {
+                    bgStyle = "bg-red-950/90 border-red-500 text-red-200 pulse-unpaid";
+                    badgeHTML = `<span class="absolute -top-2 -right-2 px-1 py-0.2 rounded-full text-[8px] font-black bg-red-600 text-white shadow">CHƯA TRẢ</span>`;
+                } else if (data.status === 'paid') {
+                    bgStyle = "bg-emerald-950/90 border-emerald-500 text-emerald-200 shadow-sm shadow-emerald-500/20";
+                    badgeHTML = `<span class="absolute -top-2 -right-2 px-1 py-0.2 rounded-full text-[8px] font-bold bg-emerald-600 text-white shadow">ĐÃ TRẢ</span>`;
+                } else if (data.status === 'dirty') {
+                    bgStyle = "bg-purple-950/90 border-purple-500 text-purple-200";
+                    badgeHTML = `<span class="absolute -top-2 -right-2 px-1 py-0.2 rounded-full text-[8px] font-bold bg-purple-600 text-white shadow">CẦN DỌN</span>`;
+                }
+
+                if (data.startTime && data.status !== 'empty') {
+                    const elapsedMins = Math.floor((Date.now() - data.startTime) / (1000 * 60));
+                    timerText = `<div class="text-[9px] opacity-80 mt-0.5"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</div>`;
+                }
+
+                // Check filter visibility
+                const isFiltered = (currentFilter === 'all') ||
+                                   (currentFilter === 'unpaid' && data.status === 'unpaid') ||
+                                   (currentFilter === 'paid' && data.status === 'paid') ||
+                                   (currentFilter === 'empty' && data.status === 'empty') ||
+                                   (currentFilter === 'dirty' && data.status === 'dirty');
+
+                const opacityClass = isFiltered ? "opacity-100 scale-100" : "opacity-30 scale-95 pointer-events-none";
+
+                container.innerHTML = `
+                    <button onclick="openModal(${i})" class="table-btn relative w-12 h-12 rounded-xl border-2 border-solid ${bgStyle} ${opacityClass} flex flex-col items-center justify-center p-0.5 shadow-lg transition-all">
+                        ${badgeHTML}
+                        <span class="text-xs font-extrabold leading-none">B${i}</span>
+                        ${data.total > 0 ? `<span class="text-[9px] font-semibold text-tys-500 leading-none mt-0.5">${data.total}k</span>` : ''}
+                        ${timerText}
+                    </button>
+                `;
+            }
+        }
+
+        // Render List View
+        function renderListView() {
+            const listGrid = document.getElementById('listGrid');
+            const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
+            listGrid.innerHTML = '';
+
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                const data = tablesData[i];
+                
+                // Filter check
+                if (currentFilter !== 'all' && data.status !== currentFilter) continue;
+                if (query && !(`bàn ${i}`.includes(query) || i.toString() === query || data.note.toLowerCase().includes(query))) continue;
+
+                let statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-stone-800 text-stone-400">Trống</span>`;
+                if (data.status === 'unpaid') statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/20 text-red-400 border border-red-500/40">Chưa Thanh Toán</span>`;
+                if (data.status === 'paid') statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">Đã Thanh Toán</span>`;
+                if (data.status === 'dirty') statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-400 border border-purple-500/40">Cần Dọn</span>`;
+
+                const elapsedMins = data.startTime ? Math.floor((Date.now() - data.startTime) / (1000 * 60)) : 0;
+
+                const card = document.createElement('div');
+                card.className = "bg-stone-900 p-3 rounded-xl border border-stone-800 flex flex-col justify-between hover:border-tys-500/50 transition cursor-pointer";
+                card.onclick = () => openModal(i);
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-extrabold text-amber-100 text-sm">Bàn ${i}</span>
+                            ${statusBadge}
+                        </div>
+                        <div class="text-xs text-stone-400 space-y-1">
+                            <div><i class="fa-solid fa-coins text-tys-500 mr-1"></i> Tổng: <b class="text-amber-200">${data.total * 1000}đ</b></div>
+                            ${data.startTime ? `<div><i class="fa-regular fa-clock mr-1"></i> Thời gian ngồi: ${elapsedMins} phút</div>` : ''}
+                            ${data.note ? `<div class="italic text-stone-500"><i class="fa-regular fa-note-sticky mr-1"></i> ${data.note}</div>` : ''}
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-stone-800 flex justify-end">
+                        <span class="text-[11px] font-bold text-tys-500 hover:underline">Chi tiết / Thu tiền <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i></span>
+                    </div>
+                `;
+                listGrid.appendChild(card);
+            }
+        }
+
+        // Update Header Dashboard Counters
+        function updateDashboardStats() {
+            let unpaid = 0;
+            let paid = 0;
+            let totalRev = 0;
+
+            Object.values(tablesData).forEach(t => {
+                if (t.status === 'unpaid') unpaid++;
+                if (t.status === 'paid') paid++;
+                totalRev += t.total || 0;
+            });
+
+            document.getElementById('unpaidCount').innerText = unpaid;
+            document.getElementById('unpaidCountMobile').innerText = unpaid;
+            document.getElementById('paidCount').innerText = paid;
+            document.getElementById('totalRevenue').innerText = `${totalRev}k`;
+
+            const unpaidBadgeMobile = document.getElementById('unpaidBadgeMobile');
+            if (unpaid > 0) {
+                unpaidBadgeMobile.classList.remove('hidden');
+            } else {
+                unpaidBadgeMobile.classList.add('hidden');
+            }
+        }
+
+        // Filter Functionality
+        function filterStatus(status) {
+            currentFilter = status;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.dataset.filter === status) {
+                    btn.classList.add('bg-tys-500', 'text-stone-950', 'font-bold', 'border-tys-500');
+                    btn.classList.remove('bg-stone-800', 'text-stone-400', 'text-stone-200');
+                } else {
+                    btn.classList.remove('bg-tys-500', 'text-stone-950', 'font-bold', 'border-tys-500');
+                    btn.classList.add('bg-stone-800');
+                }
+            });
+            renderMap();
+            renderListView();
+        }
+
+        // Toggle View Modes
+        function toggleView(mode) {
+            const mapView = document.getElementById('mapView');
+            const listView = document.getElementById('listView');
+            const btnViewMap = document.getElementById('btnViewMap');
+            const btnViewList = document.getElementById('btnViewList');
+
+            if (mode === 'map') {
+                mapView.classList.remove('hidden');
+                listView.classList.add('hidden');
+                btnViewMap.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-tys-500 text-stone-950 shadow transition-colors flex items-center gap-1.5";
+                btnViewList.className = "px-3.5 py-1.5 rounded-lg text-xs font-medium bg-stone-900 text-stone-300 hover:bg-stone-800 transition-colors flex items-center gap-1.5 border border-stone-800";
+            } else {
+                mapView.classList.add('hidden');
+                listView.classList.remove('hidden');
+                btnViewList.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-tys-500 text-stone-950 shadow transition-colors flex items-center gap-1.5";
+                btnViewMap.className = "px-3.5 py-1.5 rounded-lg text-xs font-medium bg-stone-900 text-stone-300 hover:bg-stone-800 transition-colors flex items-center gap-1.5 border border-stone-800";
+                renderListView();
+            }
+        }
+
+        // Modal Controls & Actions
+        let selectedStatusInModal = 'empty';
+        let modalItems = [];
+
+        function openModal(tableId) {
+            activeTableId = tableId;
+            const data = tablesData[tableId];
+
+            document.getElementById('modalTableBadge').innerText = `B${tableId}`;
+            document.getElementById('modalTitle').innerText = `Quản Lý Bàn Số ${tableId}`;
+            document.getElementById('paymentMethodSelect').value = data.paymentMethod || 'Tiền mặt';
+            document.getElementById('tableNoteInput').value = data.note || '';
+
+            selectedStatusInModal = data.status || 'empty';
+            modalItems = [...(data.items || [])];
+
+            updateModalStatusButtons();
+            renderModalOrderList();
+
+            // Quick payment box display condition
+            const quickPaymentActions = document.getElementById('quickPaymentActions');
+            if (data.status === 'unpaid') {
+                quickPaymentActions.classList.remove('hidden');
+            } else {
+                quickPaymentActions.classList.add('hidden');
+            }
+
+            document.getElementById('tableModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('tableModal').classList.add('hidden');
+            activeTableId = null;
+        }
+
+        function setSelectStatus(status) {
+            selectedStatusInModal = status;
+            updateModalStatusButtons();
+        }
+
+        function updateModalStatusButtons() {
+            const map = {
+                empty: 'btnStatusEmpty',
+                unpaid: 'btnStatusUnpaid',
+                paid: 'btnStatusPaid',
+                dirty: 'btnStatusDirty'
+            };
+
+            Object.keys(map).forEach(key => {
+                const btn = document.getElementById(map[key]);
+                if (key === selectedStatusInModal) {
+                    btn.classList.add('ring-2', 'ring-tys-500', 'bg-stone-800');
+                    btn.classList.remove('bg-stone-900');
+                } else {
+                    btn.classList.remove('ring-2', 'ring-tys-500', 'bg-stone-800');
+                    btn.classList.add('bg-stone-900');
+                }
+            });
+        }
+
+        function addPresetItem(name, price) {
+            modalItems.push({ name, price });
+            if (selectedStatusInModal === 'empty') {
+                selectedStatusInModal = 'unpaid';
+                updateModalStatusButtons();
+            }
+            renderModalOrderList();
+        }
+
+        function removeModalItem(index) {
+            modalItems.splice(index, 1);
+            renderModalOrderList();
+        }
+
+        function renderModalOrderList() {
+            const container = document.getElementById('modalOrderList');
+            container.innerHTML = '';
+            
+            let sum = 0;
+            modalItems.forEach((item, idx) => {
+                sum += item.price;
+                const row = document.createElement('div');
+                row.className = "flex items-center justify-between bg-stone-900 px-2.5 py-1.5 rounded border border-stone-800";
+                row.innerHTML = `
+                    <span class="text-stone-200">${item.name}</span>
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-tys-500">${item.price}k</span>
+                        <button onclick="removeModalItem(${idx})" class="text-stone-500 hover:text-red-400 transition px-1"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+
+            document.getElementById('totalAmountDisplay').innerText = `Tổng: ${(sum * 1000).toLocaleString('vi-VN')}đ`;
+        }
+
+        function markAsPaidAndClose() {
+            if (!activeTableId) return;
+            selectedStatusInModal = 'paid';
+            saveModalChanges();
+        }
+
+        function saveModalChanges() {
+            if (!activeTableId) return;
+
+            const table = tablesData[activeTableId];
+            const prevStatus = table.status;
+
+            table.status = selectedStatusInModal;
+            table.items = [...modalItems];
+            table.total = modalItems.reduce((acc, curr) => acc + curr.price, 0);
+            table.paymentMethod = document.getElementById('paymentMethodSelect').value;
+            table.note = document.getElementById('tableNoteInput').value;
+
+            // Set sitting timer if table became occupied
+            if (prevStatus === 'empty' && selectedStatusInModal !== 'empty') {
+                table.startTime = Date.now();
+            } else if (selectedStatusInModal === 'empty' || selectedStatusInModal === 'dirty') {
+                table.startTime = null;
+            }
+
+            saveData();
+            renderMap();
+            renderListView();
+            closeModal();
+        }
+
+        function clearTableData() {
+            if (!activeTableId) return;
+            tablesData[activeTableId] = {
+                id: activeTableId,
+                status: 'empty',
+                items: [],
+                total: 0,
+                startTime: null,
+                paymentMethod: 'Tiền mặt',
+                note: ''
+            };
+            saveData();
+            renderMap();
+            renderListView();
+            closeModal();
+        }
+
+        function resetAllData() {
+            if (confirm("Bạn có chắc chắn muốn đặt lại tất cả các bàn về trạng thái TRỐNG?")) {
+                generateDefaultData();
+                saveData();
+                renderMap();
+                renderListView();
+            }
+        }
+
+        // Live Clock
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('liveClock').innerText = now.toLocaleTimeString('vi-VN') + " - " + now.toLocaleDateString('vi-VN');
+        }
+
+        // Initialize App
+        window.onload = function() {
+            initData();
+            renderMap();
+            updateDashboardStats();
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            // Periodically refresh map timers
+            setInterval(() => {
+                renderMap();
+            }, 30000);
+        };
+    </script>
+</body>
+</html>
