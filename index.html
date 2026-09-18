@@ -1,851 +1,415 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TYS Cafe - Sơ Đồ & Quản Lý Thanh Toán</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                    },
-                    colors: {
-                        tys: {
-                            50: '#fdfbf7',
-                            100: '#f7f1e5',
-                            200: '#edd8b5',
-                            500: '#c69214', // Official TYS Gold
-                            600: '#a8780c',
-                            700: '#855b08',
-                            800: '#3a2707',
-                            900: '#211604',
-                        },
-                        espresso: {
-                            800: '#231d19',
-                            850: '#1c1714',
-                            900: '#14110f',
-                            950: '#0c0a09',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            background-color: #0c0a09;
-            color: #f5f5f4;
-            user-select: none;
-        }
-
-        .floorplan-container {
-            background: radial-gradient(circle at center, #261f1b 0%, #0c0a09 100%);
-            box-shadow: inset 0 0 60px rgba(0,0,0,0.8), 0 0 30px rgba(198, 146, 20, 0.05);
-        }
-
-        .pulse-unpaid {
-            animation: pulse-red 2s infinite ease-in-out;
-        }
-
-        @keyframes pulse-red {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7), 0 0 15px rgba(239, 68, 68, 0.4); }
-            50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0), 0 0 0 rgba(239, 68, 68, 0); }
-        }
-
-        .table-btn {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .table-btn:hover {
-            transform: scale(1.06);
-            z-index: 20;
-            box-shadow: 0 0 15px rgba(198, 146, 20, 0.3);
-        }
-        .table-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1c1714;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #443831;
-            border-radius: 4px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TYS Cafe - Sơ Đồ & Quản Lý Thanh Toán</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script>
+tailwind.config={theme:{extend:{fontFamily:{sans:['Plus Jakarta Sans','sans-serif']},colors:{tys:{500:'#c69214',600:'#a8780c',900:'#211604'},espresso:{900:'#14110f',950:'#0c0a09'}}}}}
+</script>
+<style>
+:root{--bg:#0c0a09}
+body{background:var(--bg);color:#f5f5f4;user-select:none;-webkit-tap-highlight-color:transparent}
+.floorplan{background:radial-gradient(circle at center,#261f1b 0%,#0c0a09 100%);box-shadow:inset 0 0 60px rgba(0,0,0,.8)}
+.pulse-unpaid{animation:pr 2s infinite}
+@keyframes pr{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.7)}50%{box-shadow:0 0 0 9px rgba(239,68,68,0)}}
+.pulse-warn{animation:pw 1.6s infinite}
+@keyframes pw{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.75)}50%{box-shadow:0 0 0 9px rgba(245,158,11,0)}}
+.tbtn{transition:transform .15s}.tbtn:active{transform:scale(.94)}
+@media(hover:hover){.tbtn:hover{transform:scale(1.08);z-index:20}}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:#1c1714}::-webkit-scrollbar-thumb{background:#443831;border-radius:4px}
+</style>
 </head>
-<body class="min-h-screen flex flex-col font-sans antialiased overflow-x-hidden bg-espresso-950">
+<body class="min-h-screen flex flex-col font-sans antialiased bg-espresso-950">
 
-    <!-- Header Controls -->
-    <header class="bg-espresso-900/95 backdrop-blur-md border-b border-tys-500/20 sticky top-0 z-40 px-4 py-3">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
-            
-            <!-- Brand & Clock -->
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3.5">
-                    <!-- TYS Transparent Brand Logo -->
-                    <div class="w-12 h-12 rounded-xl bg-espresso-900/90 p-1.5 flex items-center justify-center shadow-lg shadow-tys-500/10 border border-tys-500/30 group hover:border-tys-500 transition-all">
-                        <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-md" xmlns="http://www.w3.org/2000/svg">
-                            <g fill="#c69214">
-                                <!-- T Stem & Bird perched on top -->
-                                <path d="M 12 92 C 12 74 35 66 72 66 C 79 66 85 70 87 77 C 82 81 72 85 64 91 C 55 97 48 106 46 112 L 32 112 C 32 100 22 93 12 92 Z"/>
-                                <rect x="32" y="112" width="18" height="74" rx="1"/>
-                                
-                                <!-- Y Stem & Cup pour motif -->
-                                <rect x="60" y="112" width="16" height="74" rx="1"/>
-                                <path d="M 80 66 L 98 66 L 98 118 C 88 118 80 108 80 98 Z"/>
-                                
-                                <!-- Coffee Cup in center negative space -->
-                                <g transform="rotate(-25 105 125)">
-                                    <rect x="90" y="110" width="28" height="34" rx="4" fill="#c69214"/>
-                                    <path d="M 118 118 C 128 118 128 134 118 134" stroke="#c69214" stroke-width="5" fill="none" stroke-linecap="round"/>
-                                </g>
-                                
-                                <!-- S Block with bear silhouette top right cutout -->
-                                <path d="M 106 66 L 156 66 C 156 76 149 82 143 83 C 138 84 137 89 141 93 C 147 99 156 108 156 124 L 156 168 C 156 181 143 186 128 186 L 106 186 L 106 152 L 138 152 L 138 132 C 138 122 128 118 106 118 Z"/>
-                                <!-- Bear ear & eye inside S top cutout -->
-                                <circle cx="147" cy="78" r="3.5" fill="#14110f"/>
-                                <circle cx="138" cy="86" r="1.8" fill="#14110f"/>
-                            </g>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h1 class="font-extrabold text-xl tracking-tight leading-none text-amber-100">TYS CAFE</h1>
-                            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-tys-500/20 text-tys-500 border border-tys-500/30 uppercase tracking-widest">Sơ Đồ & Thu Tiền</span>
-                        </div>
-                        <p class="text-xs text-stone-400 mt-1" id="liveClock">--:--:--</p>
-                    </div>
-                </div>
-
-                <!-- Mobile Quick Stats -->
-                <div class="md:hidden text-right">
-                    <span id="unpaidBadgeMobile" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/30">
-                        <i class="fa-solid fa-triangle-exclamation mr-1"></i> <span id="unpaidCountMobile">0</span> Chưa trả
-                    </span>
-                </div>
-            </div>
-
-            <!-- Header Quick Dashboard Counters -->
-            <div class="grid grid-cols-4 gap-2 text-center text-xs">
-                <div class="bg-stone-900/80 p-2 rounded-lg border border-stone-800">
-                    <div class="text-stone-400">Tổng bàn</div>
-                    <div class="text-base font-bold text-stone-200" id="totalTablesCount">30</div>
-                </div>
-                <div class="bg-emerald-950/40 p-2 rounded-lg border border-emerald-500/30">
-                    <div class="text-emerald-400">Đã trả trước</div>
-                    <div class="text-base font-bold text-emerald-300" id="paidCount">0</div>
-                </div>
-                <div class="bg-red-950/40 p-2 rounded-lg border border-red-500/40 animate-pulse">
-                    <div class="text-red-400 font-semibold">Chưa thanh toán</div>
-                    <div class="text-base font-black text-red-300" id="unpaidCount">0</div>
-                </div>
-                <div class="bg-tys-900/50 p-2 rounded-lg border border-tys-500/30">
-                    <div class="text-tys-500">Doanh thu tạm</div>
-                    <div class="text-base font-bold text-amber-300" id="totalRevenue">0k</div>
-                </div>
-            </div>
-
-            <!-- Controls & View Toggle -->
-            <div class="flex items-center space-x-2">
-                <button onclick="toggleView('map')" id="btnViewMap" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-tys-500 text-stone-950 shadow transition-colors flex items-center gap-1.5">
-                    <i class="fa-solid fa-map"></i> Sơ đồ
-                </button>
-                <button onclick="toggleView('list')" id="btnViewList" class="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-stone-900 text-stone-300 hover:bg-stone-800 transition-colors flex items-center gap-1.5 border border-stone-800">
-                    <i class="fa-solid fa-list-check"></i> Danh sách
-                </button>
-                <button onclick="resetAllData()" title="Đặt lại tất cả bàn" class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-stone-900 text-stone-400 hover:text-red-400 hover:bg-stone-800 border border-stone-800 transition">
-                    <i class="fa-solid fa-rotate-right"></i>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Filter & Legend Toolbar -->
-    <div class="bg-espresso-900/80 border-b border-stone-800/80 px-4 py-2.5">
-        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
-            
-            <!-- Quick Filters -->
-            <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 md:pb-0">
-                <span class="text-stone-400 mr-1 font-medium"><i class="fa-solid fa-filter"></i> Lọc:</span>
-                <button onclick="filterStatus('all')" class="filter-btn active-filter px-3 py-1 rounded-md bg-stone-800 text-stone-200 border border-stone-700" data-filter="all">Tất cả (30)</button>
-                <button onclick="filterStatus('unpaid')" class="filter-btn px-3 py-1 rounded-md bg-stone-800 text-red-400 border border-stone-700 flex items-center gap-1" data-filter="unpaid">
-                    <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> Cần Thu Tiền
-                </button>
-                <button onclick="filterStatus('paid')" class="filter-btn px-3 py-1 rounded-md bg-stone-800 text-emerald-400 border border-stone-700" data-filter="paid">Đã Thanh Toán</button>
-                <button onclick="filterStatus('empty')" class="filter-btn px-3 py-1 rounded-md bg-stone-800 text-stone-400 border border-stone-700" data-filter="empty">Bàn Trống</button>
-                <button onclick="filterStatus('dirty')" class="filter-btn px-3 py-1 rounded-md bg-stone-800 text-purple-400 border border-stone-700" data-filter="dirty">Cần Dọn</button>
-            </div>
-
-            <!-- Legend Status Map -->
-            <div class="hidden lg:flex items-center space-x-4 text-stone-400">
-                <div class="flex items-center gap-1.5">
-                    <span class="w-3 h-3 rounded bg-stone-800 border border-stone-600"></span> Trống
-                </div>
-                <div class="flex items-center gap-1.5">
-                    <span class="w-3 h-3 rounded bg-emerald-500/30 border border-emerald-500"></span> Đã trả trước
-                </div>
-                <div class="flex items-center gap-1.5">
-                    <span class="w-3 h-3 rounded bg-red-500/30 border border-red-500 animate-pulse"></span> Chưa trả (Thu khi về)
-                </div>
-                <div class="flex items-center gap-1.5">
-                    <span class="w-3 h-3 rounded bg-purple-500/30 border border-purple-500"></span> Khách đã về (Cần dọn)
-                </div>
-            </div>
-        </div>
+<header class="bg-espresso-900/95 backdrop-blur border-b border-tys-500/20 sticky top-0 z-40 px-3 py-2.5">
+ <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+  <div class="flex items-center justify-between gap-3">
+   <div class="flex items-center gap-3">
+    <div class="w-11 h-11 rounded-xl border border-tys-500/40 bg-espresso-900 flex items-center justify-center text-tys-500 font-extrabold text-sm tracking-tighter">TYS</div>
+    <div>
+     <h1 class="font-extrabold text-lg leading-none text-amber-100">TYS CAFE <span class="text-[10px] align-middle font-bold px-1.5 py-0.5 rounded bg-tys-500/20 text-tys-500 border border-tys-500/30 uppercase">Thu ngân</span></h1>
+     <p class="text-[11px] text-stone-400 mt-1" id="clock">--:--</p>
     </div>
+   </div>
+   <div class="md:hidden flex gap-1.5">
+    <button onclick="openReport()" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-tys-500/15 text-tys-500 border border-tys-500/40"><i class="fa-solid fa-chart-simple"></i></button>
+    <button onclick="toggleView()" id="btnViewM" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-stone-900 text-stone-300 border border-stone-800"><i class="fa-solid fa-list-check"></i></button>
+   </div>
+  </div>
 
-    <!-- Main Interactive Area -->
-    <main class="flex-1 p-3 md:p-6 overflow-y-auto">
-        <div class="max-w-7xl mx-auto">
-            
-            <!-- MAP VIEW -->
-            <div id="mapView" class="relative">
-                <!-- Outer Layout Container simulating exact coffee shop layout -->
-                <div class="floorplan-container relative w-full min-h-[750px] rounded-2xl border border-tys-500/20 p-4 md:p-6 overflow-x-auto select-none">
-                    
-                    <!-- Background Grid -->
-                    <div class="absolute inset-0 bg-[radial-gradient(#3a302a_1px,transparent_1px)] [background-size:24px_24px] opacity-40 rounded-2xl pointer-events-none"></div>
+  <div class="grid grid-cols-4 gap-1.5 text-center text-[11px]">
+   <div class="bg-red-950/40 p-1.5 rounded-lg border border-red-500/40"><div class="text-red-400 font-semibold">Chưa thu</div><div class="text-sm font-black text-red-300" id="sUnpaid">0</div></div>
+   <div class="bg-orange-950/30 p-1.5 rounded-lg border border-orange-500/30"><div class="text-orange-400">Tiền đang nợ</div><div class="text-sm font-bold text-orange-300" id="sPending">0k</div></div>
+   <div class="bg-emerald-950/40 p-1.5 rounded-lg border border-emerald-500/30"><div class="text-emerald-400">Trả trước</div><div class="text-sm font-bold text-emerald-300" id="sPaid">0</div></div>
+   <div class="bg-tys-900/50 p-1.5 rounded-lg border border-tys-500/30"><div class="text-tys-500">Đã thu hôm nay</div><div class="text-sm font-bold text-amber-300" id="sRevenue">0k</div></div>
+  </div>
 
-                    <!-- Layout Map Wrapper (Fixed Aspect Ratio Desktop Canvas) -->
-                    <div class="relative w-[1000px] h-[700px] mx-auto scale-90 sm:scale-95 md:scale-100 transform-origin-top-left transition-transform">
-                        
-                        <!-- ================= ROOM & ARCHITECTURAL ELEMENTS ================= -->
-                        
-                        <!-- Top Left Room (Tables 15, 16) -->
-                        <div class="absolute top-[20px] left-[230px] w-[135px] h-[180px] rounded-2xl border-2 border-stone-600 bg-stone-900/40"></div>
+  <div class="hidden md:flex items-center gap-1.5">
+   <button onclick="toggleView()" id="btnViewD" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-stone-900 text-stone-300 border border-stone-800 flex items-center gap-1.5"><i class="fa-solid fa-list-check"></i> Danh sách</button>
+   <button onclick="openReport()" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-tys-500/15 text-tys-500 border border-tys-500/40 hover:bg-tys-500 hover:text-stone-950 flex items-center gap-1.5"><i class="fa-solid fa-chart-simple"></i> Báo cáo</button>
+  </div>
+ </div>
+</header>
 
-                        <!-- Main Counter Area -->
-                        <div class="absolute top-[20px] left-[365px] w-[435px] h-[200px] border-2 border-stone-600 bg-stone-900/30"></div>
+<div class="bg-espresso-900/80 border-b border-stone-800 px-3 py-2">
+ <div class="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto text-xs">
+  <span class="text-stone-500 font-medium shrink-0"><i class="fa-solid fa-filter"></i></span>
+  <button onclick="setFilter('all')" class="fbtn shrink-0 px-2.5 py-1 rounded-md border border-stone-700 bg-stone-800 text-stone-200" data-f="all">Tất cả</button>
+  <button onclick="setFilter('unpaid')" class="fbtn shrink-0 px-2.5 py-1 rounded-md border border-stone-700 bg-stone-800 text-red-400" data-f="unpaid">Cần thu</button>
+  <button onclick="setFilter('paid')" class="fbtn shrink-0 px-2.5 py-1 rounded-md border border-stone-700 bg-stone-800 text-emerald-400" data-f="paid">Trả trước</button>
+  <button onclick="setFilter('empty')" class="fbtn shrink-0 px-2.5 py-1 rounded-md border border-stone-700 bg-stone-800 text-stone-400" data-f="empty">Trống</button>
+  <button onclick="setFilter('dirty')" class="fbtn shrink-0 px-2.5 py-1 rounded-md border border-stone-700 bg-stone-800 text-purple-400" data-f="dirty">Cần dọn</button>
+  <div class="ml-auto hidden lg:flex items-center gap-3 text-stone-400 shrink-0">
+   <span><i class="fa-solid fa-circle text-stone-600"></i> Trống</span>
+   <span><i class="fa-solid fa-circle text-emerald-500"></i> Trả trước</span>
+   <span><i class="fa-solid fa-circle text-red-500"></i> Chưa trả</span>
+   <span><i class="fa-solid fa-circle text-purple-500"></i> Cần dọn</span>
+   <span><i class="fa-solid fa-circle text-amber-400"></i> Quá giờ</span>
+  </div>
+ </div>
+</div>
 
-                        <!-- Counter Ledge Room Box (Tables 17, 18) -->
-                        <div class="absolute top-[220px] left-[530px] w-[270px] h-[76px] rounded-2xl border-2 border-stone-600 bg-stone-900/40"></div>
-                        <div class="absolute top-[302px] left-[570px] w-[230px] h-[8px] border-2 border-stone-600 bg-stone-800/60"></div>
-
-                        <!-- Entrance / Corridor Arch Nubs -->
-                        <div class="absolute top-[220px] left-[365px] w-[28px] h-[35px] border-2 border-t-0 border-stone-600 rounded-b-full bg-stone-900/40"></div>
-                        <div class="absolute top-[220px] left-[457px] w-[28px] h-[35px] border-2 border-t-0 border-stone-600 rounded-b-full bg-stone-900/40"></div>
-
-                        <!-- Main Vertical Corridor -->
-                        <div class="absolute top-[220px] left-[393px] w-[64px] h-[470px] border-x-2 border-stone-600"></div>
-
-                        <!-- Decor Circles -->
-                        <div class="absolute top-[160px] left-[100px] w-12 h-12 rounded-full border-2 border-stone-600 bg-stone-900/50 flex items-center justify-center text-tys-500/40"><i class="fa-solid fa-tree text-xs"></i></div>
-                        <div class="absolute top-[360px] left-[100px] w-12 h-12 rounded-full border-2 border-stone-600 bg-stone-900/50 flex items-center justify-center text-tys-500/40"><i class="fa-solid fa-tree text-xs"></i></div>
-                        <div class="absolute top-[520px] left-[155px] w-12 h-12 rounded-full border-2 border-stone-600 bg-stone-900/50 flex items-center justify-center text-tys-500/40"><i class="fa-solid fa-tree text-xs"></i></div>
-                        <div class="absolute top-[575px] left-[650px] w-12 h-12 rounded-full border-2 border-stone-600 bg-stone-900/50 flex items-center justify-center text-tys-500/40"><i class="fa-solid fa-tree text-xs"></i></div>
-
-                        <!-- Bottom Benches -->
-                        <div class="absolute top-[660px] left-[180px] w-[200px] h-5 border-2 border-stone-600 bg-stone-800/80 rounded-sm"></div>
-                        <div class="absolute top-[660px] left-[565px] w-[75px] h-5 border-2 border-stone-600 bg-stone-800/80 rounded-sm"></div>
-                        <div class="absolute top-[660px] left-[705px] w-[90px] h-5 border-2 border-stone-600 bg-stone-800/80 rounded-sm"></div>
-
-                        <!-- ================= TABLES MAP INJECTION ================= -->
-
-                        <!-- Top Left Area: 1, 2, 3 -->
-                        <div class="absolute top-[60px] left-[55px]" id="table-node-1"></div>
-                        <div class="absolute top-[35px] left-[135px]" id="table-node-2"></div>
-                        <div class="absolute top-[90px] left-[135px]" id="table-node-3"></div>
-
-                        <!-- Room Tables: 15, 16 -->
-                        <div class="absolute top-[85px] left-[245px]" id="table-node-15"></div>
-                        <div class="absolute top-[85px] left-[305px]" id="table-node-16"></div>
-
-                        <!-- Mid Left Area: 4, 5 (vertical pair), 6 -->
-                        <div class="absolute top-[260px] left-[55px]" id="table-node-4"></div>
-                        <div class="absolute top-[315px] left-[55px]" id="table-node-5"></div>
-                        <div class="absolute top-[285px] left-[135px]" id="table-node-6"></div>
-
-                        <!-- Mid Left Center: 9, 10 -->
-                        <div class="absolute top-[370px] left-[165px]" id="table-node-9"></div>
-                        <div class="absolute top-[370px] left-[225px]" id="table-node-10"></div>
-
-                        <!-- Lower Left Area: 7, 8 -->
-                        <div class="absolute top-[460px] left-[85px]" id="table-node-7"></div>
-                        <div class="absolute top-[535px] left-[100px]" id="table-node-8"></div>
-
-                        <!-- Bottom Left Area: 12, 13 -->
-                        <div class="absolute top-[590px] left-[225px]" id="table-node-12"></div>
-                        <div class="absolute top-[590px] left-[305px]" id="table-node-13"></div>
-
-                        <!-- Counter Ledge Inner Tables: 17, 18 -->
-                        <div class="absolute top-[234px] left-[560px]" id="table-node-17"></div>
-                        <div class="absolute top-[234px] left-[715px]" id="table-node-18"></div>
-
-                        <!-- Counter Front Bar Seats: 19, 20, 21 -->
-                        <div class="absolute top-[322px] left-[610px]" id="table-node-19"></div>
-                        <div class="absolute top-[322px] left-[670px]" id="table-node-20"></div>
-                        <div class="absolute top-[322px] left-[730px]" id="table-node-21"></div>
-
-                        <!-- Bottom Right Area: 11, 22, 23, 24, 25, 26, 27 -->
-                        <div class="absolute top-[590px] left-[530px]" id="table-node-11"></div>
-                        <div class="absolute top-[590px] left-[590px]" id="table-node-22"></div>
-
-                        <div class="absolute top-[590px] left-[725px]" id="table-node-23"></div>
-                        <div class="absolute top-[590px] left-[775px]" id="table-node-24"></div>
-                        <div class="absolute top-[590px] left-[825px]" id="table-node-25"></div>
-                        <div class="absolute top-[590px] left-[875px]" id="table-node-26"></div>
-                        <div class="absolute top-[590px] left-[925px]" id="table-node-27"></div>
-
-                        <!-- Top-most Right Row: 30, 29, 28 -->
-                        <div class="absolute top-[510px] left-[825px]" id="table-node-30"></div>
-                        <div class="absolute top-[510px] left-[875px]" id="table-node-29"></div>
-                        <div class="absolute top-[510px] left-[925px]" id="table-node-28"></div>
-
-                    </div>
-                </div>
-            </div>
-
-            <!-- LIST VIEW (Alternative view mode) -->
-            <div id="listView" class="hidden">
-                <div class="bg-espresso-900 rounded-2xl border border-stone-800 p-4">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-base font-bold text-stone-200">Danh Sách Chi Tiết 30 Bàn</h2>
-                        <input type="text" id="searchInput" onkeyup="renderListView()" placeholder="Tìm bàn hoặc món..." class="px-3 py-1.5 rounded-lg bg-stone-800 border border-stone-700 text-xs text-stone-200 focus:outline-none focus:border-tys-500 w-48">
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="listGrid">
-                        <!-- Rendered by JS -->
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <!-- Table Detail & Payment Action Modal -->
-    <div id="tableModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3">
-        <div class="bg-espresso-900 border border-tys-500/30 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            
-            <!-- Modal Header -->
-            <div class="bg-stone-900 px-5 py-3.5 border-b border-stone-800 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div id="modalTableBadge" class="w-10 h-10 rounded-xl bg-tys-500 font-extrabold text-lg flex items-center justify-center text-stone-950 shadow-md shadow-tys-500/20">
-                        0
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-amber-100 text-base" id="modalTitle">Chi Tiết Bàn</h3>
-                        <p class="text-xs text-stone-400" id="modalSubtitle">TYS Cafe - Cập nhật trạng thái & thu tiền</p>
-                    </div>
-                </div>
-                <button onclick="closeModal()" class="w-8 h-8 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 flex items-center justify-center transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <!-- Modal Body -->
-            <div class="p-5 overflow-y-auto space-y-4 flex-1">
-                
-                <!-- Status Switch Selector -->
-                <div>
-                    <label class="block text-xs font-semibold text-stone-400 uppercase tracking-wider mb-2">Trạng thái bàn hiện tại</label>
-                    <div class="grid grid-cols-2 gap-2 text-xs">
-                        <button type="button" onclick="setSelectStatus('empty')" id="btnStatusEmpty" class="status-option-btn p-3 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center gap-2 text-left">
-                            <div class="w-3 h-3 rounded-full bg-stone-500"></div>
-                            <div>
-                                <div class="font-bold text-stone-300">Trống</div>
-                                <div class="text-[10px] text-stone-500">Chưa có khách</div>
-                            </div>
-                        </button>
-
-                        <button type="button" onclick="setSelectStatus('unpaid')" id="btnStatusUnpaid" class="status-option-btn p-3 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center gap-2 text-left">
-                            <div class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
-                            <div>
-                                <div class="font-bold text-red-400">Đang ngồi (Chưa trả)</div>
-                                <div class="text-[10px] text-stone-500">Thanh toán khi về</div>
-                            </div>
-                        </button>
-
-                        <button type="button" onclick="setSelectStatus('paid')" id="btnStatusPaid" class="status-option-btn p-3 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center gap-2 text-left">
-                            <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
-                            <div>
-                                <div class="font-bold text-emerald-400">Đã trả tiền trước</div>
-                                <div class="text-[10px] text-stone-500">Đã thanh toán tại quầy</div>
-                            </div>
-                        </button>
-
-                        <button type="button" onclick="setSelectStatus('dirty')" id="btnStatusDirty" class="status-option-btn p-3 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center gap-2 text-left">
-                            <div class="w-3 h-3 rounded-full bg-purple-500"></div>
-                            <div>
-                                <div class="font-bold text-purple-400">Khách về (Cần dọn)</div>
-                                <div class="text-[10px] text-stone-500">Cần lau dọn bàn</div>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Quick Menu Add Items -->
-                <div class="bg-stone-900/80 p-3.5 rounded-xl border border-stone-800 space-y-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-stone-300 uppercase tracking-wide"><i class="fa-solid fa-mug-hot text-tys-500 mr-1"></i> Gọi món TYS Signature</span>
-                        <span class="text-xs text-tys-500 font-bold" id="totalAmountDisplay">Tổng: 0đ</span>
-                    </div>
-
-                    <!-- Menu Preset Pills -->
-                    <div class="flex flex-wrap gap-1.5 text-xs">
-                        <button onclick="addPresetItem('Cà phê TYS Cold Brew', 45)" class="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-tys-500 hover:text-stone-950 text-stone-300 transition">+ TYS Cold Brew (45k)</button>
-                        <button onclick="addPresetItem('Cà phê sữa đá', 30)" class="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-tys-500 hover:text-stone-950 text-stone-300 transition">+ Cà phê sữa (30k)</button>
-                        <button onclick="addPresetItem('Bạc xỉu', 35)" class="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-tys-500 hover:text-stone-950 text-stone-300 transition">+ Bạc xỉu (35k)</button>
-                        <button onclick="addPresetItem('Trà đào sả', 40)" class="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-tys-500 hover:text-stone-950 text-stone-300 transition">+ Trà đào sả (40k)</button>
-                        <button onclick="addPresetItem('Matcha Latte', 45)" class="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-tys-500 hover:text-stone-950 text-stone-300 transition">+ Matcha (45k)</button>
-                        <button onclick="addPresetItem('Bánh Ngọt TYS', 40)" class="px-2.5 py-1 rounded-lg bg-stone-800 hover:bg-tys-500 hover:text-stone-950 text-stone-300 transition">+ Bánh ngọt (40k)</button>
-                    </div>
-
-                    <!-- Ordered Items List -->
-                    <div id="modalOrderList" class="min-h-[60px] max-h-[140px] overflow-y-auto space-y-1.5 text-xs bg-espresso-950 p-2 rounded-lg border border-stone-850">
-                        <!-- Items rendered dynamically -->
-                    </div>
-                </div>
-
-                <!-- Payment Method & Notes -->
-                <div class="grid grid-cols-2 gap-3 text-xs">
-                    <div>
-                        <label class="block font-medium text-stone-400 mb-1">Hình thức thanh toán</label>
-                        <select id="paymentMethodSelect" class="w-full bg-stone-900 border border-stone-800 rounded-lg p-2 text-stone-200 focus:outline-none focus:border-tys-500">
-                            <option value="Tiền mặt">💵 Tiền mặt</option>
-                            <option value="Chuyển khoản QR">📱 Chuyển khoản QR (VietQR)</option>
-                            <option value="MoMo / Ví điện tử">💜 MoMo / Ví điện tử</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-medium text-stone-400 mb-1">Ghi chú bàn (Số khách...)</label>
-                        <input type="text" id="tableNoteInput" placeholder="Ví dụ: 3 khách, quầy bar" class="w-full bg-stone-900 border border-stone-800 rounded-lg p-2 text-stone-200 focus:outline-none focus:border-tys-500">
-                    </div>
-                </div>
-
-                <!-- Quick Action Buttons inside modal -->
-                <div id="quickPaymentActions" class="p-3 bg-red-950/40 border border-red-500/30 rounded-xl flex items-center justify-between">
-                    <div>
-                        <div class="text-xs font-bold text-red-300"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> Khách đang chuẩn bị về?</div>
-                        <div class="text-[11px] text-stone-400">Xác nhận thu tiền để chuyển sang bàn dọn.</div>
-                    </div>
-                    <button onclick="markAsPaidAndClose()" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow flex items-center gap-1.5">
-                        <i class="fa-solid fa-check"></i> Thu Tiền Ngay
-                    </button>
-                </div>
-
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="bg-stone-900 px-5 py-3 border-t border-stone-800 flex items-center justify-between">
-                <button onclick="clearTableData()" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-red-400 hover:bg-red-500/10 transition">
-                    <i class="fa-solid fa-trash mr-1"></i> Xoá bàn
-                </button>
-                <div class="flex items-center gap-2">
-                    <button onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-stone-800 hover:bg-stone-700 text-stone-300 transition">Hủy</button>
-                    <button onclick="saveModalChanges()" class="px-5 py-2 rounded-xl text-xs font-bold bg-tys-500 hover:bg-tys-600 text-stone-950 shadow transition">Lưu thay đổi</button>
-                </div>
-            </div>
-
-        </div>
+<main class="flex-1 p-2 md:p-5">
+ <div class="max-w-7xl mx-auto">
+  <div id="mapView">
+   <div class="floorplan relative w-full rounded-2xl border border-tys-500/20 p-3 overflow-auto">
+    <div class="relative w-[1000px] h-[700px] mx-auto origin-top-left" id="canvas" style="transform:scale(1)">
+     <div class="absolute inset-0 bg-[radial-gradient(#3a302a_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none"></div>
+     <div class="absolute top-[20px] left-[230px] w-[135px] h-[180px] rounded-2xl border-2 border-stone-600 bg-stone-900/40"></div>
+     <div class="absolute top-[20px] left-[365px] w-[435px] h-[200px] border-2 border-stone-600 bg-stone-900/30 flex items-center justify-center text-stone-600 text-xs font-bold tracking-widest">QUẦY PHA CHẾ</div>
+     <div class="absolute top-[220px] left-[530px] w-[270px] h-[76px] rounded-2xl border-2 border-stone-600 bg-stone-900/40"></div>
+     <div class="absolute top-[302px] left-[570px] w-[230px] h-[8px] border-2 border-stone-600 bg-stone-800/60"></div>
+     <div class="absolute top-[220px] left-[365px] w-[28px] h-[35px] border-2 border-t-0 border-stone-600 rounded-b-full"></div>
+     <div class="absolute top-[220px] left-[457px] w-[28px] h-[35px] border-2 border-t-0 border-stone-600 rounded-b-full"></div>
+     <div class="absolute top-[220px] left-[393px] w-[64px] h-[470px] border-x-2 border-stone-600"></div>
+     <div class="absolute top-[660px] left-[180px] w-[200px] h-5 border-2 border-stone-600 bg-stone-800/80"></div>
+     <div class="absolute top-[660px] left-[565px] w-[75px] h-5 border-2 border-stone-600 bg-stone-800/80"></div>
+     <div class="absolute top-[660px] left-[705px] w-[90px] h-5 border-2 border-stone-600 bg-stone-800/80"></div>
+     <div class="absolute top-[30px] left-[240px] text-[10px] text-stone-500 font-bold">PHÒNG MÁY LẠNH</div>
     </div>
+   </div>
+   <p class="text-center text-[11px] text-stone-500 mt-2">Chạm bàn để gọi món · Giữ 0.5s để thu tiền nhanh</p>
+  </div>
 
-    <!-- Application JavaScript Logic -->
-    <script>
-        // Data Structure for 30 Tables
-        const TOTAL_TABLES = 30;
-        let tablesData = {};
-        let activeTableId = null;
-        let currentFilter = 'all';
+  <div id="listView" class="hidden">
+   <div class="bg-espresso-900 rounded-2xl border border-stone-800 p-3">
+    <input type="text" id="search" oninput="renderList()" placeholder="Tìm bàn, món, ghi chú..." class="w-full mb-3 px-3 py-2 rounded-lg bg-stone-800 border border-stone-700 text-xs text-stone-200 focus:outline-none focus:border-tys-500">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5" id="listGrid"></div>
+   </div>
+  </div>
+ </div>
+</main>
 
-        // Custom styling for specific special layout tables
-        const specialTableProps = {
-            15: { room: 'VIP' },
-            16: { room: 'VIP' }
-        };
+<!-- MODAL BÀN -->
+<div id="tableModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-end sm:items-center justify-center sm:p-3">
+ <div class="bg-espresso-900 border border-tys-500/30 w-full max-w-lg sm:rounded-2xl rounded-t-2xl shadow-2xl flex flex-col max-h-[92vh]">
+  <div class="bg-stone-900 px-4 py-3 border-b border-stone-800 flex items-center justify-between">
+   <div class="flex items-center gap-3">
+    <div id="mBadge" class="w-10 h-10 rounded-xl bg-tys-500 font-extrabold text-stone-950 flex items-center justify-center">B0</div>
+    <div><h3 class="font-bold text-amber-100" id="mTitle">Bàn</h3><p class="text-[11px] text-stone-400" id="mSub">—</p></div>
+   </div>
+   <button onclick="closeModal()" class="w-9 h-9 rounded-lg bg-stone-800 text-stone-300"><i class="fa-solid fa-xmark"></i></button>
+  </div>
 
-        // Initialize Data on Load
-        function initData() {
-            const saved = localStorage.getItem('cafe_tables_tys');
-            if (saved) {
-                try {
-                    tablesData = JSON.parse(saved);
-                } catch(e) {
-                    console.error("Error loading stored data", e);
-                    generateDefaultData();
-                }
-            } else {
-                generateDefaultData();
-            }
-            
-            // Fill any missing tables
-            for (let i = 1; i <= TOTAL_TABLES; i++) {
-                if (!tablesData[i]) {
-                    tablesData[i] = {
-                        id: i,
-                        status: 'empty',
-                        items: [],
-                        total: 0,
-                        startTime: null,
-                        paymentMethod: 'Tiền mặt',
-                        note: ''
-                    };
-                }
-            }
-        }
+  <div class="p-4 overflow-y-auto space-y-3 flex-1">
+   <div class="grid grid-cols-2 gap-2 text-xs">
+    <button onclick="setStatus('empty')" id="stEmpty" class="p-2.5 rounded-xl border border-stone-800 bg-stone-900 flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-stone-500"></span><b class="text-stone-300">Trống</b></button>
+    <button onclick="setStatus('unpaid')" id="stUnpaid" class="p-2.5 rounded-xl border border-stone-800 bg-stone-900 flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-red-500"></span><b class="text-red-400">Chưa trả</b></button>
+    <button onclick="setStatus('paid')" id="stPaid" class="p-2.5 rounded-xl border border-stone-800 bg-stone-900 flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span><b class="text-emerald-400">Trả trước</b></button>
+    <button onclick="setStatus('dirty')" id="stDirty" class="p-2.5 rounded-xl border border-stone-800 bg-stone-900 flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span><b class="text-purple-400">Cần dọn</b></button>
+   </div>
 
-        function generateDefaultData() {
-            tablesData = {};
-            for (let i = 1; i <= TOTAL_TABLES; i++) {
-                tablesData[i] = {
-                    id: i,
-                    status: 'empty',
-                    items: [],
-                    total: 0,
-                    startTime: null,
-                    paymentMethod: 'Tiền mặt',
-                    note: ''
-                };
-            }
+   <div class="bg-stone-900/70 p-3 rounded-xl border border-stone-800 space-y-2.5">
+    <div class="flex items-center justify-between">
+     <span class="text-[11px] font-bold text-stone-300 uppercase"><i class="fa-solid fa-mug-hot text-tys-500"></i> Gọi món</span>
+     <span class="text-sm text-tys-500 font-extrabold" id="mTotal">0đ</span>
+    </div>
+    <div class="flex flex-wrap gap-1.5 text-[11px]" id="menuPills"></div>
+    <div class="flex gap-1.5 text-xs">
+     <input id="cName" placeholder="Món khác..." class="flex-1 min-w-0 bg-stone-900 border border-stone-800 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-500">
+     <input id="cPrice" type="number" inputmode="numeric" placeholder="Giá(k)" class="w-20 bg-stone-900 border border-stone-800 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-500">
+     <button onclick="addCustom()" class="px-3 rounded-lg bg-tys-500 text-stone-950 font-bold">+</button>
+    </div>
+    <div id="mItems" class="min-h-[52px] max-h-[150px] overflow-y-auto space-y-1.5 text-xs bg-espresso-950 p-2 rounded-lg border border-stone-800"></div>
+   </div>
 
-            // Demo mock items for immediate visual feedback
-            tablesData[2] = { id: 2, status: 'unpaid', items: [{name: 'Cà phê sữa', price: 30}], total: 30, startTime: Date.now() - 25*60*1000, paymentMethod: 'Tiền mặt', note: '2 người' };
-            tablesData[4] = { id: 4, status: 'paid', items: [{name: 'Bạc xỉu', price: 35}, {name: 'Trà đào sả', price: 40}], total: 75, startTime: Date.now() - 40*60*1000, paymentMethod: 'Chuyển khoản QR', note: 'Đã CK Momo' };
-            tablesData[9] = { id: 9, status: 'unpaid', items: [{name: 'Matcha Latte', price: 45}], total: 45, startTime: Date.now() - 12*60*1000, paymentMethod: 'Tiền mặt', note: '' };
-            tablesData[17] = { id: 17, status: 'paid', items: [{name: 'TYS Cold Brew', price: 45}], total: 45, startTime: Date.now() - 5*60*1000, paymentMethod: 'Tiền mặt', note: 'Quầy bar' };
-            tablesData[25] = { id: 25, status: 'dirty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: 'Vừa đi' };
-        }
+   <div class="grid grid-cols-2 gap-2 text-xs">
+    <select id="mPay" class="bg-stone-900 border border-stone-800 rounded-lg p-2 text-stone-200 focus:outline-none focus:border-tys-500">
+     <option>Tiền mặt</option><option>Chuyển khoản QR</option><option>MoMo / Ví điện tử</option>
+    </select>
+    <input id="mNote" placeholder="Ghi chú (3 khách...)" class="bg-stone-900 border border-stone-800 rounded-lg p-2 text-stone-200 focus:outline-none focus:border-tys-500">
+   </div>
 
-        function saveData() {
-            localStorage.setItem('cafe_tables_tys', JSON.stringify(tablesData));
-            updateDashboardStats();
-        }
+   <div id="quickBar" class="space-y-2"></div>
+  </div>
 
-        function renderMap() {
-            for (let i = 1; i <= TOTAL_TABLES; i++) {
-                const container = document.getElementById(`table-node-${i}`);
-                if (!container) continue;
+  <div class="bg-stone-900 px-4 py-3 border-t border-stone-800 flex items-center justify-between">
+   <button onclick="clearTable()" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-red-400 hover:bg-red-500/10"><i class="fa-solid fa-trash"></i> Xoá bàn</button>
+   <div class="flex gap-2">
+    <button onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-stone-800 text-stone-300">Hủy</button>
+    <button onclick="saveModal()" class="px-5 py-2 rounded-xl text-xs font-bold bg-tys-500 text-stone-950">Lưu</button>
+   </div>
+  </div>
+ </div>
+</div>
 
-                const data = tablesData[i];
-                
-                // Status styles
-                let bgStyle = "bg-stone-900/90 border-stone-700 text-stone-300";
-                let badgeHTML = "";
-                let timerText = "";
+<!-- MODAL BÁO CÁO -->
+<div id="reportModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-end sm:items-center justify-center sm:p-3">
+ <div class="bg-espresso-900 border border-tys-500/30 w-full max-w-xl sm:rounded-2xl rounded-t-2xl flex flex-col max-h-[92vh]">
+  <div class="bg-stone-900 px-4 py-3 border-b border-stone-800 flex items-center justify-between">
+   <h3 class="font-bold text-amber-100"><i class="fa-solid fa-chart-simple text-tys-500"></i> Báo cáo ca hôm nay</h3>
+   <button onclick="closeReport()" class="w-9 h-9 rounded-lg bg-stone-800 text-stone-300"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div id="reportBody" class="p-4 overflow-y-auto space-y-3 flex-1 text-xs"></div>
+  <div class="bg-stone-900 px-4 py-3 border-t border-stone-800 flex items-center justify-between">
+   <button onclick="closeShift()" class="px-3 py-2 rounded-xl text-xs font-bold bg-red-500/15 text-red-400 border border-red-500/30"><i class="fa-solid fa-flag-checkered"></i> Kết ca (dọn hết bàn)</button>
+   <button onclick="closeReport()" class="px-4 py-2 rounded-xl text-xs font-bold bg-tys-500 text-stone-950">Đóng</button>
+  </div>
+ </div>
+</div>
 
-                if (data.status === 'unpaid') {
-                    bgStyle = "bg-red-950/90 border-red-500 text-red-200 pulse-unpaid";
-                    badgeHTML = `<span class="absolute -top-2 -right-2 px-1 py-0.2 rounded-full text-[8px] font-black bg-red-600 text-white shadow">CHƯA TRẢ</span>`;
-                } else if (data.status === 'paid') {
-                    bgStyle = "bg-emerald-950/90 border-emerald-500 text-emerald-200 shadow-sm shadow-emerald-500/20";
-                    badgeHTML = `<span class="absolute -top-2 -right-2 px-1 py-0.2 rounded-full text-[8px] font-bold bg-emerald-600 text-white shadow">ĐÃ TRẢ</span>`;
-                } else if (data.status === 'dirty') {
-                    bgStyle = "bg-purple-950/90 border-purple-500 text-purple-200";
-                    badgeHTML = `<span class="absolute -top-2 -right-2 px-1 py-0.2 rounded-full text-[8px] font-bold bg-purple-600 text-white shadow">CẦN DỌN</span>`;
-                }
+<div id="toast" class="hidden"></div>
 
-                if (data.startTime && data.status !== 'empty') {
-                    const elapsedMins = Math.floor((Date.now() - data.startTime) / (1000 * 60));
-                    timerText = `<div class="text-[9px] opacity-80 mt-0.5"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</div>`;
-                }
+<script>
+const T=30;
+const POS={1:[55,60],2:[135,35],3:[135,90],4:[55,260],5:[55,315],6:[135,285],7:[85,460],8:[100,535],9:[165,370],10:[225,370],11:[530,590],12:[225,590],13:[305,590],14:[145,590],15:[245,85],16:[305,85],17:[560,234],18:[715,234],19:[610,322],20:[670,322],21:[730,322],22:[590,590],23:[725,590],24:[775,590],25:[825,590],26:[875,590],27:[925,590],28:[925,510],29:[875,510],30:[825,510]};
+const MENU=[['TYS Cold Brew',45],['Cà phê sữa đá',30],['Cà phê đen',25],['Bạc xỉu',35],['Trà đào sả',40],['Matcha Latte',45],['Sinh tố bơ',45],['Bánh ngọt TYS',40],['Nước suối',10]];
+const ZONE=id=>[15,16].includes(id)?'Phòng máy lạnh':[17,18,19,20,21].includes(id)?'Khu quầy bar':id<=14?'Sân trước':'Sân sau';
+const LIMIT_SIT=120, LIMIT_CLEAN=10;
 
-                // Check filter visibility
-                const isFiltered = (currentFilter === 'all') ||
-                                   (currentFilter === 'unpaid' && data.status === 'unpaid') ||
-                                   (currentFilter === 'paid' && data.status === 'paid') ||
-                                   (currentFilter === 'empty' && data.status === 'empty') ||
-                                   (currentFilter === 'dirty' && data.status === 'dirty');
+let tables={},bills=[],active=null,filter='all',mStatus='empty',mItems=[],toastT=null,pressT=null;
 
-                const opacityClass = isFiltered ? "opacity-100 scale-100" : "opacity-30 scale-95 pointer-events-none";
+const money=k=>(k*1000).toLocaleString('vi-VN')+'đ';
+const short=k=>k>=1000?(k/1000).toFixed(1).replace('.0','')+'tr':k+'k';
+const dayKey=ts=>new Date(ts).toLocaleDateString('sv');
+const sum=it=>it.reduce((s,i)=>s+i.price*(i.qty||1),0);
+const blank=i=>({id:i,status:'empty',items:[],total:0,startTime:null,paymentMethod:'Tiền mặt',note:'',billCode:null});
+const mins=t=>t.startTime?Math.floor((Date.now()-t.startTime)/60000):0;
+const late=t=>t.status==='dirty'?mins(t)>=LIMIT_CLEAN:(t.status!=='empty'&&mins(t)>=LIMIT_SIT);
 
-                container.innerHTML = `
-                    <button onclick="openModal(${i})" class="table-btn relative w-12 h-12 rounded-xl border-2 border-solid ${bgStyle} ${opacityClass} flex flex-col items-center justify-center p-0.5 shadow-lg transition-all">
-                        ${badgeHTML}
-                        <span class="text-xs font-extrabold leading-none">B${i}</span>
-                        ${data.total > 0 ? `<span class="text-[9px] font-semibold text-tys-500 leading-none mt-0.5">${data.total}k</span>` : ''}
-                        ${timerText}
-                    </button>
-                `;
-            }
-        }
+/* ---------- Dữ liệu ---------- */
+function load(){
+ try{tables=JSON.parse(localStorage.getItem('tys_tables')||'{}')}catch(e){tables={}}
+ try{bills=JSON.parse(localStorage.getItem('tys_bills')||'[]')}catch(e){bills=[]}
+ for(let i=1;i<=T;i++){
+  const t=Object.assign(blank(i),tables[i]||{});
+  t.items=(t.items||[]).map(x=>({name:x.name,price:x.price,qty:x.qty||1}));
+  t.total=sum(t.items);t.note=t.note||'';tables[i]=t;
+ }
+}
+const save=()=>{localStorage.setItem('tys_tables',JSON.stringify(tables));stats()};
+const saveBills=()=>localStorage.setItem('tys_bills',JSON.stringify(bills));
+function bill(t){const b={code:'HD'+String(Date.now()).slice(-6),table:t.id,items:t.items.map(i=>({n:i.name,q:i.qty,p:i.price})),total:t.total,method:t.paymentMethod||'Tiền mặt',time:Date.now(),mins:mins(t)};bills.push(b);saveBills();return b}
 
-        // Render List View
-        function renderListView() {
-            const listGrid = document.getElementById('listGrid');
-            const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
-            listGrid.innerHTML = '';
+/* ---------- Toast + hoàn tác ---------- */
+function toast(msg,type='ok',undo){
+ const el=document.getElementById('toast');
+ el.className='fixed bottom-4 left-1/2 -translate-x-1/2 z-[60] px-4 py-3 rounded-xl shadow-2xl text-sm font-bold flex items-center gap-3 border '+(type==='warn'?'bg-amber-500 text-stone-950 border-amber-300':type==='err'?'bg-red-600 text-white border-red-300':'bg-emerald-600 text-white border-emerald-300');
+ el.innerHTML='<span>'+msg+'</span>';
+ if(undo){const b=document.createElement('button');b.className='px-2.5 py-1 rounded-lg bg-black/30 text-[11px] uppercase tracking-wider';b.innerHTML='<i class="fa-solid fa-rotate-left"></i> Hoàn tác';b.onclick=()=>{undo();el.classList.add('hidden')};el.appendChild(b)}
+ el.classList.remove('hidden');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.add('hidden'),undo?7000:2600);
+}
 
-            for (let i = 1; i <= TOTAL_TABLES; i++) {
-                const data = tablesData[i];
-                
-                // Filter check
-                if (currentFilter !== 'all' && data.status !== currentFilter) continue;
-                if (query && !(`bàn ${i}`.includes(query) || i.toString() === query || data.note.toLowerCase().includes(query))) continue;
+/* ---------- Sơ đồ ---------- */
+function renderMap(){
+ const c=document.getElementById('canvas');
+ [...c.querySelectorAll('[data-t]')].forEach(e=>e.remove());
+ for(let i=1;i<=T;i++){
+  const t=tables[i],p=POS[i];if(!p)continue;
+  let cls='bg-stone-900/90 border-stone-700 text-stone-300',badge='';
+  if(t.status==='unpaid'){cls='bg-red-950/90 border-red-500 text-red-200 pulse-unpaid';badge='CHƯA TRẢ'}
+  else if(t.status==='paid'){cls='bg-emerald-950/90 border-emerald-500 text-emerald-200';badge='ĐÃ TRẢ'}
+  else if(t.status==='dirty'){cls='bg-purple-950/90 border-purple-500 text-purple-200';badge='DỌN'}
+  const ov=late(t);if(ov)cls+=' ring-2 ring-amber-400 pulse-warn';
+  const show=filter==='all'||t.status===filter;
+  const m=mins(t);
+  const d=document.createElement('div');
+  d.dataset.t=i;d.className='absolute';d.style.cssText=`left:${p[0]}px;top:${p[1]}px`;
+  d.innerHTML=`<button class="tbtn relative w-12 h-12 rounded-xl border-2 ${cls} ${show?'':'opacity-25 pointer-events-none'} flex flex-col items-center justify-center shadow-lg">
+   ${badge?`<span class="absolute -top-2 -right-2 px-1 rounded-full text-[8px] font-black ${t.status==='unpaid'?'bg-red-600':t.status==='paid'?'bg-emerald-600':'bg-purple-600'} text-white">${badge}</span>`:''}
+   <span class="text-xs font-extrabold leading-none">B${i}</span>
+   ${t.total?`<span class="text-[9px] font-bold text-tys-500 leading-none mt-0.5">${t.total}k</span>`:''}
+   ${t.status!=='empty'?`<span class="text-[9px] leading-none mt-0.5 ${ov?'text-amber-300 font-bold':'opacity-70'}"><i class="fa-regular fa-clock"></i> ${m>=60?Math.floor(m/60)+'h'+(m%60):m+'p'}</span>`:''}
+  </button>`;
+  const btn=d.firstElementChild;
+  btn.onclick=()=>{if(!pressT)openModal(i)};
+  btn.onpointerdown=()=>{pressT=setTimeout(()=>{pressT=null;quickCollect(i)},500)};
+  ['pointerup','pointerleave','pointercancel'].forEach(e=>btn.addEventListener(e,()=>{clearTimeout(pressT);setTimeout(()=>pressT=null,50)}));
+  c.appendChild(d);
+ }
+ fitCanvas();
+}
+function fitCanvas(){const c=document.getElementById('canvas'),w=c.parentElement.clientWidth-24;const s=Math.min(1,w/1000);c.style.transform=`scale(${s})`;c.parentElement.style.height=(700*s+28)+'px'}
+addEventListener('resize',fitCanvas);
 
-                let statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-stone-800 text-stone-400">Trống</span>`;
-                if (data.status === 'unpaid') statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/20 text-red-400 border border-red-500/40">Chưa Thanh Toán</span>`;
-                if (data.status === 'paid') statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">Đã Thanh Toán</span>`;
-                if (data.status === 'dirty') statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-400 border border-purple-500/40">Cần Dọn</span>`;
+/* ---------- Danh sách ---------- */
+function renderList(){
+ const g=document.getElementById('listGrid'),q=(document.getElementById('search').value||'').toLowerCase().trim();
+ g.innerHTML='';
+ for(let i=1;i<=T;i++){
+  const t=tables[i];
+  if(filter!=='all'&&t.status!==filter)continue;
+  if(q&&!(('bàn '+i).includes(q)||String(i)===q||t.note.toLowerCase().includes(q)||t.items.some(x=>x.name.toLowerCase().includes(q))))continue;
+  const S={empty:['Trống','bg-stone-800 text-stone-400'],unpaid:['Chưa thanh toán','bg-red-500/20 text-red-400'],paid:['Đã trả trước','bg-emerald-500/20 text-emerald-400'],dirty:['Cần dọn','bg-purple-500/20 text-purple-400']}[t.status];
+  const d=document.createElement('div');
+  d.className='bg-stone-900 p-3 rounded-xl border '+(late(t)?'border-amber-500/60':'border-stone-800')+' cursor-pointer';
+  d.onclick=()=>openModal(i);
+  d.innerHTML=`<div class="flex items-center justify-between mb-1.5"><b class="text-amber-100 text-sm">Bàn ${i} <span class="text-[10px] font-normal text-stone-500">${ZONE(i)}</span></b><span class="px-2 py-0.5 rounded text-[10px] font-bold ${S[1]}">${S[0]}</span></div>
+  <div class="text-[11px] text-stone-400 space-y-0.5">
+   <div><i class="fa-solid fa-coins text-tys-500"></i> <b class="text-amber-200">${money(t.total)}</b>${t.items.length?' · '+t.items.length+' món':''}</div>
+   ${t.status!=='empty'?`<div class="${late(t)?'text-amber-400 font-bold':''}"><i class="fa-regular fa-clock"></i> ${mins(t)} phút${late(t)?' — cần chú ý!':''}</div>`:''}
+   ${t.note?`<div class="italic text-stone-500"><i class="fa-regular fa-note-sticky"></i> ${t.note}</div>`:''}
+  </div>`;
+  g.appendChild(d);
+ }
+ if(!g.children.length)g.innerHTML='<div class="col-span-full text-center text-stone-500 py-6 text-xs">Không có bàn nào khớp bộ lọc.</div>';
+}
+const renderAll=()=>{renderMap();renderList();stats()};
 
-                const elapsedMins = data.startTime ? Math.floor((Date.now() - data.startTime) / (1000 * 60)) : 0;
+/* ---------- Thống kê ---------- */
+function stats(){
+ let u=0,p=0,e=0,d=0,pend=0;
+ Object.values(tables).forEach(t=>{t.status==='unpaid'?(u++,pend+=t.total):t.status==='paid'?p++:t.status==='dirty'?d++:e++});
+ const today=dayKey(Date.now());
+ const rev=bills.filter(b=>dayKey(b.time)===today).reduce((s,b)=>s+b.total,0);
+ sUnpaid.innerText=u;sPaid.innerText=p;sPending.innerText=short(pend);sRevenue.innerText=short(rev);
+ const C={all:T,unpaid:u,paid:p,empty:e,dirty:d};
+ document.querySelectorAll('.fbtn').forEach(b=>{let s=b.querySelector('.cnt');if(!s){s=document.createElement('span');s.className='cnt ml-1 font-bold opacity-70';b.appendChild(s)}s.innerText='('+C[b.dataset.f]+')'});
+}
+function setFilter(f){filter=f;document.querySelectorAll('.fbtn').forEach(b=>b.classList.toggle('ring-2',b.dataset.f===f));document.querySelectorAll('.fbtn').forEach(b=>b.classList.toggle('ring-tys-500',b.dataset.f===f));renderAll()}
+function toggleView(){const m=document.getElementById('mapView'),l=document.getElementById('listView');const toList=!m.classList.contains('hidden');m.classList.toggle('hidden',toList);l.classList.toggle('hidden',!toList);[btnViewD,btnViewM].forEach(b=>b.innerHTML=toList?'<i class="fa-solid fa-map"></i>'+(b===btnViewD?' Sơ đồ':''):'<i class="fa-solid fa-list-check"></i>'+(b===btnViewD?' Danh sách':''));if(toList)renderList();else fitCanvas()}
 
-                const card = document.createElement('div');
-                card.className = "bg-stone-900 p-3 rounded-xl border border-stone-800 flex flex-col justify-between hover:border-tys-500/50 transition cursor-pointer";
-                card.onclick = () => openModal(i);
-                
-                card.innerHTML = `
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-extrabold text-amber-100 text-sm">Bàn ${i}</span>
-                            ${statusBadge}
-                        </div>
-                        <div class="text-xs text-stone-400 space-y-1">
-                            <div><i class="fa-solid fa-coins text-tys-500 mr-1"></i> Tổng: <b class="text-amber-200">${data.total * 1000}đ</b></div>
-                            ${data.startTime ? `<div><i class="fa-regular fa-clock mr-1"></i> Thời gian ngồi: ${elapsedMins} phút</div>` : ''}
-                            ${data.note ? `<div class="italic text-stone-500"><i class="fa-regular fa-note-sticky mr-1"></i> ${data.note}</div>` : ''}
-                        </div>
-                    </div>
-                    <div class="mt-3 pt-2 border-t border-stone-800 flex justify-end">
-                        <span class="text-[11px] font-bold text-tys-500 hover:underline">Chi tiết / Thu tiền <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i></span>
-                    </div>
-                `;
-                listGrid.appendChild(card);
-            }
-        }
+/* ---------- Modal bàn ---------- */
+function openModal(i){
+ active=i;const t=tables[i];mStatus=t.status;mItems=t.items.map(x=>({...x}));
+ mBadge.innerText='B'+i;mTitle.innerText='Bàn '+i+' · '+ZONE(i);
+ mSub.innerText=t.status==='empty'?'Bàn trống':(mins(t)+' phút'+(t.billCode?' · đã thanh toán':'')+(late(t)?' · QUÁ GIỜ':''));
+ mPay.value=t.paymentMethod;mNote.value=t.note;
+ menuPills.innerHTML=MENU.map(m=>`<button onclick="addItem('${m[0]}',${m[1]})" class="px-2 py-1 rounded-lg bg-stone-800 hover:bg-tys-500 hover:text-stone-950 text-stone-300">+ ${m[0]} <b>${m[1]}k</b></button>`).join('');
+ drawStatus();drawItems();tableModal.classList.remove('hidden');
+}
+const closeModal=()=>{tableModal.classList.add('hidden');active=null};
+function setStatus(s){mStatus=s;drawStatus();drawQuick()}
+function drawStatus(){({empty:stEmpty,unpaid:stUnpaid,paid:stPaid,dirty:stDirty})&&['empty','unpaid','paid','dirty'].forEach(k=>{const b=document.getElementById('st'+k[0].toUpperCase()+k.slice(1));b.classList.toggle('ring-2',k===mStatus);b.classList.toggle('ring-tys-500',k===mStatus)})}
+function addItem(n,p){const f=mItems.find(x=>x.name===n);f?f.qty++:mItems.push({name:n,price:p,qty:1});if(mStatus==='empty'){mStatus='unpaid';drawStatus()}drawItems()}
+function addCustom(){const n=cName.value.trim(),p=parseInt(cPrice.value,10);if(!n||!p)return toast('Nhập tên món và giá (nghìn đồng)','warn');addItem(n,p);cName.value='';cPrice.value=''}
+function qty(i,d){mItems[i].qty+=d;if(mItems[i].qty<=0)mItems.splice(i,1);drawItems()}
+function drawItems(){
+ mItems_el=document.getElementById('mItems');
+ mItems_el.innerHTML=mItems.length?'':'<div class="text-center text-stone-600 text-[11px] py-4">Chưa có món — bấm nút phía trên để gọi món</div>';
+ mItems.forEach((it,i)=>{
+  const r=document.createElement('div');
+  r.className='flex items-center justify-between bg-stone-900 px-2 py-1.5 rounded border border-stone-800';
+  r.innerHTML=`<span class="text-stone-200 truncate">${it.name}</span>
+  <span class="flex items-center gap-1.5 shrink-0">
+   <button onclick="qty(${i},-1)" class="w-6 h-6 rounded bg-stone-800 text-stone-300">−</button>
+   <b class="w-4 text-center text-stone-100">${it.qty}</b>
+   <button onclick="qty(${i},1)" class="w-6 h-6 rounded bg-stone-800 hover:bg-tys-500 hover:text-stone-950 text-stone-300">+</button>
+   <b class="w-12 text-right text-tys-500">${it.price*it.qty}k</b>
+   <button onclick="qty(${i},-99)" class="text-stone-600 hover:text-red-400 px-1"><i class="fa-solid fa-xmark"></i></button>
+  </span>`;
+  mItems_el.appendChild(r);
+ });
+ mTotal.innerText=money(sum(mItems));drawQuick();
+}
+function drawQuick(){
+ if(!active)return;
+ const free=Object.values(tables).filter(x=>x.status==='empty'&&x.id!==active).map(x=>`<option value="${x.id}">Bàn ${x.id} (${ZONE(x.id)})</option>`).join('');
+ let main='';
+ if(mStatus==='unpaid')main=`<button onclick="collect()" class="w-full p-3 rounded-xl bg-emerald-600 text-white font-bold text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-hand-holding-dollar"></i> Thu ${money(sum(mItems))} & khách về</button>`;
+ else if(mStatus==='paid')main=`<button onclick="leave()" class="w-full p-3 rounded-xl bg-purple-600 text-white font-bold text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-person-walking-arrow-right"></i> Khách về → cần dọn</button>`;
+ else if(mStatus==='dirty')main=`<button onclick="cleaned()" class="w-full p-3 rounded-xl bg-stone-700 text-white font-bold text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-broom"></i> Đã dọn xong → bàn trống</button>`;
+ quickBar.innerHTML=main+`<div class="flex gap-2 text-xs"><select id="moveTo" class="flex-1 bg-stone-900 border border-stone-800 rounded-lg p-2 text-stone-300">${free||'<option value="">Hết bàn trống</option>'}</select><button onclick="moveTable()" class="px-3 py-2 rounded-lg bg-stone-800 text-stone-200 font-semibold whitespace-nowrap"><i class="fa-solid fa-right-left"></i> Chuyển bàn</button></div>`;
+}
+function commit(){const t=tables[active];t.items=mItems.map(x=>({...x}));t.total=sum(t.items);t.paymentMethod=mPay.value;t.note=mNote.value;return t}
+function saveModal(){
+ if(!active)return;const t=commit(),prev=t.status;t.status=mStatus;
+ if(prev==='empty'&&mStatus!=='empty')t.startTime=Date.now();
+ if(mStatus==='dirty'&&prev!=='dirty')t.startTime=Date.now();
+ if(mStatus==='empty'){t.startTime=null;t.billCode=null;t.items=[];t.total=0}
+ if(mStatus==='paid'&&t.total>0){
+  const b=bills.find(x=>x.code===t.billCode);
+  if(b){b.total=t.total;b.items=t.items.map(i=>({n:i.name,q:i.qty,p:i.price}));b.method=t.paymentMethod;saveBills()}
+  else{t.billCode=bill(t).code;toast('Đã ghi nhận '+money(t.total)+' (trả trước) · Bàn '+t.id)}
+ }
+ save();renderAll();closeModal();
+}
+function collect(){
+ const t=commit();
+ if(!t.total)return toast('Bàn chưa có món để thu tiền','warn');
+ const snap=JSON.parse(JSON.stringify(t)),b=t.billCode?null:bill(t);
+ Object.assign(t,{status:'dirty',items:[],total:0,startTime:Date.now(),billCode:null});
+ save();renderAll();closeModal();
+ toast('Đã thu '+money(snap.total)+' · Bàn '+t.id,'ok',()=>{tables[snap.id]=snap;if(b){bills=bills.filter(x=>x.code!==b.code);saveBills()}save();renderAll()});
+}
+function quickCollect(i){
+ const t=tables[i];
+ if(t.status!=='unpaid'||!t.total)return openModal(i);
+ const snap=JSON.parse(JSON.stringify(t)),b=t.billCode?null:bill(t);
+ Object.assign(t,{status:'dirty',items:[],total:0,startTime:Date.now(),billCode:null});
+ save();renderAll();
+ toast('Thu nhanh '+money(snap.total)+' · Bàn '+i,'ok',()=>{tables[i]=snap;if(b){bills=bills.filter(x=>x.code!==b.code);saveBills()}save();renderAll()});
+}
+function leave(){const t=commit();Object.assign(t,{status:'dirty',items:[],total:0,startTime:Date.now(),billCode:null});save();renderAll();closeModal();toast('Bàn '+t.id+' cần dọn')}
+function cleaned(){tables[active]=blank(active);save();renderAll();closeModal();toast('Bàn đã sẵn sàng đón khách')}
+function moveTable(){
+ const to=parseInt(document.getElementById('moveTo').value,10);
+ if(!to)return toast('Không còn bàn trống','warn');
+ const from=commit(),old=active;
+ tables[to]=Object.assign(JSON.parse(JSON.stringify(from)),{id:to});
+ tables[old]=Object.assign(blank(old),{status:'dirty',startTime:Date.now()});
+ save();renderAll();closeModal();toast('Đã chuyển bàn '+old+' → bàn '+to);
+}
+function clearTable(){const snap=JSON.parse(JSON.stringify(tables[active])),id=active;tables[id]=blank(id);save();renderAll();closeModal();toast('Đã xoá dữ liệu bàn '+id,'err',()=>{tables[id]=snap;save();renderAll()})}
 
-        // Update Header Dashboard Counters
-        function updateDashboardStats() {
-            let unpaid = 0;
-            let paid = 0;
-            let totalRev = 0;
+/* ---------- Báo cáo & kết ca ---------- */
+function openReport(){
+ const today=dayKey(Date.now()),list=bills.filter(b=>dayKey(b.time)===today);
+ const tot=list.reduce((s,b)=>s+b.total,0),avg=list.length?Math.round(tot/list.length):0;
+ const byM={},byI={},byH={};
+ list.forEach(b=>{byM[b.method]=(byM[b.method]||0)+b.total;b.items.forEach(i=>byI[i.n]=(byI[i.n]||0)+i.q);const h=new Date(b.time).getHours();byH[h]=(byH[h]||0)+b.total});
+ const mx=Math.max(1,...Object.values(byH));
+ const hours=Object.keys(byH).sort((a,b)=>a-b).map(h=>`<div class="flex items-center gap-2"><span class="w-8 text-stone-400">${h}h</span><div class="flex-1 h-2.5 bg-stone-800 rounded"><div class="h-2.5 bg-tys-500 rounded" style="width:${Math.round(byH[h]/mx*100)}%"></div></div><span class="w-20 text-right text-amber-200 font-bold">${money(byH[h])}</span></div>`).join('')||'<div class="text-stone-500">Chưa có hoá đơn nào.</div>';
+ const top=Object.entries(byI).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([n,q],i)=>`<div class="flex justify-between py-1 border-b border-stone-800"><span class="text-stone-300">${i+1}. ${n}</span><b class="text-tys-500">${q} ly/phần</b></div>`).join('')||'<div class="text-stone-500">—</div>';
+ const pay=Object.entries(byM).map(([m,v])=>`<div class="flex justify-between"><span class="text-stone-400">${m}</span><b class="text-amber-200">${money(v)}</b></div>`).join('')||'<div class="text-stone-500">—</div>';
+ const debt=Object.values(tables).filter(t=>t.status==='unpaid'&&t.total).map(t=>'B'+t.id+': '+money(t.total)).join(' · ')||'Không còn bàn nợ';
+ const csv='Ma HD,Ban,Gio,Phut ngoi,Hinh thuc,Tong VND,Chi tiet\n'+list.map(b=>`${b.code},${b.table},${new Date(b.time).toLocaleTimeString('vi-VN')},${b.mins},${b.method},${b.total*1000},"${b.items.map(i=>i.n+' x'+i.q).join('; ')}"`).join('\n');
+ reportBody.innerHTML=`
+ <div class="grid grid-cols-3 gap-2 text-center">
+  <div class="bg-stone-900 p-2.5 rounded-xl border border-stone-800"><div class="text-stone-400">Hoá đơn</div><div class="text-lg font-black text-stone-100">${list.length}</div></div>
+  <div class="bg-tys-900/50 p-2.5 rounded-xl border border-tys-500/30"><div class="text-tys-500">Đã thu</div><div class="text-lg font-black text-amber-300">${money(tot)}</div></div>
+  <div class="bg-stone-900 p-2.5 rounded-xl border border-stone-800"><div class="text-stone-400">TB/hoá đơn</div><div class="text-lg font-black text-stone-100">${money(avg)}</div></div>
+ </div>
+ <div class="bg-stone-900 p-3 rounded-xl border border-stone-800 space-y-1"><div class="font-bold text-stone-300 mb-1">Theo hình thức</div>${pay}</div>
+ <div class="bg-stone-900 p-3 rounded-xl border border-stone-800"><div class="font-bold text-stone-300 mb-1">Top món bán chạy</div>${top}</div>
+ <div class="bg-stone-900 p-3 rounded-xl border border-stone-800 space-y-1.5"><div class="font-bold text-stone-300 mb-1">Doanh thu theo giờ</div>${hours}</div>
+ <div class="bg-red-950/30 p-3 rounded-xl border border-red-500/30"><div class="font-bold text-red-300 mb-1">Bàn còn nợ tiền</div><div class="text-stone-300">${debt}</div></div>
+ <div><div class="font-bold text-stone-300 mb-1">Xuất dữ liệu (CSV — copy dán vào Excel)</div>
+ <textarea id="csvBox" readonly class="w-full h-24 bg-stone-900 border border-stone-800 rounded-lg p-2 text-[10px] text-stone-400 font-mono">${csv}</textarea>
+ <button onclick="copyCsv()" class="mt-1 px-3 py-1.5 rounded-lg bg-stone-800 text-stone-200 font-semibold"><i class="fa-regular fa-copy"></i> Sao chép</button></div>`;
+ reportModal.classList.remove('hidden');
+}
+const closeReport=()=>reportModal.classList.add('hidden');
+function copyCsv(){const b=document.getElementById('csvBox');b.select();try{document.execCommand('copy');toast('Đã sao chép báo cáo')}catch(e){toast('Hãy chọn và copy thủ công','warn')}}
+function closeShift(){
+ if(!confirm('KẾT CA: đưa toàn bộ 30 bàn về trạng thái TRỐNG. Hoá đơn đã thu vẫn được lưu. Tiếp tục?'))return;
+ for(let i=1;i<=T;i++)tables[i]=blank(i);
+ save();renderAll();closeReport();toast('Đã kết ca ✓');
+}
 
-            Object.values(tablesData).forEach(t => {
-                if (t.status === 'unpaid') unpaid++;
-                if (t.status === 'paid') paid++;
-                totalRev += t.total || 0;
-            });
-
-            document.getElementById('unpaidCount').innerText = unpaid;
-            document.getElementById('unpaidCountMobile').innerText = unpaid;
-            document.getElementById('paidCount').innerText = paid;
-            document.getElementById('totalRevenue').innerText = `${totalRev}k`;
-
-            const unpaidBadgeMobile = document.getElementById('unpaidBadgeMobile');
-            if (unpaid > 0) {
-                unpaidBadgeMobile.classList.remove('hidden');
-            } else {
-                unpaidBadgeMobile.classList.add('hidden');
-            }
-        }
-
-        // Filter Functionality
-        function filterStatus(status) {
-            currentFilter = status;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                if (btn.dataset.filter === status) {
-                    btn.classList.add('bg-tys-500', 'text-stone-950', 'font-bold', 'border-tys-500');
-                    btn.classList.remove('bg-stone-800', 'text-stone-400', 'text-stone-200');
-                } else {
-                    btn.classList.remove('bg-tys-500', 'text-stone-950', 'font-bold', 'border-tys-500');
-                    btn.classList.add('bg-stone-800');
-                }
-            });
-            renderMap();
-            renderListView();
-        }
-
-        // Toggle View Modes
-        function toggleView(mode) {
-            const mapView = document.getElementById('mapView');
-            const listView = document.getElementById('listView');
-            const btnViewMap = document.getElementById('btnViewMap');
-            const btnViewList = document.getElementById('btnViewList');
-
-            if (mode === 'map') {
-                mapView.classList.remove('hidden');
-                listView.classList.add('hidden');
-                btnViewMap.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-tys-500 text-stone-950 shadow transition-colors flex items-center gap-1.5";
-                btnViewList.className = "px-3.5 py-1.5 rounded-lg text-xs font-medium bg-stone-900 text-stone-300 hover:bg-stone-800 transition-colors flex items-center gap-1.5 border border-stone-800";
-            } else {
-                mapView.classList.add('hidden');
-                listView.classList.remove('hidden');
-                btnViewList.className = "px-3.5 py-1.5 rounded-lg text-xs font-bold bg-tys-500 text-stone-950 shadow transition-colors flex items-center gap-1.5";
-                btnViewMap.className = "px-3.5 py-1.5 rounded-lg text-xs font-medium bg-stone-900 text-stone-300 hover:bg-stone-800 transition-colors flex items-center gap-1.5 border border-stone-800";
-                renderListView();
-            }
-        }
-
-        // Modal Controls & Actions
-        let selectedStatusInModal = 'empty';
-        let modalItems = [];
-
-        function openModal(tableId) {
-            activeTableId = tableId;
-            const data = tablesData[tableId];
-
-            document.getElementById('modalTableBadge').innerText = `B${tableId}`;
-            document.getElementById('modalTitle').innerText = `Quản Lý Bàn Số ${tableId}`;
-            document.getElementById('paymentMethodSelect').value = data.paymentMethod || 'Tiền mặt';
-            document.getElementById('tableNoteInput').value = data.note || '';
-
-            selectedStatusInModal = data.status || 'empty';
-            modalItems = [...(data.items || [])];
-
-            updateModalStatusButtons();
-            renderModalOrderList();
-
-            // Quick payment box display condition
-            const quickPaymentActions = document.getElementById('quickPaymentActions');
-            if (data.status === 'unpaid') {
-                quickPaymentActions.classList.remove('hidden');
-            } else {
-                quickPaymentActions.classList.add('hidden');
-            }
-
-            document.getElementById('tableModal').classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('tableModal').classList.add('hidden');
-            activeTableId = null;
-        }
-
-        function setSelectStatus(status) {
-            selectedStatusInModal = status;
-            updateModalStatusButtons();
-        }
-
-        function updateModalStatusButtons() {
-            const map = {
-                empty: 'btnStatusEmpty',
-                unpaid: 'btnStatusUnpaid',
-                paid: 'btnStatusPaid',
-                dirty: 'btnStatusDirty'
-            };
-
-            Object.keys(map).forEach(key => {
-                const btn = document.getElementById(map[key]);
-                if (key === selectedStatusInModal) {
-                    btn.classList.add('ring-2', 'ring-tys-500', 'bg-stone-800');
-                    btn.classList.remove('bg-stone-900');
-                } else {
-                    btn.classList.remove('ring-2', 'ring-tys-500', 'bg-stone-800');
-                    btn.classList.add('bg-stone-900');
-                }
-            });
-        }
-
-        function addPresetItem(name, price) {
-            modalItems.push({ name, price });
-            if (selectedStatusInModal === 'empty') {
-                selectedStatusInModal = 'unpaid';
-                updateModalStatusButtons();
-            }
-            renderModalOrderList();
-        }
-
-        function removeModalItem(index) {
-            modalItems.splice(index, 1);
-            renderModalOrderList();
-        }
-
-        function renderModalOrderList() {
-            const container = document.getElementById('modalOrderList');
-            container.innerHTML = '';
-            
-            let sum = 0;
-            modalItems.forEach((item, idx) => {
-                sum += item.price;
-                const row = document.createElement('div');
-                row.className = "flex items-center justify-between bg-stone-900 px-2.5 py-1.5 rounded border border-stone-800";
-                row.innerHTML = `
-                    <span class="text-stone-200">${item.name}</span>
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-tys-500">${item.price}k</span>
-                        <button onclick="removeModalItem(${idx})" class="text-stone-500 hover:text-red-400 transition px-1"><i class="fa-solid fa-xmark"></i></button>
-                    </div>
-                `;
-                container.appendChild(row);
-            });
-
-            document.getElementById('totalAmountDisplay').innerText = `Tổng: ${(sum * 1000).toLocaleString('vi-VN')}đ`;
-        }
-
-        function markAsPaidAndClose() {
-            if (!activeTableId) return;
-            selectedStatusInModal = 'paid';
-            saveModalChanges();
-        }
-
-        function saveModalChanges() {
-            if (!activeTableId) return;
-
-            const table = tablesData[activeTableId];
-            const prevStatus = table.status;
-
-            table.status = selectedStatusInModal;
-            table.items = [...modalItems];
-            table.total = modalItems.reduce((acc, curr) => acc + curr.price, 0);
-            table.paymentMethod = document.getElementById('paymentMethodSelect').value;
-            table.note = document.getElementById('tableNoteInput').value;
-
-            // Set sitting timer if table became occupied
-            if (prevStatus === 'empty' && selectedStatusInModal !== 'empty') {
-                table.startTime = Date.now();
-            } else if (selectedStatusInModal === 'empty' || selectedStatusInModal === 'dirty') {
-                table.startTime = null;
-            }
-
-            saveData();
-            renderMap();
-            renderListView();
-            closeModal();
-        }
-
-        function clearTableData() {
-            if (!activeTableId) return;
-            tablesData[activeTableId] = {
-                id: activeTableId,
-                status: 'empty',
-                items: [],
-                total: 0,
-                startTime: null,
-                paymentMethod: 'Tiền mặt',
-                note: ''
-            };
-            saveData();
-            renderMap();
-            renderListView();
-            closeModal();
-        }
-
-        function resetAllData() {
-            if (confirm("Bạn có chắc chắn muốn đặt lại tất cả các bàn về trạng thái TRỐNG?")) {
-                generateDefaultData();
-                saveData();
-                renderMap();
-                renderListView();
-            }
-        }
-
-        // Live Clock
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('liveClock').innerText = now.toLocaleTimeString('vi-VN') + " - " + now.toLocaleDateString('vi-VN');
-        }
-
-        // Initialize App
-        window.onload = function() {
-            initData();
-            renderMap();
-            updateDashboardStats();
-            updateClock();
-            setInterval(updateClock, 1000);
-            
-            // Periodically refresh map timers
-            setInterval(() => {
-                renderMap();
-            }, 30000);
-        };
-    </script>
+/* ---------- Khởi động ---------- */
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeReport()}});
+tableModal.onclick=e=>{if(e.target.id==='tableModal')closeModal()};
+reportModal.onclick=e=>{if(e.target.id==='reportModal')closeReport()};
+load();renderAll();
+const tick=()=>{const n=new Date();clock.innerText=n.toLocaleTimeString('vi-VN')+' · '+n.toLocaleDateString('vi-VN')};
+tick();setInterval(tick,1000);
+setInterval(()=>{renderMap();if(!document.getElementById('listView').classList.contains('hidden'))renderList();
+ const w=Object.values(tables).filter(late);if(w.length)toast(w.length+' bàn cần chú ý (quá giờ / chờ dọn lâu)','warn');},60000);
+</script>
 </body>
 </html>
