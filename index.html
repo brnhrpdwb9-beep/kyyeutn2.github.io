@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TYS Cafe - Sơ Đồ Interactive & Quick Pay 1-Chạm</title>
+    <title>TYS CAFFEE - THANH TOÁN</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,22 +17,68 @@
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
                     },
                     colors: {
-                        tys: {
-                            50: '#fdfbf7',
-                            100: '#f7f1e5',
-                            200: '#edd8b5',
-                            500: '#c69214',
-                            600: '#a8780c',
-                            700: '#855b08',
-                            800: '#3a2707',
-                            900: '#211604',
+                        /* Ghi đè thang xám mặc định - phân cấp chữ trung tính trên nền sáng */
+                        stone: {
+                            100: '#1c1a17',
+                            200: '#332e27',
+                            300: '#4f4a41',
+                            400: '#6e685d',
+                            500: '#8c8579',
+                            600: '#ada79a',
+                            700: '#b9afa0',
+                            800: '#e7e2d8',
+                            900: '#f5f2ec',
                         },
+                        /* Chữ đậm dùng trên nền màu (nút, huy hiệu bão hòa) */
+                        ink: '#1a1510',
+                        /* Nâu đồng - thương hiệu / điểm nhấn chính */
+                        tys: {
+                            50:  '#fbf8f3',
+                            100: '#2e2013',
+                            200: '#4a3623',
+                            300: '#6b4f35',
+                            400: '#8a5a2e',
+                            500: '#9c6b3a',
+                            600: '#7d5527',
+                            700: '#c9a876',
+                            800: '#e3d2b8',
+                            900: '#ede6d9',
+                        },
+                        /* Nền sáng - be/trắng ấm trung tính, thay cho nâu than tối */
                         espresso: {
-                            800: '#231d19',
-                            850: '#1c1714',
-                            900: '#14110f',
-                            950: '#0c0a09',
-                        }
+                            700: '#dad5ca',
+                            800: '#edeae2',
+                            850: '#f1eee7',
+                            900: '#ffffff',
+                            950: '#f7f5f0',
+                        },
+                        /* Xanh lá trầm - trạng thái "Đã trả" */
+                        sage: {
+                            50:  '#f6faf1',
+                            100: '#eaf3e1',
+                            200: '#d9ead1',
+                            300: '#3f6530',
+                            400: '#3f7a2e',
+                            500: '#7fbd5a',
+                            600: '#6fa84e',
+                            700: '#5c8a41',
+                            950: '#ecf4e4',
+                        },
+                        /* Đỏ cam - cảnh báo "Chưa trả" */
+                        brick: {
+                            ink: '#6b2016',
+                            accent: '#e2724c',
+                            100: '#5c1f14',
+                            200: '#fbdcd2',
+                            300: '#a23f2b',
+                            400: '#b23a22',
+                            500: '#d2492c',
+                            600: '#a83420',
+                            700: '#c0432b',
+                            800: '#8f2a1a',
+                            900: '#e8836a',
+                            950: '#fbeae5',
+                        },
                     }
                 }
             }
@@ -41,17 +87,23 @@
     
     <style>
         body {
-            background-color: #0c0a09;
-            color: #f5f5f4;
+            background-color: #f7f5f0;
+            color: #1c1a17;
             user-select: none;
             -webkit-user-select: none;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
+            letter-spacing: -0.01em;
+        }
+
+        .brand-serif {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
         }
 
         .floorplan-container {
-            background: radial-gradient(circle at center, #261f1b 0%, #0c0a09 100%);
-            box-shadow: inset 0 0 80px rgba(0,0,0,0.85), 0 0 40px rgba(198, 146, 20, 0.08);
+            background: #f1eee7;
+            box-shadow: inset 0 0 0 1px rgba(26, 21, 16, 0.06);
             cursor: grab;
             touch-action: none;
             will-change: transform;
@@ -61,22 +113,22 @@
             cursor: grabbing;
         }
 
-        /* Mức 2: 30 - 45 phút (Nhấp nháy chậm) */
+        /* Mức 2: 30 - 45 phút (nhắc nhẹ, không chớp giật) */
         .pulse-unpaid {
-            animation: pulse-red 2s infinite ease-in-out;
+            animation: pulse-brick 2.2s infinite ease-in-out;
         }
-        @keyframes pulse-red {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7), 0 0 20px rgba(239, 68, 68, 0.5); }
-            50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0), 0 0 0 rgba(239, 68, 68, 0); }
+        @keyframes pulse-brick {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(168, 52, 32, 0.35); }
+            50% { box-shadow: 0 0 0 7px rgba(168, 52, 32, 0); }
         }
 
-        /* Mức 3: Trên 45 phút (Nhấp nháy nhanh cảnh báo thu tiền) */
+        /* Mức 3: Trên 45 phút (cảnh báo rõ hơn, vẫn tiết chế) */
         .pulse-unpaid-fast {
-            animation: pulse-red-fast 0.6s infinite ease-in-out;
+            animation: pulse-brick-fast 1s infinite ease-in-out;
         }
-        @keyframes pulse-red-fast {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.9), 0 0 25px rgba(239, 68, 68, 0.7); border-color: #ef4444; }
-            50% { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0), 0 0 0 rgba(239, 68, 68, 0); border-color: #7f1d1d; }
+        @keyframes pulse-brick-fast {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(210, 73, 44, 0.45); border-color: #e2724c; }
+            50% { box-shadow: 0 0 0 8px rgba(210, 73, 44, 0); border-color: #8f2a1a; }
         }
 
         .table-btn {
@@ -85,55 +137,54 @@
             will-change: transform;
         }
         .table-btn:active {
-            transform: scale(0.92);
+            transform: scale(0.94);
         }
 
         /* Hiệu ứng giữ 1-Chạm (Hold Progress visual feedback) */
         .table-btn.holding-quick-pay {
-            transform: scale(1.15) !important;
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.9), 0 0 0 6px rgba(16, 185, 129, 0.4) !important;
-            border-color: #10b981 !important;
+            transform: scale(1.08) !important;
+            box-shadow: 0 0 0 5px rgba(111, 168, 78, 0.30) !important;
+            border-color: #6fa84e !important;
             animation: hold-charge 0.5s ease-in-out forwards;
         }
 
         .table-btn.holding-quick-empty {
-            transform: scale(1.15) !important;
-            box-shadow: 0 0 30px rgba(234, 179, 8, 0.9), 0 0 0 6px rgba(234, 179, 8, 0.4) !important;
-            border-color: #eab308 !important;
+            transform: scale(1.08) !important;
+            box-shadow: 0 0 0 5px rgba(156, 107, 58, 0.30) !important;
+            border-color: #9c6b3a !important;
             animation: hold-charge 0.5s ease-in-out forwards;
         }
 
         @keyframes hold-charge {
             0% { filter: brightness(1); }
-            50% { filter: brightness(1.3); }
-            100% { filter: brightness(1.6); }
+            100% { filter: brightness(1.12); }
         }
 
         /* Flash hiệu ứng thành công */
         .quick-pay-success-flash {
-            animation: success-burst 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: success-burst 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
         }
         @keyframes success-burst {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.9); }
-            50% { transform: scale(1.25); box-shadow: 0 0 35px 12px rgba(16, 185, 129, 0.8); background-color: #10b981 !important; }
+            0% { transform: scale(1); }
+            45% { transform: scale(1.07); background-color: #6fa84e !important; border-color: #6fa84e !important; color: #1a1510 !important; }
             100% { transform: scale(1); }
         }
 
         .quick-empty-success-flash {
-            animation: success-burst-empty 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: success-burst-empty 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
         }
         @keyframes success-burst-empty {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(160, 160, 160, 0.9); }
-            50% { transform: scale(1.25); box-shadow: 0 0 35px 12px rgba(160, 160, 160, 0.8); background-color: #525252 !important; }
+            0% { transform: scale(1); }
+            45% { transform: scale(1.07); background-color: #e7e2d8 !important; border-color: #ada79a !important; }
             100% { transform: scale(1); }
         }
 
         .transfer-success-flash {
-            animation: success-burst-transfer 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: success-burst-transfer 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
         }
         @keyframes success-burst-transfer {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.9); }
-            50% { transform: scale(1.28); box-shadow: 0 0 35px 12px rgba(245, 158, 11, 0.85); background-color: #f59e0b !important; color: #000 !important; }
+            0% { transform: scale(1); }
+            45% { transform: scale(1.08); background-color: #9c6b3a !important; border-color: #9c6b3a !important; color: #fbf8f3 !important; }
             100% { transform: scale(1); }
         }
 
@@ -148,10 +199,10 @@
             height: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: #1c1714;
+            background: #f0ede4;
         }
         ::-webkit-scrollbar-thumb {
-            background: #443831;
+            background: #c9bfae;
             border-radius: 4px;
         }
 
@@ -159,7 +210,7 @@
             animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         @keyframes toastIn {
-            from { transform: translateY(100%) scale(0.92); opacity: 0; }
+            from { transform: translateY(100%) scale(0.97); opacity: 0; }
             to { transform: translateY(0) scale(1); opacity: 1; }
         }
 
@@ -167,14 +218,14 @@
             animation: modalFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         @keyframes modalFadeIn {
-            from { opacity: 0; transform: scale(0.96); }
-            to { opacity: 1; transform: scale(1); }
+            from { opacity: 0; transform: scale(0.97) translateY(4px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
     </style>
 </head>
 <body class="h-screen flex flex-col font-sans antialiased overflow-hidden bg-espresso-950">
 
-    <header class="bg-espresso-900/95 backdrop-blur-md border-b border-tys-500/20 shrink-0 px-2 sm:px-3 py-2 sm:py-2.5 z-40">
+    <header class="bg-espresso-900 border-b border-tys-800/60 shrink-0 px-2 sm:px-4 py-2 sm:py-2.5 z-40">
         <div class="max-w-[1700px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
             
             <!-- TOP ROW MOBILE: Logo + Stretched Stats Bar -->
@@ -182,38 +233,40 @@
                 
                 <!-- Logo & Title -->
                 <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
-                    <div class="w-11 h-11 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-espresso-900 p-1 sm:p-1.5 flex items-center justify-center shadow-lg border border-tys-500/50 overflow-hidden shrink-0 transition-all hover:border-tys-500">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-espresso-950 p-1 flex items-center justify-center border border-tys-800 overflow-hidden shrink-0">
                         <img src="logo.png" 
                              alt="TYS Cafe Logo" 
-                             class="w-full h-full object-contain rounded-lg sm:rounded-xl transition-transform hover:scale-110" 
-                             onerror="if(this.src.endsWith('logo.png')){this.src='logo.jpg';}else if(this.src.endsWith('logo.jpg')){this.src='logo.webp';}else{this.onerror=null;this.src='https://placehold.co/150x150/14110f/c69214?text=TYS';}">
+                             class="w-full h-full object-contain rounded-md" 
+                             onerror="if(this.src.endsWith('logo.png')){this.src='logo.jpg';}else if(this.src.endsWith('logo.jpg')){this.src='logo.webp';}else{this.onerror=null;this.src='https://placehold.co/150x150/f7f5f0/2e2013?text=TYS';}">
                     </div>
                     <div>
-                        <h1 class="font-extrabold text-[13px] sm:text-lg tracking-tight leading-none text-amber-100 flex items-center gap-1.5">
-                            TYS CAFE
-                            <span class="hidden sm:flex text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 uppercase tracking-wide items-center gap-1">
-                                <i class="fa-solid fa-bolt text-[10px]"></i> QUICK PAY
+                        <h1 class="brand-serif font-semibold text-[15px] sm:text-xl tracking-tight leading-none text-tys-100 flex items-center gap-2">
+                            TYS Cafe
+                            <span class="hidden sm:inline-flex text-[9px] font-sans font-bold px-1.5 py-0.5 rounded-full bg-tys-800/60 text-tys-200 uppercase tracking-wider items-center gap-1">
+                                Quick Pay
                             </span>
                         </h1>
-                        <p class="text-[9px] sm:text-[11px] text-stone-400 mt-0.5 sm:mt-1" id="liveClock">--:--:--</p>
+                        <p class="text-[9px] sm:text-[11px] text-stone-400 mt-0.5 sm:mt-1 font-medium tabular-nums" id="liveClock">--:--:--</p>
                     </div>
                 </div>
 
                 <!-- Dashboard Stats (Stretched to fill remaining width up to right edge) -->
-                <div class="flex-1 flex items-center justify-between lg:justify-end gap-1 sm:gap-2.5 bg-stone-900/90 p-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-stone-800">
-                    <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md bg-stone-800/80 text-stone-300 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
-                        <span class="text-[9px] sm:text-[11px] text-stone-400">Tổng:</span>
-                        <strong id="totalTablesCount" class="text-xs sm:text-sm">29</strong>
+                <div class="flex-1 flex items-center justify-between lg:justify-end gap-1 sm:gap-2 bg-espresso-950/70 p-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl border border-tys-900">
+                    <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md text-stone-300 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
+                        <span class="text-[9px] sm:text-[11px] text-stone-500">Tổng</span>
+                        <strong id="totalTablesCount" class="text-xs sm:text-sm font-bold text-stone-100">29</strong>
                     </div>
-                    <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md bg-emerald-950/60 text-emerald-300 border border-emerald-500/30 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
-                        <span class="text-[9px] sm:text-[11px] text-emerald-400 hidden sm:inline">Đã trả:</span>
-                        <strong id="paidCount" class="text-xs sm:text-sm">0</strong>
+                    <div class="w-px h-4 bg-tys-900 hidden sm:block"></div>
+                    <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md text-sage-400 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-sage-500 shrink-0"></span>
+                        <span class="text-[9px] sm:text-[11px] text-stone-500 hidden sm:inline">Đã trả</span>
+                        <strong id="paidCount" class="text-xs sm:text-sm font-bold">0</strong>
                     </div>
-                    <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md bg-red-950/60 text-red-300 border border-red-500/40 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5 animate-pulse">
-                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>
-                        <span class="text-[9px] sm:text-[11px] text-red-400 hidden sm:inline">Cần thu:</span>
-                        <strong id="unpaidCount" class="text-red-200 text-xs sm:text-sm">0</strong>
+                    <div class="w-px h-4 bg-tys-900 hidden sm:block"></div>
+                    <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md text-brick-300 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-brick-400 shrink-0"></span>
+                        <span class="text-[9px] sm:text-[11px] text-stone-500 hidden sm:inline">Cần thu</span>
+                        <strong id="unpaidCount" class="text-xs sm:text-sm font-bold">0</strong>
                     </div>
                 </div>
 
@@ -223,28 +276,28 @@
             <div class="flex items-center justify-between w-full lg:w-auto gap-1.5 shrink-0">
                 
                 <!-- Filter Buttons -->
-                <div class="flex items-center gap-0.5 bg-stone-900/90 p-1 rounded-xl border border-stone-800 text-[11px] overflow-x-auto w-full sm:w-auto">
-                    <button onclick="filterStatus('all')" class="filter-btn active-filter px-2 py-1 rounded-lg bg-tys-500 text-stone-950 font-bold whitespace-nowrap flex-1 sm:flex-none text-center" data-filter="all">Tất cả</button>
-                    <button onclick="filterStatus('unpaid')" class="filter-btn px-2 py-1 rounded-lg text-red-400 hover:bg-stone-800 whitespace-nowrap flex-1 sm:flex-none text-center" data-filter="unpaid">
-                        <i class="fa-solid fa-circle text-[7px] text-red-500 mr-1"></i>Cần thu
+                <div class="flex items-center gap-0.5 bg-espresso-950/70 p-1 rounded-xl border border-tys-900 text-[11px] overflow-x-auto w-full sm:w-auto">
+                    <button onclick="filterStatus('all')" class="filter-btn active-filter px-2.5 py-1 rounded-lg bg-tys-500 text-ink font-bold whitespace-nowrap flex-1 sm:flex-none text-center" data-filter="all">Tất cả</button>
+                    <button onclick="filterStatus('unpaid')" class="filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:text-brick-300 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors" data-filter="unpaid">
+                        <i class="fa-solid fa-circle text-[6px] text-brick-400 mr-1"></i>Cần thu
                     </button>
-                    <button onclick="filterStatus('paid')" class="filter-btn px-2 py-1 rounded-lg text-emerald-400 hover:bg-stone-800 whitespace-nowrap flex-1 sm:flex-none text-center" data-filter="paid">
-                        <i class="fa-solid fa-circle text-[7px] text-emerald-500 mr-1"></i>Đã trả
+                    <button onclick="filterStatus('paid')" class="filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:text-sage-300 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors" data-filter="paid">
+                        <i class="fa-solid fa-circle text-[6px] text-sage-400 mr-1"></i>Đã trả
                     </button>
                 </div>
 
                 <!-- Action View Buttons -->
                 <div class="flex items-center gap-1 shrink-0">
-                    <button onclick="toggleView('map')" id="btnViewMap" class="p-1.5 sm:p-2 rounded-xl text-xs font-bold bg-tys-500 text-stone-950 shadow" title="Xem Sơ Đồ">
-                        <i class="fa-solid fa-map w-4 h-4 flex items-center justify-center"></i>
+                    <button onclick="toggleView('map')" id="btnViewMap" class="p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink" title="Xem Sơ Đồ">
+                        <i class="fa-solid fa-diagram-project w-4 h-4 flex items-center justify-center"></i>
                     </button>
-                    <button onclick="resetZoomAndFit()" class="p-1.5 sm:p-2 rounded-xl text-xs font-medium bg-stone-900 text-amber-300 border border-stone-800 hover:bg-stone-800" title="Hiện toàn bộ sơ đồ">
+                    <button onclick="resetZoomAndFit()" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-tys-300 border border-tys-900 hover:bg-espresso-800 transition-colors" title="Hiện toàn bộ sơ đồ">
                         <i class="fa-solid fa-expand w-4 h-4 flex items-center justify-center"></i>
                     </button>
-                    <button onclick="toggleView('list')" id="btnViewList" class="p-1.5 sm:p-2 rounded-xl text-xs font-medium bg-stone-900 text-stone-300 border border-stone-800 hover:bg-stone-800" title="Xem Danh Sách">
-                        <i class="fa-solid fa-list-check w-4 h-4 flex items-center justify-center"></i>
+                    <button onclick="toggleView('list')" id="btnViewList" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors" title="Xem Danh Sách">
+                        <i class="fa-solid fa-list-ul w-4 h-4 flex items-center justify-center"></i>
                     </button>
-                    <button onclick="openResetModal()" title="Đặt lại dữ liệu" class="p-1.5 sm:p-2 rounded-xl text-xs font-medium bg-stone-900 text-stone-400 hover:text-red-400 border border-stone-800">
+                    <button onclick="openResetModal()" title="Đặt lại dữ liệu" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-500 hover:text-brick-300 border border-tys-900 hover:bg-espresso-800 transition-colors">
                         <i class="fa-solid fa-rotate-right w-4 h-4 flex items-center justify-center"></i>
                     </button>
                 </div>
@@ -257,44 +310,44 @@
         <div class="w-full h-full max-w-[1800px] flex items-center justify-center relative">
             
             <div id="mapView" class="w-full h-full flex items-center justify-center relative overflow-hidden">
-                <div id="mapContainer" class="floorplan-container relative w-full h-full rounded-2xl border border-tys-500/20 overflow-hidden select-none">
+                <div id="mapContainer" class="floorplan-container relative w-full h-full rounded-2xl border border-tys-900 overflow-hidden select-none">
                     <!-- Background pattern scaled up 1.5x -->
-                    <div class="absolute inset-0 bg-[radial-gradient(#3a302a_2px,transparent_2px)] [background-size:42px_42px] opacity-40 rounded-2xl pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-[radial-gradient(#c9bfae_1.5px,transparent_1.5px)] [background-size:42px_42px] opacity-30 rounded-2xl pointer-events-none"></div>
 
                     <!-- Kích thước map 1.5x: 2100x1350 (Từ 1400x900) -->
                     <div id="mapWrapper" class="absolute w-[2100px] h-[1350px] left-0 top-0">
                         <!-- Viền khung bảo vệ toàn bộ sơ đồ -->
-                        <div class="absolute inset-4 rounded-[48px] border-2 border-dashed border-stone-700/50 pointer-events-none"></div>
+                        <div class="absolute inset-4 rounded-[32px] border border-tys-900 pointer-events-none"></div>
                         
                         <!-- Các mảng khối kiến trúc đã nhân 1.5 tọa độ & kích thước -->
-                        <div class="absolute top-[45px] left-[450px] w-[285px] h-[360px] rounded-[24px] border-2 border-stone-600 bg-stone-900/50 flex flex-col items-center justify-start pt-3"></div>
-                        <div class="absolute top-[45px] left-[750px] w-[960px] h-[390px] border-2 border-stone-600 bg-stone-900/40 rounded-[24px] flex items-center justify-center">
-                            <div class="text-center opacity-40">
-                                <i class="fa-solid fa-snowflake text-5xl text-tys-500 mb-2"></i>
-                                <div class="text-sm font-black text-amber-200 tracking-wider">PHÒNG LẠNH</div>
+                        <div class="absolute top-[45px] left-[450px] w-[285px] h-[360px] rounded-[20px] border border-stone-700/70 bg-espresso-900/40 flex flex-col items-center justify-start pt-3"></div>
+                        <div class="absolute top-[45px] left-[750px] w-[960px] h-[390px] border border-stone-700/70 bg-espresso-900/30 rounded-[20px] flex items-center justify-center">
+                            <div class="text-center opacity-50">
+                                <i class="fa-solid fa-snowflake text-4xl text-tys-600 mb-2"></i>
+                                <div class="text-sm font-semibold text-stone-400 tracking-[0.15em]">PHÒNG LẠNH</div>
                             </div>
                         </div>
 
-                        <div class="absolute top-[435px] left-[1050px] w-[660px] h-[150px] rounded-[24px] border-2 border-stone-600 bg-stone-900/50"></div>
-                        <div class="absolute top-[585px] left-[1125px] w-[585px] h-[18px] border-2 border-stone-600 bg-stone-800/80 rounded-b-lg"></div>
+                        <div class="absolute top-[435px] left-[1050px] w-[660px] h-[150px] rounded-[20px] border border-stone-700/70 bg-espresso-900/40"></div>
+                        <div class="absolute top-[585px] left-[1125px] w-[585px] h-[18px] border border-stone-700/70 bg-espresso-800/80 rounded-b-lg"></div>
 
-                        <div class="absolute top-[435px] left-[750px] w-[54px] h-[68px] border-2 border-t-0 border-stone-600 rounded-b-full bg-stone-900/60"></div>
-                        <div class="absolute top-[435px] left-[915px] w-[54px] h-[68px] border-2 border-t-0 border-stone-600 rounded-b-full bg-stone-900/60"></div>
+                        <div class="absolute top-[435px] left-[750px] w-[54px] h-[68px] border border-t-0 border-stone-700/70 rounded-b-full bg-espresso-900/60"></div>
+                        <div class="absolute top-[435px] left-[915px] w-[54px] h-[68px] border border-t-0 border-stone-700/70 rounded-b-full bg-espresso-900/60"></div>
 
-                        <div class="absolute top-[435px] left-[804px] w-[111px] h-[870px] border-x-2 border-stone-600/80 bg-stone-900/20 flex flex-col items-center justify-around py-16 pointer-events-none">
-                            <span class="text-[13px] font-bold text-stone-600 uppercase -rotate-90 tracking-widest">Lối đi chính</span>
-                            <span class="text-[13px] font-bold text-stone-600 uppercase -rotate-90 tracking-widest">Lối đi chính</span>
+                        <div class="absolute top-[435px] left-[804px] w-[111px] h-[870px] border-x border-stone-700/50 bg-espresso-900/15 flex flex-col items-center justify-around py-16 pointer-events-none">
+                            <span class="text-[12px] font-semibold text-stone-600 uppercase -rotate-90 tracking-[0.2em]">Lối đi chính</span>
+                            <span class="text-[12px] font-semibold text-stone-600 uppercase -rotate-90 tracking-[0.2em]">Lối đi chính</span>
                         </div>
 
                         <!-- Cây xanh (scaled size) -->
-                        <div class="absolute top-[330px] left-[195px] w-[84px] h-[84px] rounded-full border-2 border-emerald-600/60 bg-emerald-950/40 flex items-center justify-center text-emerald-400/70 shadow-lg"><i class="fa-solid fa-tree text-2xl"></i></div>
-                        <div class="absolute top-[720px] left-[195px] w-[84px] h-[84px] rounded-full border-2 border-emerald-600/60 bg-emerald-950/40 flex items-center justify-center text-emerald-400/70 shadow-lg"><i class="fa-solid fa-tree text-2xl"></i></div>
-                        <div class="absolute top-[1020px] left-[255px] w-[84px] h-[84px] rounded-full border-2 border-emerald-600/60 bg-emerald-950/40 flex items-center justify-center text-emerald-400/70 shadow-lg"><i class="fa-solid fa-tree text-2xl"></i></div>
-                        <div class="absolute top-[1035px] left-[1269px] w-[84px] h-[84px] rounded-full border-2 border-emerald-600/60 bg-emerald-950/40 flex items-center justify-center text-emerald-400/70 shadow-lg"><i class="fa-solid fa-tree text-2xl"></i></div>
+                        <div class="absolute top-[330px] left-[195px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
+                        <div class="absolute top-[720px] left-[195px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
+                        <div class="absolute top-[1020px] left-[255px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
+                        <div class="absolute top-[1035px] left-[1269px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
 
                         <!-- Ghế Băng Dài -->
-                        <div class="absolute top-[1275px] left-[360px] w-[390px] h-[36px] border-2 border-stone-600 bg-stone-800/90 rounded-lg flex items-center justify-center"></div>
-                        <div class="absolute top-[1275px] left-[1110px] w-[630px] h-[36px] border-2 border-stone-600 bg-stone-800/90 rounded-lg flex items-center justify-center"></div>
+                        <div class="absolute top-[1275px] left-[360px] w-[390px] h-[36px] border border-stone-700/70 bg-espresso-800/80 rounded-lg flex items-center justify-center"></div>
+                        <div class="absolute top-[1275px] left-[1110px] w-[630px] h-[36px] border border-stone-700/70 bg-espresso-800/80 rounded-lg flex items-center justify-center"></div>
 
                         <!-- Table Nodes (Tọa độ x1.5) -->
                         <div class="absolute top-[90px] left-[90px]" id="table-node-1"></div>
@@ -340,10 +393,13 @@
             </div>
 
             <div id="listView" class="w-full h-full hidden overflow-y-auto p-2">
-                <div class="bg-espresso-900 rounded-2xl border border-stone-800 p-3 sm:p-4">
-                    <div class="flex items-center justify-between mb-3 gap-2">
-                        <h2 class="text-xs sm:text-sm font-bold text-stone-200"><i class="fa-solid fa-list mr-1.5 text-tys-500"></i>Danh Sách Bàn</h2>
-                        <input type="text" id="searchInput" onkeyup="renderListView()" placeholder="Tìm bàn..." class="px-3 py-1.5 rounded-lg bg-stone-800 border border-stone-700 text-xs text-stone-200 focus:outline-none focus:border-tys-500 w-44 sm:w-52">
+                <div class="bg-espresso-900 rounded-2xl border border-tys-900 p-3 sm:p-5">
+                    <div class="flex items-center justify-between mb-4 gap-2">
+                        <h2 class="text-xs sm:text-sm font-bold text-stone-200 tracking-wide"><i class="fa-solid fa-list-ul mr-1.5 text-tys-400"></i>Danh Sách Bàn</h2>
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 text-[11px]"></i>
+                            <input type="text" id="searchInput" onkeyup="renderListView()" placeholder="Tìm bàn..." class="pl-8 pr-3 py-1.5 rounded-lg bg-espresso-950 border border-tys-900 text-xs text-stone-200 focus:outline-none focus:border-tys-600 w-44 sm:w-52 placeholder-stone-600">
+                        </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="listGrid"></div>
                 </div>
@@ -353,13 +409,13 @@
     </main>
 
     <div id="quickPayToast" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 hidden max-w-sm w-[92%] sm:w-auto">
-        <div id="quickPayToastCard" class="bg-stone-900 border-2 border-emerald-500 shadow-2xl rounded-2xl p-3 flex items-center justify-between gap-3 text-stone-100 backdrop-blur-lg toast-slide-up">
+        <div id="quickPayToastCard" class="bg-espresso-900 border border-sage-600 shadow-xl rounded-xl p-3 flex items-center justify-between gap-3 text-stone-100 toast-slide-up">
             <div class="flex items-center gap-2.5">
-                <div id="quickPayToastIconBg" class="w-8 h-8 rounded-xl bg-emerald-500 text-stone-950 font-black flex items-center justify-center shrink-0 shadow">
+                <div id="quickPayToastIconBg" class="w-8 h-8 rounded-lg bg-sage-600 text-ink flex items-center justify-center shrink-0">
                     <i id="quickPayToastIcon" class="fa-solid fa-bolt text-sm"></i>
                 </div>
                 <div>
-                    <div id="quickPayToastTitle" class="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                    <div id="quickPayToastTitle" class="text-xs font-bold text-sage-400 flex items-center gap-1">
                         Thanh toán 1-Chạm thành công!
                     </div>
                     <div class="text-[11px] text-stone-300 font-medium" id="quickPayToastMessage">
@@ -367,25 +423,25 @@
                     </div>
                 </div>
             </div>
-            <button onclick="undoQuickPay()" class="px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 border border-stone-700 text-amber-300 font-bold text-xs shrink-0 transition flex items-center gap-1 active:scale-95">
+            <button onclick="undoQuickPay()" class="px-3 py-1.5 rounded-lg bg-espresso-800 hover:bg-espresso-700 border border-tys-800 text-tys-300 font-bold text-xs shrink-0 transition flex items-center gap-1 active:scale-95">
                 <i class="fa-solid fa-rotate-left text-[10px]"></i> Hoàn tác
             </button>
         </div>
     </div>
 
     <!-- Table Details Modal -->
-    <div id="tableModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4">
-        <div class="bg-espresso-900 border border-tys-500/30 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] text-stone-200 modal-fade-in">
+    <div id="tableModal" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-espresso-900 border border-tys-800 w-full max-w-md rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[95vh] text-stone-200 modal-fade-in">
             
-            <div class="bg-stone-900 px-4 py-2.5 border-b border-stone-800 flex items-center justify-between">
+            <div class="bg-espresso-950 px-4 py-3 border-b border-tys-900 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                    <div id="modalTableBadge" class="w-9 h-9 rounded-lg bg-tys-500 font-black text-lg flex items-center justify-center text-stone-950 shadow">0</div>
+                    <div id="modalTableBadge" class="w-9 h-9 rounded-lg bg-tys-500 font-bold text-lg flex items-center justify-center text-ink">0</div>
                     <div>
-                        <h3 class="font-extrabold text-amber-100 text-sm leading-tight" id="modalTitle">Quản Lý Bàn Số 0</h3>
-                        <p class="text-[10px] text-stone-400" id="modalSubtitle">Cập nhật nhanh món & thanh toán</p>
+                        <h3 class="font-bold text-tys-100 text-sm leading-tight" id="modalTitle">Quản Lý Bàn Số 0</h3>
+                        <p class="text-[10px] text-stone-500" id="modalSubtitle">Cập nhật nhanh món & thanh toán</p>
                     </div>
                 </div>
-                <button onclick="closeModal()" class="w-7 h-7 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-stone-100 flex items-center justify-center transition">
+                <button onclick="closeModal()" class="w-7 h-7 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-400 hover:text-stone-100 flex items-center justify-center transition">
                     <i class="fa-solid fa-xmark text-xs"></i>
                 </button>
             </div>
@@ -393,96 +449,96 @@
             <div class="p-3.5 overflow-y-auto space-y-3 flex-1 text-xs">
                 
                 <div>
-                    <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider mb-1.5">Trạng thái bàn</label>
+                    <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Trạng thái bàn</label>
                     <div class="grid grid-cols-3 gap-1.5 text-[11px]">
-                        <button type="button" onclick="setSelectStatus('empty')" id="btnStatusEmpty" class="status-option-btn p-2 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center justify-center gap-1.5 text-center transition">
+                        <button type="button" onclick="setSelectStatus('empty')" id="btnStatusEmpty" class="status-option-btn p-2 rounded-lg border border-tys-900 bg-espresso-950 hover:bg-espresso-800 flex items-center justify-center gap-1.5 text-center transition">
                             <div class="w-2 h-2 rounded-full bg-stone-500 shrink-0"></div>
                             <div class="truncate font-bold text-stone-300">Trống</div>
                         </button>
 
-                        <button type="button" onclick="setSelectStatus('unpaid')" id="btnStatusUnpaid" class="status-option-btn p-2 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center justify-center gap-1.5 text-center transition">
-                            <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse shrink-0"></div>
-                            <div class="truncate font-bold text-red-400">Đang ngồi</div>
+                        <button type="button" onclick="setSelectStatus('unpaid')" id="btnStatusUnpaid" class="status-option-btn p-2 rounded-lg border border-tys-900 bg-espresso-950 hover:bg-espresso-800 flex items-center justify-center gap-1.5 text-center transition">
+                            <div class="w-2 h-2 rounded-full bg-brick-500 shrink-0"></div>
+                            <div class="truncate font-bold text-brick-400">Đang ngồi</div>
                         </button>
 
-                        <button type="button" onclick="setSelectStatus('paid')" id="btnStatusPaid" class="status-option-btn p-2 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center justify-center gap-1.5 text-center transition">
-                            <div class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></div>
-                            <div class="truncate font-bold text-emerald-400">Đã trả</div>
+                        <button type="button" onclick="setSelectStatus('paid')" id="btnStatusPaid" class="status-option-btn p-2 rounded-lg border border-tys-900 bg-espresso-950 hover:bg-espresso-800 flex items-center justify-center gap-1.5 text-center transition">
+                            <div class="w-2 h-2 rounded-full bg-sage-500 shrink-0"></div>
+                            <div class="truncate font-bold text-sage-400">Đã trả</div>
                         </button>
                     </div>
                 </div>
 
-                <div class="bg-stone-900/90 p-2.5 rounded-xl border border-stone-800 space-y-2">
+                <div class="bg-espresso-950/70 p-2.5 rounded-xl border border-tys-900 space-y-2">
                     
                     <div class="flex items-center justify-between">
-                        <span class="text-[11px] font-bold text-stone-300 uppercase tracking-wide flex items-center gap-1">
+                        <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wide flex items-center gap-1">
                             <i class="fa-solid fa-mug-hot text-tys-500"></i> Chọn món nhanh
                         </span>
-                        <span class="text-xs font-black text-tys-500" id="totalAmountDisplay">Tổng: 0đ</span>
+                        <span class="text-xs font-bold text-tys-400" id="totalAmountDisplay">Tổng: 0đ</span>
                     </div>
 
                     <div class="flex items-center gap-2">
-                        <button type="button" onclick="addPresetItem('Cà phê đen đá', 22)" class="w-full py-1.5 px-3 rounded-lg bg-tys-500/15 border border-tys-500/40 hover:bg-tys-500 hover:text-stone-950 text-amber-200 font-bold transition text-xs flex items-center justify-between group">
-                            <span><i class="fa-solid fa-circle-plus mr-1.5 text-tys-500 group-hover:text-stone-950"></i> Cà phê đen đá</span>
-                            <span class="font-extrabold text-tys-500 group-hover:text-stone-950">22k</span>
+                        <button type="button" onclick="addPresetItem('Cà phê đen đá', 22)" class="w-full py-1.5 px-3 rounded-lg bg-tys-900/50 border border-tys-800 hover:bg-tys-500 hover:text-ink text-tys-200 font-semibold transition text-xs flex items-center justify-between group">
+                            <span><i class="fa-solid fa-circle-plus mr-1.5 text-tys-500 group-hover:text-ink"></i> Cà phê đen đá</span>
+                            <span class="font-bold text-tys-400 group-hover:text-ink">22k</span>
                         </button>
                     </div>
 
-                    <div class="p-2 bg-stone-950/60 rounded-lg border border-stone-800 space-y-1.5">
-                        <div class="text-[10px] text-stone-400 font-semibold flex justify-between">
+                    <div class="p-2 bg-espresso-950 rounded-lg border border-tys-900 space-y-1.5">
+                        <div class="text-[10px] text-stone-500 font-semibold flex justify-between">
                             <span>Ghi chú món tự do</span>
                         </div>
                         <div>
-                            <input type="text" id="customItemName" placeholder="Tên món (VD: Bạc xỉu ít đường)..." class="w-full bg-stone-900 border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-500 placeholder-stone-600">
+                            <input type="text" id="customItemName" placeholder="Tên món (VD: Bạc xỉu ít đường)..." class="w-full bg-espresso-900 border border-tys-900 rounded-lg px-2.5 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
                         </div>
                         <div class="flex items-center gap-1.5">
-                            <input type="number" id="customItemPrice" placeholder="Giá tiền (VD: 25)..." class="flex-1 bg-stone-900 border border-stone-800 rounded-lg px-2.5 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-500 placeholder-stone-600">
-                            <button type="button" onclick="addCustomNoteItem()" class="px-3 py-1.5 rounded-lg bg-stone-800 hover:bg-tys-500 hover:text-stone-950 font-bold text-stone-300 transition text-xs shrink-0 flex items-center gap-1 border border-stone-700">
+                            <input type="number" id="customItemPrice" placeholder="Giá tiền (VD: 25)..." class="flex-1 bg-espresso-900 border border-tys-900 rounded-lg px-2.5 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
+                            <button type="button" onclick="addCustomNoteItem()" class="px-3 py-1.5 rounded-lg bg-espresso-800 hover:bg-tys-500 hover:text-ink font-semibold text-stone-300 transition text-xs shrink-0 flex items-center gap-1 border border-tys-800">
                                 <i class="fa-solid fa-plus text-[10px]"></i> Thêm
                             </button>
                         </div>
                     </div>
 
-                    <div id="modalOrderList" class="min-h-[45px] max-h-[100px] overflow-y-auto space-y-1 text-xs bg-espresso-950 p-1.5 rounded-lg border border-stone-850"></div>
+                    <div id="modalOrderList" class="min-h-[45px] max-h-[100px] overflow-y-auto space-y-1 text-xs bg-espresso-950 p-1.5 rounded-lg border border-tys-900"></div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2 text-xs">
                     <div>
-                        <label class="block font-semibold text-stone-400 text-[10px] uppercase mb-1">Thanh toán bằng</label>
-                        <select id="paymentMethodSelect" class="w-full bg-stone-900 border border-stone-800 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-500">
-                            <option value="Tiền mặt">💵 Tiền mặt</option>
-                            <option value="Chuyển khoản QR">📱 Chuyển khoản VietQR</option>
+                        <label class="block font-semibold text-stone-500 text-[10px] uppercase mb-1">Thanh toán bằng</label>
+                        <select id="paymentMethodSelect" class="w-full bg-espresso-950 border border-tys-900 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-600">
+                            <option value="Tiền mặt">Tiền mặt</option>
+                            <option value="Chuyển khoản QR">Chuyển khoản VietQR</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block font-semibold text-stone-400 text-[10px] uppercase mb-1">Ghi chú bàn</label>
-                        <input type="text" id="tableNoteInput" placeholder="VD: 2 khách..." class="w-full bg-stone-900 border border-stone-800 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-500 placeholder-stone-600">
+                        <label class="block font-semibold text-stone-500 text-[10px] uppercase mb-1">Ghi chú bàn</label>
+                        <input type="text" id="tableNoteInput" placeholder="VD: 2 khách..." class="w-full bg-espresso-950 border border-tys-900 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
                     </div>
                 </div>
 
-                <div id="quickPaymentActions" class="p-2 bg-red-950/40 border border-red-500/30 rounded-xl flex items-center justify-between">
+                <div id="quickPaymentActions" class="p-2 bg-brick-950/40 border border-brick-800 rounded-xl flex items-center justify-between">
                     <div>
-                        <div class="text-xs font-bold text-red-300"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> Khách thanh toán?</div>
+                        <div class="text-xs font-bold text-brick-300"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> Khách thanh toán?</div>
                     </div>
-                    <button type="button" onclick="markAsPaidAndClose()" class="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow flex items-center gap-1 transition">
+                    <button type="button" onclick="markAsPaidAndClose()" class="px-3 py-1 rounded-lg bg-sage-600 hover:bg-sage-500 text-ink font-bold text-xs flex items-center gap-1 transition">
                         <i class="fa-solid fa-check"></i> Thu Tiền Ngay
                     </button>
                 </div>
 
             </div>
 
-            <div class="bg-stone-900 px-4 py-2.5 border-t border-stone-800 flex items-center justify-between">
+            <div class="bg-espresso-950 px-4 py-2.5 border-t border-tys-900 flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <button type="button" onclick="clearTableData()" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-red-400 hover:bg-red-500/10 transition">
+                    <button type="button" onclick="clearTableData()" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-brick-400 hover:bg-brick-500/10 transition">
                         <i class="fa-solid fa-trash mr-1"></i> Xoá bàn
                     </button>
-                    <button type="button" onclick="openTransferModal(activeTableId)" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-amber-400 hover:bg-amber-500/10 transition flex items-center gap-1">
+                    <button type="button" onclick="openTransferModal(activeTableId)" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-tys-400 hover:bg-tys-500/10 transition flex items-center gap-1">
                         <i class="fa-solid fa-right-left"></i> Chuyển / Gộp
                     </button>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button type="button" onclick="closeModal()" class="px-4 py-1.5 rounded-xl text-xs font-semibold bg-stone-800 hover:bg-stone-700 text-stone-300 transition">Hủy</button>
-                    <button type="button" onclick="saveModalChanges()" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-tys-500 hover:bg-tys-600 text-stone-950 shadow transition">Lưu thay đổi</button>
+                    <button type="button" onclick="closeModal()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300 transition">Hủy</button>
+                    <button type="button" onclick="saveModalChanges()" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-tys-500 hover:bg-tys-600 text-ink transition">Lưu thay đổi</button>
                 </div>
             </div>
 
@@ -490,54 +546,54 @@
     </div>
 
     <!-- Transfer/Merge Modal -->
-    <div id="transferModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
-        <div class="bg-espresso-900 border border-tys-500/30 w-full max-w-md rounded-2xl p-4 space-y-4 text-stone-200 shadow-2xl modal-fade-in">
-            <div class="flex items-center justify-between border-b border-stone-800 pb-2.5">
+    <div id="transferModal" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-espresso-900 border border-tys-800 w-full max-w-md rounded-2xl p-4 space-y-4 text-stone-200 shadow-xl modal-fade-in">
+            <div class="flex items-center justify-between border-b border-tys-900 pb-2.5">
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm border border-amber-500/30">
+                    <div class="w-8 h-8 rounded-lg bg-tys-900/60 text-tys-300 flex items-center justify-center font-bold text-sm border border-tys-800">
                         <i class="fa-solid fa-right-left"></i>
                     </div>
                     <div>
-                        <h3 class="text-sm font-bold text-amber-100" id="transferModalTitle">Chuyển / Gộp Bàn</h3>
-                        <p class="text-[10px] text-stone-400">Di chuyển dữ liệu hoặc kết hợp đơn hàng giữa 2 bàn</p>
+                        <h3 class="text-sm font-bold text-tys-100" id="transferModalTitle">Chuyển / Gộp Bàn</h3>
+                        <p class="text-[10px] text-stone-500">Di chuyển dữ liệu hoặc kết hợp đơn hàng giữa 2 bàn</p>
                     </div>
                 </div>
-                <button onclick="closeTransferModal()" class="w-7 h-7 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-stone-100 flex items-center justify-center transition">
+                <button onclick="closeTransferModal()" class="w-7 h-7 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-400 hover:text-stone-100 flex items-center justify-center transition">
                     <i class="fa-solid fa-xmark text-xs"></i>
                 </button>
             </div>
 
             <div class="space-y-3 text-xs">
                 <div>
-                    <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider mb-1.5">Hành động</label>
+                    <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Hành động</label>
                     <div class="grid grid-cols-2 gap-2">
-                        <button type="button" id="btnModeTransfer" onclick="setTransferMode('transfer')" class="p-2.5 rounded-xl border border-stone-700 bg-stone-800 text-amber-300 font-bold flex items-center justify-center gap-1.5 transition active:scale-95">
+                        <button type="button" id="btnModeTransfer" onclick="setTransferMode('transfer')" class="p-2.5 rounded-xl border border-tys-600 bg-tys-900/40 text-tys-300 font-bold flex items-center justify-center gap-1.5 transition active:scale-95">
                             <i class="fa-solid fa-arrow-right"></i> Chuyển Bàn
                         </button>
-                        <button type="button" id="btnModeMerge" onclick="setTransferMode('merge')" class="p-2.5 rounded-xl border border-stone-800 bg-stone-900 text-stone-400 font-bold flex items-center justify-center gap-1.5 transition active:scale-95">
+                        <button type="button" id="btnModeMerge" onclick="setTransferMode('merge')" class="p-2.5 rounded-xl border border-tys-900 bg-espresso-950 text-stone-400 font-bold flex items-center justify-center gap-1.5 transition active:scale-95">
                             <i class="fa-solid fa-object-group"></i> Gộp Bàn
                         </button>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider mb-1.5">Chọn bàn đích</label>
-                    <select id="targetTableSelect" onchange="updateTransferPreview()" class="w-full bg-stone-900 border border-stone-800 rounded-xl p-2.5 text-xs text-amber-100 font-semibold focus:outline-none focus:border-tys-500">
+                    <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Chọn bàn đích</label>
+                    <select id="targetTableSelect" onchange="updateTransferPreview()" class="w-full bg-espresso-950 border border-tys-900 rounded-xl p-2.5 text-xs text-tys-100 font-semibold focus:outline-none focus:border-tys-600">
                     </select>
                 </div>
 
-                <div class="p-3 bg-stone-950/80 rounded-xl border border-stone-800 space-y-2">
-                    <div class="text-[10px] font-bold text-stone-400 uppercase tracking-wider flex items-center justify-between">
+                <div class="p-3 bg-espresso-950 rounded-xl border border-tys-900 space-y-2">
+                    <div class="text-[10px] font-bold text-stone-500 uppercase tracking-wider flex items-center justify-between">
                         <span>Xem trước kết quả</span>
-                        <span id="transferActionBadge" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px]">Chuyển bàn</span>
+                        <span id="transferActionBadge" class="px-2 py-0.5 rounded bg-tys-900/60 text-tys-300 border border-tys-800 text-[9px]">Chuyển bàn</span>
                     </div>
                     <div id="transferPreviewBox" class="text-xs space-y-1 text-stone-300"></div>
                 </div>
             </div>
 
-            <div class="flex items-center justify-end gap-2 pt-1 border-t border-stone-800">
-                <button onclick="closeTransferModal()" class="px-4 py-1.5 rounded-xl text-xs font-semibold bg-stone-800 hover:bg-stone-700 text-stone-300">Hủy</button>
-                <button onclick="executeTransferOrMerge()" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-600 text-stone-950 shadow flex items-center gap-1 active:scale-95 transition">
+            <div class="flex items-center justify-end gap-2 pt-1 border-t border-tys-900">
+                <button onclick="closeTransferModal()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300">Hủy</button>
+                <button onclick="executeTransferOrMerge()" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-tys-500 hover:bg-tys-600 text-ink flex items-center gap-1 active:scale-95 transition">
                     <i class="fa-solid fa-check"></i> Xác nhận
                 </button>
             </div>
@@ -545,16 +601,16 @@
     </div>
 
     <!-- Reset Data Modal -->
-    <div id="resetModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-espresso-900 border border-stone-800 w-full max-w-sm rounded-2xl p-4 space-y-3 text-center shadow-2xl modal-fade-in">
-            <div class="w-10 h-10 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center mx-auto text-lg border border-red-500/30">
+    <div id="resetModal" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-espresso-900 border border-tys-800 w-full max-w-sm rounded-2xl p-4 space-y-3 text-center shadow-xl modal-fade-in">
+            <div class="w-10 h-10 rounded-full bg-brick-950/60 text-brick-400 flex items-center justify-center mx-auto text-lg border border-brick-800">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
-            <h3 class="text-sm font-bold text-amber-100">Đặt lại toàn bộ dữ liệu bàn?</h3>
+            <h3 class="text-sm font-bold text-tys-100">Đặt lại toàn bộ dữ liệu bàn?</h3>
             <p class="text-xs text-stone-400">Tất cả 29 bàn sẽ được chuyển về trạng thái TRỐNG. Bạn có chắc chắn không?</p>
             <div class="flex items-center justify-center gap-2 pt-1">
-                <button onclick="closeResetModal()" class="px-4 py-1.5 rounded-xl text-xs font-semibold bg-stone-800 hover:bg-stone-700 text-stone-300">Hủy</button>
-                <button onclick="confirmResetAllData()" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-500 text-white shadow">Đặt lại ngay</button>
+                <button onclick="closeResetModal()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300">Hủy</button>
+                <button onclick="confirmResetAllData()" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-brick-700 hover:bg-brick-600 text-tys-50">Đặt lại ngay</button>
             </div>
         </div>
     </div>
@@ -852,10 +908,10 @@
                 flashClass = 'quick-pay-success-flash';
                 toastConfig = {
                     title: 'Thanh toán 1-Chạm thành công!',
-                    borderColor: 'border-emerald-500',
-                    iconBg: 'bg-emerald-500',
+                    borderColor: 'border-sage-500',
+                    iconBg: 'bg-sage-500',
                     iconClass: 'fa-solid fa-bolt',
-                    titleColor: 'text-emerald-400'
+                    titleColor: 'text-sage-400'
                 };
             } else if (table.status === 'paid') {
                 table.status = 'empty';
@@ -867,10 +923,10 @@
                 flashClass = 'quick-empty-success-flash';
                 toastConfig = {
                     title: 'Bàn đã dọn xong & Trống!',
-                    borderColor: 'border-amber-500',
-                    iconBg: 'bg-amber-500',
+                    borderColor: 'border-tys-500',
+                    iconBg: 'bg-tys-500',
                     iconClass: 'fa-solid fa-sparkles',
-                    titleColor: 'text-amber-400'
+                    titleColor: 'text-tys-400'
                 };
             } else {
                 return;
@@ -908,10 +964,10 @@
             const toastMsg = document.getElementById('quickPayToastMessage');
             
             if (config) {
-                toastCard.className = `bg-stone-900 border-2 ${config.borderColor || 'border-emerald-500'} shadow-2xl rounded-2xl p-3 flex items-center justify-between gap-3 text-stone-100 backdrop-blur-lg toast-slide-up`;
-                toastIconBg.className = `w-8 h-8 rounded-xl ${config.iconBg || 'bg-emerald-500'} text-stone-950 font-black flex items-center justify-center shrink-0 shadow`;
+                toastCard.className = `bg-espresso-900 border ${config.borderColor || 'border-sage-600'} shadow-xl rounded-xl p-3 flex items-center justify-between gap-3 text-stone-100 toast-slide-up`;
+                toastIconBg.className = `w-8 h-8 rounded-lg ${config.iconBg || 'bg-sage-600'} text-ink flex items-center justify-center shrink-0`;
                 toastIcon.className = `${config.iconClass || 'fa-solid fa-bolt'} text-sm`;
-                toastTitle.className = `text-xs font-bold ${config.titleColor || 'text-emerald-400'} flex items-center gap-1`;
+                toastTitle.className = `text-xs font-bold ${config.titleColor || 'text-sage-400'} flex items-center gap-1`;
                 toastTitle.innerHTML = config.title || 'Thông báo';
             }
 
@@ -969,35 +1025,31 @@
             if (!container) return;
 
             const data = tablesData[i];
-            let bgStyle = "bg-stone-900/90 border-stone-700 text-stone-300";
+            let bgStyle = "bg-espresso-800/70 border-tys-900 text-stone-500";
             let badgeHTML = "";
             let timerText = "";
-            let coffeeIconHTML = "";
 
             let elapsedMins = 0;
             if (data.startTime && data.status !== 'empty') {
                 elapsedMins = Math.floor((Date.now() - data.startTime) / (1000 * 60));
-                timerText = `<div class="text-xs opacity-80 mt-1 font-medium"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</div>`;
+                timerText = `<div class="text-[10px] opacity-75 mt-1 font-medium tabular-nums"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</div>`;
             }
 
             // Đã scale các kích thước UI con bên trong nút bấm cho hợp lý
             if (data.status === 'unpaid') {
                 if (elapsedMins >= 45) {
-                    bgStyle = "bg-red-700 border-red-400 text-yellow-100 pulse-unpaid-fast shadow-xl shadow-red-600/50";
-                    badgeHTML = `<span class="absolute -top-3.5 -right-3 px-2 py-1 rounded-full text-[11px] font-black bg-stone-900 text-red-400 shadow-lg flex items-center gap-1 border border-red-500/50"><i class="fa-solid fa-triangle-exclamation"></i> >45P</span>`;
-                    coffeeIconHTML = `<span class="absolute -top-3.5 -left-3 w-8 h-8 rounded-full bg-stone-900 text-red-500 flex items-center justify-center text-sm shadow-lg animate-bounce border border-red-400"><i class="fa-solid fa-triangle-exclamation"></i></span>`;
+                    bgStyle = "bg-brick-800 border-brick-accent text-tys-50 pulse-unpaid-fast";
+                    badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-tys-50 text-brick-ink flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Quá 45p</span>`;
                 } else if (elapsedMins >= 30) {
-                    bgStyle = "bg-red-900 border-red-500 text-red-100 pulse-unpaid shadow-lg shadow-red-900/80";
-                    badgeHTML = `<span class="absolute -top-3.5 -right-3 px-2 py-1 rounded-full text-[11px] font-black bg-red-600 text-white shadow-lg border border-red-400">CHƯA TRẢ</span>`;
-                    coffeeIconHTML = `<span class="absolute -top-3.5 -left-3 w-8 h-8 rounded-full bg-amber-500 text-stone-950 flex items-center justify-center text-sm shadow-lg border border-amber-300"><i class="fa-solid fa-mug-hot"></i></span>`;
+                    bgStyle = "bg-brick-900 border-brick-600 text-brick-100 pulse-unpaid";
+                    badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-600 text-tys-50 whitespace-nowrap">Chưa trả</span>`;
                 } else {
-                    bgStyle = "bg-red-950/70 border-red-600/80 text-red-400 backdrop-blur-sm"; 
-                    badgeHTML = `<span class="absolute -top-3.5 -right-3 px-2 py-1 rounded-full text-[11px] font-bold bg-red-800 text-red-200 shadow-lg border border-red-600/50">CHƯA TRẢ</span>`;
-                    coffeeIconHTML = `<span class="absolute -top-3.5 -left-3 w-8 h-8 rounded-full bg-stone-800 text-amber-500 flex items-center justify-center text-sm shadow-lg border border-stone-600"><i class="fa-solid fa-mug-hot"></i></span>`;
+                    bgStyle = "bg-brick-950/70 border-brick-800 text-brick-300 backdrop-blur-sm"; 
+                    badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-800 text-brick-200 whitespace-nowrap">Chưa trả</span>`;
                 }
             } else if (data.status === 'paid') {
-                bgStyle = "bg-emerald-950/95 border-emerald-500 text-emerald-300 shadow-sm shadow-emerald-500/20";
-                badgeHTML = `<span class="absolute -top-3.5 -right-3 px-2 py-1 rounded-full text-[11px] font-bold bg-emerald-700 text-emerald-100 shadow-lg border border-emerald-500/50">ĐÃ TRẢ</span>`;
+                bgStyle = "bg-sage-950/80 border-sage-600 text-sage-200";
+                badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-sage-700 text-sage-50 whitespace-nowrap">Đã trả</span>`;
             }
 
             const isFiltered = (currentFilter === 'all') ||
@@ -1009,11 +1061,10 @@
 
             // Nút bấm từ 68px tăng thành 102px
             container.innerHTML = `
-                <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-3xl border-2 border-solid ${bgStyle} ${opacityClass} flex flex-col items-center justify-center p-1.5 shadow-xl transition-all">
+                <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} flex flex-col items-center justify-center p-1.5 transition-all">
                     ${badgeHTML}
-                    ${coffeeIconHTML}
-                    <span class="text-xl font-extrabold leading-none">B${i}</span>
-                    ${data.total > 0 ? `<span class="text-sm font-bold text-tys-500 leading-none mt-1.5">${data.total}k</span>` : ''}
+                    <span class="text-lg font-bold leading-none">B${i}</span>
+                    ${data.total > 0 ? `<span class="text-sm font-bold text-tys-400 leading-none mt-1.5">${data.total}k</span>` : ''}
                     ${timerText}
                 </button>
             `;
@@ -1041,44 +1092,44 @@
                 if (currentFilter !== 'all' && data.status !== currentFilter) continue;
                 if (query && !(`bàn ${i}`.includes(query) || i.toString() === query || data.note.toLowerCase().includes(query))) continue;
 
-                let statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-stone-800 text-stone-400">Trống</span>`;
+                let statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-espresso-800 text-stone-500">Trống</span>`;
                 const elapsedMins = data.startTime ? Math.floor((Date.now() - data.startTime) / (1000 * 60)) : 0;
 
                 if (data.status === 'unpaid') {
                     if (elapsedMins >= 45) {
-                        statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-600 text-white border border-red-500/80 inline-flex items-center gap-1 animate-pulse shadow shadow-red-500/50"><i class="fa-solid fa-triangle-exclamation text-yellow-300"></i> Cảnh Báo Thu Tiền</span>`;
+                        statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-700 text-tys-50 inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Quá 45 phút</span>`;
                     } else {
-                        statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-500/20 text-red-400 border border-red-500/40 inline-flex items-center gap-1"><i class="fa-solid fa-mug-hot text-amber-400"></i> Chưa Thanh Toán</span>`;
+                        statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-950 text-brick-300 border border-brick-800 inline-flex items-center gap-1">Chưa thanh toán</span>`;
                     }
                 }
-                if (data.status === 'paid') statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">Đã Thanh Toán</span>`;
+                if (data.status === 'paid') statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-sage-950 text-sage-300 border border-sage-700">Đã thanh toán</span>`;
 
                 const card = document.createElement('div');
-                card.className = "bg-stone-900 p-3.5 rounded-xl border border-stone-800 flex flex-col justify-between hover:border-tys-500/50 transition cursor-pointer select-none active:scale-[0.98]";
+                card.className = "bg-espresso-900 p-3.5 rounded-xl border border-tys-900 flex flex-col justify-between hover:border-tys-700 transition cursor-pointer select-none active:scale-[0.98]";
                 
                 card.innerHTML = `
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="font-extrabold text-amber-100 text-base">Bàn ${i}</span>
+                            <span class="font-bold text-tys-100 text-base">Bàn ${i}</span>
                             ${statusBadge}
                         </div>
                         <div class="text-xs text-stone-400 space-y-1">
-                            <div><i class="fa-solid fa-coins text-tys-500 mr-1"></i> Tổng: <b class="text-amber-200">${data.total * 1000}đ</b></div>
+                            <div><i class="fa-solid fa-coins text-tys-500 mr-1"></i> Tổng: <b class="text-tys-200 font-semibold">${data.total * 1000}đ</b></div>
                             ${data.startTime ? `<div><i class="fa-regular fa-clock mr-1"></i> Thời gian ngồi: ${elapsedMins} phút</div>` : ''}
                             ${data.note ? `<div class="italic text-stone-500"><i class="fa-regular fa-note-sticky mr-1"></i> ${data.note}</div>` : ''}
                         </div>
                     </div>
-                    <div class="mt-3 pt-2 border-t border-stone-800 flex items-center justify-between">
+                    <div class="mt-3 pt-2 border-t border-tys-900 flex items-center justify-between">
                         ${data.status === 'unpaid' ? `
-                            <button onclick="event.stopPropagation(); triggerQuickStateTransition(${i}, '1-Chạm');" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] shadow flex items-center gap-1 transition active:scale-95">
+                            <button onclick="event.stopPropagation(); triggerQuickStateTransition(${i}, '1-Chạm');" class="px-2.5 py-1 rounded-lg bg-sage-600 hover:bg-sage-500 text-ink font-bold text-[11px] flex items-center gap-1 transition active:scale-95">
                                 <i class="fa-solid fa-bolt"></i> Quick Pay
                             </button>
                         ` : data.status === 'paid' ? `
-                            <button onclick="event.stopPropagation(); triggerQuickStateTransition(${i}, '1-Chạm');" class="px-2.5 py-1 rounded-lg bg-stone-700 hover:bg-stone-600 text-stone-200 font-bold text-[11px] shadow flex items-center gap-1 transition active:scale-95">
+                            <button onclick="event.stopPropagation(); triggerQuickStateTransition(${i}, '1-Chạm');" class="px-2.5 py-1 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-200 font-bold text-[11px] flex items-center gap-1 transition active:scale-95">
                                 <i class="fa-solid fa-check"></i> Dọn Xong
                             </button>
                         ` : `<span></span>`}
-                        <span class="text-[11px] font-bold text-tys-500 hover:underline">Chi tiết <i class="fa-solid fa-arrow-right text-[10px] ml-0.5"></i></span>
+                        <span class="text-[11px] font-bold text-tys-400 hover:underline">Chi tiết <i class="fa-solid fa-arrow-right text-[10px] ml-0.5"></i></span>
                     </div>
                 `;
                 
@@ -1103,8 +1154,8 @@
         function filterStatus(status) {
             currentFilter = status;
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                if (btn.dataset.filter === status) btn.className = "filter-btn active-filter px-2 py-1 rounded-lg bg-tys-500 text-stone-950 font-bold whitespace-nowrap flex-1 sm:flex-none text-center";
-                else btn.className = "filter-btn px-2 py-1 rounded-lg text-stone-400 hover:bg-stone-800 whitespace-nowrap flex-1 sm:flex-none text-center";
+                if (btn.dataset.filter === status) btn.className = "filter-btn active-filter px-2.5 py-1 rounded-lg bg-tys-500 text-ink font-bold whitespace-nowrap flex-1 sm:flex-none text-center";
+                else btn.className = "filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors";
             });
             renderMap();
             const listView = document.getElementById('listView');
@@ -1121,13 +1172,13 @@
 
             if (mode === 'map') {
                 mapView.classList.remove('hidden'); listView.classList.add('hidden');
-                btnViewMap.className = "p-1.5 sm:p-2 rounded-xl text-xs font-bold bg-tys-500 text-stone-950 shadow";
-                btnViewList.className = "p-1.5 sm:p-2 rounded-xl text-xs font-medium bg-stone-900 text-stone-300 border border-stone-800 hover:bg-stone-800";
+                btnViewMap.className = "p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink";
+                btnViewList.className = "p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors";
                 setTimeout(resetZoomAndFit, 20);
             } else {
                 mapView.classList.add('hidden'); listView.classList.remove('hidden');
-                btnViewList.className = "p-1.5 sm:p-2 rounded-xl text-xs font-bold bg-tys-500 text-stone-950 shadow";
-                btnViewMap.className = "p-1.5 sm:p-2 rounded-xl text-xs font-medium bg-stone-900 text-stone-300 border border-stone-800 hover:bg-stone-800";
+                btnViewList.className = "p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink";
+                btnViewMap.className = "p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors";
                 renderListView();
             }
         }
@@ -1175,11 +1226,11 @@
                 const btn = document.getElementById(map[key]);
                 if (!btn) return;
                 if (key === selectedStatusInModal) {
-                    btn.classList.add('ring-2', 'ring-tys-500', 'bg-stone-800');
-                    btn.classList.remove('bg-stone-900');
+                    btn.classList.add('ring-2', 'ring-tys-500', 'bg-espresso-800');
+                    btn.classList.remove('bg-espresso-950');
                 } else {
-                    btn.classList.remove('ring-2', 'ring-tys-500', 'bg-stone-800');
-                    btn.classList.add('bg-stone-900');
+                    btn.classList.remove('ring-2', 'ring-tys-500', 'bg-espresso-800');
+                    btn.classList.add('bg-espresso-950');
                 }
             });
         }
@@ -1227,7 +1278,7 @@
                         <span class="text-stone-200 font-medium truncate max-w-[200px]">${item.name}</span>
                         <div class="flex items-center gap-2 shrink-0">
                             <span class="font-bold text-tys-500">${item.price}k</span>
-                            <button type="button" onclick="removeModalItem(${idx})" class="text-stone-500 hover:text-red-400 transition px-1"><i class="fa-solid fa-xmark"></i></button>
+                            <button type="button" onclick="removeModalItem(${idx})" class="text-stone-500 hover:text-brick-400 transition px-1"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                     `;
                     container.appendChild(row);
@@ -1302,10 +1353,10 @@
             if (!sourceData || (sourceData.status === 'empty' && sourceData.items.length === 0)) {
                 showQuickPayToast(sourceTableId, `Bàn ${sourceTableId} đang trống, không có dữ liệu để chuyển/gộp.`, {
                     title: 'Lưu ý',
-                    borderColor: 'border-amber-500',
-                    iconBg: 'bg-amber-500',
+                    borderColor: 'border-tys-500',
+                    iconBg: 'bg-tys-500',
                     iconClass: 'fa-solid fa-circle-info',
-                    titleColor: 'text-amber-400'
+                    titleColor: 'text-tys-400'
                 });
                 return;
             }
@@ -1349,15 +1400,15 @@
             const badge = document.getElementById('transferActionBadge');
 
             if (mode === 'transfer') {
-                btnTransfer.className = "p-2.5 rounded-xl border border-amber-500 bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
-                btnMerge.className = "p-2.5 rounded-xl border border-stone-800 bg-stone-900 text-stone-400 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
+                btnTransfer.className = "p-2.5 rounded-xl border border-tys-600 bg-tys-900/40 text-tys-300 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
+                btnMerge.className = "p-2.5 rounded-xl border border-tys-900 bg-espresso-950 text-stone-400 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
                 badge.innerText = "Chuyển bàn";
-                badge.className = "px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[9px]";
+                badge.className = "px-2 py-0.5 rounded bg-tys-900/60 text-tys-300 border border-tys-800 text-[9px]";
             } else {
-                btnMerge.className = "p-2.5 rounded-xl border border-amber-500 bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
-                btnTransfer.className = "p-2.5 rounded-xl border border-stone-800 bg-stone-900 text-stone-400 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
+                btnMerge.className = "p-2.5 rounded-xl border border-tys-600 bg-tys-900/40 text-tys-300 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
+                btnTransfer.className = "p-2.5 rounded-xl border border-tys-900 bg-espresso-950 text-stone-400 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
                 badge.innerText = "Gộp bàn";
-                badge.className = "px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 border border-purple-500/30 text-[9px]";
+                badge.className = "px-2 py-0.5 rounded bg-purple-900/40 text-purple-300 border border-purple-800 text-[9px]";
             }
 
             updateTransferPreview();
@@ -1378,7 +1429,7 @@
 
             if (transferMode === 'transfer') {
                 previewBox.innerHTML = `
-                    <div class="flex items-center justify-between text-amber-200 font-semibold">
+                    <div class="flex items-center justify-between text-tys-200 font-semibold">
                         <span>Nguồn: Bàn ${transferSourceId} (${source.total}k)</span>
                         <i class="fa-solid fa-arrow-right text-stone-500"></i>
                         <span>Đích: Bàn ${targetId}</span>
@@ -1393,12 +1444,12 @@
                 const combinedItemsCount = (source.items ? source.items.length : 0) + (target.items ? target.items.length : 0);
 
                 previewBox.innerHTML = `
-                    <div class="flex items-center justify-between text-purple-300 font-semibold">
+                    <div class="flex items-center justify-between text-purple-400 font-semibold">
                         <span>Bàn ${transferSourceId} (${source.total}k) + Bàn ${targetId} (${target.total}k)</span>
                         <i class="fa-solid fa-plus text-stone-500"></i>
                     </div>
                     <div class="text-[11px] text-stone-300 font-bold mt-1">
-                        ➔ Tổng sau khi gộp Bàn ${targetId}: <span class="text-amber-400">${combinedTotal}k</span> (${combinedItemsCount} món)
+                        ➔ Tổng sau khi gộp Bàn ${targetId}: <span class="text-tys-400">${combinedTotal}k</span> (${combinedItemsCount} món)
                     </div>
                     <div class="text-[10px] text-stone-400">
                         • <b>Bàn ${transferSourceId}</b> sẽ trống sau khi gộp.<br>
@@ -1460,10 +1511,10 @@
 
                 showQuickPayToast(targetId, `Đã chuyển thành công từ <b>Bàn ${srcId}</b> sang <b>Bàn ${targetId}</b>!`, {
                     title: 'Chuyển bàn thành công!',
-                    borderColor: 'border-amber-500',
-                    iconBg: 'bg-amber-500',
+                    borderColor: 'border-tys-500',
+                    iconBg: 'bg-tys-500',
                     iconClass: 'fa-solid fa-right-left',
-                    titleColor: 'text-amber-400'
+                    titleColor: 'text-tys-400'
                 });
 
             } else {
@@ -1507,10 +1558,10 @@
 
                 showQuickPayToast(targetId, `Đã gộp thành công <b>Bàn ${srcId}</b> vào <b>Bàn ${targetId}</b> (Tổng: ${mergedTotal}k)!`, {
                     title: 'Gộp bàn thành công!',
-                    borderColor: 'border-purple-500',
-                    iconBg: 'bg-purple-500',
+                    borderColor: 'border-purple-700',
+                    iconBg: 'bg-purple-700',
                     iconClass: 'fa-solid fa-object-group',
-                    titleColor: 'text-purple-400'
+                    titleColor: 'text-purple-500'
                 });
             }
 
