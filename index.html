@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <!-- KHẮC PHỤC DYNAMIC ISLAND IPHONE: Bắt buộc phải có 2 thẻ meta này để iOS áp dụng vùng an toàn (safe-area) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <title>TYS COFFEE - THANH TOÁN</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -96,16 +101,10 @@
             letter-spacing: -0.01em;
         }
 
-        /* Chống logo/header bị tai thỏ, thanh trạng thái hoặc thanh điều hướng của điện thoại che mất
-           khi mở toàn màn hình / cài như app (PWA). Không ảnh hưởng gì khi mở trong trình duyệt thường
-           vì env(safe-area-inset-top) sẽ bằng 0. */
-        #mastheadBar {
-            padding-top: calc(0.5rem + env(safe-area-inset-top, 0px));
-        }
-        @media (min-width: 640px) {
-            #mastheadBar {
-                padding-top: calc(0.625rem + env(safe-area-inset-top, 0px));
-            }
+        /* KHẮC PHỤC IPHONE 15 DYNAMIC ISLAND: 
+           Áp dụng vùng an toàn trực tiếp vào header tổng để đẩy toàn bộ UI xuống dưới camera/đảo động */
+        #mainHeader {
+            padding-top: env(safe-area-inset-top);
         }
 
         .brand-serif {
@@ -239,8 +238,7 @@
 
     <header id="mainHeader" class="bg-espresso-900 shrink-0 z-40">
 
-        <!-- MASTHEAD: logo + tên thương hiệu + badge + đồng hồ — thương hiệu độc lập, canh giữa,
-             tách khỏi thanh công cụ bên dưới bằng viền mảnh cho sang trọng -->
+        <!-- MASTHEAD: logo + tên thương hiệu + badge + đồng hồ -->
         <div id="mastheadBar" class="border-b border-tys-800/60 px-2 sm:px-4 py-2 sm:py-2.5">
             <div class="max-w-[1700px] mx-auto flex items-center justify-center">
                 <div class="flex items-center space-x-2.5 sm:space-x-3">
@@ -265,7 +263,6 @@
             <div class="max-w-[1700px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
 
                 <!-- Dashboard Stats -->
-                <!-- Mobile: ẩn khối này vì số liệu đã gộp vào các chip lọc ở thanh thao tác đáy màn hình -->
                 <div class="hidden sm:flex flex-1 items-center justify-between lg:justify-start gap-1 sm:gap-2 bg-espresso-950/70 p-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl border border-tys-900">
                     <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md text-stone-300 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
                         <span class="text-[9px] sm:text-[11px] text-stone-500">Tổng</span>
@@ -285,11 +282,8 @@
                     </div>
                 </div>
 
-                <!-- BOTTOM ROW MOBILE / RIGHT SECTION DESKTOP: Filters & Actions -->
-                <!-- Mobile: ẩn hàng này, thay bằng #mobileActionBar cố định đáy màn hình (dễ bấm 1 tay hơn) -->
+                <!-- RIGHT SECTION DESKTOP: Filters & Actions -->
                 <div class="hidden sm:flex items-center justify-between w-full lg:w-auto gap-1.5 shrink-0">
-                    
-                    <!-- Filter Buttons -->
                     <div class="flex items-center gap-0.5 bg-espresso-950/70 p-1 rounded-xl border border-tys-900 text-[11px] overflow-x-auto w-full sm:w-auto">
                         <button onclick="filterStatus('all')" class="filter-btn active-filter px-2.5 py-1 rounded-lg bg-tys-500 text-ink font-bold whitespace-nowrap flex-1 sm:flex-none text-center" data-filter="all">Tất cả</button>
                         <button onclick="filterStatus('unpaid')" class="filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:text-brick-300 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors" data-filter="unpaid">
@@ -300,7 +294,6 @@
                         </button>
                     </div>
 
-                    <!-- Action View Buttons -->
                     <div class="flex items-center gap-1 shrink-0">
                         <button onclick="toggleView('map')" id="btnViewMap" class="p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink" title="Xem Sơ Đồ">
                             <i class="fa-solid fa-diagram-project w-4 h-4 flex items-center justify-center"></i>
@@ -315,13 +308,12 @@
                             <i class="fa-solid fa-rotate-right w-4 h-4 flex items-center justify-center"></i>
                         </button>
                     </div>
-
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- MOBILE BOTTOM ACTION BAR — chỉ hiển thị < sm (điện thoại), PC/tablet không đổi -->
+    <!-- MOBILE BOTTOM ACTION BAR -->
     <nav id="mobileActionBar" class="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-espresso-900/95 backdrop-blur border-t border-tys-900 px-2 pt-1.5 pb-[calc(0.375rem+env(safe-area-inset-bottom))] flex items-center gap-1.5 shadow-[0_-4px_16px_rgba(26,21,16,0.18)]">
         <button onclick="filterStatus('all')" data-filter="all" class="filter-btn-mobile active-filter-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl bg-tys-500 text-ink font-bold transition-colors">
             <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterAllCountMobile">29</span>
@@ -336,16 +328,16 @@
             <span class="text-[9px] font-bold uppercase tracking-wide leading-none">Đã trả</span>
         </button>
         <div class="w-px h-8 bg-tys-900 shrink-0"></div>
-        <button onclick="toggleViewMobile()" id="btnToggleViewMobile" class="shrink-0 w-11 h-11 rounded-xl bg-espresso-950/70 border border-tys-900 text-tys-300 flex items-center justify-center active:scale-90 transition" title="Chuyển đổi Sơ đồ / Danh sách" aria-label="Chuyển đổi chế độ xem">
+        <button onclick="toggleViewMobile()" id="btnToggleViewMobile" class="shrink-0 w-11 h-11 rounded-xl bg-espresso-950/70 border border-tys-900 text-tys-300 flex items-center justify-center active:scale-90 transition" title="Chuyển đổi Sơ đồ / Danh sách">
             <i class="fa-solid fa-list-ul text-sm"></i>
         </button>
-        <button onclick="openResetModal()" class="shrink-0 w-11 h-11 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-500 flex items-center justify-center active:scale-90 transition" title="Đặt lại dữ liệu" aria-label="Đặt lại dữ liệu">
+        <button onclick="openResetModal()" class="shrink-0 w-11 h-11 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-500 flex items-center justify-center active:scale-90 transition" title="Đặt lại dữ liệu">
             <i class="fa-solid fa-ellipsis text-sm"></i>
         </button>
     </nav>
 
-    <!-- FAB "Về giữa" — chỉ hiển thị < sm và khi đang ở chế độ Sơ đồ -->
-    <button onclick="resetZoomAndFit()" id="fabRecenter" class="sm:hidden fixed right-3 bottom-[84px] z-40 w-12 h-12 rounded-full bg-tys-500 text-ink shadow-lg shadow-tys-900/40 border border-tys-600 flex items-center justify-center active:scale-90 transition" title="Về giữa - Hiện toàn bộ sơ đồ" aria-label="Về giữa">
+    <!-- FAB "Về giữa" -->
+    <button onclick="resetZoomAndFit()" id="fabRecenter" class="sm:hidden fixed right-3 bottom-[84px] z-40 w-12 h-12 rounded-full bg-tys-500 text-ink shadow-lg shadow-tys-900/40 border border-tys-600 flex items-center justify-center active:scale-90 transition" title="Về giữa">
         <i class="fa-solid fa-expand text-base"></i>
     </button>
 
@@ -357,12 +349,11 @@
                     <!-- Background pattern scaled up 1.5x -->
                     <div class="absolute inset-0 bg-[radial-gradient(#c9bfae_1.5px,transparent_1.5px)] [background-size:42px_42px] opacity-30 rounded-2xl pointer-events-none"></div>
 
-                    <!-- Kích thước map 1.5x: 2100x1350 (Từ 1400x900) -->
+                    <!-- Kích thước map 1.5x -->
                     <div id="mapWrapper" class="absolute w-[2100px] h-[1350px] left-0 top-0">
-                        <!-- Viền khung bảo vệ toàn bộ sơ đồ -->
                         <div class="absolute inset-4 rounded-[32px] border border-tys-900 pointer-events-none"></div>
                         
-                        <!-- Các mảng khối kiến trúc đã nhân 1.5 tọa độ & kích thước -->
+                        <!-- Các mảng khối kiến trúc -->
                         <div class="absolute top-[45px] left-[450px] w-[285px] h-[360px] rounded-[20px] border border-stone-700/70 bg-espresso-900/40 flex flex-col items-center justify-start pt-3"></div>
                         <div class="absolute top-[45px] left-[750px] w-[960px] h-[390px] border border-stone-700/70 bg-espresso-900/30 rounded-[20px] flex items-center justify-center">
                             <div class="text-center opacity-50">
@@ -382,7 +373,7 @@
                             <span class="text-[12px] font-semibold text-stone-600 uppercase -rotate-90 tracking-[0.2em]">Lối đi chính</span>
                         </div>
 
-                        <!-- Cây xanh (scaled size) -->
+                        <!-- Cây xanh -->
                         <div class="absolute top-[330px] left-[195px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
                         <div class="absolute top-[720px] left-[195px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
                         <div class="absolute top-[1020px] left-[255px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
@@ -392,7 +383,7 @@
                         <div class="absolute top-[1275px] left-[360px] w-[390px] h-[36px] border border-stone-700/70 bg-espresso-800/80 rounded-lg flex items-center justify-center"></div>
                         <div class="absolute top-[1275px] left-[1110px] w-[630px] h-[36px] border border-stone-700/70 bg-espresso-800/80 rounded-lg flex items-center justify-center"></div>
 
-                        <!-- Table Nodes (Tọa độ x1.5) -->
+                        <!-- Table Nodes -->
                         <div class="absolute top-[90px] left-[90px]" id="table-node-1"></div>
                         <div class="absolute top-[60px] left-[240px]" id="table-node-2"></div>
                         <div class="absolute top-[180px] left-[240px]" id="table-node-3"></div>
@@ -548,12 +539,10 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     <div>
                         <label class="block font-semibold text-stone-500 text-[10px] uppercase mb-1">Thanh toán bằng</label>
-                        <!-- PC/tablet (sm trở lên): dropdown như cũ -->
                         <select id="paymentMethodSelect" onchange="syncPaymentMethodButtons()" class="hidden sm:block w-full bg-espresso-950 border border-tys-900 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-600">
                             <option value="Tiền mặt">Tiền mặt</option>
                             <option value="Chuyển khoản QR">Chuyển khoản VietQR</option>
                         </select>
-                        <!-- Mobile: 2 nút to, bấm 1 lần thay vì mở dropdown -->
                         <div class="sm:hidden grid grid-cols-2 gap-1.5">
                             <button type="button" id="btnPayCash" onclick="setPaymentMethodMobile('Tiền mặt')" class="payment-btn-mobile py-2 rounded-lg border text-[11px] font-bold flex items-center justify-center gap-1 transition active:scale-95">
                                 <span>💵</span> Tiền mặt
@@ -674,7 +663,6 @@
         let activeTableId = null;
         let currentFilter = 'all';
 
-        // Cập nhật Base Width và Height mới (scale 1.5x)
         const MAP_BASE_WIDTH = 2100;
         const MAP_BASE_HEIGHT = 1350;
         let scale = 1.0;
@@ -1089,7 +1077,6 @@
                 timerText = `<div class="text-xs sm:text-[10px] opacity-75 mt-1 font-semibold tabular-nums"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</div>`;
             }
 
-            // Đã scale các kích thước UI con bên trong nút bấm cho hợp lý
             if (data.status === 'unpaid') {
                 if (elapsedMins >= 45) {
                     bgStyle = "bg-brick-800 border-brick-accent text-tys-50 pulse-unpaid-fast";
@@ -1117,7 +1104,6 @@
 
             const opacityClass = isFiltered ? "opacity-100 scale-100" : "opacity-20 scale-90 pointer-events-none";
 
-            // Nút bấm từ 68px tăng thành 102px
             container.innerHTML = `
                 <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} flex flex-col items-center justify-center p-1.5 transition-all">
                     ${badgeHTML}
@@ -1145,10 +1131,6 @@
             
             const fragment = document.createDocumentFragment();
 
-            // Gom các bàn thoả điều kiện lọc/tìm kiếm, rồi sắp xếp theo mức độ khẩn cấp:
-            // 1) Chưa trả — bàn ngồi lâu nhất (dễ quên thu tiền nhất) lên đầu, bàn mới ngồi xuống dưới
-            // 2) Đã trả — bàn vừa thanh toán gần đây nhất lên trước
-            // 3) Trống — xếp cuối theo số thứ tự
             let visibleTables = [];
             for (let i = 1; i <= TOTAL_TABLES; i++) {
                 const data = tablesData[i];
@@ -1228,7 +1210,6 @@
             document.getElementById('unpaidCount').innerText = unpaid;
             document.getElementById('paidCount').innerText = paid;
 
-            // Đồng bộ số liệu vào các chip lọc của thanh thao tác đáy màn hình (mobile)
             const totalMobileEl = document.getElementById('filterAllCountMobile');
             const unpaidMobileEl = document.getElementById('filterUnpaidCountMobile');
             const paidMobileEl = document.getElementById('filterPaidCountMobile');
@@ -1243,7 +1224,6 @@
                 if (btn.dataset.filter === status) btn.className = "filter-btn active-filter px-2.5 py-1 rounded-lg bg-tys-500 text-ink font-bold whitespace-nowrap flex-1 sm:flex-none text-center";
                 else btn.className = "filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors";
             });
-            // Đồng bộ trạng thái active cho các chip lọc trên thanh thao tác đáy màn hình (mobile)
             document.querySelectorAll('.filter-btn-mobile').forEach(btn => {
                 const f = btn.dataset.filter;
                 const isActive = f === status;
@@ -1277,7 +1257,6 @@
                 mapView.classList.remove('hidden'); listView.classList.add('hidden');
                 btnViewMap.className = "p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink";
                 btnViewList.className = "p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors";
-                // Icon nút mobile hiển thị lối "chuyển sang Danh sách"; FAB Về giữa chỉ có ý nghĩa khi đang xem Sơ đồ
                 if (btnToggleMobile) btnToggleMobile.innerHTML = '<i class="fa-solid fa-list-ul text-sm"></i>';
                 if (fab) fab.classList.remove('hidden');
                 setTimeout(resetZoomAndFit, 20);
@@ -1285,7 +1264,6 @@
                 mapView.classList.add('hidden'); listView.classList.remove('hidden');
                 btnViewList.className = "p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink";
                 btnViewMap.className = "p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors";
-                // Icon nút mobile hiển thị lối "chuyển sang Sơ đồ"; ẩn FAB vì không còn map để căn giữa
                 if (btnToggleMobile) btnToggleMobile.innerHTML = '<i class="fa-solid fa-diagram-project text-sm"></i>';
                 if (fab) fab.classList.add('hidden');
                 renderListView();
@@ -1331,8 +1309,6 @@
             activeTableId = null;
         }
 
-        // 2 nút chọn phương thức thanh toán trên mobile (thay cho dropdown) —
-        // dùng chung 1 nguồn dữ liệu là #paymentMethodSelect để không phải sửa saveModalChanges()
         function setPaymentMethodMobile(value) {
             const select = document.getElementById('paymentMethodSelect');
             if (select) select.value = value;
