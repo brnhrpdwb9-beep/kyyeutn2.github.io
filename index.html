@@ -2,8 +2,8 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TYS CAFFEE - THANH TOÁN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>TYS COFFEE - THANH TOÁN</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -94,6 +94,18 @@
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
             letter-spacing: -0.01em;
+        }
+
+        /* Chống logo/header bị tai thỏ, thanh trạng thái hoặc thanh điều hướng của điện thoại che mất
+           khi mở toàn màn hình / cài như app (PWA). Không ảnh hưởng gì khi mở trong trình duyệt thường
+           vì env(safe-area-inset-top) sẽ bằng 0. */
+        #mastheadBar {
+            padding-top: calc(0.5rem + env(safe-area-inset-top, 0px));
+        }
+        @media (min-width: 640px) {
+            #mastheadBar {
+                padding-top: calc(0.625rem + env(safe-area-inset-top, 0px));
+            }
         }
 
         .brand-serif {
@@ -225,34 +237,36 @@
 </head>
 <body class="h-screen flex flex-col font-sans antialiased overflow-hidden bg-espresso-950">
 
-    <header class="bg-espresso-900 border-b border-tys-800/60 shrink-0 px-2 sm:px-4 py-2 sm:py-2.5 z-40">
-        <div class="max-w-[1700px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
-            
-            <!-- TOP ROW MOBILE: Logo + Stretched Stats Bar -->
-            <div class="flex flex-row items-center w-full lg:flex-1 gap-2 sm:gap-4">
-                
-                <!-- Logo & Title -->
-                <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
-                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-espresso-950 p-1 flex items-center justify-center border border-tys-800 overflow-hidden shrink-0">
+    <header id="mainHeader" class="bg-espresso-900 shrink-0 z-40">
+
+        <!-- MASTHEAD: logo + tên thương hiệu + badge + đồng hồ — thương hiệu độc lập, canh giữa,
+             tách khỏi thanh công cụ bên dưới bằng viền mảnh cho sang trọng -->
+        <div id="mastheadBar" class="border-b border-tys-800/60 px-2 sm:px-4 py-2 sm:py-2.5">
+            <div class="max-w-[1700px] mx-auto flex items-center justify-center">
+                <div class="flex items-center space-x-2.5 sm:space-x-3">
+                    <div class="w-12 h-12 rounded-xl bg-espresso-950 p-1.5 flex items-center justify-center border border-tys-700 shadow-sm shadow-tys-900/10 overflow-hidden shrink-0">
                         <img src="logo.png" 
-                             alt="TYS Cafe Logo" 
+                             alt="TYS Coffee Logo" 
                              class="w-full h-full object-contain rounded-md" 
                              onerror="if(this.src.endsWith('logo.png')){this.src='logo.jpg';}else if(this.src.endsWith('logo.jpg')){this.src='logo.webp';}else{this.onerror=null;this.src='https://placehold.co/150x150/f7f5f0/2e2013?text=TYS';}">
                     </div>
                     <div>
-                        <h1 class="brand-serif font-semibold text-[15px] sm:text-xl tracking-tight leading-none text-tys-100 flex items-center gap-2">
-                            TYS Cafe
-                            <span class="hidden sm:inline-flex text-[9px] font-sans font-bold px-1.5 py-0.5 rounded-full bg-tys-800/60 text-tys-200 uppercase tracking-wider items-center gap-1">
-                                Quick Pay
-                            </span>
+                        <h1 class="brand-serif font-semibold text-base sm:text-xl tracking-tight leading-none text-tys-100">
+                            TYS COFFEE
                         </h1>
-                        <p class="text-[9px] sm:text-[11px] text-stone-400 mt-0.5 sm:mt-1 font-medium tabular-nums" id="liveClock">--:--:--</p>
+                        <p class="text-[10px] sm:text-[11px] text-stone-400 mt-0.5 sm:mt-1 font-medium tabular-nums" id="liveClock">--:--:--</p>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Dashboard Stats (Stretched to fill remaining width up to right edge) -->
+        <!-- TOOLBAR: số liệu + bộ lọc + nút thao tác -->
+        <div class="px-2 sm:px-4 py-2 sm:py-2.5">
+            <div class="max-w-[1700px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
+
+                <!-- Dashboard Stats -->
                 <!-- Mobile: ẩn khối này vì số liệu đã gộp vào các chip lọc ở thanh thao tác đáy màn hình -->
-                <div class="hidden sm:flex flex-1 items-center justify-between lg:justify-end gap-1 sm:gap-2 bg-espresso-950/70 p-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl border border-tys-900">
+                <div class="hidden sm:flex flex-1 items-center justify-between lg:justify-start gap-1 sm:gap-2 bg-espresso-950/70 p-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl border border-tys-900">
                     <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md text-stone-300 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
                         <span class="text-[9px] sm:text-[11px] text-stone-500">Tổng</span>
                         <strong id="totalTablesCount" class="text-xs sm:text-sm font-bold text-stone-100">29</strong>
@@ -271,39 +285,38 @@
                     </div>
                 </div>
 
-            </div>
+                <!-- BOTTOM ROW MOBILE / RIGHT SECTION DESKTOP: Filters & Actions -->
+                <!-- Mobile: ẩn hàng này, thay bằng #mobileActionBar cố định đáy màn hình (dễ bấm 1 tay hơn) -->
+                <div class="hidden sm:flex items-center justify-between w-full lg:w-auto gap-1.5 shrink-0">
+                    
+                    <!-- Filter Buttons -->
+                    <div class="flex items-center gap-0.5 bg-espresso-950/70 p-1 rounded-xl border border-tys-900 text-[11px] overflow-x-auto w-full sm:w-auto">
+                        <button onclick="filterStatus('all')" class="filter-btn active-filter px-2.5 py-1 rounded-lg bg-tys-500 text-ink font-bold whitespace-nowrap flex-1 sm:flex-none text-center" data-filter="all">Tất cả</button>
+                        <button onclick="filterStatus('unpaid')" class="filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:text-brick-300 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors" data-filter="unpaid">
+                            <i class="fa-solid fa-circle text-[6px] text-brick-400 mr-1"></i>Cần thu
+                        </button>
+                        <button onclick="filterStatus('paid')" class="filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:text-sage-300 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors" data-filter="paid">
+                            <i class="fa-solid fa-circle text-[6px] text-sage-400 mr-1"></i>Đã trả
+                        </button>
+                    </div>
 
-            <!-- BOTTOM ROW MOBILE / RIGHT SECTION DESKTOP: Filters & Actions -->
-            <!-- Mobile: ẩn hàng này, thay bằng #mobileActionBar cố định đáy màn hình (dễ bấm 1 tay hơn) -->
-            <div class="hidden sm:flex items-center justify-between w-full lg:w-auto gap-1.5 shrink-0">
-                
-                <!-- Filter Buttons -->
-                <div class="flex items-center gap-0.5 bg-espresso-950/70 p-1 rounded-xl border border-tys-900 text-[11px] overflow-x-auto w-full sm:w-auto">
-                    <button onclick="filterStatus('all')" class="filter-btn active-filter px-2.5 py-1 rounded-lg bg-tys-500 text-ink font-bold whitespace-nowrap flex-1 sm:flex-none text-center" data-filter="all">Tất cả</button>
-                    <button onclick="filterStatus('unpaid')" class="filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:text-brick-300 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors" data-filter="unpaid">
-                        <i class="fa-solid fa-circle text-[6px] text-brick-400 mr-1"></i>Cần thu
-                    </button>
-                    <button onclick="filterStatus('paid')" class="filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:text-sage-300 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors" data-filter="paid">
-                        <i class="fa-solid fa-circle text-[6px] text-sage-400 mr-1"></i>Đã trả
-                    </button>
+                    <!-- Action View Buttons -->
+                    <div class="flex items-center gap-1 shrink-0">
+                        <button onclick="toggleView('map')" id="btnViewMap" class="p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink" title="Xem Sơ Đồ">
+                            <i class="fa-solid fa-diagram-project w-4 h-4 flex items-center justify-center"></i>
+                        </button>
+                        <button onclick="resetZoomAndFit()" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-tys-300 border border-tys-900 hover:bg-espresso-800 transition-colors" title="Hiện toàn bộ sơ đồ">
+                            <i class="fa-solid fa-expand w-4 h-4 flex items-center justify-center"></i>
+                        </button>
+                        <button onclick="toggleView('list')" id="btnViewList" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors" title="Xem Danh Sách">
+                            <i class="fa-solid fa-list-ul w-4 h-4 flex items-center justify-center"></i>
+                        </button>
+                        <button onclick="openResetModal()" title="Đặt lại dữ liệu" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-500 hover:text-brick-300 border border-tys-900 hover:bg-espresso-800 transition-colors">
+                            <i class="fa-solid fa-rotate-right w-4 h-4 flex items-center justify-center"></i>
+                        </button>
+                    </div>
+
                 </div>
-
-                <!-- Action View Buttons -->
-                <div class="flex items-center gap-1 shrink-0">
-                    <button onclick="toggleView('map')" id="btnViewMap" class="p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink" title="Xem Sơ Đồ">
-                        <i class="fa-solid fa-diagram-project w-4 h-4 flex items-center justify-center"></i>
-                    </button>
-                    <button onclick="resetZoomAndFit()" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-tys-300 border border-tys-900 hover:bg-espresso-800 transition-colors" title="Hiện toàn bộ sơ đồ">
-                        <i class="fa-solid fa-expand w-4 h-4 flex items-center justify-center"></i>
-                    </button>
-                    <button onclick="toggleView('list')" id="btnViewList" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors" title="Xem Danh Sách">
-                        <i class="fa-solid fa-list-ul w-4 h-4 flex items-center justify-center"></i>
-                    </button>
-                    <button onclick="openResetModal()" title="Đặt lại dữ liệu" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-500 hover:text-brick-300 border border-tys-900 hover:bg-espresso-800 transition-colors">
-                        <i class="fa-solid fa-rotate-right w-4 h-4 flex items-center justify-center"></i>
-                    </button>
-                </div>
-
             </div>
         </div>
     </header>
