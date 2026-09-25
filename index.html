@@ -251,7 +251,8 @@
                 </div>
 
                 <!-- Dashboard Stats (Stretched to fill remaining width up to right edge) -->
-                <div class="flex-1 flex items-center justify-between lg:justify-end gap-1 sm:gap-2 bg-espresso-950/70 p-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl border border-tys-900">
+                <!-- Mobile: ẩn khối này vì số liệu đã gộp vào các chip lọc ở thanh thao tác đáy màn hình -->
+                <div class="hidden sm:flex flex-1 items-center justify-between lg:justify-end gap-1 sm:gap-2 bg-espresso-950/70 p-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl border border-tys-900">
                     <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md text-stone-300 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
                         <span class="text-[9px] sm:text-[11px] text-stone-500">Tổng</span>
                         <strong id="totalTablesCount" class="text-xs sm:text-sm font-bold text-stone-100">29</strong>
@@ -273,7 +274,8 @@
             </div>
 
             <!-- BOTTOM ROW MOBILE / RIGHT SECTION DESKTOP: Filters & Actions -->
-            <div class="flex items-center justify-between w-full lg:w-auto gap-1.5 shrink-0">
+            <!-- Mobile: ẩn hàng này, thay bằng #mobileActionBar cố định đáy màn hình (dễ bấm 1 tay hơn) -->
+            <div class="hidden sm:flex items-center justify-between w-full lg:w-auto gap-1.5 shrink-0">
                 
                 <!-- Filter Buttons -->
                 <div class="flex items-center gap-0.5 bg-espresso-950/70 p-1 rounded-xl border border-tys-900 text-[11px] overflow-x-auto w-full sm:w-auto">
@@ -306,7 +308,35 @@
         </div>
     </header>
 
-    <main class="flex-1 p-1.5 sm:p-2 md:p-3 overflow-hidden flex flex-col justify-center items-center relative">
+    <!-- MOBILE BOTTOM ACTION BAR — chỉ hiển thị < sm (điện thoại), PC/tablet không đổi -->
+    <nav id="mobileActionBar" class="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-espresso-900/95 backdrop-blur border-t border-tys-900 px-2 pt-1.5 pb-[calc(0.375rem+env(safe-area-inset-bottom))] flex items-center gap-1.5 shadow-[0_-4px_16px_rgba(26,21,16,0.18)]">
+        <button onclick="filterStatus('all')" data-filter="all" class="filter-btn-mobile active-filter-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl bg-tys-500 text-ink font-bold transition-colors">
+            <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterAllCountMobile">29</span>
+            <span class="text-[9px] font-bold uppercase tracking-wide leading-none">Tất cả</span>
+        </button>
+        <button onclick="filterStatus('unpaid')" data-filter="unpaid" class="filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-brick-300 bg-espresso-950/70 border border-brick-900/40 transition-colors">
+            <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterUnpaidCountMobile">0</span>
+            <span class="text-[9px] font-bold uppercase tracking-wide leading-none">Cần thu</span>
+        </button>
+        <button onclick="filterStatus('paid')" data-filter="paid" class="filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-sage-300 bg-espresso-950/70 border border-sage-900/40 transition-colors">
+            <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterPaidCountMobile">0</span>
+            <span class="text-[9px] font-bold uppercase tracking-wide leading-none">Đã trả</span>
+        </button>
+        <div class="w-px h-8 bg-tys-900 shrink-0"></div>
+        <button onclick="toggleViewMobile()" id="btnToggleViewMobile" class="shrink-0 w-11 h-11 rounded-xl bg-espresso-950/70 border border-tys-900 text-tys-300 flex items-center justify-center active:scale-90 transition" title="Chuyển đổi Sơ đồ / Danh sách" aria-label="Chuyển đổi chế độ xem">
+            <i class="fa-solid fa-list-ul text-sm"></i>
+        </button>
+        <button onclick="openResetModal()" class="shrink-0 w-11 h-11 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-500 flex items-center justify-center active:scale-90 transition" title="Đặt lại dữ liệu" aria-label="Đặt lại dữ liệu">
+            <i class="fa-solid fa-ellipsis text-sm"></i>
+        </button>
+    </nav>
+
+    <!-- FAB "Về giữa" — chỉ hiển thị < sm và khi đang ở chế độ Sơ đồ -->
+    <button onclick="resetZoomAndFit()" id="fabRecenter" class="sm:hidden fixed right-3 bottom-[84px] z-40 w-12 h-12 rounded-full bg-tys-500 text-ink shadow-lg shadow-tys-900/40 border border-tys-600 flex items-center justify-center active:scale-90 transition" title="Về giữa - Hiện toàn bộ sơ đồ" aria-label="Về giữa">
+        <i class="fa-solid fa-expand text-base"></i>
+    </button>
+
+    <main class="flex-1 p-1.5 sm:p-2 md:p-3 pb-24 sm:pb-2 md:pb-3 overflow-hidden flex flex-col justify-center items-center relative">
         <div class="w-full h-full max-w-[1800px] flex items-center justify-center relative">
             
             <div id="mapView" class="w-full h-full flex items-center justify-center relative overflow-hidden">
@@ -408,7 +438,7 @@
         </div>
     </main>
 
-    <div id="quickPayToast" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 hidden max-w-sm w-[92%] sm:w-auto">
+    <div id="quickPayToast" class="fixed bottom-24 sm:bottom-4 left-1/2 -translate-x-1/2 z-50 hidden max-w-sm w-[92%] sm:w-auto">
         <div id="quickPayToastCard" class="bg-espresso-900 border border-sage-600 shadow-xl rounded-xl p-3 flex items-center justify-between gap-3 text-stone-100 toast-slide-up">
             <div class="flex items-center gap-2.5">
                 <div id="quickPayToastIconBg" class="w-8 h-8 rounded-lg bg-sage-600 text-ink flex items-center justify-center shrink-0">
@@ -474,7 +504,7 @@
                         <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wide flex items-center gap-1">
                             <i class="fa-solid fa-mug-hot text-tys-500"></i> Chọn món nhanh
                         </span>
-                        <span class="text-xs font-bold text-tys-400" id="totalAmountDisplay">Tổng: 0đ</span>
+                        <span class="text-sm sm:text-xs font-bold text-tys-400" id="totalAmountDisplay">Tổng: 0đ</span>
                     </div>
 
                     <div class="flex items-center gap-2">
@@ -502,13 +532,23 @@
                     <div id="modalOrderList" class="min-h-[45px] max-h-[100px] overflow-y-auto space-y-1 text-xs bg-espresso-950 p-1.5 rounded-lg border border-tys-900"></div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     <div>
                         <label class="block font-semibold text-stone-500 text-[10px] uppercase mb-1">Thanh toán bằng</label>
-                        <select id="paymentMethodSelect" class="w-full bg-espresso-950 border border-tys-900 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-600">
+                        <!-- PC/tablet (sm trở lên): dropdown như cũ -->
+                        <select id="paymentMethodSelect" onchange="syncPaymentMethodButtons()" class="hidden sm:block w-full bg-espresso-950 border border-tys-900 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-600">
                             <option value="Tiền mặt">Tiền mặt</option>
                             <option value="Chuyển khoản QR">Chuyển khoản VietQR</option>
                         </select>
+                        <!-- Mobile: 2 nút to, bấm 1 lần thay vì mở dropdown -->
+                        <div class="sm:hidden grid grid-cols-2 gap-1.5">
+                            <button type="button" id="btnPayCash" onclick="setPaymentMethodMobile('Tiền mặt')" class="payment-btn-mobile py-2 rounded-lg border text-[11px] font-bold flex items-center justify-center gap-1 transition active:scale-95">
+                                <span>💵</span> Tiền mặt
+                            </button>
+                            <button type="button" id="btnPayQR" onclick="setPaymentMethodMobile('Chuyển khoản QR')" class="payment-btn-mobile py-2 rounded-lg border text-[11px] font-bold flex items-center justify-center gap-1 transition active:scale-95">
+                                <span>📱</span> CK QR
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label class="block font-semibold text-stone-500 text-[10px] uppercase mb-1">Ghi chú bàn</label>
@@ -516,7 +556,7 @@
                     </div>
                 </div>
 
-                <div id="quickPaymentActions" class="p-2 bg-brick-950/40 border border-brick-800 rounded-xl flex items-center justify-between">
+                <div id="quickPaymentActions" class="p-2 bg-brick-950/40 border border-brick-800 rounded-xl flex items-center justify-between sticky bottom-0 z-10 backdrop-blur-sm sm:static sm:backdrop-blur-none">
                     <div>
                         <div class="text-xs font-bold text-brick-300"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> Khách thanh toán?</div>
                     </div>
@@ -1033,7 +1073,7 @@
             let elapsedMins = 0;
             if (data.startTime && data.status !== 'empty') {
                 elapsedMins = Math.floor((Date.now() - data.startTime) / (1000 * 60));
-                timerText = `<div class="text-[10px] opacity-75 mt-1 font-medium tabular-nums"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</div>`;
+                timerText = `<div class="text-xs sm:text-[10px] opacity-75 mt-1 font-semibold tabular-nums"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</div>`;
             }
 
             // Đã scale các kích thước UI con bên trong nút bấm cho hợp lý
@@ -1070,7 +1110,7 @@
                     ${badgeHTML}
                     <span class="text-[9px] font-bold uppercase tracking-[0.18em] leading-none opacity-60 ${numColor}">Bàn</span>
                     <span class="text-[32px] font-extrabold leading-none tracking-tight tabular-nums ${numColor} mt-0.5">${i}</span>
-                    ${data.total > 0 ? `<span class="text-sm font-bold text-tys-400 leading-none mt-2">${data.total}k</span>` : ''}
+                    ${data.total > 0 ? `<span class="text-base sm:text-sm font-bold text-tys-400 leading-none mt-2">${data.total}k</span>` : ''}
                     ${timerText}
                 </button>
             `;
@@ -1092,14 +1132,33 @@
             
             const fragment = document.createDocumentFragment();
 
+            // Gom các bàn thoả điều kiện lọc/tìm kiếm, rồi sắp xếp theo mức độ khẩn cấp:
+            // 1) Chưa trả — bàn ngồi lâu nhất (dễ quên thu tiền nhất) lên đầu, bàn mới ngồi xuống dưới
+            // 2) Đã trả — bàn vừa thanh toán gần đây nhất lên trước
+            // 3) Trống — xếp cuối theo số thứ tự
+            let visibleTables = [];
             for (let i = 1; i <= TOTAL_TABLES; i++) {
                 const data = tablesData[i];
-                
+
                 if (currentFilter !== 'all' && data.status !== currentFilter) continue;
                 if (query && !(`bàn ${i}`.includes(query) || i.toString() === query || data.note.toLowerCase().includes(query))) continue;
 
-                let statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-espresso-800 text-stone-500">Trống</span>`;
                 const elapsedMins = data.startTime ? Math.floor((Date.now() - data.startTime) / (1000 * 60)) : 0;
+                visibleTables.push({ i, data, elapsedMins });
+            }
+
+            const STATUS_PRIORITY = { unpaid: 0, paid: 1, empty: 2 };
+            visibleTables.sort((a, b) => {
+                const pa = STATUS_PRIORITY[a.data.status] ?? 3;
+                const pb = STATUS_PRIORITY[b.data.status] ?? 3;
+                if (pa !== pb) return pa - pb;
+                if (a.data.status === 'unpaid') return b.elapsedMins - a.elapsedMins;
+                if (a.data.status === 'paid') return (b.data.startTime || 0) - (a.data.startTime || 0);
+                return a.i - b.i;
+            });
+
+            visibleTables.forEach(({ i, data, elapsedMins }) => {
+                let statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-espresso-800 text-stone-500">Trống</span>`;
 
                 if (data.status === 'unpaid') {
                     if (elapsedMins >= 45) {
@@ -1120,8 +1179,8 @@
                             ${statusBadge}
                         </div>
                         <div class="text-xs text-stone-400 space-y-1">
-                            <div><i class="fa-solid fa-coins text-tys-500 mr-1"></i> Tổng: <b class="text-tys-200 font-semibold">${data.total * 1000}đ</b></div>
-                            ${data.startTime ? `<div><i class="fa-regular fa-clock mr-1"></i> Thời gian ngồi: ${elapsedMins} phút</div>` : ''}
+                            <div class="text-sm sm:text-xs"><i class="fa-solid fa-coins text-tys-500 mr-1"></i> Tổng: <b class="text-tys-200 font-extrabold">${data.total * 1000}đ</b></div>
+                            ${data.startTime ? `<div class="text-sm sm:text-xs font-medium"><i class="fa-regular fa-clock mr-1"></i> Thời gian ngồi: ${elapsedMins} phút</div>` : ''}
                             ${data.note ? `<div class="italic text-stone-500"><i class="fa-regular fa-note-sticky mr-1"></i> ${data.note}</div>` : ''}
                         </div>
                     </div>
@@ -1141,7 +1200,7 @@
                 
                 attachTableGestureEvents(card, i);
                 fragment.appendChild(card);
-            }
+            });
 
             listGrid.innerHTML = '';
             listGrid.appendChild(fragment);
@@ -1155,6 +1214,14 @@
             });
             document.getElementById('unpaidCount').innerText = unpaid;
             document.getElementById('paidCount').innerText = paid;
+
+            // Đồng bộ số liệu vào các chip lọc của thanh thao tác đáy màn hình (mobile)
+            const totalMobileEl = document.getElementById('filterAllCountMobile');
+            const unpaidMobileEl = document.getElementById('filterUnpaidCountMobile');
+            const paidMobileEl = document.getElementById('filterPaidCountMobile');
+            if (totalMobileEl) totalMobileEl.innerText = TOTAL_TABLES;
+            if (unpaidMobileEl) unpaidMobileEl.innerText = unpaid;
+            if (paidMobileEl) paidMobileEl.innerText = paid;
         }
 
         function filterStatus(status) {
@@ -1162,6 +1229,21 @@
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 if (btn.dataset.filter === status) btn.className = "filter-btn active-filter px-2.5 py-1 rounded-lg bg-tys-500 text-ink font-bold whitespace-nowrap flex-1 sm:flex-none text-center";
                 else btn.className = "filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors";
+            });
+            // Đồng bộ trạng thái active cho các chip lọc trên thanh thao tác đáy màn hình (mobile)
+            document.querySelectorAll('.filter-btn-mobile').forEach(btn => {
+                const f = btn.dataset.filter;
+                const isActive = f === status;
+                const base = "filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl transition-colors";
+                if (isActive) {
+                    btn.className = `${base} bg-tys-500 text-ink font-bold`;
+                } else if (f === 'unpaid') {
+                    btn.className = `${base} text-brick-300 bg-espresso-950/70 border border-brick-900/40`;
+                } else if (f === 'paid') {
+                    btn.className = `${base} text-sage-300 bg-espresso-950/70 border border-sage-900/40`;
+                } else {
+                    btn.className = `${base} text-stone-400 bg-espresso-950/70 border border-tys-900`;
+                }
             });
             renderMap();
             const listView = document.getElementById('listView');
@@ -1175,18 +1257,32 @@
             const listView = document.getElementById('listView');
             const btnViewMap = document.getElementById('btnViewMap');
             const btnViewList = document.getElementById('btnViewList');
+            const btnToggleMobile = document.getElementById('btnToggleViewMobile');
+            const fab = document.getElementById('fabRecenter');
 
             if (mode === 'map') {
                 mapView.classList.remove('hidden'); listView.classList.add('hidden');
                 btnViewMap.className = "p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink";
                 btnViewList.className = "p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors";
+                // Icon nút mobile hiển thị lối "chuyển sang Danh sách"; FAB Về giữa chỉ có ý nghĩa khi đang xem Sơ đồ
+                if (btnToggleMobile) btnToggleMobile.innerHTML = '<i class="fa-solid fa-list-ul text-sm"></i>';
+                if (fab) fab.classList.remove('hidden');
                 setTimeout(resetZoomAndFit, 20);
             } else {
                 mapView.classList.add('hidden'); listView.classList.remove('hidden');
                 btnViewList.className = "p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink";
                 btnViewMap.className = "p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors";
+                // Icon nút mobile hiển thị lối "chuyển sang Sơ đồ"; ẩn FAB vì không còn map để căn giữa
+                if (btnToggleMobile) btnToggleMobile.innerHTML = '<i class="fa-solid fa-diagram-project text-sm"></i>';
+                if (fab) fab.classList.add('hidden');
                 renderListView();
             }
+        }
+
+        function toggleViewMobile() {
+            const mapView = document.getElementById('mapView');
+            const isMapHidden = mapView && mapView.classList.contains('hidden');
+            toggleView(isMapHidden ? 'map' : 'list');
         }
 
         let selectedStatusInModal = 'empty';
@@ -1202,6 +1298,7 @@
             document.getElementById('tableNoteInput').value = data.note || '';
             document.getElementById('customItemName').value = '';
             document.getElementById('customItemPrice').value = '';
+            syncPaymentMethodButtons();
 
             selectedStatusInModal = data.status || 'empty';
             modalItems = [...(data.items || [])];
@@ -1219,6 +1316,25 @@
         function closeModal() {
             document.getElementById('tableModal').classList.add('hidden');
             activeTableId = null;
+        }
+
+        // 2 nút chọn phương thức thanh toán trên mobile (thay cho dropdown) —
+        // dùng chung 1 nguồn dữ liệu là #paymentMethodSelect để không phải sửa saveModalChanges()
+        function setPaymentMethodMobile(value) {
+            const select = document.getElementById('paymentMethodSelect');
+            if (select) select.value = value;
+            syncPaymentMethodButtons();
+        }
+
+        function syncPaymentMethodButtons() {
+            const select = document.getElementById('paymentMethodSelect');
+            const value = select ? select.value : 'Tiền mặt';
+            const btnCash = document.getElementById('btnPayCash');
+            const btnQR = document.getElementById('btnPayQR');
+            const activeClass = "payment-btn-mobile py-2 rounded-lg border text-[11px] font-bold flex items-center justify-center gap-1 transition active:scale-95 bg-tys-500 border-tys-500 text-ink";
+            const inactiveClass = "payment-btn-mobile py-2 rounded-lg border text-[11px] font-bold flex items-center justify-center gap-1 transition active:scale-95 bg-espresso-950 border-tys-900 text-stone-300";
+            if (btnCash) btnCash.className = (value === 'Tiền mặt') ? activeClass : inactiveClass;
+            if (btnQR) btnQR.className = (value === 'Chuyển khoản QR') ? activeClass : inactiveClass;
         }
 
         function setSelectStatus(status) {
