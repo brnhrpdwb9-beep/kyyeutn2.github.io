@@ -175,10 +175,10 @@
 <body class="h-screen flex flex-col font-sans antialiased overflow-hidden bg-espresso-950">
 
     <header class="bg-espresso-900/95 backdrop-blur-md border-b border-tys-500/20 shrink-0 px-2 sm:px-3 py-2 sm:py-2.5 z-40">
-        <div class="max-w-[1700px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+        <div class="max-w-[1700px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
             
-            <!-- TOP ROW MOBILE: Logo + Stats Side-by-Side -->
-            <div class="flex flex-row items-center justify-between w-full md:w-auto gap-2">
+            <!-- TOP ROW MOBILE: Logo + Stretched Stats Bar -->
+            <div class="flex flex-row items-center w-full lg:flex-1 gap-2 sm:gap-4">
                 
                 <!-- Logo & Title -->
                 <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
@@ -199,28 +199,28 @@
                     </div>
                 </div>
 
-                <!-- Dashboard Stats (Moved here to sit next to Logo) -->
-                <div class="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs bg-stone-900/90 p-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl border border-stone-800 shrink-0">
-                    <div class="px-1.5 sm:px-2 py-0.5 rounded-md bg-stone-800/80 text-stone-300 flex items-center gap-1 shrink-0">
-                        <span class="text-[9px] sm:text-[10px] text-stone-400">Tổng:</span>
-                        <strong id="totalTablesCount">28</strong>
+                <!-- Dashboard Stats (Stretched to fill remaining width up to right edge) -->
+                <div class="flex-1 flex items-center justify-between lg:justify-end gap-1 sm:gap-2.5 bg-stone-900/90 p-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-stone-800">
+                    <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md bg-stone-800/80 text-stone-300 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
+                        <span class="text-[9px] sm:text-[11px] text-stone-400">Tổng:</span>
+                        <strong id="totalTablesCount" class="text-xs sm:text-sm">28</strong>
                     </div>
-                    <div class="px-1.5 sm:px-2 py-0.5 rounded-md bg-emerald-950/60 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 shrink-0">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                        <span class="text-[9px] sm:text-[10px] text-emerald-400 hidden sm:inline">Đã trả:</span>
-                        <strong id="paidCount">0</strong>
+                    <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md bg-emerald-950/60 text-emerald-300 border border-emerald-500/30 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+                        <span class="text-[9px] sm:text-[11px] text-emerald-400 hidden sm:inline">Đã trả:</span>
+                        <strong id="paidCount" class="text-xs sm:text-sm">0</strong>
                     </div>
-                    <div class="px-1.5 sm:px-2 py-0.5 rounded-md bg-red-950/60 text-red-300 border border-red-500/40 flex items-center gap-1 shrink-0 animate-pulse">
-                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                        <span class="text-[9px] sm:text-[10px] text-red-400 hidden sm:inline">Cần thu:</span>
-                        <strong id="unpaidCount" class="text-red-200">0</strong>
+                    <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md bg-red-950/60 text-red-300 border border-red-500/40 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5 animate-pulse">
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>
+                        <span class="text-[9px] sm:text-[11px] text-red-400 hidden sm:inline">Cần thu:</span>
+                        <strong id="unpaidCount" class="text-red-200 text-xs sm:text-sm">0</strong>
                     </div>
                 </div>
 
             </div>
 
             <!-- BOTTOM ROW MOBILE / RIGHT SECTION DESKTOP: Filters & Actions -->
-            <div class="flex items-center justify-between w-full md:w-auto gap-1.5">
+            <div class="flex items-center justify-between w-full lg:w-auto gap-1.5 shrink-0">
                 
                 <!-- Filter Buttons -->
                 <div class="flex items-center gap-0.5 bg-stone-900/90 p-1 rounded-xl border border-stone-800 text-[11px] overflow-x-auto w-full sm:w-auto">
@@ -368,7 +368,7 @@
         </div>
     </div>
 
-    <!-- Table Details Modal (đã xóa trạng thái Cần Dọn) -->
+    <!-- Table Details Modal -->
     <div id="tableModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4">
         <div class="bg-espresso-900 border border-tys-500/30 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] text-stone-200 modal-fade-in">
             
