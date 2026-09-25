@@ -190,29 +190,30 @@
 </head>
 <body class="h-screen flex flex-col font-sans antialiased overflow-hidden bg-espresso-950">
 
-    <header class="bg-espresso-900/95 backdrop-blur-md border-b border-tys-500/20 shrink-0 px-2.5 py-2 z-40">
-        <div class="max-w-[1700px] mx-auto flex flex-wrap items-center justify-between gap-2">
+    <header class="bg-espresso-900/95 backdrop-blur-md border-b border-tys-500/20 shrink-0 px-3 py-2.5 z-40">
+        <div class="max-w-[1700px] mx-auto flex flex-wrap items-center justify-between gap-2.5">
             
-            <div class="flex items-center space-x-2">
-                <div class="w-10 h-10 rounded-xl bg-espresso-900 p-1 flex items-center justify-center shadow-md border border-tys-500/40 overflow-hidden shrink-0">
+            <div class="flex items-center space-x-3">
+                <!-- Logo TYS Cafe với kích thước lớn hơn (w-14 h-14 sm:w-16 sm:h-16) -->
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-espresso-900 p-1.5 flex items-center justify-center shadow-lg border border-tys-500/50 overflow-hidden shrink-0 transition-all hover:border-tys-500">
                     <!-- Tự động load logo.png -> logo.jpg -> logo.webp -> placeholder TYS -->
                     <img src="logo.png" 
                          alt="TYS Cafe Logo" 
-                         class="w-full h-full object-contain rounded-lg transition-transform hover:scale-105" 
-                         onerror="if(this.src.endsWith('logo.png')){this.src='logo.jpg';}else if(this.src.endsWith('logo.jpg')){this.src='logo.webp';}else{this.onerror=null;this.src='https://placehold.co/100x100/14110f/c69214?text=TYS';}">
+                         class="w-full h-full object-contain rounded-xl transition-transform hover:scale-110" 
+                         onerror="if(this.src.endsWith('logo.png')){this.src='logo.jpg';}else if(this.src.endsWith('logo.jpg')){this.src='logo.webp';}else{this.onerror=null;this.src='https://placehold.co/150x150/14110f/c69214?text=TYS';}">
                 </div>
                 <div>
-                    <h1 class="font-extrabold text-sm sm:text-base tracking-tight leading-none text-amber-100 flex items-center gap-1.5">
+                    <h1 class="font-extrabold text-base sm:text-lg tracking-tight leading-none text-amber-100 flex items-center gap-1.5">
                         TYS CAFE
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 uppercase tracking-wide flex items-center gap-1">
+                        <span class="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 uppercase tracking-wide flex items-center gap-1">
                             <i class="fa-solid fa-bolt text-[10px]"></i> QUICK PAY
                         </span>
                     </h1>
-                    <p class="text-[10px] text-stone-400 mt-0.5" id="liveClock">--:--:--</p>
+                    <p class="text-[11px] text-stone-400 mt-1" id="liveClock">--:--:--</p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-1.5 text-xs bg-stone-900/90 px-2 py-1 rounded-xl border border-stone-800 overflow-x-auto max-w-full">
+            <div class="flex items-center gap-1.5 text-xs bg-stone-900/90 px-2.5 py-1.5 rounded-xl border border-stone-800 overflow-x-auto max-w-full">
                 <div class="px-2 py-0.5 rounded-lg bg-stone-800/80 text-stone-300 flex items-center gap-1 shrink-0">
                     <span class="text-[10px] text-stone-400">Tổng:</span>
                     <strong id="totalTablesCount">30</strong>
@@ -350,7 +351,6 @@
                 </div>
             </div>
 
-            <!-- List View -->
             <div id="listView" class="w-full h-full hidden overflow-y-auto p-2">
                 <div class="bg-espresso-900 rounded-2xl border border-stone-800 p-3 sm:p-4">
                     <div class="flex items-center justify-between mb-3 gap-2">
@@ -630,7 +630,6 @@
         function updateMapTransform() {
             const wrapper = document.getElementById('mapWrapper');
             if (!wrapper) return;
-            // Lower scale minimum to 0.1 to allow 100% full view on small mobile screens
             scale = Math.min(Math.max(0.1, scale), 2.5);
             wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
         }
@@ -642,12 +641,10 @@
             const availH = container.clientHeight;
             if (availW <= 0 || availH <= 0) return;
             
-            // Tính toán tỷ lệ zoom chuẩn vừa khít 100% toàn bộ khung hình mà không bị chừa viền đen dư
             const scaleX = availW / MAP_BASE_WIDTH;
             const scaleY = availH / MAP_BASE_HEIGHT;
             scale = Math.min(scaleX, scaleY);
             
-            // Căn giữa sơ đồ chính xác tuyệt đối
             panX = (availW - MAP_BASE_WIDTH * scale) / 2;
             panY = (availH - MAP_BASE_HEIGHT * scale) / 2;
             
@@ -1590,7 +1587,6 @@
             
             initInteractiveMapEvents();
             
-            // Ensure 100% full map visible on initial load
             resetZoomAndFit();
             setTimeout(resetZoomAndFit, 100);
 
@@ -1604,7 +1600,6 @@
             }, 15000); 
         };
 
-        // Listen for window resize and mobile orientation changes to maintain 100% full map view
         window.addEventListener('resize', resetZoomAndFit);
         window.addEventListener('orientationchange', () => {
             setTimeout(resetZoomAndFit, 200);
