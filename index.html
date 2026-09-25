@@ -96,13 +96,6 @@
             animation: hold-charge 0.5s ease-in-out forwards;
         }
 
-        .table-btn.holding-quick-dirty {
-            transform: scale(1.15) !important;
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.9), 0 0 0 6px rgba(168, 85, 247, 0.4) !important;
-            border-color: #a855f7 !important;
-            animation: hold-charge 0.5s ease-in-out forwards;
-        }
-
         .table-btn.holding-quick-empty {
             transform: scale(1.15) !important;
             box-shadow: 0 0 30px rgba(234, 179, 8, 0.9), 0 0 0 6px rgba(234, 179, 8, 0.4) !important;
@@ -123,15 +116,6 @@
         @keyframes success-burst {
             0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.9); }
             50% { transform: scale(1.25); box-shadow: 0 0 35px 12px rgba(16, 185, 129, 0.8); background-color: #10b981 !important; }
-            100% { transform: scale(1); }
-        }
-
-        .quick-dirty-success-flash {
-            animation: success-burst-dirty 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        @keyframes success-burst-dirty {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.9); }
-            50% { transform: scale(1.25); box-shadow: 0 0 35px 12px rgba(168, 85, 247, 0.8); background-color: #a855f7 !important; }
             100% { transform: scale(1); }
         }
 
@@ -194,9 +178,7 @@
         <div class="max-w-[1700px] mx-auto flex flex-wrap items-center justify-between gap-2.5">
             
             <div class="flex items-center space-x-3">
-                <!-- Logo TYS Cafe với kích thước lớn hơn (w-14 h-14 sm:w-16 sm:h-16) -->
                 <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-espresso-900 p-1.5 flex items-center justify-center shadow-lg border border-tys-500/50 overflow-hidden shrink-0 transition-all hover:border-tys-500">
-                    <!-- Tự động load logo.png -> logo.jpg -> logo.webp -> placeholder TYS -->
                     <img src="logo.png" 
                          alt="TYS Cafe Logo" 
                          class="w-full h-full object-contain rounded-xl transition-transform hover:scale-110" 
@@ -213,6 +195,7 @@
                 </div>
             </div>
 
+            <!-- Dashboard Stats -->
             <div class="flex items-center gap-1.5 text-xs bg-stone-900/90 px-2.5 py-1.5 rounded-xl border border-stone-800 overflow-x-auto max-w-full">
                 <div class="px-2 py-0.5 rounded-lg bg-stone-800/80 text-stone-300 flex items-center gap-1 shrink-0">
                     <span class="text-[10px] text-stone-400">Tổng:</span>
@@ -228,13 +211,10 @@
                     <span class="text-[10px] text-red-400">Cần thu:</span>
                     <strong id="unpaidCount" class="text-red-200">0</strong>
                 </div>
-                <div class="px-2 py-0.5 rounded-lg bg-tys-900/60 text-amber-300 border border-tys-500/30 flex items-center gap-1 shrink-0">
-                    <span class="text-[10px] text-tys-500">Doanh thu:</span>
-                    <strong id="totalRevenue" class="text-amber-200">0k</strong>
-                </div>
             </div>
 
             <div class="flex items-center gap-1.5">
+                <!-- Filter Buttons -->
                 <div class="flex items-center gap-0.5 bg-stone-900/90 p-1 rounded-xl border border-stone-800 text-[11px] overflow-x-auto">
                     <button onclick="filterStatus('all')" class="filter-btn active-filter px-2 py-0.5 rounded-lg bg-tys-500 text-stone-950 font-bold" data-filter="all">Tất cả</button>
                     <button onclick="filterStatus('unpaid')" class="filter-btn px-2 py-0.5 rounded-lg text-red-400 hover:bg-stone-800" data-filter="unpaid">
@@ -242,9 +222,6 @@
                     </button>
                     <button onclick="filterStatus('paid')" class="filter-btn px-2 py-0.5 rounded-lg text-emerald-400 hover:bg-stone-800" data-filter="paid">
                         <i class="fa-solid fa-circle text-[7px] text-emerald-500 mr-1"></i>Đã trả
-                    </button>
-                    <button onclick="filterStatus('dirty')" class="filter-btn px-2 py-0.5 rounded-lg text-purple-400 hover:bg-stone-800" data-filter="dirty">
-                        <i class="fa-solid fa-circle text-[7px] text-purple-500 mr-1"></i>Cần dọn
                     </button>
                 </div>
 
@@ -385,7 +362,7 @@
         </div>
     </div>
 
-    <!-- Table Details Modal -->
+    <!-- Table Details Modal (đã xóa trạng thái Cần Dọn) -->
     <div id="tableModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4">
         <div class="bg-espresso-900 border border-tys-500/30 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] text-stone-200 modal-fade-in">
             
@@ -406,25 +383,20 @@
                 
                 <div>
                     <label class="block text-[10px] font-bold text-stone-400 uppercase tracking-wider mb-1.5">Trạng thái bàn</label>
-                    <div class="grid grid-cols-2 gap-1.5 text-[11px]">
-                        <button type="button" onclick="setSelectStatus('empty')" id="btnStatusEmpty" class="status-option-btn p-2 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center gap-2 text-left transition">
-                            <div class="w-2.5 h-2.5 rounded-full bg-stone-500 shrink-0"></div>
-                            <div class="truncate"><div class="font-bold text-stone-300">Trống</div></div>
+                    <div class="grid grid-cols-3 gap-1.5 text-[11px]">
+                        <button type="button" onclick="setSelectStatus('empty')" id="btnStatusEmpty" class="status-option-btn p-2 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center justify-center gap-1.5 text-center transition">
+                            <div class="w-2 h-2 rounded-full bg-stone-500 shrink-0"></div>
+                            <div class="truncate font-bold text-stone-300">Trống</div>
                         </button>
 
-                        <button type="button" onclick="setSelectStatus('unpaid')" id="btnStatusUnpaid" class="status-option-btn p-2 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center gap-2 text-left transition">
-                            <div class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse shrink-0"></div>
-                            <div class="truncate"><div class="font-bold text-red-400">Đang ngồi (Chưa trả)</div></div>
+                        <button type="button" onclick="setSelectStatus('unpaid')" id="btnStatusUnpaid" class="status-option-btn p-2 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center justify-center gap-1.5 text-center transition">
+                            <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse shrink-0"></div>
+                            <div class="truncate font-bold text-red-400">Đang ngồi</div>
                         </button>
 
-                        <button type="button" onclick="setSelectStatus('paid')" id="btnStatusPaid" class="status-option-btn p-2 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center gap-2 text-left transition">
-                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></div>
-                            <div class="truncate"><div class="font-bold text-emerald-400">Đã trả trước</div></div>
-                        </button>
-
-                        <button type="button" onclick="setSelectStatus('dirty')" id="btnStatusDirty" class="status-option-btn p-2 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center gap-2 text-left transition">
-                            <div class="w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0"></div>
-                            <div class="truncate"><div class="font-bold text-purple-400">Cần dọn bàn</div></div>
+                        <button type="button" onclick="setSelectStatus('paid')" id="btnStatusPaid" class="status-option-btn p-2 rounded-xl border border-stone-800 bg-stone-900 hover:bg-stone-800 flex items-center justify-center gap-1.5 text-center transition">
+                            <div class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></div>
+                            <div class="truncate font-bold text-emerald-400">Đã trả</div>
                         </button>
                     </div>
                 </div>
@@ -752,7 +724,7 @@
             
             tablesData[4] = { id: 4, status: 'paid', items: [{name: 'Cà phê đen đá', price: 22}, {name: 'Cà phê đen đá', price: 22}], total: 44, startTime: Date.now() - 40*60*1000, paymentMethod: 'Chuyển khoản QR', note: 'Đã CK VietQR' };
             tablesData[17] = { id: 17, status: 'paid', items: [{name: 'Cà phê đen đá', price: 22}], total: 22, startTime: Date.now() - 5*60*1000, paymentMethod: 'Tiền mặt', note: 'Quầy bar' };
-            tablesData[25] = { id: 25, status: 'dirty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: 'Vừa đi' };
+            tablesData[25] = { id: 25, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: 'Vừa đi' };
         }
 
         function saveData() {
@@ -774,14 +746,13 @@
                 const touch = e.touches[0];
                 startTouchPos = { x: touch.clientX, y: touch.clientY };
 
-                if (data && (data.status === 'unpaid' || data.status === 'paid' || data.status === 'dirty')) {
+                if (data && (data.status === 'unpaid' || data.status === 'paid')) {
                     if (data.status === 'unpaid') btnElement.classList.add('holding-quick-pay');
-                    else if (data.status === 'paid') btnElement.classList.add('holding-quick-dirty');
-                    else if (data.status === 'dirty') btnElement.classList.add('holding-quick-empty');
+                    else if (data.status === 'paid') btnElement.classList.add('holding-quick-empty');
                     
                     touchStartTimer = setTimeout(() => {
                         longPressFired = true;
-                        btnElement.classList.remove('holding-quick-pay', 'holding-quick-dirty', 'holding-quick-empty');
+                        btnElement.classList.remove('holding-quick-pay', 'holding-quick-empty');
                         triggerQuickStateTransition(tableId, 'nhấn giữ');
                     }, 500);
                 }
@@ -796,12 +767,12 @@
                 if (dx > 8 || dy > 8) {
                     clearTimeout(touchStartTimer);
                     touchStartTimer = null;
-                    btnElement.classList.remove('holding-quick-pay', 'holding-quick-dirty', 'holding-quick-empty');
+                    btnElement.classList.remove('holding-quick-pay', 'holding-quick-empty');
                 }
             }, { passive: true });
 
             btnElement.addEventListener('touchend', (e) => {
-                btnElement.classList.remove('holding-quick-pay', 'holding-quick-dirty', 'holding-quick-empty');
+                btnElement.classList.remove('holding-quick-pay', 'holding-quick-empty');
                 if (touchStartTimer) {
                     clearTimeout(touchStartTimer);
                     touchStartTimer = null;
@@ -815,7 +786,7 @@
                 const data = tablesData[tableId];
                 const now = Date.now();
 
-                if (data && (data.status === 'unpaid' || data.status === 'paid' || data.status === 'dirty') && lastTapTableId === tableId && (now - lastTapTimestamp) < 320) {
+                if (data && (data.status === 'unpaid' || data.status === 'paid') && lastTapTableId === tableId && (now - lastTapTimestamp) < 320) {
                     if (singleTapTimeout) clearTimeout(singleTapTimeout);
                     lastTapTimestamp = 0;
                     lastTapTableId = null;
@@ -837,7 +808,7 @@
                 e.preventDefault();
                 e.stopPropagation();
                 const data = tablesData[tableId];
-                if (data && (data.status === 'unpaid' || data.status === 'paid' || data.status === 'dirty')) {
+                if (data && (data.status === 'unpaid' || data.status === 'paid')) {
                     if (singleTapTimeout) clearTimeout(singleTapTimeout);
                     triggerQuickStateTransition(tableId, 'đúp chuột');
                 }
@@ -875,17 +846,6 @@
                     titleColor: 'text-emerald-400'
                 };
             } else if (table.status === 'paid') {
-                table.status = 'dirty';
-                messageHtml = `Bàn ${tableId} -> Chuyển sang <strong>Cần dọn bàn</strong> (${gestureType})`;
-                flashClass = 'quick-dirty-success-flash';
-                toastConfig = {
-                    title: 'Chuyển trạng thái: Cần dọn bàn!',
-                    borderColor: 'border-purple-500',
-                    iconBg: 'bg-purple-500',
-                    iconClass: 'fa-solid fa-broom',
-                    titleColor: 'text-purple-400'
-                };
-            } else if (table.status === 'dirty') {
                 table.status = 'empty';
                 table.items = [];
                 table.total = 0;
@@ -1025,16 +985,12 @@
             } else if (data.status === 'paid') {
                 bgStyle = "bg-emerald-950/95 border-emerald-500 text-emerald-300 shadow-sm shadow-emerald-500/20";
                 badgeHTML = `<span class="absolute -top-2.5 -right-2 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-700 text-emerald-100 shadow-lg border border-emerald-500/50">ĐÃ TRẢ</span>`;
-            } else if (data.status === 'dirty') {
-                bgStyle = "bg-purple-950/95 border-purple-500 text-purple-300";
-                badgeHTML = `<span class="absolute -top-2.5 -right-2 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-purple-700 text-purple-100 shadow-lg border border-purple-500/50">DỌN BÀN</span>`;
             }
 
             const isFiltered = (currentFilter === 'all') ||
                                (currentFilter === 'unpaid' && data.status === 'unpaid') ||
                                (currentFilter === 'paid' && data.status === 'paid') ||
-                               (currentFilter === 'empty' && data.status === 'empty') ||
-                               (currentFilter === 'dirty' && data.status === 'dirty');
+                               (currentFilter === 'empty' && data.status === 'empty');
 
             const opacityClass = isFiltered ? "opacity-100 scale-100" : "opacity-20 scale-90 pointer-events-none";
 
@@ -1082,7 +1038,6 @@
                     }
                 }
                 if (data.status === 'paid') statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">Đã Thanh Toán</span>`;
-                if (data.status === 'dirty') statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-400 border border-purple-500/40">Cần Dọn</span>`;
 
                 const card = document.createElement('div');
                 card.className = "bg-stone-900 p-3.5 rounded-xl border border-stone-800 flex flex-col justify-between hover:border-tys-500/50 transition cursor-pointer select-none active:scale-[0.98]";
@@ -1105,10 +1060,6 @@
                                 <i class="fa-solid fa-bolt"></i> Quick Pay
                             </button>
                         ` : data.status === 'paid' ? `
-                            <button onclick="event.stopPropagation(); triggerQuickStateTransition(${i}, '1-Chạm');" class="px-2.5 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold text-[11px] shadow flex items-center gap-1 transition active:scale-95">
-                                <i class="fa-solid fa-broom"></i> Cần Dọn
-                            </button>
-                        ` : data.status === 'dirty' ? `
                             <button onclick="event.stopPropagation(); triggerQuickStateTransition(${i}, '1-Chạm');" class="px-2.5 py-1 rounded-lg bg-stone-700 hover:bg-stone-600 text-stone-200 font-bold text-[11px] shadow flex items-center gap-1 transition active:scale-95">
                                 <i class="fa-solid fa-check"></i> Dọn Xong
                             </button>
@@ -1126,15 +1077,13 @@
         }
 
         function updateDashboardStats() {
-            let unpaid = 0, paid = 0, totalRev = 0;
+            let unpaid = 0, paid = 0;
             Object.values(tablesData).forEach(t => {
                 if (t.status === 'unpaid') unpaid++;
                 if (t.status === 'paid') paid++;
-                totalRev += t.total || 0;
             });
             document.getElementById('unpaidCount').innerText = unpaid;
             document.getElementById('paidCount').innerText = paid;
-            document.getElementById('totalRevenue').innerText = `${totalRev}k`;
         }
 
         function filterStatus(status) {
@@ -1207,7 +1156,7 @@
         }
 
         function updateModalStatusButtons() {
-            const map = { empty: 'btnStatusEmpty', unpaid: 'btnStatusUnpaid', paid: 'btnStatusPaid', dirty: 'btnStatusDirty' };
+            const map = { empty: 'btnStatusEmpty', unpaid: 'btnStatusUnpaid', paid: 'btnStatusPaid' };
             Object.keys(map).forEach(key => {
                 const btn = document.getElementById(map[key]);
                 if (!btn) return;
@@ -1303,7 +1252,7 @@
             table.note = document.getElementById('tableNoteInput').value;
 
             if (prevStatus === 'empty' && selectedStatusInModal !== 'empty') table.startTime = Date.now();
-            else if (selectedStatusInModal === 'empty' || selectedStatusInModal === 'dirty') table.startTime = null;
+            else if (selectedStatusInModal === 'empty') table.startTime = null;
 
             saveData(); 
             renderTableNode(activeTableId);
@@ -1360,7 +1309,6 @@
                 let statusLabel = 'Trống';
                 if (targetData.status === 'unpaid') statusLabel = `Chưa trả (${targetData.total}k)`;
                 else if (targetData.status === 'paid') statusLabel = `Đã trả (${targetData.total}k)`;
-                else if (targetData.status === 'dirty') statusLabel = 'Cần dọn';
 
                 const option = document.createElement('option');
                 option.value = i;
