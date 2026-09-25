@@ -1026,6 +1026,7 @@
 
             const data = tablesData[i];
             let bgStyle = "bg-espresso-900 border-tys-700 text-stone-500 shadow-[0_3px_10px_-2px_rgba(74,54,35,0.20),0_1px_2px_rgba(26,21,16,0.08)]";
+            let numColor = "text-stone-200";
             let badgeHTML = "";
             let timerText = "";
 
@@ -1039,16 +1040,20 @@
             if (data.status === 'unpaid') {
                 if (elapsedMins >= 45) {
                     bgStyle = "bg-brick-800 border-brick-accent text-tys-50 pulse-unpaid-fast";
+                    numColor = "text-tys-50";
                     badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-tys-50 text-brick-ink flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Quá 45p</span>`;
                 } else if (elapsedMins >= 30) {
                     bgStyle = "bg-brick-900 border-brick-600 text-brick-100 pulse-unpaid";
+                    numColor = "text-brick-100";
                     badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-600 text-tys-50 whitespace-nowrap">Chưa trả</span>`;
                 } else {
                     bgStyle = "bg-brick-950/70 border-brick-800 text-brick-300 backdrop-blur-sm"; 
+                    numColor = "text-brick-ink";
                     badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-800 text-brick-200 whitespace-nowrap">Chưa trả</span>`;
                 }
             } else if (data.status === 'paid') {
                 bgStyle = "bg-sage-950/80 border-sage-600 text-sage-200";
+                numColor = "text-sage-300";
                 badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-sage-700 text-sage-50 whitespace-nowrap">Đã trả</span>`;
             }
 
@@ -1063,8 +1068,9 @@
             container.innerHTML = `
                 <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} flex flex-col items-center justify-center p-1.5 transition-all">
                     ${badgeHTML}
-                    <span class="text-lg font-bold leading-none">B${i}</span>
-                    ${data.total > 0 ? `<span class="text-sm font-bold text-tys-400 leading-none mt-1.5">${data.total}k</span>` : ''}
+                    <span class="text-[9px] font-bold uppercase tracking-[0.18em] leading-none opacity-60 ${numColor}">Bàn</span>
+                    <span class="text-[32px] font-extrabold leading-none tracking-tight tabular-nums ${numColor} mt-0.5">${i}</span>
+                    ${data.total > 0 ? `<span class="text-sm font-bold text-tys-400 leading-none mt-2">${data.total}k</span>` : ''}
                     ${timerText}
                 </button>
             `;
