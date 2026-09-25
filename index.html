@@ -203,7 +203,7 @@
                 <div class="flex-1 flex items-center justify-between lg:justify-end gap-1 sm:gap-2.5 bg-stone-900/90 p-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl border border-stone-800">
                     <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md bg-stone-800/80 text-stone-300 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
                         <span class="text-[9px] sm:text-[11px] text-stone-400">Tổng:</span>
-                        <strong id="totalTablesCount" class="text-xs sm:text-sm">28</strong>
+                        <strong id="totalTablesCount" class="text-xs sm:text-sm">29</strong>
                     </div>
                     <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md bg-emerald-950/60 text-emerald-300 border border-emerald-500/30 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
@@ -293,7 +293,7 @@
                         <div class="absolute top-[850px] left-[240px] w-[260px] h-6 border-2 border-stone-600 bg-stone-800/90 rounded-md flex items-center justify-center"></div>
                         <div class="absolute top-[850px] left-[740px] w-[420px] h-6 border-2 border-stone-600 bg-stone-800/90 rounded-md flex items-center justify-center"></div>
 
-                        <!-- 28 Table Nodes -->
+                        <!-- Table Nodes -->
                         <div class="absolute top-[60px] left-[60px]" id="table-node-1"></div>
                         <div class="absolute top-[40px] left-[160px]" id="table-node-2"></div>
                         <div class="absolute top-[120px] left-[160px]" id="table-node-3"></div>
@@ -330,6 +330,9 @@
                         <div class="absolute top-[760px] left-[1180px]" id="table-node-26"></div>
                         <div class="absolute top-[760px] left-[1260px]" id="table-node-27"></div>
                         <div class="absolute top-[650px] left-[1260px]" id="table-node-28"></div>
+                        
+                        <!-- Mới: Bàn 29 (Phía sau B26, Cạnh trái B28) -->
+                        <div class="absolute top-[650px] left-[1180px]" id="table-node-29"></div>
                     </div>
                 </div>
             </div>
@@ -546,7 +549,7 @@
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <h3 class="text-sm font-bold text-amber-100">Đặt lại toàn bộ dữ liệu bàn?</h3>
-            <p class="text-xs text-stone-400">Tất cả 28 bàn sẽ được chuyển về trạng thái TRỐNG. Bạn có chắc chắn không?</p>
+            <p class="text-xs text-stone-400">Tất cả 29 bàn sẽ được chuyển về trạng thái TRỐNG. Bạn có chắc chắn không?</p>
             <div class="flex items-center justify-center gap-2 pt-1">
                 <button onclick="closeResetModal()" class="px-4 py-1.5 rounded-xl text-xs font-semibold bg-stone-800 hover:bg-stone-700 text-stone-300">Hủy</button>
                 <button onclick="confirmResetAllData()" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-500 text-white shadow">Đặt lại ngay</button>
@@ -555,7 +558,7 @@
     </div>
 
     <script>
-        const TOTAL_TABLES = 28;
+        const TOTAL_TABLES = 29;
         let tablesData = {};
         let activeTableId = null;
         let currentFilter = 'all';
