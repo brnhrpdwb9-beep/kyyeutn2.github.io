@@ -1,1736 +1,1757 @@
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>TYS COFFEE - THANH TOÁN</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                fontFamily: {
-                    sans: ['Plus Jakarta Sans', 'sans-serif'],
-                },
-                colors: {
-                    /* Ghi đè thang xám mặc định - phân cấp chữ trung tính trên nền sáng */
-                    stone: {
-                        100: '#1c1a17',
-                        200: '#332e27',
-                        300: '#4f4a41',
-                        400: '#6e685d',
-                        500: '#8c8579',
-                        600: '#ada79a',
-                        700: '#b9afa0',
-                        800: '#e7e2d8',
-                        900: '#f5f2ec',
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
                     },
-                    /* Chữ đậm dùng trên nền màu (nút, huy hiệu bão hòa) */
-                    ink: '#1a1510',
-                    /* Nâu đồng - thương hiệu / điểm nhấn chính */
-                    tys: {
-                        50:  '#fbf8f3',
-                        100: '#2e2013',
-                        200: '#4a3623',
-                        300: '#6b4f35',
-                        400: '#8a5a2e',
-                        500: '#9c6b3a',
-                        600: '#7d5527',
-                        700: '#c9a876',
-                        800: '#e3d2b8',
-                        900: '#ede6d9',
-                    },
-                    /* Nền sáng - be/trắng ấm trung tính, thay cho nâu than tối */
-                    espresso: {
-                        700: '#dad5ca',
-                        800: '#edeae2',
-                        850: '#f1eee7',
-                        900: '#ffffff',
-                        950: '#f7f5f0',
-                    },
-                    /* Xanh lá trầm - trạng thái "Đã trả" */
-                    sage: {
-                        50:  '#f6faf1',
-                        100: '#eaf3e1',
-                        200: '#d9ead1',
-                        300: '#3f6530',
-                        400: '#3f7a2e',
-                        500: '#7fbd5a',
-                        600: '#6fa84e',
-                        700: '#5c8a41',
-                        950: '#ecf4e4',
-                    },
-                    /* Đỏ cam - cảnh báo "Chưa trả" */
-                    brick: {
-                        ink: '#6b2016',
-                        accent: '#e2724c',
-                        100: '#5c1f14',
-                        200: '#fbdcd2',
-                        300: '#a23f2b',
-                        400: '#b23a22',
-                        500: '#d2492c',
-                        600: '#a83420',
-                        700: '#c0432b',
-                        800: '#8f2a1a',
-                        900: '#e8836a',
-                        950: '#fbeae5',
-                    },
+                    colors: {
+                        /* Ghi đè thang xám mặc định - phân cấp chữ trung tính trên nền sáng */
+                        stone: {
+                            100: '#1c1a17',
+                            200: '#332e27',
+                            300: '#4f4a41',
+                            400: '#6e685d',
+                            500: '#8c8579',
+                            600: '#ada79a',
+                            700: '#b9afa0',
+                            800: '#e7e2d8',
+                            900: '#f5f2ec',
+                        },
+                        /* Chữ đậm dùng trên nền màu (nút, huy hiệu bão hòa) */
+                        ink: '#1a1510',
+                        /* Nâu đồng - thương hiệu / điểm nhấn chính */
+                        tys: {
+                            50:  '#fbf8f3',
+                            100: '#2e2013',
+                            200: '#4a3623',
+                            300: '#6b4f35',
+                            400: '#8a5a2e',
+                            500: '#9c6b3a',
+                            600: '#7d5527',
+                            700: '#c9a876',
+                            800: '#e3d2b8',
+                            900: '#ede6d9',
+                        },
+                        /* Nền sáng - be/trắng ấm trung tính, thay cho nâu than tối */
+                        espresso: {
+                            700: '#dad5ca',
+                            800: '#edeae2',
+                            850: '#f1eee7',
+                            900: '#ffffff',
+                            950: '#f7f5f0',
+                        },
+                        /* Xanh lá trầm - trạng thái "Đã trả" */
+                        sage: {
+                            50:  '#f6faf1',
+                            100: '#eaf3e1',
+                            200: '#d9ead1',
+                            300: '#3f6530',
+                            400: '#3f7a2e',
+                            500: '#7fbd5a',
+                            600: '#6fa84e',
+                            700: '#5c8a41',
+                            950: '#ecf4e4',
+                        },
+                        /* Đỏ cam - cảnh báo "Chưa trả" */
+                        brick: {
+                            ink: '#6b2016',
+                            accent: '#e2724c',
+                            100: '#5c1f14',
+                            200: '#fbdcd2',
+                            300: '#a23f2b',
+                            400: '#b23a22',
+                            500: '#d2492c',
+                            600: '#a83420',
+                            700: '#c0432b',
+                            800: '#8f2a1a',
+                            900: '#e8836a',
+                            950: '#fbeae5',
+                        },
+                    }
                 }
             }
         }
-    }
-</script>
-
-<style>
-    body {
-        background-color: #f7f5f0;
-        color: #1c1a17;
-        user-select: none;
-        -webkit-user-select: none;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
-        letter-spacing: -0.01em;
-    }
-
-    /* Xử lý triệt để chống Dynamic Island (iPhone 14 Pro / 15 / 16) và Tai Thỏ che mất Logo:
-       - Sử dụng max() để đảm bảo padding-top tối thiểu luôn đủ khoảng trống đẩy Logo xuống bên dưới cụm Dynamic Island kể cả khi WebView không nhận diện env().
-    */
-    #mastheadBar {
-        padding-top: max(1.5rem, calc(0.625rem + env(safe-area-inset-top, 0px)));
-    }
-    @media (min-width: 640px) {
-        #mastheadBar {
-            padding-top: max(1rem, calc(0.75rem + env(safe-area-inset-top, 0px)));
+    </script>
+    
+    <style>
+        body {
+            background-color: #f7f5f0;
+            color: #1c1a17;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            letter-spacing: -0.01em;
         }
-    }
 
-    .brand-serif {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-weight: 800;
-    }
+        /* Chống logo/header bị tai thỏ, thanh trạng thái hoặc thanh điều hướng của điện thoại che mất
+           khi mở toàn màn hình / cài như app (PWA). Không ảnh hưởng gì khi mở trong trình duyệt thường
+           vì env(safe-area-inset-top) sẽ bằng 0. */
+        #mastheadBar {
+            padding-top: calc(0.5rem + env(safe-area-inset-top, 0px));
+        }
+        @media (min-width: 640px) {
+            #mastheadBar {
+                padding-top: calc(0.625rem + env(safe-area-inset-top, 0px));
+            }
+        }
 
-    .floorplan-container {
-        background: radial-gradient(circle at 28% 18%, #f6f3ec 0%, #eee7d8 55%, #e4dac4 100%);
-        box-shadow: inset 0 0 0 1px rgba(26, 21, 16, 0.08), inset 0 2px 24px rgba(107, 79, 53, 0.10);
-        cursor: grab;
-        touch-action: none;
-        will-change: transform;
-    }
+        .brand-serif {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+        }
 
-    .floorplan-container:active {
-        cursor: grabbing;
-    }
+        .floorplan-container {
+            background: radial-gradient(circle at 28% 18%, #f6f3ec 0%, #eee7d8 55%, #e4dac4 100%);
+            box-shadow: inset 0 0 0 1px rgba(26, 21, 16, 0.08), inset 0 2px 24px rgba(107, 79, 53, 0.10);
+            cursor: grab;
+            touch-action: none;
+            will-change: transform;
+        }
 
-    /* Mức 2: 30 - 45 phút (nhắc nhẹ, không chớp giật) */
-    .pulse-unpaid {
-        animation: pulse-brick 2.2s infinite ease-in-out;
-    }
-    @keyframes pulse-brick {
-        0%, 100% { box-shadow: 0 0 0 0 rgba(168, 52, 32, 0.35); }
-        50% { box-shadow: 0 0 0 7px rgba(168, 52, 32, 0); }
-    }
+        .floorplan-container:active {
+            cursor: grabbing;
+        }
 
-    /* Mức 3: Trên 45 phút (cảnh báo rõ hơn, vẫn tiết chế) */
-    .pulse-unpaid-fast {
-        animation: pulse-brick-fast 1s infinite ease-in-out;
-    }
-    @keyframes pulse-brick-fast {
-        0%, 100% { box-shadow: 0 0 0 0 rgba(210, 73, 44, 0.45); border-color: #e2724c; }
-        50% { box-shadow: 0 0 0 8px rgba(210, 73, 44, 0); border-color: #8f2a1a; }
-    }
+        /* Mức 2: 30 - 45 phút (nhắc nhẹ, không chớp giật) */
+        .pulse-unpaid {
+            animation: pulse-brick 2.2s infinite ease-in-out;
+        }
+        @keyframes pulse-brick {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(168, 52, 32, 0.35); }
+            50% { box-shadow: 0 0 0 7px rgba(168, 52, 32, 0); }
+        }
 
-    .table-btn {
-        transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease, background-color 0.2s ease;
-        touch-action: manipulation;
-        will-change: transform;
-    }
-    .table-btn:active {
-        transform: scale(0.94);
-    }
+        /* Mức 3: Trên 45 phút (cảnh báo rõ hơn, vẫn tiết chế) */
+        .pulse-unpaid-fast {
+            animation: pulse-brick-fast 1s infinite ease-in-out;
+        }
+        @keyframes pulse-brick-fast {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(210, 73, 44, 0.45); border-color: #e2724c; }
+            50% { box-shadow: 0 0 0 8px rgba(210, 73, 44, 0); border-color: #8f2a1a; }
+        }
 
-    /* Hiệu ứng giữ 1-Chạm (Hold Progress visual feedback) */
-    .table-btn.holding-quick-pay {
-        transform: scale(1.08) !important;
-        box-shadow: 0 0 0 5px rgba(111, 168, 78, 0.30) !important;
-        border-color: #6fa84e !important;
-        animation: hold-charge 0.5s ease-in-out forwards;
-    }
+        .table-btn {
+            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease, background-color 0.2s ease;
+            touch-action: manipulation;
+            will-change: transform;
+        }
+        .table-btn:active {
+            transform: scale(0.94);
+        }
 
-    .table-btn.holding-quick-empty {
-        transform: scale(1.08) !important;
-        box-shadow: 0 0 0 5px rgba(156, 107, 58, 0.30) !important;
-        border-color: #9c6b3a !important;
-        animation: hold-charge 0.5s ease-in-out forwards;
-    }
+        /* Hiệu ứng giữ 1-Chạm (Hold Progress visual feedback) */
+        .table-btn.holding-quick-pay {
+            transform: scale(1.08) !important;
+            box-shadow: 0 0 0 5px rgba(111, 168, 78, 0.30) !important;
+            border-color: #6fa84e !important;
+            animation: hold-charge 0.5s ease-in-out forwards;
+        }
 
-    @keyframes hold-charge {
-        0% { filter: brightness(1); }
-        100% { filter: brightness(1.12); }
-    }
+        .table-btn.holding-quick-empty {
+            transform: scale(1.08) !important;
+            box-shadow: 0 0 0 5px rgba(156, 107, 58, 0.30) !important;
+            border-color: #9c6b3a !important;
+            animation: hold-charge 0.5s ease-in-out forwards;
+        }
 
-    /* Flash hiệu ứng thành công */
-    .quick-pay-success-flash {
-        animation: success-burst 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
-    }
-    @keyframes success-burst {
-        0% { transform: scale(1); }
-        45% { transform: scale(1.07); background-color: #6fa84e !important; border-color: #6fa84e !important; color: #1a1510 !important; }
-        100% { transform: scale(1); }
-    }
+        @keyframes hold-charge {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.12); }
+        }
 
-    .quick-empty-success-flash {
-        animation: success-burst-empty 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
-    }
-    @keyframes success-burst-empty {
-        0% { transform: scale(1); }
-        45% { transform: scale(1.07); background-color: #e7e2d8 !important; border-color: #ada79a !important; }
-        100% { transform: scale(1); }
-    }
+        /* Flash hiệu ứng thành công */
+        .quick-pay-success-flash {
+            animation: success-burst 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+        }
+        @keyframes success-burst {
+            0% { transform: scale(1); }
+            45% { transform: scale(1.07); background-color: #6fa84e !important; border-color: #6fa84e !important; color: #1a1510 !important; }
+            100% { transform: scale(1); }
+        }
 
-    .transfer-success-flash {
-        animation: success-burst-transfer 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
-    }
-    @keyframes success-burst-transfer {
-        0% { transform: scale(1); }
-        45% { transform: scale(1.08); background-color: #9c6b3a !important; border-color: #9c6b3a !important; color: #fbf8f3 !important; }
-        100% { transform: scale(1); }
-    }
+        .quick-empty-success-flash {
+            animation: success-burst-empty 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+        }
+        @keyframes success-burst-empty {
+            0% { transform: scale(1); }
+            45% { transform: scale(1.07); background-color: #e7e2d8 !important; border-color: #ada79a !important; }
+            100% { transform: scale(1); }
+        }
 
-    #mapWrapper {
-        will-change: transform;
-        transform-origin: 0 0;
-        transition: transform 0.05s ease-out;
-    }
+        .transfer-success-flash {
+            animation: success-burst-transfer 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+        }
+        @keyframes success-burst-transfer {
+            0% { transform: scale(1); }
+            45% { transform: scale(1.08); background-color: #9c6b3a !important; border-color: #9c6b3a !important; color: #fbf8f3 !important; }
+            100% { transform: scale(1); }
+        }
 
-    ::-webkit-scrollbar {
-        width: 5px;
-        height: 5px;
-    }
-    ::-webkit-scrollbar-track {
-        background: #f0ede4;
-    }
-    ::-webkit-scrollbar-thumb {
-        background: #c9bfae;
-        border-radius: 4px;
-    }
+        #mapWrapper {
+            will-change: transform;
+            transform-origin: 0 0;
+            transition: transform 0.05s ease-out;
+        }
 
-    .toast-slide-up {
-        animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    @keyframes toastIn {
-        from { transform: translateY(100%) scale(0.97); opacity: 0; }
-        to { transform: translateY(0) scale(1); opacity: 1; }
-    }
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f0ede4;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c9bfae;
+            border-radius: 4px;
+        }
 
-    .modal-fade-in {
-        animation: modalFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    @keyframes modalFadeIn {
-        from { opacity: 0; transform: scale(0.97) translateY(4px); }
-        to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-</style>
+        .toast-slide-up {
+            animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes toastIn {
+            from { transform: translateY(100%) scale(0.97); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
 
+        .modal-fade-in {
+            animation: modalFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.97) translateY(4px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col font-sans antialiased overflow-hidden bg-espresso-950">
 
-<header id="mainHeader" class="bg-espresso-900 shrink-0 z-40">
+    <header id="mainHeader" class="bg-espresso-900 shrink-0 z-40">
 
-    <!-- MASTHEAD: logo + tên thương hiệu + badge + đồng hồ — thương hiệu độc lập, canh giữa,
-         tách khỏi thanh công cụ bên dưới bằng viền mảnh cho sang trọng -->
-    <div id="mastheadBar" class="border-b border-tys-800/60 px-2 sm:px-4 pb-2 sm:pb-2.5">
-        <div class="max-w-[1700px] mx-auto flex items-center justify-center">
-            <div class="flex items-center space-x-2.5 sm:space-x-3">
-                <div class="w-12 h-12 rounded-xl bg-espresso-950 p-1.5 flex items-center justify-center border border-tys-700 shadow-sm shadow-tys-900/10 overflow-hidden shrink-0">
-                    <img src="logo.png" 
-                         alt="TYS Coffee Logo" 
-                         class="w-full h-full object-contain rounded-md" 
-                         onerror="if(this.src.endsWith('logo.png')){this.src='logo.jpg';}else if(this.src.endsWith('logo.jpg')){this.src='logo.webp';}else{this.onerror=null;this.src='https://placehold.co/150x150/f7f5f0/2e2013?text=TYS';}">
+        <!-- MASTHEAD: logo + tên thương hiệu + badge + đồng hồ — thương hiệu độc lập, canh giữa,
+             tách khỏi thanh công cụ bên dưới bằng viền mảnh cho sang trọng -->
+        <div id="mastheadBar" class="border-b border-tys-800/60 px-2 sm:px-4 py-2 sm:py-2.5">
+            <div class="max-w-[1700px] mx-auto flex items-center justify-center">
+                <div class="flex items-center space-x-2.5 sm:space-x-3">
+                    <div class="w-12 h-12 rounded-xl bg-espresso-950 p-1.5 flex items-center justify-center border border-tys-700 shadow-sm shadow-tys-900/10 overflow-hidden shrink-0">
+                        <img src="logo.png" 
+                             alt="TYS Coffee Logo" 
+                             class="w-full h-full object-contain rounded-md" 
+                             onerror="if(this.src.endsWith('logo.png')){this.src='logo.jpg';}else if(this.src.endsWith('logo.jpg')){this.src='logo.webp';}else{this.onerror=null;this.src='https://placehold.co/150x150/f7f5f0/2e2013?text=TYS';}">
+                    </div>
+                    <div>
+                        <h1 class="brand-serif font-semibold text-base sm:text-xl tracking-tight leading-none text-tys-100">
+                            TYS COFFEE
+                        </h1>
+                        <p class="text-[10px] sm:text-[11px] text-stone-400 mt-0.5 sm:mt-1 font-medium tabular-nums" id="liveClock">--:--:--</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOOLBAR: số liệu + bộ lọc + nút thao tác -->
+        <div class="px-2 sm:px-4 py-2 sm:py-2.5">
+            <div class="max-w-[1700px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
+
+                <!-- Dashboard Stats -->
+                <!-- Mobile: ẩn khối này vì số liệu đã gộp vào các chip lọc ở thanh thao tác đáy màn hình -->
+                <div class="hidden sm:flex flex-1 items-center justify-between lg:justify-start gap-1 sm:gap-2 bg-espresso-950/70 p-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl border border-tys-900">
+                    <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md text-stone-300 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
+                        <span class="text-[9px] sm:text-[11px] text-stone-500">Tổng</span>
+                        <strong id="totalTablesCount" class="text-xs sm:text-sm font-bold text-stone-100">29</strong>
+                    </div>
+                    <div class="w-px h-4 bg-tys-900 hidden sm:block"></div>
+                    <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md text-sage-400 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-sage-500 shrink-0"></span>
+                        <span class="text-[9px] sm:text-[11px] text-stone-500 hidden sm:inline">Đã trả</span>
+                        <strong id="paidCount" class="text-xs sm:text-sm font-bold">0</strong>
+                    </div>
+                    <div class="w-px h-4 bg-tys-900 hidden sm:block"></div>
+                    <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md text-brick-300 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-brick-400 shrink-0"></span>
+                        <span class="text-[9px] sm:text-[11px] text-stone-500 hidden sm:inline">Cần thu</span>
+                        <strong id="unpaidCount" class="text-xs sm:text-sm font-bold">0</strong>
+                    </div>
+                </div>
+
+                <!-- BOTTOM ROW MOBILE / RIGHT SECTION DESKTOP: Filters & Actions -->
+                <!-- Mobile: ẩn hàng này, thay bằng #mobileActionBar cố định đáy màn hình (dễ bấm 1 tay hơn) -->
+                <div class="hidden sm:flex items-center justify-between w-full lg:w-auto gap-1.5 shrink-0">
+                    
+                    <!-- Filter Buttons -->
+                    <div class="flex items-center gap-0.5 bg-espresso-950/70 p-1 rounded-xl border border-tys-900 text-[11px] overflow-x-auto w-full sm:w-auto">
+                        <button onclick="filterStatus('all')" class="filter-btn active-filter px-2.5 py-1 rounded-lg bg-tys-500 text-ink font-bold whitespace-nowrap flex-1 sm:flex-none text-center" data-filter="all">Tất cả</button>
+                        <button onclick="filterStatus('unpaid')" class="filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:text-brick-300 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors" data-filter="unpaid">
+                            <i class="fa-solid fa-circle text-[6px] text-brick-400 mr-1"></i>Cần thu
+                        </button>
+                        <button onclick="filterStatus('paid')" class="filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:text-sage-300 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors" data-filter="paid">
+                            <i class="fa-solid fa-circle text-[6px] text-sage-400 mr-1"></i>Đã trả
+                        </button>
+                    </div>
+
+                    <!-- Action View Buttons -->
+                    <div class="flex items-center gap-1 shrink-0">
+                        <button onclick="toggleView('map')" id="btnViewMap" class="p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink" title="Xem Sơ Đồ">
+                            <i class="fa-solid fa-diagram-project w-4 h-4 flex items-center justify-center"></i>
+                        </button>
+                        <button onclick="resetZoomAndFit()" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-tys-300 border border-tys-900 hover:bg-espresso-800 transition-colors" title="Hiện toàn bộ sơ đồ">
+                            <i class="fa-solid fa-expand w-4 h-4 flex items-center justify-center"></i>
+                        </button>
+                        <button onclick="toggleView('list')" id="btnViewList" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors" title="Xem Danh Sách">
+                            <i class="fa-solid fa-list-ul w-4 h-4 flex items-center justify-center"></i>
+                        </button>
+                        <button onclick="openResetModal()" title="Đặt lại dữ liệu" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-500 hover:text-brick-300 border border-tys-900 hover:bg-espresso-800 transition-colors">
+                            <i class="fa-solid fa-rotate-right w-4 h-4 flex items-center justify-center"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MOBILE BOTTOM ACTION BAR — chỉ hiển thị < sm (điện thoại), PC/tablet không đổi -->
+    <nav id="mobileActionBar" class="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-espresso-900/95 backdrop-blur border-t border-tys-900 px-2 pt-1.5 pb-[calc(0.375rem+env(safe-area-inset-bottom))] flex items-center gap-1.5 shadow-[0_-4px_16px_rgba(26,21,16,0.18)]">
+        <button onclick="filterStatus('all')" data-filter="all" class="filter-btn-mobile active-filter-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl bg-tys-500 text-ink font-bold transition-colors">
+            <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterAllCountMobile">29</span>
+            <span class="text-[9px] font-bold uppercase tracking-wide leading-none">Tất cả</span>
+        </button>
+        <button onclick="filterStatus('unpaid')" data-filter="unpaid" class="filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-brick-300 bg-espresso-950/70 border border-brick-900/40 transition-colors">
+            <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterUnpaidCountMobile">0</span>
+            <span class="text-[9px] font-bold uppercase tracking-wide leading-none">Cần thu</span>
+        </button>
+        <button onclick="filterStatus('paid')" data-filter="paid" class="filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-sage-300 bg-espresso-950/70 border border-sage-900/40 transition-colors">
+            <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterPaidCountMobile">0</span>
+            <span class="text-[9px] font-bold uppercase tracking-wide leading-none">Đã trả</span>
+        </button>
+        <div class="w-px h-8 bg-tys-900 shrink-0"></div>
+        <button onclick="toggleViewMobile()" id="btnToggleViewMobile" class="shrink-0 w-11 h-11 rounded-xl bg-espresso-950/70 border border-tys-900 text-tys-300 flex items-center justify-center active:scale-90 transition" title="Chuyển đổi Sơ đồ / Danh sách" aria-label="Chuyển đổi chế độ xem">
+            <i class="fa-solid fa-list-ul text-sm"></i>
+        </button>
+        <button onclick="openResetModal()" class="shrink-0 w-11 h-11 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-500 flex items-center justify-center active:scale-90 transition" title="Đặt lại dữ liệu" aria-label="Đặt lại dữ liệu">
+            <i class="fa-solid fa-ellipsis text-sm"></i>
+        </button>
+    </nav>
+
+    <!-- FAB "Về giữa" — chỉ hiển thị < sm và khi đang ở chế độ Sơ đồ -->
+    <button onclick="resetZoomAndFit()" id="fabRecenter" class="sm:hidden fixed right-3 bottom-[84px] z-40 w-12 h-12 rounded-full bg-tys-500 text-ink shadow-lg shadow-tys-900/40 border border-tys-600 flex items-center justify-center active:scale-90 transition" title="Về giữa - Hiện toàn bộ sơ đồ" aria-label="Về giữa">
+        <i class="fa-solid fa-expand text-base"></i>
+    </button>
+
+    <main class="flex-1 p-1.5 sm:p-2 md:p-3 pb-24 sm:pb-2 md:pb-3 overflow-hidden flex flex-col justify-center items-center relative">
+        <div class="w-full h-full max-w-[1800px] flex items-center justify-center relative">
+            
+            <div id="mapView" class="w-full h-full flex items-center justify-center relative overflow-hidden">
+                <div id="mapContainer" class="floorplan-container relative w-full h-full rounded-2xl border border-tys-900 overflow-hidden select-none">
+                    <!-- Background pattern scaled up 1.5x -->
+                    <div class="absolute inset-0 bg-[radial-gradient(#c9bfae_1.5px,transparent_1.5px)] [background-size:42px_42px] opacity-30 rounded-2xl pointer-events-none"></div>
+
+                    <!-- Kích thước map 1.5x: 2100x1350 (Từ 1400x900) -->
+                    <div id="mapWrapper" class="absolute w-[2100px] h-[1350px] left-0 top-0">
+                        <!-- Viền khung bảo vệ toàn bộ sơ đồ -->
+                        <div class="absolute inset-4 rounded-[32px] border border-tys-900 pointer-events-none"></div>
+                        
+                        <!-- Các mảng khối kiến trúc đã nhân 1.5 tọa độ & kích thước -->
+                        <div class="absolute top-[45px] left-[450px] w-[285px] h-[360px] rounded-[20px] border border-stone-700/70 bg-espresso-900/40 flex flex-col items-center justify-start pt-3"></div>
+                        <div class="absolute top-[45px] left-[750px] w-[960px] h-[390px] border border-stone-700/70 bg-espresso-900/30 rounded-[20px] flex items-center justify-center">
+                            <div class="text-center opacity-50">
+                                <i class="fa-solid fa-snowflake text-4xl text-tys-600 mb-2"></i>
+                                <div class="text-sm font-semibold text-stone-400 tracking-[0.15em]">PHÒNG LẠNH</div>
+                            </div>
+                        </div>
+
+                        <div class="absolute top-[435px] left-[1050px] w-[660px] h-[150px] rounded-[20px] border border-stone-700/70 bg-espresso-900/40"></div>
+                        <div class="absolute top-[585px] left-[1125px] w-[585px] h-[18px] border border-stone-700/70 bg-espresso-800/80 rounded-b-lg"></div>
+
+                        <div class="absolute top-[435px] left-[750px] w-[54px] h-[68px] border border-t-0 border-stone-700/70 rounded-b-full bg-espresso-900/60"></div>
+                        <div class="absolute top-[435px] left-[915px] w-[54px] h-[68px] border border-t-0 border-stone-700/70 rounded-b-full bg-espresso-900/60"></div>
+
+                        <div class="absolute top-[435px] left-[804px] w-[111px] h-[870px] border-x border-stone-700/50 bg-espresso-900/15 flex flex-col items-center justify-around py-16 pointer-events-none">
+                            <span class="text-[12px] font-semibold text-stone-600 uppercase -rotate-90 tracking-[0.2em]">Lối đi chính</span>
+                            <span class="text-[12px] font-semibold text-stone-600 uppercase -rotate-90 tracking-[0.2em]">Lối đi chính</span>
+                        </div>
+
+                        <!-- Cây xanh (scaled size) -->
+                        <div class="absolute top-[330px] left-[195px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
+                        <div class="absolute top-[720px] left-[195px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
+                        <div class="absolute top-[1020px] left-[255px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
+                        <div class="absolute top-[1035px] left-[1269px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
+
+                        <!-- Ghế Băng Dài -->
+                        <div class="absolute top-[1275px] left-[360px] w-[390px] h-[36px] border border-stone-700/70 bg-espresso-800/80 rounded-lg flex items-center justify-center"></div>
+                        <div class="absolute top-[1275px] left-[1110px] w-[630px] h-[36px] border border-stone-700/70 bg-espresso-800/80 rounded-lg flex items-center justify-center"></div>
+
+                        <!-- Table Nodes (Tọa độ x1.5) -->
+                        <div class="absolute top-[90px] left-[90px]" id="table-node-1"></div>
+                        <div class="absolute top-[60px] left-[240px]" id="table-node-2"></div>
+                        <div class="absolute top-[180px] left-[240px]" id="table-node-3"></div>
+
+                        <div class="absolute top-[195px] left-[465px]" id="table-node-15"></div>
+                        <div class="absolute top-[195px] left-[585px]" id="table-node-16"></div>
+
+                        <div class="absolute top-[480px] left-[90px]" id="table-node-4"></div>
+                        <div class="absolute top-[600px] left-[90px]" id="table-node-5"></div>
+                        <div class="absolute top-[540px] left-[240px]" id="table-node-6"></div>
+
+                        <div class="absolute top-[900px] left-[90px]" id="table-node-7"></div>
+                        <div class="absolute top-[1080px] left-[120px]" id="table-node-8"></div>
+
+                        <div class="absolute top-[750px] left-[330px]" id="table-node-9"></div>
+                        <div class="absolute top-[750px] left-[450px]" id="table-node-10"></div>
+
+                        <div class="absolute top-[1050px] left-[390px]" id="table-node-11"></div>
+                        <div class="absolute top-[1170px] left-[390px]" id="table-node-12"></div>
+                        <div class="absolute top-[1170px] left-[540px]" id="table-node-13"></div>
+
+                        <div class="absolute top-[465px] left-[1110px]" id="table-node-17"></div>
+                        <div class="absolute top-[465px] left-[1410px]" id="table-node-18"></div>
+
+                        <div class="absolute top-[630px] left-[1200px]" id="table-node-19"></div>
+                        <div class="absolute top-[630px] left-[1320px]" id="table-node-20"></div>
+                        <div class="absolute top-[630px] left-[1440px]" id="table-node-21"></div>
+
+                        <div class="absolute top-[1140px] left-[1125px]" id="table-node-22"></div>
+                        <div class="absolute top-[1140px] left-[1260px]" id="table-node-23"></div>
+                        <div class="absolute top-[1140px] left-[1395px]" id="table-node-24"></div>
+                        <div class="absolute top-[1140px] left-[1530px]" id="table-node-25"></div>
+
+                        <div class="absolute top-[1140px] left-[1770px]" id="table-node-26"></div>
+                        <div class="absolute top-[1140px] left-[1890px]" id="table-node-27"></div>
+                        <div class="absolute top-[975px] left-[1890px]" id="table-node-28"></div>
+                        
+                        <div class="absolute top-[975px] left-[1770px]" id="table-node-29"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="listView" class="w-full h-full hidden overflow-y-auto p-2">
+                <div class="bg-espresso-900 rounded-2xl border border-tys-900 p-3 sm:p-5">
+                    <div class="flex items-center justify-between mb-4 gap-2">
+                        <h2 class="text-xs sm:text-sm font-bold text-stone-200 tracking-wide"><i class="fa-solid fa-list-ul mr-1.5 text-tys-400"></i>Danh Sách Bàn</h2>
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 text-[11px]"></i>
+                            <input type="text" id="searchInput" onkeyup="renderListView()" placeholder="Tìm bàn..." class="pl-8 pr-3 py-1.5 rounded-lg bg-espresso-950 border border-tys-900 text-xs text-stone-200 focus:outline-none focus:border-tys-600 w-44 sm:w-52 placeholder-stone-600">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="listGrid"></div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="quickPayToast" class="fixed bottom-24 sm:bottom-4 left-1/2 -translate-x-1/2 z-50 hidden max-w-sm w-[92%] sm:w-auto">
+        <div id="quickPayToastCard" class="bg-espresso-900 border border-sage-600 shadow-xl rounded-xl p-3 flex items-center justify-between gap-3 text-stone-100 toast-slide-up">
+            <div class="flex items-center gap-2.5">
+                <div id="quickPayToastIconBg" class="w-8 h-8 rounded-lg bg-sage-600 text-ink flex items-center justify-center shrink-0">
+                    <i id="quickPayToastIcon" class="fa-solid fa-bolt text-sm"></i>
                 </div>
                 <div>
-                    <h1 class="brand-serif font-semibold text-base sm:text-xl tracking-tight leading-none text-tys-100">
-                        TYS COFFEE
-                    </h1>
-                    <p class="text-[10px] sm:text-[11px] text-stone-400 mt-0.5 sm:mt-1 font-medium tabular-nums" id="liveClock">--:--:--</p>
+                    <div id="quickPayToastTitle" class="text-xs font-bold text-sage-400 flex items-center gap-1">
+                        Thanh toán 1-Chạm thành công!
+                    </div>
+                    <div class="text-[11px] text-stone-300 font-medium" id="quickPayToastMessage">
+                        Bàn 0: 0k -> Đã trả
+                    </div>
                 </div>
             </div>
+            <button onclick="undoQuickPay()" class="px-3 py-1.5 rounded-lg bg-espresso-800 hover:bg-espresso-700 border border-tys-800 text-tys-300 font-bold text-xs shrink-0 transition flex items-center gap-1 active:scale-95">
+                <i class="fa-solid fa-rotate-left text-[10px]"></i> Hoàn tác
+            </button>
         </div>
     </div>
 
-    <!-- TOOLBAR: số liệu + bộ lọc + nút thao tác -->
-    <div class="px-2 sm:px-4 py-2 sm:py-2.5">
-        <div class="max-w-[1700px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
-
-            <!-- Dashboard Stats -->
-            <!-- Mobile: ẩn khối này vì số liệu đã gộp vào các chip lọc ở thanh thao tác đáy màn hình -->
-            <div class="hidden sm:flex flex-1 items-center justify-between lg:justify-start gap-1 sm:gap-2 bg-espresso-950/70 p-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl border border-tys-900">
-                <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md text-stone-300 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
-                    <span class="text-[9px] sm:text-[11px] text-stone-500">Tổng</span>
-                    <strong id="totalTablesCount" class="text-xs sm:text-sm font-bold text-stone-100">29</strong>
+    <!-- Table Details Modal -->
+    <div id="tableModal" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-espresso-900 border border-tys-800 w-full max-w-md rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[95vh] text-stone-200 modal-fade-in">
+            
+            <div class="bg-espresso-950 px-4 py-3 border-b border-tys-900 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div id="modalTableBadge" class="w-9 h-9 rounded-lg bg-tys-500 font-bold text-lg flex items-center justify-center text-ink">0</div>
+                    <div>
+                        <h3 class="font-bold text-tys-100 text-sm leading-tight" id="modalTitle">Quản Lý Bàn Số 0</h3>
+                        <p class="text-[10px] text-stone-500" id="modalSubtitle">Cập nhật nhanh món & thanh toán</p>
+                    </div>
                 </div>
-                <div class="w-px h-4 bg-tys-900 hidden sm:block"></div>
-                <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md text-sage-400 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-sage-500 shrink-0"></span>
-                    <span class="text-[9px] sm:text-[11px] text-stone-500 hidden sm:inline">Đã trả</span>
-                    <strong id="paidCount" class="text-xs sm:text-sm font-bold">0</strong>
-                </div>
-                <div class="w-px h-4 bg-tys-900 hidden sm:block"></div>
-                <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md text-brick-300 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-brick-400 shrink-0"></span>
-                    <span class="text-[9px] sm:text-[11px] text-stone-500 hidden sm:inline">Cần thu</span>
-                    <strong id="unpaidCount" class="text-xs sm:text-sm font-bold">0</strong>
-                </div>
+                <button onclick="closeModal()" class="w-7 h-7 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-400 hover:text-stone-100 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
             </div>
 
-            <!-- BOTTOM ROW MOBILE / RIGHT SECTION DESKTOP: Filters & Actions -->
-            <!-- Mobile: ẩn hàng này, thay bằng #mobileActionBar cố định đáy màn hình (dễ bấm 1 tay hơn) -->
-            <div class="hidden sm:flex items-center justify-between w-full lg:w-auto gap-1.5 shrink-0">
+            <div class="p-3.5 overflow-y-auto space-y-3 flex-1 text-xs">
                 
-                <!-- Filter Buttons -->
-                <div class="flex items-center gap-0.5 bg-espresso-950/70 p-1 rounded-xl border border-tys-900 text-[11px] overflow-x-auto w-full sm:w-auto">
-                    <button onclick="filterStatus('all')" class="filter-btn active-filter px-2.5 py-1 rounded-lg bg-tys-500 text-ink font-bold whitespace-nowrap flex-1 sm:flex-none text-center" data-filter="all">Tất cả</button>
-                    <button onclick="filterStatus('unpaid')" class="filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:text-brick-300 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors" data-filter="unpaid">
-                        <i class="fa-solid fa-circle text-[6px] text-brick-400 mr-1"></i>Cần thu
-                    </button>
-                    <button onclick="filterStatus('paid')" class="filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:text-sage-300 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors" data-filter="paid">
-                        <i class="fa-solid fa-circle text-[6px] text-sage-400 mr-1"></i>Đã trả
-                    </button>
+                <div>
+                    <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Trạng thái bàn</label>
+                    <div class="grid grid-cols-3 gap-1.5 text-[11px]">
+                        <button type="button" onclick="setSelectStatus('empty')" id="btnStatusEmpty" class="status-option-btn p-2 rounded-lg border border-tys-900 bg-espresso-950 hover:bg-espresso-800 flex items-center justify-center gap-1.5 text-center transition">
+                            <div class="w-2 h-2 rounded-full bg-stone-500 shrink-0"></div>
+                            <div class="truncate font-bold text-stone-300">Trống</div>
+                        </button>
+
+                        <button type="button" onclick="setSelectStatus('unpaid')" id="btnStatusUnpaid" class="status-option-btn p-2 rounded-lg border border-tys-900 bg-espresso-950 hover:bg-espresso-800 flex items-center justify-center gap-1.5 text-center transition">
+                            <div class="w-2 h-2 rounded-full bg-brick-500 shrink-0"></div>
+                            <div class="truncate font-bold text-brick-400">Đang ngồi</div>
+                        </button>
+
+                        <button type="button" onclick="setSelectStatus('paid')" id="btnStatusPaid" class="status-option-btn p-2 rounded-lg border border-tys-900 bg-espresso-950 hover:bg-espresso-800 flex items-center justify-center gap-1.5 text-center transition">
+                            <div class="w-2 h-2 rounded-full bg-sage-500 shrink-0"></div>
+                            <div class="truncate font-bold text-sage-400">Đã trả</div>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Action View Buttons -->
-                <div class="flex items-center gap-1 shrink-0">
-                    <button onclick="toggleView('map')" id="btnViewMap" class="p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink" title="Xem Sơ Đồ">
-                        <i class="fa-solid fa-diagram-project w-4 h-4 flex items-center justify-center"></i>
-                    </button>
-                    <button onclick="resetZoomAndFit()" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-tys-300 border border-tys-900 hover:bg-espresso-800 transition-colors" title="Hiện toàn bộ sơ đồ">
-                        <i class="fa-solid fa-expand w-4 h-4 flex items-center justify-center"></i>
-                    </button>
-                    <button onclick="toggleView('list')" id="btnViewList" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors" title="Xem Danh Sách">
-                        <i class="fa-solid fa-list-ul w-4 h-4 flex items-center justify-center"></i>
-                    </button>
-                    <button onclick="openResetModal()" title="Đặt lại dữ liệu" class="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-500 hover:text-brick-300 border border-tys-900 hover:bg-espresso-800 transition-colors">
-                        <i class="fa-solid fa-rotate-right w-4 h-4 flex items-center justify-center"></i>
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</header>
-
-<!-- MOBILE BOTTOM ACTION BAR — chỉ hiển thị < sm (điện thoại), PC/tablet không đổi -->
-<nav id="mobileActionBar" class="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-espresso-900/95 backdrop-blur border-t border-tys-900 px-2 pt-1.5 pb-[calc(0.375rem+env(safe-area-inset-bottom))] flex items-center gap-1.5 shadow-[0_-4px_16px_rgba(26,21,16,0.18)]">
-    <button onclick="filterStatus('all')" data-filter="all" class="filter-btn-mobile active-filter-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl bg-tys-500 text-ink font-bold transition-colors">
-        <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterAllCountMobile">29</span>
-        <span class="text-[9px] font-bold uppercase tracking-wide leading-none">Tất cả</span>
-    </button>
-    <button onclick="filterStatus('unpaid')" data-filter="unpaid" class="filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-brick-300 bg-espresso-950/70 border border-brick-900/40 transition-colors">
-        <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterUnpaidCountMobile">0</span>
-        <span class="text-[9px] font-bold uppercase tracking-wide leading-none">Cần thu</span>
-    </button>
-    <button onclick="filterStatus('paid')" data-filter="paid" class="filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-sage-300 bg-espresso-950/70 border border-sage-900/40 transition-colors">
-        <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterPaidCountMobile">0</span>
-        <span class="text-[9px] font-bold uppercase tracking-wide leading-none">Đã trả</span>
-    </button>
-    <div class="w-px h-8 bg-tys-900 shrink-0"></div>
-    <button onclick="toggleViewMobile()" id="btnToggleViewMobile" class="shrink-0 w-11 h-11 rounded-xl bg-espresso-950/70 border border-tys-900 text-tys-300 flex items-center justify-center active:scale-90 transition" title="Chuyển đổi Sơ đồ / Danh sách" aria-label="Chuyển đổi chế độ xem">
-        <i class="fa-solid fa-list-ul text-sm"></i>
-    </button>
-    <button onclick="openResetModal()" class="shrink-0 w-11 h-11 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-500 flex items-center justify-center active:scale-90 transition" title="Đặt lại dữ liệu" aria-label="Đặt lại dữ liệu">
-        <i class="fa-solid fa-ellipsis text-sm"></i>
-    </button>
-</nav>
-
-<!-- FAB "Về giữa" — chỉ hiển thị < sm và khi đang ở chế độ Sơ đồ -->
-<button onclick="resetZoomAndFit()" id="fabRecenter" class="sm:hidden fixed right-3 bottom-[84px] z-40 w-12 h-12 rounded-full bg-tys-500 text-ink shadow-lg shadow-tys-900/40 border border-tys-600 flex items-center justify-center active:scale-90 transition" title="Về giữa - Hiện toàn bộ sơ đồ" aria-label="Về giữa">
-    <i class="fa-solid fa-expand text-base"></i>
-</button>
-
-<main class="flex-1 p-1.5 sm:p-2 md:p-3 pb-24 sm:pb-2 md:pb-3 overflow-hidden flex flex-col justify-center items-center relative">
-    <div class="w-full h-full max-w-[1800px] flex items-center justify-center relative">
-        
-        <div id="mapView" class="w-full h-full flex items-center justify-center relative overflow-hidden">
-            <div id="mapContainer" class="floorplan-container relative w-full h-full rounded-2xl border border-tys-900 overflow-hidden select-none">
-                <!-- Background pattern scaled up 1.5x -->
-                <div class="absolute inset-0 bg-[radial-gradient(#c9bfae_1.5px,transparent_1.5px)] [background-size:42px_42px] opacity-30 rounded-2xl pointer-events-none"></div>
-
-                <!-- Kích thước map 1.5x: 2100x1350 (Từ 1400x900) -->
-                <div id="mapWrapper" class="absolute w-[2100px] h-[1350px] left-0 top-0">
-                    <!-- Viền khung bảo vệ toàn bộ sơ đồ -->
-                    <div class="absolute inset-4 rounded-[32px] border border-tys-900 pointer-events-none"></div>
+                <div class="bg-espresso-950/70 p-2.5 rounded-xl border border-tys-900 space-y-2">
                     
-                    <!-- Các mảng khối kiến trúc đã nhân 1.5 tọa độ & kích thước -->
-                    <div class="absolute top-[45px] left-[450px] w-[285px] h-[360px] rounded-[20px] border border-stone-700/70 bg-espresso-900/40 flex flex-col items-center justify-start pt-3"></div>
-                    <div class="absolute top-[45px] left-[750px] w-[960px] h-[390px] border border-stone-700/70 bg-espresso-900/30 rounded-[20px] flex items-center justify-center">
-                        <div class="text-center opacity-50">
-                            <i class="fa-solid fa-snowflake text-4xl text-tys-600 mb-2"></i>
-                            <div class="text-sm font-semibold text-stone-400 tracking-[0.15em]">PHÒNG LẠNH</div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wide flex items-center gap-1">
+                            <i class="fa-solid fa-mug-hot text-tys-500"></i> Chọn món nhanh
+                        </span>
+                        <span class="text-sm sm:text-xs font-bold text-tys-400" id="totalAmountDisplay">Tổng: 0đ</span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="addPresetItem('Cà phê đen đá', 22)" class="w-full py-1.5 px-3 rounded-lg bg-tys-900/50 border border-tys-800 hover:bg-tys-500 hover:text-ink text-tys-200 font-semibold transition text-xs flex items-center justify-between group">
+                            <span><i class="fa-solid fa-circle-plus mr-1.5 text-tys-500 group-hover:text-ink"></i> Cà phê đen đá</span>
+                            <span class="font-bold text-tys-400 group-hover:text-ink">22k</span>
+                        </button>
+                    </div>
+
+                    <div class="p-2 bg-espresso-950 rounded-lg border border-tys-900 space-y-1.5">
+                        <div class="text-[10px] text-stone-500 font-semibold flex justify-between">
+                            <span>Ghi chú món tự do</span>
+                        </div>
+                        <div>
+                            <input type="text" id="customItemName" placeholder="Tên món (VD: Bạc xỉu ít đường)..." class="w-full bg-espresso-900 border border-tys-900 rounded-lg px-2.5 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <input type="number" id="customItemPrice" placeholder="Giá tiền (VD: 25)..." class="flex-1 bg-espresso-900 border border-tys-900 rounded-lg px-2.5 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
+                            <button type="button" onclick="addCustomNoteItem()" class="px-3 py-1.5 rounded-lg bg-espresso-800 hover:bg-tys-500 hover:text-ink font-semibold text-stone-300 transition text-xs shrink-0 flex items-center gap-1 border border-tys-800">
+                                <i class="fa-solid fa-plus text-[10px]"></i> Thêm
+                            </button>
                         </div>
                     </div>
 
-                    <div class="absolute top-[435px] left-[1050px] w-[660px] h-[150px] rounded-[20px] border border-stone-700/70 bg-espresso-900/40"></div>
-                    <div class="absolute top-[585px] left-[1125px] w-[585px] h-[18px] border border-stone-700/70 bg-espresso-800/80 rounded-b-lg"></div>
-
-                    <div class="absolute top-[435px] left-[750px] w-[54px] h-[68px] border border-t-0 border-stone-700/70 rounded-b-full bg-espresso-900/60"></div>
-                    <div class="absolute top-[435px] left-[915px] w-[54px] h-[68px] border border-t-0 border-stone-700/70 rounded-b-full bg-espresso-900/60"></div>
-
-                    <div class="absolute top-[435px] left-[804px] w-[111px] h-[870px] border-x border-stone-700/50 bg-espresso-900/15 flex flex-col items-center justify-around py-16 pointer-events-none">
-                        <span class="text-[12px] font-semibold text-stone-600 uppercase -rotate-90 tracking-[0.2em]">Lối đi chính</span>
-                        <span class="text-[12px] font-semibold text-stone-600 uppercase -rotate-90 tracking-[0.2em]">Lối đi chính</span>
-                    </div>
-
-                    <!-- Cây xanh (scaled size) -->
-                    <div class="absolute top-[330px] left-[195px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
-                    <div class="absolute top-[720px] left-[195px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
-                    <div class="absolute top-[1020px] left-[255px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
-                    <div class="absolute top-[1035px] left-[1269px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80"><i class="fa-solid fa-leaf text-xl"></i></div>
-
-                    <!-- Ghế Băng Dài -->
-                    <div class="absolute top-[1275px] left-[360px] w-[390px] h-[36px] border border-stone-700/70 bg-espresso-800/80 rounded-lg flex items-center justify-center"></div>
-                    <div class="absolute top-[1275px] left-[1110px] w-[630px] h-[36px] border border-stone-700/70 bg-espresso-800/80 rounded-lg flex items-center justify-center"></div>
-
-                    <!-- Table Nodes (Tọa độ x1.5) -->
-                    <div class="absolute top-[90px] left-[90px]" id="table-node-1"></div>
-                    <div class="absolute top-[60px] left-[240px]" id="table-node-2"></div>
-                    <div class="absolute top-[180px] left-[240px]" id="table-node-3"></div>
-
-                    <div class="absolute top-[195px] left-[465px]" id="table-node-15"></div>
-                    <div class="absolute top-[195px] left-[585px]" id="table-node-16"></div>
-
-                    <div class="absolute top-[480px] left-[90px]" id="table-node-4"></div>
-                    <div class="absolute top-[600px] left-[90px]" id="table-node-5"></div>
-                    <div class="absolute top-[540px] left-[240px]" id="table-node-6"></div>
-
-                    <div class="absolute top-[900px] left-[90px]" id="table-node-7"></div>
-                    <div class="absolute top-[1080px] left-[120px]" id="table-node-8"></div>
-
-                    <div class="absolute top-[750px] left-[330px]" id="table-node-9"></div>
-                    <div class="absolute top-[750px] left-[450px]" id="table-node-10"></div>
-
-                    <div class="absolute top-[1050px] left-[390px]" id="table-node-11"></div>
-                    <div class="absolute top-[1170px] left-[390px]" id="table-node-12"></div>
-                    <div class="absolute top-[1170px] left-[540px]" id="table-node-13"></div>
-
-                    <div class="absolute top-[465px] left-[1110px]" id="table-node-17"></div>
-                    <div class="absolute top-[465px] left-[1410px]" id="table-node-18"></div>
-
-                    <div class="absolute top-[630px] left-[1200px]" id="table-node-19"></div>
-                    <div class="absolute top-[630px] left-[1320px]" id="table-node-20"></div>
-                    <div class="absolute top-[630px] left-[1440px]" id="table-node-21"></div>
-
-                    <div class="absolute top-[1140px] left-[1125px]" id="table-node-22"></div>
-                    <div class="absolute top-[1140px] left-[1260px]" id="table-node-23"></div>
-                    <div class="absolute top-[1140px] left-[1395px]" id="table-node-24"></div>
-                    <div class="absolute top-[1140px] left-[1530px]" id="table-node-25"></div>
-
-                    <div class="absolute top-[1140px] left-[1770px]" id="table-node-26"></div>
-                    <div class="absolute top-[1140px] left-[1890px]" id="table-node-27"></div>
-                    <div class="absolute top-[975px] left-[1890px]" id="table-node-28"></div>
-                    
-                    <div class="absolute top-[975px] left-[1770px]" id="table-node-29"></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="listView" class="w-full h-full hidden overflow-y-auto p-2">
-            <div class="bg-espresso-900 rounded-2xl border border-tys-900 p-3 sm:p-5">
-                <div class="flex items-center justify-between mb-4 gap-2">
-                    <h2 class="text-xs sm:text-sm font-bold text-stone-200 tracking-wide"><i class="fa-solid fa-list-ul mr-1.5 text-tys-400"></i>Danh Sách Bàn</h2>
-                    <div class="relative">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 text-[11px]"></i>
-                        <input type="text" id="searchInput" onkeyup="renderListView()" placeholder="Tìm bàn..." class="pl-8 pr-3 py-1.5 rounded-lg bg-espresso-950 border border-tys-900 text-xs text-stone-200 focus:outline-none focus:border-tys-600 w-44 sm:w-52 placeholder-stone-600">
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="listGrid"></div>
-            </div>
-        </div>
-
-    </div>
-</main>
-
-<div id="quickPayToast" class="fixed bottom-24 sm:bottom-4 left-1/2 -translate-x-1/2 z-50 hidden max-w-sm w-[92%] sm:w-auto">
-    <div id="quickPayToastCard" class="bg-espresso-900 border border-sage-600 shadow-xl rounded-xl p-3 flex items-center justify-between gap-3 text-stone-100 toast-slide-up">
-        <div class="flex items-center gap-2.5">
-            <div id="quickPayToastIconBg" class="w-8 h-8 rounded-lg bg-sage-600 text-ink flex items-center justify-center shrink-0">
-                <i id="quickPayToastIcon" class="fa-solid fa-bolt text-sm"></i>
-            </div>
-            <div>
-                <div id="quickPayToastTitle" class="text-xs font-bold text-sage-400 flex items-center gap-1">
-                    Thanh toán 1-Chạm thành công!
-                </div>
-                <div class="text-[11px] text-stone-300 font-medium" id="quickPayToastMessage">
-                    Bàn 0: 0k -> Đã trả
-                </div>
-            </div>
-        </div>
-        <button onclick="undoQuickPay()" class="px-3 py-1.5 rounded-lg bg-espresso-800 hover:bg-espresso-700 border border-tys-800 text-tys-300 font-bold text-xs shrink-0 transition flex items-center gap-1 active:scale-95">
-            <i class="fa-solid fa-rotate-left text-[10px]"></i> Hoàn tác
-        </button>
-    </div>
-</div>
-
-<!-- Table Details Modal -->
-<div id="tableModal" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-2 sm:p-4">
-    <div class="bg-espresso-900 border border-tys-800 w-full max-w-md rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[95vh] text-stone-200 modal-fade-in">
-        
-        <div class="bg-espresso-950 px-4 py-3 border-b border-tys-900 flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-                <div id="modalTableBadge" class="w-9 h-9 rounded-lg bg-tys-500 font-bold text-lg flex items-center justify-center text-ink">0</div>
-                <div>
-                    <h3 class="font-bold text-tys-100 text-sm leading-tight" id="modalTitle">Quản Lý Bàn Số 0</h3>
-                    <p class="text-[10px] text-stone-500" id="modalSubtitle">Cập nhật nhanh món & thanh toán</p>
-                </div>
-            </div>
-            <button onclick="closeModal()" class="w-7 h-7 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-400 hover:text-stone-100 flex items-center justify-center transition">
-                <i class="fa-solid fa-xmark text-xs"></i>
-            </button>
-        </div>
-
-        <div class="p-3.5 overflow-y-auto space-y-3 flex-1 text-xs">
-            
-            <div>
-                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Trạng thái bàn</label>
-                <div class="grid grid-cols-3 gap-1.5 text-[11px]">
-                    <button type="button" onclick="setSelectStatus('empty')" id="btnStatusEmpty" class="status-option-btn p-2 rounded-lg border border-tys-900 bg-espresso-950 hover:bg-espresso-800 flex items-center justify-center gap-1.5 text-center transition">
-                        <div class="w-2 h-2 rounded-full bg-stone-500 shrink-0"></div>
-                        <div class="truncate font-bold text-stone-300">Trống</div>
-                    </button>
-
-                    <button type="button" onclick="setSelectStatus('unpaid')" id="btnStatusUnpaid" class="status-option-btn p-2 rounded-lg border border-tys-900 bg-espresso-950 hover:bg-espresso-800 flex items-center justify-center gap-1.5 text-center transition">
-                        <div class="w-2 h-2 rounded-full bg-brick-500 shrink-0"></div>
-                        <div class="truncate font-bold text-brick-400">Đang ngồi</div>
-                    </button>
-
-                    <button type="button" onclick="setSelectStatus('paid')" id="btnStatusPaid" class="status-option-btn p-2 rounded-lg border border-tys-900 bg-espresso-950 hover:bg-espresso-800 flex items-center justify-center gap-1.5 text-center transition">
-                        <div class="w-2 h-2 rounded-full bg-sage-500 shrink-0"></div>
-                        <div class="truncate font-bold text-sage-400">Đã trả</div>
-                    </button>
-                </div>
-            </div>
-
-            <div class="bg-espresso-950/70 p-2.5 rounded-xl border border-tys-900 space-y-2">
-                
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wide flex items-center gap-1">
-                        <i class="fa-solid fa-mug-hot text-tys-500"></i> Chọn món nhanh
-                    </span>
-                    <span class="text-sm sm:text-xs font-bold text-tys-400" id="totalAmountDisplay">Tổng: 0đ</span>
+                    <div id="modalOrderList" class="min-h-[45px] max-h-[100px] overflow-y-auto space-y-1 text-xs bg-espresso-950 p-1.5 rounded-lg border border-tys-900"></div>
                 </div>
 
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="addPresetItem('Cà phê đen đá', 22)" class="w-full py-1.5 px-3 rounded-lg bg-tys-900/50 border border-tys-800 hover:bg-tys-500 hover:text-ink text-tys-200 font-semibold transition text-xs flex items-center justify-between group">
-                        <span><i class="fa-solid fa-circle-plus mr-1.5 text-tys-500 group-hover:text-ink"></i> Cà phê đen đá</span>
-                        <span class="font-bold text-tys-400 group-hover:text-ink">22k</span>
-                    </button>
-                </div>
-
-                <div class="p-2 bg-espresso-950 rounded-lg border border-tys-900 space-y-1.5">
-                    <div class="text-[10px] text-stone-500 font-semibold flex justify-between">
-                        <span>Ghi chú món tự do</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                    <div>
+                        <label class="block font-semibold text-stone-500 text-[10px] uppercase mb-1">Thanh toán bằng</label>
+                        <!-- PC/tablet (sm trở lên): dropdown như cũ -->
+                        <select id="paymentMethodSelect" onchange="syncPaymentMethodButtons()" class="hidden sm:block w-full bg-espresso-950 border border-tys-900 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-600">
+                            <option value="Tiền mặt">Tiền mặt</option>
+                            <option value="Chuyển khoản QR">Chuyển khoản VietQR</option>
+                        </select>
+                        <!-- Mobile: 2 nút to, bấm 1 lần thay vì mở dropdown -->
+                        <div class="sm:hidden grid grid-cols-2 gap-1.5">
+                            <button type="button" id="btnPayCash" onclick="setPaymentMethodMobile('Tiền mặt')" class="payment-btn-mobile py-2 rounded-lg border text-[11px] font-bold flex items-center justify-center gap-1 transition active:scale-95">
+                                <span>💵</span> Tiền mặt
+                            </button>
+                            <button type="button" id="btnPayQR" onclick="setPaymentMethodMobile('Chuyển khoản QR')" class="payment-btn-mobile py-2 rounded-lg border text-[11px] font-bold flex items-center justify-center gap-1 transition active:scale-95">
+                                <span>📱</span> CK QR
+                            </button>
+                        </div>
                     </div>
                     <div>
-                        <input type="text" id="customItemName" placeholder="Tên món (VD: Bạc xỉu ít đường)..." class="w-full bg-espresso-900 border border-tys-900 rounded-lg px-2.5 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
+                        <label class="block font-semibold text-stone-500 text-[10px] uppercase mb-1">Ghi chú bàn</label>
+                        <input type="text" id="tableNoteInput" placeholder="VD: 2 khách..." class="w-full bg-espresso-950 border border-tys-900 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
                     </div>
-                    <div class="flex items-center gap-1.5">
-                        <input type="number" id="customItemPrice" placeholder="Giá tiền (VD: 25)..." class="flex-1 bg-espresso-900 border border-tys-900 rounded-lg px-2.5 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
-                        <button type="button" onclick="addCustomNoteItem()" class="px-3 py-1.5 rounded-lg bg-espresso-800 hover:bg-tys-500 hover:text-ink font-semibold text-stone-300 transition text-xs shrink-0 flex items-center gap-1 border border-tys-800">
-                            <i class="fa-solid fa-plus text-[10px]"></i> Thêm
+                </div>
+
+                <div id="quickPaymentActions" class="p-2 bg-brick-950/40 border border-brick-800 rounded-xl flex items-center justify-between sticky bottom-0 z-10 backdrop-blur-sm sm:static sm:backdrop-blur-none">
+                    <div>
+                        <div class="text-xs font-bold text-brick-300"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> Khách thanh toán?</div>
+                    </div>
+                    <button type="button" onclick="markAsPaidAndClose()" class="px-3 py-1 rounded-lg bg-sage-600 hover:bg-sage-500 text-ink font-bold text-xs flex items-center gap-1 transition">
+                        <i class="fa-solid fa-check"></i> Thu Tiền Ngay
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="bg-espresso-950 px-4 py-2.5 border-t border-tys-900 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="clearTableData()" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-brick-400 hover:bg-brick-500/10 transition">
+                        <i class="fa-solid fa-trash mr-1"></i> Xoá bàn
+                    </button>
+                    <button type="button" onclick="openTransferModal(activeTableId)" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-tys-400 hover:bg-tys-500/10 transition flex items-center gap-1">
+                        <i class="fa-solid fa-right-left"></i> Chuyển / Gộp
+                    </button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="closeModal()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300 transition">Hủy</button>
+                    <button type="button" onclick="saveModalChanges()" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-tys-500 hover:bg-tys-600 text-ink transition">Lưu thay đổi</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Transfer/Merge Modal -->
+    <div id="transferModal" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-espresso-900 border border-tys-800 w-full max-w-md rounded-2xl p-4 space-y-4 text-stone-200 shadow-xl modal-fade-in">
+            <div class="flex items-center justify-between border-b border-tys-900 pb-2.5">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-tys-900/60 text-tys-300 flex items-center justify-center font-bold text-sm border border-tys-800">
+                        <i class="fa-solid fa-right-left"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-tys-100" id="transferModalTitle">Chuyển / Gộp Bàn</h3>
+                        <p class="text-[10px] text-stone-500">Di chuyển dữ liệu hoặc kết hợp đơn hàng giữa 2 bàn</p>
+                    </div>
+                </div>
+                <button onclick="closeTransferModal()" class="w-7 h-7 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-400 hover:text-stone-100 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Hành động</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" id="btnModeTransfer" onclick="setTransferMode('transfer')" class="p-2.5 rounded-xl border border-tys-600 bg-tys-900/40 text-tys-300 font-bold flex items-center justify-center gap-1.5 transition active:scale-95">
+                            <i class="fa-solid fa-arrow-right"></i> Chuyển Bàn
+                        </button>
+                        <button type="button" id="btnModeMerge" onclick="setTransferMode('merge')" class="p-2.5 rounded-xl border border-tys-900 bg-espresso-950 text-stone-400 font-bold flex items-center justify-center gap-1.5 transition active:scale-95">
+                            <i class="fa-solid fa-object-group"></i> Gộp Bàn
                         </button>
                     </div>
                 </div>
 
-                <div id="modalOrderList" class="min-h-[45px] max-h-[100px] overflow-y-auto space-y-1 text-xs bg-espresso-950 p-1.5 rounded-lg border border-tys-900"></div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <div>
-                    <label class="block font-semibold text-stone-500 text-[10px] uppercase mb-1">Thanh toán bằng</label>
-                    <!-- PC/tablet (sm trở lên): dropdown như cũ -->
-                    <select id="paymentMethodSelect" onchange="syncPaymentMethodButtons()" class="hidden sm:block w-full bg-espresso-950 border border-tys-900 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-600">
-                        <option value="Tiền mặt">Tiền mặt</option>
-                        <option value="Chuyển khoản QR">Chuyển khoản VietQR</option>
+                    <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Chọn bàn đích</label>
+                    <select id="targetTableSelect" onchange="updateTransferPreview()" class="w-full bg-espresso-950 border border-tys-900 rounded-xl p-2.5 text-xs text-tys-100 font-semibold focus:outline-none focus:border-tys-600">
                     </select>
-                    <!-- Mobile: 2 nút to, bấm 1 lần thay vì mở dropdown -->
-                    <div class="sm:hidden grid grid-cols-2 gap-1.5">
-                        <button type="button" id="btnPayCash" onclick="setPaymentMethodMobile('Tiền mặt')" class="payment-btn-mobile py-2 rounded-lg border text-[11px] font-bold flex items-center justify-center gap-1 transition active:scale-95">
-                            <span>💵</span> Tiền mặt
-                        </button>
-                        <button type="button" id="btnPayQR" onclick="setPaymentMethodMobile('Chuyển khoản QR')" class="payment-btn-mobile py-2 rounded-lg border text-[11px] font-bold flex items-center justify-center gap-1 transition active:scale-95">
-                            <span>📱</span> CK QR
-                        </button>
+                </div>
+
+                <div class="p-3 bg-espresso-950 rounded-xl border border-tys-900 space-y-2">
+                    <div class="text-[10px] font-bold text-stone-500 uppercase tracking-wider flex items-center justify-between">
+                        <span>Xem trước kết quả</span>
+                        <span id="transferActionBadge" class="px-2 py-0.5 rounded bg-tys-900/60 text-tys-300 border border-tys-800 text-[9px]">Chuyển bàn</span>
                     </div>
-                </div>
-                <div>
-                    <label class="block font-semibold text-stone-500 text-[10px] uppercase mb-1">Ghi chú bàn</label>
-                    <input type="text" id="tableNoteInput" placeholder="VD: 2 khách..." class="w-full bg-espresso-950 border border-tys-900 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
+                    <div id="transferPreviewBox" class="text-xs space-y-1 text-stone-300"></div>
                 </div>
             </div>
 
-            <div id="quickPaymentActions" class="p-2 bg-brick-950/40 border border-brick-800 rounded-xl flex items-center justify-between sticky bottom-0 z-10 backdrop-blur-sm sm:static sm:backdrop-blur-none">
-                <div>
-                    <div class="text-xs font-bold text-brick-300"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> Khách thanh toán?</div>
-                </div>
-                <button type="button" onclick="markAsPaidAndClose()" class="px-3 py-1 rounded-lg bg-sage-600 hover:bg-sage-500 text-ink font-bold text-xs flex items-center gap-1 transition">
-                    <i class="fa-solid fa-check"></i> Thu Tiền Ngay
+            <div class="flex items-center justify-end gap-2 pt-1 border-t border-tys-900">
+                <button onclick="closeTransferModal()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300">Hủy</button>
+                <button onclick="executeTransferOrMerge()" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-tys-500 hover:bg-tys-600 text-ink flex items-center gap-1 active:scale-95 transition">
+                    <i class="fa-solid fa-check"></i> Xác nhận
                 </button>
             </div>
-
-        </div>
-
-        <div class="bg-espresso-950 px-4 py-2.5 border-t border-tys-900 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <button type="button" onclick="clearTableData()" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-brick-400 hover:bg-brick-500/10 transition">
-                    <i class="fa-solid fa-trash mr-1"></i> Xoá bàn
-                </button>
-                <button type="button" onclick="openTransferModal(activeTableId)" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-tys-400 hover:bg-tys-500/10 transition flex items-center gap-1">
-                    <i class="fa-solid fa-right-left"></i> Chuyển / Gộp
-                </button>
-            </div>
-            <div class="flex items-center gap-2">
-                <button type="button" onclick="closeModal()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300 transition">Hủy</button>
-                <button type="button" onclick="saveModalChanges()" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-tys-500 hover:bg-tys-600 text-ink transition">Lưu thay đổi</button>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<!-- Transfer/Merge Modal -->
-<div id="transferModal" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-espresso-900 border border-tys-800 w-full max-w-md rounded-2xl p-4 space-y-4 text-stone-200 shadow-xl modal-fade-in">
-        <div class="flex items-center justify-between border-b border-tys-900 pb-2.5">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-tys-900/60 text-tys-300 flex items-center justify-center font-bold text-sm border border-tys-800">
-                    <i class="fa-solid fa-right-left"></i>
-                </div>
-                <div>
-                    <h3 class="text-sm font-bold text-tys-100" id="transferModalTitle">Chuyển / Gộp Bàn</h3>
-                    <p class="text-[10px] text-stone-500">Di chuyển dữ liệu hoặc kết hợp đơn hàng giữa 2 bàn</p>
-                </div>
-            </div>
-            <button onclick="closeTransferModal()" class="w-7 h-7 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-400 hover:text-stone-100 flex items-center justify-center transition">
-                <i class="fa-solid fa-xmark text-xs"></i>
-            </button>
-        </div>
-
-        <div class="space-y-3 text-xs">
-            <div>
-                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Hành động</label>
-                <div class="grid grid-cols-2 gap-2">
-                    <button type="button" id="btnModeTransfer" onclick="setTransferMode('transfer')" class="p-2.5 rounded-xl border border-tys-600 bg-tys-900/40 text-tys-300 font-bold flex items-center justify-center gap-1.5 transition active:scale-95">
-                        <i class="fa-solid fa-arrow-right"></i> Chuyển Bàn
-                    </button>
-                    <button type="button" id="btnModeMerge" onclick="setTransferMode('merge')" class="p-2.5 rounded-xl border border-tys-900 bg-espresso-950 text-stone-400 font-bold flex items-center justify-center gap-1.5 transition active:scale-95">
-                        <i class="fa-solid fa-object-group"></i> Gộp Bàn
-                    </button>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Chọn bàn đích</label>
-                <select id="targetTableSelect" onchange="updateTransferPreview()" class="w-full bg-espresso-950 border border-tys-900 rounded-xl p-2.5 text-xs text-tys-100 font-semibold focus:outline-none focus:border-tys-600">
-                </select>
-            </div>
-
-            <div class="p-3 bg-espresso-950 rounded-xl border border-tys-900 space-y-2">
-                <div class="text-[10px] font-bold text-stone-500 uppercase tracking-wider flex items-center justify-between">
-                    <span>Xem trước kết quả</span>
-                    <span id="transferActionBadge" class="px-2 py-0.5 rounded bg-tys-900/60 text-tys-300 border border-tys-800 text-[9px]">Chuyển bàn</span>
-                </div>
-                <div id="transferPreviewBox" class="text-xs space-y-1 text-stone-300"></div>
-            </div>
-        </div>
-
-        <div class="flex items-center justify-end gap-2 pt-1 border-t border-tys-900">
-            <button onclick="closeTransferModal()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300">Hủy</button>
-            <button onclick="executeTransferOrMerge()" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-tys-500 hover:bg-tys-600 text-ink flex items-center gap-1 active:scale-95 transition">
-                <i class="fa-solid fa-check"></i> Xác nhận
-            </button>
         </div>
     </div>
-</div>
 
-<!-- Reset Data Modal -->
-<div id="resetModal" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-espresso-900 border border-tys-800 w-full max-w-sm rounded-2xl p-4 space-y-3 text-center shadow-xl modal-fade-in">
-        <div class="w-10 h-10 rounded-full bg-brick-950/60 text-brick-400 flex items-center justify-center mx-auto text-lg border border-brick-800">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-        </div>
-        <h3 class="text-sm font-bold text-tys-100">Đặt lại toàn bộ dữ liệu bàn?</h3>
-        <p class="text-xs text-stone-400">Tất cả 29 bàn sẽ được chuyển về trạng thái TRỐNG. Bạn có chắc chắn không?</p>
-        <div class="flex items-center justify-center gap-2 pt-1">
-            <button onclick="closeResetModal()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300">Hủy</button>
-            <button onclick="confirmResetAllData()" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-brick-700 hover:bg-brick-600 text-tys-50">Đặt lại ngay</button>
+    <!-- Reset Data Modal -->
+    <div id="resetModal" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-espresso-900 border border-tys-800 w-full max-w-sm rounded-2xl p-4 space-y-3 text-center shadow-xl modal-fade-in">
+            <div class="w-10 h-10 rounded-full bg-brick-950/60 text-brick-400 flex items-center justify-center mx-auto text-lg border border-brick-800">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-sm font-bold text-tys-100">Đặt lại toàn bộ dữ liệu bàn?</h3>
+            <p class="text-xs text-stone-400">Tất cả 29 bàn sẽ được chuyển về trạng thái TRỐNG. Bạn có chắc chắn không?</p>
+            <div class="flex items-center justify-center gap-2 pt-1">
+                <button onclick="closeResetModal()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300">Hủy</button>
+                <button onclick="confirmResetAllData()" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-brick-700 hover:bg-brick-600 text-tys-50">Đặt lại ngay</button>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    const TOTAL_TABLES = 29;
-    let tablesData = {};
-    let activeTableId = null;
-    let currentFilter = 'all';
+    <script>
+        const TOTAL_TABLES = 29;
+        let tablesData = {};
+        let activeTableId = null;
+        let currentFilter = 'all';
 
-    // Cập nhật Base Width và Height mới (scale 1.5x)
-    const MAP_BASE_WIDTH = 2100;
-    const MAP_BASE_HEIGHT = 1350;
-    let scale = 1.0;
-    let panX = 0;
-    let panY = 0;
-    let isDragging = false;
-    let startX = 0;
-    let startY = 0;
-    let initialPinchDistance = null;
-    let initialScale = 1.0;
+        // Cập nhật Base Width và Height mới (scale 1.5x)
+        const MAP_BASE_WIDTH = 2100;
+        const MAP_BASE_HEIGHT = 1350;
+        let scale = 1.0;
+        let panX = 0;
+        let panY = 0;
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+        let initialPinchDistance = null;
+        let initialScale = 1.0;
 
-    let lastQuickPayState = null;
-    let toastTimeout = null;
-    let sharedAudioCtx = null;
+        let lastQuickPayState = null;
+        let toastTimeout = null;
+        let sharedAudioCtx = null;
 
-    function playQuickPaySound() {
-        try {
-            if (!sharedAudioCtx) {
-                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                if (AudioCtx) sharedAudioCtx = new AudioCtx();
-            }
-            if (!sharedAudioCtx) return;
+        function playQuickPaySound() {
+            try {
+                if (!sharedAudioCtx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) sharedAudioCtx = new AudioCtx();
+                }
+                if (!sharedAudioCtx) return;
 
-            if (sharedAudioCtx.state === 'suspended') {
-                sharedAudioCtx.resume();
-            }
+                if (sharedAudioCtx.state === 'suspended') {
+                    sharedAudioCtx.resume();
+                }
 
-            const ctx = sharedAudioCtx;
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
+                const ctx = sharedAudioCtx;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+                
+                gain.gain.setValueAtTime(0.18, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+                
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.3);
+            } catch(e) {}
+        }
+
+        function updateMapTransform() {
+            const wrapper = document.getElementById('mapWrapper');
+            if (!wrapper) return;
+            scale = Math.min(Math.max(0.1, scale), 2.5);
+            wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+        }
+
+        function resetZoomAndFit() {
+            const container = document.getElementById('mapContainer');
+            if (!container) return;
+            const availW = container.clientWidth;
+            const availH = container.clientHeight;
+            if (availW <= 0 || availH <= 0) return;
             
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+            const scaleX = availW / MAP_BASE_WIDTH;
+            const scaleY = availH / MAP_BASE_HEIGHT;
+            scale = Math.min(scaleX, scaleY);
             
-            gain.gain.setValueAtTime(0.18, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+            panX = (availW - MAP_BASE_WIDTH * scale) / 2;
+            panY = (availH - MAP_BASE_HEIGHT * scale) / 2;
             
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.3);
-        } catch(e) {}
-    }
-
-    function updateMapTransform() {
-        const wrapper = document.getElementById('mapWrapper');
-        if (!wrapper) return;
-        scale = Math.min(Math.max(0.1, scale), 2.5);
-        wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
-    }
-
-    function resetZoomAndFit() {
-        const container = document.getElementById('mapContainer');
-        if (!container) return;
-        const availW = container.clientWidth;
-        const availH = container.clientHeight;
-        if (availW <= 0 || availH <= 0) return;
-        
-        const scaleX = availW / MAP_BASE_WIDTH;
-        const scaleY = availH / MAP_BASE_HEIGHT;
-        scale = Math.min(scaleX, scaleY);
-        
-        panX = (availW - MAP_BASE_WIDTH * scale) / 2;
-        panY = (availH - MAP_BASE_HEIGHT * scale) / 2;
-        
-        updateMapTransform();
-    }
-
-    function initInteractiveMapEvents() {
-        const container = document.getElementById('mapContainer');
-        if (!container) return;
-
-        container.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
-            const rect = container.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-            panX = mouseX - (mouseX - panX) * zoomFactor;
-            panY = mouseY - (mouseY - panY) * zoomFactor;
-            scale *= zoomFactor;
             updateMapTransform();
-        }, { passive: false });
+        }
 
-        container.addEventListener('mousedown', (e) => {
-            if (e.target.closest('.table-btn') || e.target.closest('button')) return;
-            isDragging = true;
-            startX = e.clientX - panX;
-            startY = e.clientY - panY;
-        });
+        function initInteractiveMapEvents() {
+            const container = document.getElementById('mapContainer');
+            if (!container) return;
 
-        window.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            panX = e.clientX - startX;
-            panY = e.clientY - startY;
-            updateMapTransform();
-        });
+            container.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+                const rect = container.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+                panX = mouseX - (mouseX - panX) * zoomFactor;
+                panY = mouseY - (mouseY - panY) * zoomFactor;
+                scale *= zoomFactor;
+                updateMapTransform();
+            }, { passive: false });
 
-        window.addEventListener('mouseup', () => { isDragging = false; });
-
-        container.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
+            container.addEventListener('mousedown', (e) => {
                 if (e.target.closest('.table-btn') || e.target.closest('button')) return;
                 isDragging = true;
-                startX = e.touches[0].clientX - panX;
-                startY = e.touches[0].clientY - panY;
-            } else if (e.touches.length === 2) {
-                isDragging = false;
-                initialPinchDistance = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                initialScale = scale;
-            }
-        }, { passive: true });
+                startX = e.clientX - panX;
+                startY = e.clientY - panY;
+            });
 
-        container.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 1 && isDragging) {
-                panX = e.touches[0].clientX - startX;
-                panY = e.touches[0].clientY - startY;
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                panX = e.clientX - startX;
+                panY = e.clientY - startY;
                 updateMapTransform();
-            } else if (e.touches.length === 2 && initialPinchDistance) {
-                const currentDist = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                const zoomRatio = currentDist / initialPinchDistance;
-                scale = initialScale * zoomRatio;
-                updateMapTransform();
-            }
-        }, { passive: true });
+            });
 
-        container.addEventListener('touchend', (e) => {
-            if (e.touches.length < 2) initialPinchDistance = null;
-            if (e.touches.length === 0) isDragging = false;
-        });
-    }
+            window.addEventListener('mouseup', () => { isDragging = false; });
 
-    function initData() {
-        const saved = localStorage.getItem('cafe_tables_tys');
-        if (saved) {
-            try {
-                tablesData = JSON.parse(saved);
-            } catch(e) {
+            container.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    if (e.target.closest('.table-btn') || e.target.closest('button')) return;
+                    isDragging = true;
+                    startX = e.touches[0].clientX - panX;
+                    startY = e.touches[0].clientY - panY;
+                } else if (e.touches.length === 2) {
+                    isDragging = false;
+                    initialPinchDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    initialScale = scale;
+                }
+            }, { passive: true });
+
+            container.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 1 && isDragging) {
+                    panX = e.touches[0].clientX - startX;
+                    panY = e.touches[0].clientY - startY;
+                    updateMapTransform();
+                } else if (e.touches.length === 2 && initialPinchDistance) {
+                    const currentDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    const zoomRatio = currentDist / initialPinchDistance;
+                    scale = initialScale * zoomRatio;
+                    updateMapTransform();
+                }
+            }, { passive: true });
+
+            container.addEventListener('touchend', (e) => {
+                if (e.touches.length < 2) initialPinchDistance = null;
+                if (e.touches.length === 0) isDragging = false;
+            });
+        }
+
+        function initData() {
+            const saved = localStorage.getItem('cafe_tables_tys');
+            if (saved) {
+                try {
+                    tablesData = JSON.parse(saved);
+                } catch(e) {
+                    generateDefaultData();
+                }
+            } else {
                 generateDefaultData();
             }
-        } else {
-            generateDefaultData();
-        }
-        
-        for (let i = 1; i <= TOTAL_TABLES; i++) {
-            if (!tablesData[i]) {
-                tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '' };
-            }
-        }
-    }
-
-    function generateDefaultData() {
-        tablesData = {};
-        for (let i = 1; i <= TOTAL_TABLES; i++) {
-            tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '' };
-        }
-
-        tablesData[2] = { id: 2, status: 'unpaid', items: [{name: 'Cà phê đen đá', price: 22}], total: 22, startTime: Date.now() - 15*60*1000, paymentMethod: 'Tiền mặt', note: 'Mới vào' };
-        tablesData[9] = { id: 9, status: 'unpaid', items: [{name: 'Cà phê đen đá', price: 22}], total: 22, startTime: Date.now() - 35*60*1000, paymentMethod: 'Tiền mặt', note: 'Sắp về' };
-        tablesData[12] = { id: 12, status: 'unpaid', items: [{name: 'Bạc xỉu', price: 25}], total: 25, startTime: Date.now() - 55*60*1000, paymentMethod: 'Tiền mặt', note: 'Ngồi lâu - Nhấn giữ để thu tiền' };
-        
-        tablesData[4] = { id: 4, status: 'paid', items: [{name: 'Cà phê đen đá', price: 22}, {name: 'Cà phê đen đá', price: 22}], total: 44, startTime: Date.now() - 40*60*1000, paymentMethod: 'Chuyển khoản QR', note: 'Đã CK VietQR' };
-        tablesData[17] = { id: 17, status: 'paid', items: [{name: 'Cà phê đen đá', price: 22}], total: 22, startTime: Date.now() - 5*60*1000, paymentMethod: 'Tiền mặt', note: 'Quầy bar' };
-        tablesData[25] = { id: 25, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: 'Vừa đi' };
-    }
-
-    function saveData() {
-        localStorage.setItem('cafe_tables_tys', JSON.stringify(tablesData));
-        updateDashboardStats();
-    }
-
-    let touchStartTimer = null;
-    let lastTapTimestamp = 0;
-    let lastTapTableId = null;
-    let singleTapTimeout = null;
-    let longPressFired = false;
-    let startTouchPos = { x: 0, y: 0 };
-
-    function attachTableGestureEvents(btnElement, tableId) {
-        btnElement.addEventListener('touchstart', (e) => {
-            const data = tablesData[tableId];
-            longPressFired = false;
-            const touch = e.touches[0];
-            startTouchPos = { x: touch.clientX, y: touch.clientY };
-
-            if (data && (data.status === 'unpaid' || data.status === 'paid')) {
-                if (data.status === 'unpaid') btnElement.classList.add('holding-quick-pay');
-                else if (data.status === 'paid') btnElement.classList.add('holding-quick-empty');
-                
-                touchStartTimer = setTimeout(() => {
-                    longPressFired = true;
-                    btnElement.classList.remove('holding-quick-pay', 'holding-quick-empty');
-                    triggerQuickStateTransition(tableId, 'nhấn giữ');
-                }, 500);
-            }
-        }, { passive: true });
-
-        btnElement.addEventListener('touchmove', (e) => {
-            if (!touchStartTimer) return;
-            const touch = e.touches[0];
-            const dx = Math.abs(touch.clientX - startTouchPos.x);
-            const dy = Math.abs(touch.clientY - startTouchPos.y);
-
-            if (dx > 8 || dy > 8) {
-                clearTimeout(touchStartTimer);
-                touchStartTimer = null;
-                btnElement.classList.remove('holding-quick-pay', 'holding-quick-empty');
-            }
-        }, { passive: true });
-
-        btnElement.addEventListener('touchend', (e) => {
-            btnElement.classList.remove('holding-quick-pay', 'holding-quick-empty');
-            if (touchStartTimer) {
-                clearTimeout(touchStartTimer);
-                touchStartTimer = null;
-            }
-
-            if (longPressFired) {
-                e.preventDefault();
-                return;
-            }
-
-            const data = tablesData[tableId];
-            const now = Date.now();
-
-            if (data && (data.status === 'unpaid' || data.status === 'paid') && lastTapTableId === tableId && (now - lastTapTimestamp) < 320) {
-                if (singleTapTimeout) clearTimeout(singleTapTimeout);
-                lastTapTimestamp = 0;
-                lastTapTableId = null;
-                e.preventDefault();
-                triggerQuickStateTransition(tableId, 'đúp 2 lần');
-                return;
-            }
-
-            lastTapTimestamp = now;
-            lastTapTableId = tableId;
-
-            if (singleTapTimeout) clearTimeout(singleTapTimeout);
-            singleTapTimeout = setTimeout(() => {
-                openModal(tableId);
-            }, 220);
-        });
-
-        btnElement.addEventListener('dblclick', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const data = tablesData[tableId];
-            if (data && (data.status === 'unpaid' || data.status === 'paid')) {
-                if (singleTapTimeout) clearTimeout(singleTapTimeout);
-                triggerQuickStateTransition(tableId, 'đúp chuột');
-            }
-        });
-    }
-
-    function triggerQuickStateTransition(tableId, gestureType) {
-        const table = tablesData[tableId];
-        if (!table) return;
-
-        lastQuickPayState = {
-            tableId: tableId,
-            status: table.status,
-            items: [...table.items],
-            total: table.total,
-            startTime: table.startTime,
-            paymentMethod: table.paymentMethod,
-            note: table.note
-        };
-
-        let messageHtml = '';
-        let flashClass = 'quick-pay-success-flash';
-        let toastConfig = {};
-
-        if (table.status === 'unpaid') {
-            table.status = 'paid';
-            if (!table.paymentMethod) table.paymentMethod = 'Tiền mặt';
-            messageHtml = `Bàn ${tableId}: <strong>${table.total}k</strong> -> Đã trả (${gestureType})`;
-            flashClass = 'quick-pay-success-flash';
-            toastConfig = {
-                title: 'Thanh toán 1-Chạm thành công!',
-                borderColor: 'border-sage-500',
-                iconBg: 'bg-sage-500',
-                iconClass: 'fa-solid fa-bolt',
-                titleColor: 'text-sage-400'
-            };
-        } else if (table.status === 'paid') {
-            table.status = 'empty';
-            table.items = [];
-            table.total = 0;
-            table.startTime = null;
-            table.note = '';
-            messageHtml = `Bàn ${tableId} -> Đã dọn xong (<strong>Trống</strong>) (${gestureType})`;
-            flashClass = 'quick-empty-success-flash';
-            toastConfig = {
-                title: 'Bàn đã dọn xong & Trống!',
-                borderColor: 'border-tys-500',
-                iconBg: 'bg-tys-500',
-                iconClass: 'fa-solid fa-sparkles',
-                titleColor: 'text-tys-400'
-            };
-        } else {
-            return;
-        }
-
-        saveData();
-
-        if (navigator.vibrate) {
-            try { navigator.vibrate([40, 60, 40]); } catch(e){}
-        }
-
-        playQuickPaySound();
-
-        renderTableNode(tableId);
-        const listView = document.getElementById('listView');
-        if (listView && !listView.classList.contains('hidden')) {
-            renderListView();
-        }
-
-        const btn = document.querySelector(`#table-node-${tableId} .table-btn`);
-        if (btn) {
-            btn.classList.add(flashClass);
-            setTimeout(() => btn.classList.remove(flashClass), 600);
-        }
-
-        showQuickPayToast(tableId, messageHtml, toastConfig);
-    }
-
-    function showQuickPayToast(tableId, messageHtml, config) {
-        const toast = document.getElementById('quickPayToast');
-        const toastCard = document.getElementById('quickPayToastCard');
-        const toastIconBg = document.getElementById('quickPayToastIconBg');
-        const toastIcon = document.getElementById('quickPayToastIcon');
-        const toastTitle = document.getElementById('quickPayToastTitle');
-        const toastMsg = document.getElementById('quickPayToastMessage');
-        
-        if (config) {
-            toastCard.className = `bg-espresso-900 border ${config.borderColor || 'border-sage-600'} shadow-xl rounded-xl p-3 flex items-center justify-between gap-3 text-stone-100 toast-slide-up`;
-            toastIconBg.className = `w-8 h-8 rounded-lg ${config.iconBg || 'bg-sage-600'} text-ink flex items-center justify-center shrink-0`;
-            toastIcon.className = `${config.iconClass || 'fa-solid fa-bolt'} text-sm`;
-            toastTitle.className = `text-xs font-bold ${config.titleColor || 'text-sage-400'} flex items-center gap-1`;
-            toastTitle.innerHTML = config.title || 'Thông báo';
-        }
-
-        toastMsg.innerHTML = messageHtml;
-        toast.classList.remove('hidden');
-
-        if (toastTimeout) clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(() => {
-            toast.classList.add('hidden');
-        }, 4500);
-    }
-
-    function undoQuickPay() {
-        if (!lastQuickPayState) return;
-
-        if (lastQuickPayState.sourceBackup) {
-            const src = lastQuickPayState.sourceBackup;
-            const tgt = lastQuickPayState.tableId;
-            tablesData[src.id] = { ...src };
-            tablesData[tgt] = {
-                id: tgt,
-                status: lastQuickPayState.status,
-                items: [...lastQuickPayState.items],
-                total: lastQuickPayState.total,
-                startTime: lastQuickPayState.startTime,
-                paymentMethod: lastQuickPayState.paymentMethod,
-                note: lastQuickPayState.note
-            };
-            renderTableNode(src.id);
-            renderTableNode(tgt);
-        } else {
-            const id = lastQuickPayState.tableId;
-            tablesData[id] = { ...lastQuickPayState };
-            renderTableNode(id);
-        }
-
-        lastQuickPayState = null;
-        saveData();
-        
-        const listView = document.getElementById('listView');
-        if (listView && !listView.classList.contains('hidden')) {
-            renderListView();
-        }
-
-        const toast = document.getElementById('quickPayToast');
-        toast.classList.add('hidden');
-
-        if (navigator.vibrate) {
-            try { navigator.vibrate(50); } catch(e){}
-        }
-    }
-
-    function renderTableNode(i) {
-        const container = document.getElementById(`table-node-${i}`);
-        if (!container) return;
-
-        const data = tablesData[i];
-        let bgStyle = "bg-espresso-900 border-tys-700 text-stone-500 shadow-[0_3px_10px_-2px_rgba(74,54,35,0.20),0_1px_2px_rgba(26,21,16,0.08)]";
-        let numColor = "text-stone-200";
-        let badgeHTML = "";
-        let timerText = "";
-
-        let elapsedMins = 0;
-        if (data.startTime && data.status !== 'empty') {
-            elapsedMins = Math.floor((Date.now() - data.startTime) / (1000 * 60));
-            timerText = `<div class="text-xs sm:text-[10px] opacity-75 mt-1 font-semibold tabular-nums"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</div>`;
-        }
-
-        if (data.status === 'unpaid') {
-            if (elapsedMins >= 45) {
-                bgStyle = "bg-brick-800 border-brick-accent text-tys-50 pulse-unpaid-fast";
-                numColor = "text-tys-50";
-                badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-tys-50 text-brick-ink flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Quá 45p</span>`;
-            } else if (elapsedMins >= 30) {
-                bgStyle = "bg-brick-900 border-brick-600 text-brick-100 pulse-unpaid";
-                numColor = "text-brick-100";
-                badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-600 text-tys-50 whitespace-nowrap">Chưa trả</span>`;
-            } else {
-                bgStyle = "bg-brick-950/70 border-brick-800 text-brick-300 backdrop-blur-sm"; 
-                numColor = "text-brick-ink";
-                badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-800 text-brick-200 whitespace-nowrap">Chưa trả</span>`;
-            }
-        } else if (data.status === 'paid') {
-            bgStyle = "bg-sage-950/80 border-sage-600 text-sage-200";
-            numColor = "text-sage-300";
-            badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-sage-700 text-sage-50 whitespace-nowrap">Đã trả</span>`;
-        }
-
-        const isFiltered = (currentFilter === 'all') ||
-                           (currentFilter === 'unpaid' && data.status === 'unpaid') ||
-                           (currentFilter === 'paid' && data.status === 'paid') ||
-                           (currentFilter === 'empty' && data.status === 'empty');
-
-        const opacityClass = isFiltered ? "opacity-100 scale-100" : "opacity-20 scale-90 pointer-events-none";
-
-        container.innerHTML = `
-            <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} flex flex-col items-center justify-center p-1.5 transition-all">
-                ${badgeHTML}
-                <span class="text-[9px] font-bold uppercase tracking-[0.18em] leading-none opacity-60 ${numColor}">Bàn</span>
-                <span class="text-[32px] font-extrabold leading-none tracking-tight tabular-nums ${numColor} mt-0.5">${i}</span>
-                ${data.total > 0 ? `<span class="text-base sm:text-sm font-bold text-tys-400 leading-none mt-2">${data.total}k</span>` : ''}
-                ${timerText}
-            </button>
-        `;
-
-        const btn = container.querySelector('.table-btn');
-        if (btn) attachTableGestureEvents(btn, i);
-    }
-
-    function renderMap() {
-        for (let i = 1; i <= TOTAL_TABLES; i++) {
-            renderTableNode(i);
-        }
-    }
-
-    function renderListView() {
-        const listGrid = document.getElementById('listGrid');
-        if(!listGrid) return;
-        const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
-        
-        const fragment = document.createDocumentFragment();
-
-        let visibleTables = [];
-        for (let i = 1; i <= TOTAL_TABLES; i++) {
-            const data = tablesData[i];
-
-            if (currentFilter !== 'all' && data.status !== currentFilter) continue;
-            if (query && !(`bàn ${i}`.includes(query) || i.toString() === query || data.note.toLowerCase().includes(query))) continue;
-
-            const elapsedMins = data.startTime ? Math.floor((Date.now() - data.startTime) / (1000 * 60)) : 0;
-            visibleTables.push({ i, data, elapsedMins });
-        }
-
-        const STATUS_PRIORITY = { unpaid: 0, paid: 1, empty: 2 };
-        visibleTables.sort((a, b) => {
-            const pa = STATUS_PRIORITY[a.data.status] ?? 3;
-            const pb = STATUS_PRIORITY[b.data.status] ?? 3;
-            if (pa !== pb) return pa - pb;
-            if (a.data.status === 'unpaid') return b.elapsedMins - a.elapsedMins;
-            if (a.data.status === 'paid') return (b.data.startTime || 0) - (a.data.startTime || 0);
-            return a.i - b.i;
-        });
-
-        visibleTables.forEach(({ i, data, elapsedMins }) => {
-            let statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-espresso-800 text-stone-500">Trống</span>`;
-
-            if (data.status === 'unpaid') {
-                if (elapsedMins >= 45) {
-                    statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-700 text-tys-50 inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Quá 45 phút</span>`;
-                } else {
-                    statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-950 text-brick-300 border border-brick-800 inline-flex items-center gap-1">Chưa thanh toán</span>`;
+            
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                if (!tablesData[i]) {
+                    tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '' };
                 }
             }
-            if (data.status === 'paid') statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-sage-950 text-sage-300 border border-sage-700">Đã thanh toán</span>`;
+        }
 
-            const card = document.createElement('div');
-            card.className = "bg-espresso-900 p-3.5 rounded-xl border border-tys-900 flex flex-col justify-between hover:border-tys-700 transition cursor-pointer select-none active:scale-[0.98]";
+        function generateDefaultData() {
+            tablesData = {};
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '' };
+            }
+
+            tablesData[2] = { id: 2, status: 'unpaid', items: [{name: 'Cà phê đen đá', price: 22}], total: 22, startTime: Date.now() - 15*60*1000, paymentMethod: 'Tiền mặt', note: 'Mới vào' };
+            tablesData[9] = { id: 9, status: 'unpaid', items: [{name: 'Cà phê đen đá', price: 22}], total: 22, startTime: Date.now() - 35*60*1000, paymentMethod: 'Tiền mặt', note: 'Sắp về' };
+            tablesData[12] = { id: 12, status: 'unpaid', items: [{name: 'Bạc xỉu', price: 25}], total: 25, startTime: Date.now() - 55*60*1000, paymentMethod: 'Tiền mặt', note: 'Ngồi lâu - Nhấn giữ để thu tiền' };
             
-            card.innerHTML = `
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="font-bold text-tys-100 text-base">Bàn ${i}</span>
-                        ${statusBadge}
-                    </div>
-                    <div class="text-xs text-stone-400 space-y-1">
-                        <div class="text-sm sm:text-xs"><i class="fa-solid fa-coins text-tys-500 mr-1"></i> Tổng: <b class="text-tys-200 font-extrabold">${data.total * 1000}đ</b></div>
-                        ${data.startTime ? `<div class="text-sm sm:text-xs font-medium"><i class="fa-regular fa-clock mr-1"></i> Thời gian ngồi: ${elapsedMins} phút</div>` : ''}
-                        ${data.note ? `<div class="italic text-stone-500"><i class="fa-regular fa-note-sticky mr-1"></i> ${data.note}</div>` : ''}
-                    </div>
-                </div>
-                <div class="mt-3 pt-2 border-t border-tys-900 flex items-center justify-between">
-                    ${data.status === 'unpaid' ? `
-                        <button onclick="event.stopPropagation(); triggerQuickStateTransition(${i}, '1-Chạm');" class="px-2.5 py-1 rounded-lg bg-sage-600 hover:bg-sage-500 text-ink font-bold text-[11px] flex items-center gap-1 transition active:scale-95">
-                            <i class="fa-solid fa-bolt"></i> Quick Pay
-                        </button>
-                    ` : data.status === 'paid' ? `
-                        <button onclick="event.stopPropagation(); triggerQuickStateTransition(${i}, '1-Chạm');" class="px-2.5 py-1 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-200 font-bold text-[11px] flex items-center gap-1 transition active:scale-95">
-                            <i class="fa-solid fa-check"></i> Dọn Xong
-                        </button>
-                    ` : `<span></span>`}
-                    <span class="text-[11px] font-bold text-tys-400 hover:underline">Chi tiết <i class="fa-solid fa-arrow-right text-[10px] ml-0.5"></i></span>
-                </div>
-            `;
-            
-            attachTableGestureEvents(card, i);
-            fragment.appendChild(card);
-        });
+            tablesData[4] = { id: 4, status: 'paid', items: [{name: 'Cà phê đen đá', price: 22}, {name: 'Cà phê đen đá', price: 22}], total: 44, startTime: Date.now() - 40*60*1000, paymentMethod: 'Chuyển khoản QR', note: 'Đã CK VietQR' };
+            tablesData[17] = { id: 17, status: 'paid', items: [{name: 'Cà phê đen đá', price: 22}], total: 22, startTime: Date.now() - 5*60*1000, paymentMethod: 'Tiền mặt', note: 'Quầy bar' };
+            tablesData[25] = { id: 25, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: 'Vừa đi' };
+        }
 
-        listGrid.innerHTML = '';
-        listGrid.appendChild(fragment);
-    }
+        function saveData() {
+            localStorage.setItem('cafe_tables_tys', JSON.stringify(tablesData));
+            updateDashboardStats();
+        }
 
-    function updateDashboardStats() {
-        let unpaid = 0, paid = 0;
-        Object.values(tablesData).forEach(t => {
-            if (t.status === 'unpaid') unpaid++;
-            if (t.status === 'paid') paid++;
-        });
-        document.getElementById('unpaidCount').innerText = unpaid;
-        document.getElementById('paidCount').innerText = paid;
+        let touchStartTimer = null;
+        let lastTapTimestamp = 0;
+        let lastTapTableId = null;
+        let singleTapTimeout = null;
+        let longPressFired = false;
+        let startTouchPos = { x: 0, y: 0 };
 
-        const totalMobileEl = document.getElementById('filterAllCountMobile');
-        const unpaidMobileEl = document.getElementById('filterUnpaidCountMobile');
-        const paidMobileEl = document.getElementById('filterPaidCountMobile');
-        if (totalMobileEl) totalMobileEl.innerText = TOTAL_TABLES;
-        if (unpaidMobileEl) unpaidMobileEl.innerText = unpaid;
-        if (paidMobileEl) paidMobileEl.innerText = paid;
-    }
+        function attachTableGestureEvents(btnElement, tableId) {
+            btnElement.addEventListener('touchstart', (e) => {
+                const data = tablesData[tableId];
+                longPressFired = false;
+                const touch = e.touches[0];
+                startTouchPos = { x: touch.clientX, y: touch.clientY };
 
-    function filterStatus(status) {
-        currentFilter = status;
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            if (btn.dataset.filter === status) btn.className = "filter-btn active-filter px-2.5 py-1 rounded-lg bg-tys-500 text-ink font-bold whitespace-nowrap flex-1 sm:flex-none text-center";
-            else btn.className = "filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors";
-        });
+                if (data && (data.status === 'unpaid' || data.status === 'paid')) {
+                    if (data.status === 'unpaid') btnElement.classList.add('holding-quick-pay');
+                    else if (data.status === 'paid') btnElement.classList.add('holding-quick-empty');
+                    
+                    touchStartTimer = setTimeout(() => {
+                        longPressFired = true;
+                        btnElement.classList.remove('holding-quick-pay', 'holding-quick-empty');
+                        triggerQuickStateTransition(tableId, 'nhấn giữ');
+                    }, 500);
+                }
+            }, { passive: true });
 
-        document.querySelectorAll('.filter-btn-mobile').forEach(btn => {
-            const f = btn.dataset.filter;
-            const isActive = f === status;
-            const base = "filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl transition-colors";
-            if (isActive) {
-                btn.className = `${base} bg-tys-500 text-ink font-bold`;
-            } else if (f === 'unpaid') {
-                btn.className = `${base} text-brick-300 bg-espresso-950/70 border border-brick-900/40`;
-            } else if (f === 'paid') {
-                btn.className = `${base} text-sage-300 bg-espresso-950/70 border border-sage-900/40`;
+            btnElement.addEventListener('touchmove', (e) => {
+                if (!touchStartTimer) return;
+                const touch = e.touches[0];
+                const dx = Math.abs(touch.clientX - startTouchPos.x);
+                const dy = Math.abs(touch.clientY - startTouchPos.y);
+
+                if (dx > 8 || dy > 8) {
+                    clearTimeout(touchStartTimer);
+                    touchStartTimer = null;
+                    btnElement.classList.remove('holding-quick-pay', 'holding-quick-empty');
+                }
+            }, { passive: true });
+
+            btnElement.addEventListener('touchend', (e) => {
+                btnElement.classList.remove('holding-quick-pay', 'holding-quick-empty');
+                if (touchStartTimer) {
+                    clearTimeout(touchStartTimer);
+                    touchStartTimer = null;
+                }
+
+                if (longPressFired) {
+                    e.preventDefault();
+                    return;
+                }
+
+                const data = tablesData[tableId];
+                const now = Date.now();
+
+                if (data && (data.status === 'unpaid' || data.status === 'paid') && lastTapTableId === tableId && (now - lastTapTimestamp) < 320) {
+                    if (singleTapTimeout) clearTimeout(singleTapTimeout);
+                    lastTapTimestamp = 0;
+                    lastTapTableId = null;
+                    e.preventDefault();
+                    triggerQuickStateTransition(tableId, 'đúp 2 lần');
+                    return;
+                }
+
+                lastTapTimestamp = now;
+                lastTapTableId = tableId;
+
+                if (singleTapTimeout) clearTimeout(singleTapTimeout);
+                singleTapTimeout = setTimeout(() => {
+                    openModal(tableId);
+                }, 220);
+            });
+
+            btnElement.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const data = tablesData[tableId];
+                if (data && (data.status === 'unpaid' || data.status === 'paid')) {
+                    if (singleTapTimeout) clearTimeout(singleTapTimeout);
+                    triggerQuickStateTransition(tableId, 'đúp chuột');
+                }
+            });
+        }
+
+        function triggerQuickStateTransition(tableId, gestureType) {
+            const table = tablesData[tableId];
+            if (!table) return;
+
+            lastQuickPayState = {
+                tableId: tableId,
+                status: table.status,
+                items: [...table.items],
+                total: table.total,
+                startTime: table.startTime,
+                paymentMethod: table.paymentMethod,
+                note: table.note
+            };
+
+            let messageHtml = '';
+            let flashClass = 'quick-pay-success-flash';
+            let toastConfig = {};
+
+            if (table.status === 'unpaid') {
+                table.status = 'paid';
+                if (!table.paymentMethod) table.paymentMethod = 'Tiền mặt';
+                messageHtml = `Bàn ${tableId}: <strong>${table.total}k</strong> -> Đã trả (${gestureType})`;
+                flashClass = 'quick-pay-success-flash';
+                toastConfig = {
+                    title: 'Thanh toán 1-Chạm thành công!',
+                    borderColor: 'border-sage-500',
+                    iconBg: 'bg-sage-500',
+                    iconClass: 'fa-solid fa-bolt',
+                    titleColor: 'text-sage-400'
+                };
+            } else if (table.status === 'paid') {
+                table.status = 'empty';
+                table.items = [];
+                table.total = 0;
+                table.startTime = null;
+                table.note = '';
+                messageHtml = `Bàn ${tableId} -> Đã dọn xong (<strong>Trống</strong>) (${gestureType})`;
+                flashClass = 'quick-empty-success-flash';
+                toastConfig = {
+                    title: 'Bàn đã dọn xong & Trống!',
+                    borderColor: 'border-tys-500',
+                    iconBg: 'bg-tys-500',
+                    iconClass: 'fa-solid fa-sparkles',
+                    titleColor: 'text-tys-400'
+                };
             } else {
-                btn.className = `${base} text-stone-400 bg-espresso-950/70 border border-tys-900`;
-            }
-        });
-        renderMap();
-        const listView = document.getElementById('listView');
-        if (listView && !listView.classList.contains('hidden')) {
-            renderListView();
-        }
-    }
-
-    function toggleView(mode) {
-        const mapView = document.getElementById('mapView');
-        const listView = document.getElementById('listView');
-        const btnViewMap = document.getElementById('btnViewMap');
-        const btnViewList = document.getElementById('btnViewList');
-        const btnToggleMobile = document.getElementById('btnToggleViewMobile');
-        const fab = document.getElementById('fabRecenter');
-
-        if (mode === 'map') {
-            mapView.classList.remove('hidden'); listView.classList.add('hidden');
-            btnViewMap.className = "p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink";
-            btnViewList.className = "p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors";
-            if (btnToggleMobile) btnToggleMobile.innerHTML = '<i class="fa-solid fa-list-ul text-sm"></i>';
-            if (fab) fab.classList.remove('hidden');
-            setTimeout(resetZoomAndFit, 20);
-        } else {
-            mapView.classList.add('hidden'); listView.classList.remove('hidden');
-            btnViewList.className = "p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink";
-            btnViewMap.className = "p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors";
-            if (btnToggleMobile) btnToggleMobile.innerHTML = '<i class="fa-solid fa-diagram-project text-sm"></i>';
-            if (fab) fab.classList.add('hidden');
-            renderListView();
-        }
-    }
-
-    function toggleViewMobile() {
-        const mapView = document.getElementById('mapView');
-        const isMapHidden = mapView && mapView.classList.contains('hidden');
-        toggleView(isMapHidden ? 'map' : 'list');
-    }
-
-    let selectedStatusInModal = 'empty';
-    let modalItems = [];
-
-    function openModal(tableId) {
-        activeTableId = tableId;
-        const data = tablesData[tableId];
-
-        document.getElementById('modalTableBadge').innerText = `B${tableId}`;
-        document.getElementById('modalTitle').innerText = `Quản Lý Bàn Số ${tableId}`;
-        document.getElementById('paymentMethodSelect').value = data.paymentMethod || 'Tiền mặt';
-        document.getElementById('tableNoteInput').value = data.note || '';
-        document.getElementById('customItemName').value = '';
-        document.getElementById('customItemPrice').value = '';
-        syncPaymentMethodButtons();
-
-        selectedStatusInModal = data.status || 'empty';
-        modalItems = [...(data.items || [])];
-
-        updateModalStatusButtons();
-        renderModalOrderList();
-
-        const quickPaymentActions = document.getElementById('quickPaymentActions');
-        if (data.status === 'unpaid') quickPaymentActions.classList.remove('hidden');
-        else quickPaymentActions.classList.add('hidden');
-
-        document.getElementById('tableModal').classList.remove('hidden');
-    }
-
-    function closeModal() {
-        document.getElementById('tableModal').classList.add('hidden');
-        activeTableId = null;
-    }
-
-    function setPaymentMethodMobile(value) {
-        const select = document.getElementById('paymentMethodSelect');
-        if (select) select.value = value;
-        syncPaymentMethodButtons();
-    }
-
-    function syncPaymentMethodButtons() {
-        const select = document.getElementById('paymentMethodSelect');
-        const value = select ? select.value : 'Tiền mặt';
-        const btnCash = document.getElementById('btnPayCash');
-        const btnQR = document.getElementById('btnPayQR');
-        const activeClass = "payment-btn-mobile py-2 rounded-lg border text-[11px] font-bold flex items-center justify-center gap-1 transition active:scale-95 bg-tys-500 border-tys-500 text-ink";
-        const inactiveClass = "payment-btn-mobile py-2 rounded-lg border text-[11px] font-bold flex items-center justify-center gap-1 transition active:scale-95 bg-espresso-950 border-tys-900 text-stone-300";
-        if (btnCash) btnCash.className = (value === 'Tiền mặt') ? activeClass : inactiveClass;
-        if (btnQR) btnQR.className = (value === 'Chuyển khoản QR') ? activeClass : inactiveClass;
-    }
-
-    function setSelectStatus(status) {
-        selectedStatusInModal = status;
-        updateModalStatusButtons();
-    }
-
-    function updateModalStatusButtons() {
-        const map = { empty: 'btnStatusEmpty', unpaid: 'btnStatusUnpaid', paid: 'btnStatusPaid' };
-        Object.keys(map).forEach(key => {
-            const btn = document.getElementById(map[key]);
-            if (!btn) return;
-            if (key === selectedStatusInModal) {
-                btn.classList.add('ring-2', 'ring-tys-500', 'bg-espresso-800');
-                btn.classList.remove('bg-espresso-950');
-            } else {
-                btn.classList.remove('ring-2', 'ring-tys-500', 'bg-espresso-800');
-                btn.classList.add('bg-espresso-950');
-            }
-        });
-    }
-
-    function addPresetItem(name, price) {
-        modalItems.push({ name, price });
-        if (selectedStatusInModal === 'empty') { selectedStatusInModal = 'unpaid'; updateModalStatusButtons(); }
-        renderModalOrderList();
-    }
-
-    function addCustomNoteItem() {
-        const nameInput = document.getElementById('customItemName');
-        const priceInput = document.getElementById('customItemPrice');
-        const name = nameInput.value.trim();
-        const priceVal = parseFloat(priceInput.value.trim());
-
-        if (name !== '' || !isNaN(priceVal)) {
-            const itemName = name !== '' ? name : 'Món tự ghi';
-            const itemPrice = !isNaN(priceVal) ? priceVal : 0;
-            modalItems.push({ name: itemName, price: itemPrice });
-
-            if (selectedStatusInModal === 'empty') { selectedStatusInModal = 'unpaid'; updateModalStatusButtons(); }
-            nameInput.value = ''; priceInput.value = '';
-            renderModalOrderList();
-        }
-    }
-
-    function removeModalItem(index) {
-        modalItems.splice(index, 1);
-        renderModalOrderList();
-    }
-
-    function renderModalOrderList() {
-        const container = document.getElementById('modalOrderList');
-        container.innerHTML = '';
-        let sum = 0;
-        if (modalItems.length === 0) {
-            container.innerHTML = `<div class="text-[11px] text-stone-500 text-center py-2 italic">Chưa chọn món nào</div>`;
-        } else {
-            modalItems.forEach((item, idx) => {
-                sum += item.price;
-                const row = document.createElement('div');
-                row.className = "flex items-center justify-between bg-stone-900 px-2.5 py-1 rounded border border-stone-800";
-                row.innerHTML = `
-                    <span class="text-stone-200 font-medium truncate max-w-[200px]">${item.name}</span>
-                    <div class="flex items-center gap-2 shrink-0">
-                        <span class="font-bold text-tys-500">${item.price}k</span>
-                        <button type="button" onclick="removeModalItem(${idx})" class="text-stone-500 hover:text-brick-400 transition px-1"><i class="fa-solid fa-xmark"></i></button>
-                    </div>
-                `;
-                container.appendChild(row);
-            });
-        }
-        document.getElementById('totalAmountDisplay').innerText = `Tổng: ${(sum * 1000).toLocaleString('vi-VN')}đ`;
-    }
-
-    function markAsPaidAndClose() {
-        if (!activeTableId) return;
-        selectedStatusInModal = 'paid';
-        saveModalChanges();
-    }
-
-    function saveModalChanges() {
-        if (!activeTableId) return;
-
-        const nameInput = document.getElementById('customItemName');
-        const priceInput = document.getElementById('customItemPrice');
-        const name = nameInput.value.trim();
-        const priceVal = parseFloat(priceInput.value.trim());
-
-        if (name !== '' || !isNaN(priceVal)) {
-            const itemName = name !== '' ? name : 'Món tự ghi';
-            const itemPrice = !isNaN(priceVal) ? priceVal : 0;
-            modalItems.push({ name: itemName, price: itemPrice });
-        }
-
-        const table = tablesData[activeTableId];
-        const prevStatus = table.status;
-
-        table.status = selectedStatusInModal;
-        table.items = [...modalItems];
-        table.total = modalItems.reduce((acc, curr) => acc + curr.price, 0);
-        table.paymentMethod = document.getElementById('paymentMethodSelect').value;
-        table.note = document.getElementById('tableNoteInput').value;
-
-        if (prevStatus === 'empty' && selectedStatusInModal !== 'empty') table.startTime = Date.now();
-        else if (selectedStatusInModal === 'empty') table.startTime = null;
-
-        saveData(); 
-        renderTableNode(activeTableId);
-        const listView = document.getElementById('listView');
-        if (listView && !listView.classList.contains('hidden')) renderListView(); 
-        closeModal();
-    }
-
-    function clearTableData() {
-        if (!activeTableId) return;
-        const targetId = activeTableId;
-        tablesData[targetId] = { id: targetId, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '' };
-        saveData(); 
-        renderTableNode(targetId);
-        const listView = document.getElementById('listView');
-        if (listView && !listView.classList.contains('hidden')) renderListView(); 
-        closeModal();
-    }
-
-    function openResetModal() { document.getElementById('resetModal').classList.remove('hidden'); }
-    function closeResetModal() { document.getElementById('resetModal').classList.add('hidden'); }
-    function confirmResetAllData() { generateDefaultData(); saveData(); renderMap(); renderListView(); closeResetModal(); }
-
-    let transferSourceId = null;
-    let transferMode = 'transfer';
-
-    function openTransferModal(sourceTableId) {
-        if (!sourceTableId) return;
-        transferSourceId = sourceTableId;
-        transferMode = 'transfer';
-
-        const sourceData = tablesData[sourceTableId];
-        if (!sourceData || (sourceData.status === 'empty' && sourceData.items.length === 0)) {
-            showQuickPayToast(sourceTableId, `Bàn ${sourceTableId} đang trống, không có dữ liệu để chuyển/gộp.`, {
-                title: 'Lưu ý',
-                borderColor: 'border-tys-500',
-                iconBg: 'bg-tys-500',
-                iconClass: 'fa-solid fa-circle-info',
-                titleColor: 'text-tys-400'
-            });
-            return;
-        }
-
-        closeModal();
-
-        document.getElementById('transferModalTitle').innerText = `Chuyển / Gộp từ Bàn ${sourceTableId}`;
-        
-        const select = document.getElementById('targetTableSelect');
-        const fragment = document.createDocumentFragment();
-
-        for (let i = 1; i <= TOTAL_TABLES; i++) {
-            if (i === sourceTableId) continue;
-            const targetData = tablesData[i];
-            let statusLabel = 'Trống';
-            if (targetData.status === 'unpaid') statusLabel = `Chưa trả (${targetData.total}k)`;
-            else if (targetData.status === 'paid') statusLabel = `Đã trả (${targetData.total}k)`;
-
-            const option = document.createElement('option');
-            option.value = i;
-            option.text = `Bàn ${i} - ${statusLabel}`;
-            fragment.appendChild(option);
-        }
-
-        select.innerHTML = '';
-        select.appendChild(fragment);
-
-        setTransferMode('transfer');
-        document.getElementById('transferModal').classList.remove('hidden');
-    }
-
-    function closeTransferModal() {
-        document.getElementById('transferModal').classList.add('hidden');
-        transferSourceId = null;
-    }
-
-    function setTransferMode(mode) {
-        transferMode = mode;
-        const btnTransfer = document.getElementById('btnModeTransfer');
-        const btnMerge = document.getElementById('btnModeMerge');
-        const badge = document.getElementById('transferActionBadge');
-
-        if (mode === 'transfer') {
-            btnTransfer.className = "p-2.5 rounded-xl border border-tys-600 bg-tys-900/40 text-tys-300 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
-            btnMerge.className = "p-2.5 rounded-xl border border-tys-900 bg-espresso-950 text-stone-400 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
-            badge.innerText = "Chuyển bàn";
-            badge.className = "px-2 py-0.5 rounded bg-tys-900/60 text-tys-300 border border-tys-800 text-[9px]";
-        } else {
-            btnMerge.className = "p-2.5 rounded-xl border border-tys-600 bg-tys-900/40 text-tys-300 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
-            btnTransfer.className = "p-2.5 rounded-xl border border-tys-900 bg-espresso-950 text-stone-400 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
-            badge.innerText = "Gộp bàn";
-            badge.className = "px-2 py-0.5 rounded bg-purple-900/40 text-purple-300 border border-purple-800 text-[9px]";
-        }
-
-        updateTransferPreview();
-    }
-
-    function updateTransferPreview() {
-        if (!transferSourceId) return;
-        const targetSelect = document.getElementById('targetTableSelect');
-        if (!targetSelect.value) return;
-
-        const targetId = parseInt(targetSelect.value);
-        const source = tablesData[transferSourceId];
-        const target = tablesData[targetId];
-
-        if (!source || !target) return;
-
-        const previewBox = document.getElementById('transferPreviewBox');
-
-        if (transferMode === 'transfer') {
-            previewBox.innerHTML = `
-                <div class="flex items-center justify-between text-tys-200 font-semibold">
-                    <span>Nguồn: Bàn ${transferSourceId} (${source.total}k)</span>
-                    <i class="fa-solid fa-arrow-right text-stone-500"></i>
-                    <span>Đích: Bàn ${targetId}</span>
-                </div>
-                <div class="text-[11px] text-stone-400 mt-1">
-                    • Tất cả ${source.items.length} món (${source.total}k) từ <b>Bàn ${transferSourceId}</b> sẽ chuyển sang <b>Bàn ${targetId}</b>.<br>
-                    • <b>Bàn ${transferSourceId}</b> sẽ trở về trạng thái <b>Trống</b>.
-                </div>
-            `;
-        } else {
-            const combinedTotal = (source.total || 0) + (target.total || 0);
-            const combinedItemsCount = (source.items ? source.items.length : 0) + (target.items ? target.items.length : 0);
-
-            previewBox.innerHTML = `
-                <div class="flex items-center justify-between text-purple-400 font-semibold">
-                    <span>Bàn ${transferSourceId} (${source.total}k) + Bàn ${targetId} (${target.total}k)</span>
-                    <i class="fa-solid fa-plus text-stone-500"></i>
-                </div>
-                <div class="text-[11px] text-stone-300 font-bold mt-1">
-                    ➔ Tổng sau khi gộp Bàn ${targetId}: <span class="text-tys-400">${combinedTotal}k</span> (${combinedItemsCount} món)
-                </div>
-                <div class="text-[10px] text-stone-400">
-                    • <b>Bàn ${transferSourceId}</b> sẽ trống sau khi gộp.<br>
-                    • Thời gian ngồi của Bàn ${targetId} sẽ lấy mốc sớm nhất.
-                </div>
-            `;
-        }
-    }
-
-    function executeTransferOrMerge() {
-        if (!transferSourceId) return;
-        const targetId = parseInt(document.getElementById('targetTableSelect').value);
-        if (!targetId || targetId === transferSourceId) return;
-
-        const source = tablesData[transferSourceId];
-        const target = tablesData[targetId];
-
-        const srcId = transferSourceId;
-
-        lastQuickPayState = {
-            tableId: targetId,
-            status: target.status,
-            items: [...target.items],
-            total: target.total,
-            startTime: target.startTime,
-            paymentMethod: target.paymentMethod,
-            note: target.note,
-            sourceBackup: {
-                id: srcId,
-                status: source.status,
-                items: [...source.items],
-                total: source.total,
-                startTime: source.startTime,
-                paymentMethod: source.paymentMethod,
-                note: source.note
-            }
-        };
-
-        if (transferMode === 'transfer') {
-            tablesData[targetId] = {
-                id: targetId,
-                status: source.status === 'empty' ? 'unpaid' : source.status,
-                items: [...source.items],
-                total: source.total,
-                startTime: source.startTime,
-                paymentMethod: source.paymentMethod || 'Tiền mặt',
-                note: source.note ? `(Từ B${srcId}) ${source.note}` : `Chuyển từ Bàn ${srcId}`
-            };
-
-            tablesData[srcId] = {
-                id: srcId,
-                status: 'empty',
-                items: [],
-                total: 0,
-                startTime: null,
-                paymentMethod: 'Tiền mặt',
-                note: ''
-            };
-
-            showQuickPayToast(targetId, `Đã chuyển thành công từ <b>Bàn ${srcId}</b> sang <b>Bàn ${targetId}</b>!`, {
-                title: 'Chuyển bàn thành công!',
-                borderColor: 'border-tys-500',
-                iconBg: 'bg-tys-500',
-                iconClass: 'fa-solid fa-right-left',
-                titleColor: 'text-tys-400'
-            });
-
-        } else {
-            const mergedItems = [...(target.items || []), ...(source.items || [])];
-            const mergedTotal = (target.total || 0) + (source.total || 0);
-            
-            let earliestTime = target.startTime;
-            if (source.startTime && (!earliestTime || source.startTime < earliestTime)) {
-                earliestTime = source.startTime;
+                return;
             }
 
-            let mergedStatus = target.status;
-            if (source.status === 'unpaid' || target.status === 'unpaid') {
-                mergedStatus = 'unpaid';
-            } else if (source.status === 'paid' && target.status === 'paid') {
-                mergedStatus = 'paid';
+            saveData();
+
+            if (navigator.vibrate) {
+                try { navigator.vibrate([40, 60, 40]); } catch(e){}
             }
 
-            let combinedNote = [target.note, source.note ? `(Gộp B${srcId}: ${source.note})` : '']
-                                .filter(Boolean).join(' | ');
+            playQuickPaySound();
 
-            tablesData[targetId] = {
-                id: targetId,
-                status: mergedStatus,
-                items: mergedItems,
-                total: mergedTotal,
-                startTime: earliestTime || Date.now(),
-                paymentMethod: target.paymentMethod || source.paymentMethod || 'Tiền mặt',
-                note: combinedNote || `Gộp từ Bàn ${srcId}`
-            };
-
-            tablesData[srcId] = {
-                id: srcId,
-                status: 'empty',
-                items: [],
-                total: 0,
-                startTime: null,
-                paymentMethod: 'Tiền mặt',
-                note: ''
-            };
-
-            showQuickPayToast(targetId, `Đã gộp thành công <b>Bàn ${srcId}</b> vào <b>Bàn ${targetId}</b> (Tổng: ${mergedTotal}k)!`, {
-                title: 'Gộp bàn thành công!',
-                borderColor: 'border-purple-700',
-                iconBg: 'bg-purple-700',
-                iconClass: 'fa-solid fa-object-group',
-                titleColor: 'text-purple-500'
-            });
-        }
-
-        saveData();
-        closeTransferModal();
-
-        requestAnimationFrame(() => {
-            renderTableNode(srcId);
-            renderTableNode(targetId);
-
-            const targetBtn = document.querySelector(`#table-node-${targetId} .table-btn`);
-            if (targetBtn) {
-                targetBtn.classList.add('transfer-success-flash');
-                setTimeout(() => targetBtn.classList.remove('transfer-success-flash'), 600);
-            }
-
+            renderTableNode(tableId);
             const listView = document.getElementById('listView');
             if (listView && !listView.classList.contains('hidden')) {
                 renderListView();
             }
-        });
 
-        playQuickPaySound();
-    }
-
-    function updateClock() {
-        const now = new Date();
-        document.getElementById('liveClock').innerText = now.toLocaleTimeString('vi-VN') + " - " + now.toLocaleDateString('vi-VN');
-    }
-
-    window.onload = function() {
-        initData();
-        renderMap();
-        updateDashboardStats();
-        updateClock();
-        
-        initInteractiveMapEvents();
-        
-        resetZoomAndFit();
-        setTimeout(resetZoomAndFit, 100);
-
-        setInterval(updateClock, 1000);
-        
-        setInterval(() => {
-            renderMap();
-            if(!document.getElementById('listView').classList.contains('hidden')) {
-                renderListView(); 
+            const btn = document.querySelector(`#table-node-${tableId} .table-btn`);
+            if (btn) {
+                btn.classList.add(flashClass);
+                setTimeout(() => btn.classList.remove(flashClass), 600);
             }
-        }, 15000); 
-    };
 
-    window.addEventListener('resize', resetZoomAndFit);
-    window.addEventListener('orientationchange', () => {
-        setTimeout(resetZoomAndFit, 200);
-    });
-</script>
+            showQuickPayToast(tableId, messageHtml, toastConfig);
+        }
+
+        function showQuickPayToast(tableId, messageHtml, config) {
+            const toast = document.getElementById('quickPayToast');
+            const toastCard = document.getElementById('quickPayToastCard');
+            const toastIconBg = document.getElementById('quickPayToastIconBg');
+            const toastIcon = document.getElementById('quickPayToastIcon');
+            const toastTitle = document.getElementById('quickPayToastTitle');
+            const toastMsg = document.getElementById('quickPayToastMessage');
+            
+            if (config) {
+                toastCard.className = `bg-espresso-900 border ${config.borderColor || 'border-sage-600'} shadow-xl rounded-xl p-3 flex items-center justify-between gap-3 text-stone-100 toast-slide-up`;
+                toastIconBg.className = `w-8 h-8 rounded-lg ${config.iconBg || 'bg-sage-600'} text-ink flex items-center justify-center shrink-0`;
+                toastIcon.className = `${config.iconClass || 'fa-solid fa-bolt'} text-sm`;
+                toastTitle.className = `text-xs font-bold ${config.titleColor || 'text-sage-400'} flex items-center gap-1`;
+                toastTitle.innerHTML = config.title || 'Thông báo';
+            }
+
+            toastMsg.innerHTML = messageHtml;
+            toast.classList.remove('hidden');
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 4500);
+        }
+
+        function undoQuickPay() {
+            if (!lastQuickPayState) return;
+
+            if (lastQuickPayState.sourceBackup) {
+                const src = lastQuickPayState.sourceBackup;
+                const tgt = lastQuickPayState.tableId;
+                tablesData[src.id] = { ...src };
+                tablesData[tgt] = {
+                    id: tgt,
+                    status: lastQuickPayState.status,
+                    items: [...lastQuickPayState.items],
+                    total: lastQuickPayState.total,
+                    startTime: lastQuickPayState.startTime,
+                    paymentMethod: lastQuickPayState.paymentMethod,
+                    note: lastQuickPayState.note
+                };
+                renderTableNode(src.id);
+                renderTableNode(tgt);
+            } else {
+                const id = lastQuickPayState.tableId;
+                tablesData[id] = { ...lastQuickPayState };
+                renderTableNode(id);
+            }
+
+            lastQuickPayState = null;
+            saveData();
+            
+            const listView = document.getElementById('listView');
+            if (listView && !listView.classList.contains('hidden')) {
+                renderListView();
+            }
+
+            const toast = document.getElementById('quickPayToast');
+            toast.classList.add('hidden');
+
+            if (navigator.vibrate) {
+                try { navigator.vibrate(50); } catch(e){}
+            }
+        }
+
+        function renderTableNode(i) {
+            const container = document.getElementById(`table-node-${i}`);
+            if (!container) return;
+
+            const data = tablesData[i];
+            let bgStyle = "bg-espresso-900 border-tys-700 text-stone-500 shadow-[0_3px_10px_-2px_rgba(74,54,35,0.20),0_1px_2px_rgba(26,21,16,0.08)]";
+            let numColor = "text-stone-200";
+            let badgeHTML = "";
+            let timerText = "";
+
+            let elapsedMins = 0;
+            if (data.startTime && data.status !== 'empty') {
+                elapsedMins = Math.floor((Date.now() - data.startTime) / (1000 * 60));
+                timerText = `<div class="text-xs sm:text-[10px] opacity-75 mt-1 font-semibold tabular-nums"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</div>`;
+            }
+
+            // Đã scale các kích thước UI con bên trong nút bấm cho hợp lý
+            if (data.status === 'unpaid') {
+                if (elapsedMins >= 45) {
+                    bgStyle = "bg-brick-800 border-brick-accent text-tys-50 pulse-unpaid-fast";
+                    numColor = "text-tys-50";
+                    badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-tys-50 text-brick-ink flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Quá 45p</span>`;
+                } else if (elapsedMins >= 30) {
+                    bgStyle = "bg-brick-900 border-brick-600 text-brick-100 pulse-unpaid";
+                    numColor = "text-brick-100";
+                    badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-600 text-tys-50 whitespace-nowrap">Chưa trả</span>`;
+                } else {
+                    bgStyle = "bg-brick-950/70 border-brick-800 text-brick-300 backdrop-blur-sm"; 
+                    numColor = "text-brick-ink";
+                    badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-800 text-brick-200 whitespace-nowrap">Chưa trả</span>`;
+                }
+            } else if (data.status === 'paid') {
+                bgStyle = "bg-sage-950/80 border-sage-600 text-sage-200";
+                numColor = "text-sage-300";
+                badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-sage-700 text-sage-50 whitespace-nowrap">Đã trả</span>`;
+            }
+
+            const isFiltered = (currentFilter === 'all') ||
+                               (currentFilter === 'unpaid' && data.status === 'unpaid') ||
+                               (currentFilter === 'paid' && data.status === 'paid') ||
+                               (currentFilter === 'empty' && data.status === 'empty');
+
+            const opacityClass = isFiltered ? "opacity-100 scale-100" : "opacity-20 scale-90 pointer-events-none";
+
+            // Nút bấm từ 68px tăng thành 102px
+            container.innerHTML = `
+                <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} flex flex-col items-center justify-center p-1.5 transition-all">
+                    ${badgeHTML}
+                    <span class="text-[9px] font-bold uppercase tracking-[0.18em] leading-none opacity-60 ${numColor}">Bàn</span>
+                    <span class="text-[32px] font-extrabold leading-none tracking-tight tabular-nums ${numColor} mt-0.5">${i}</span>
+                    ${data.total > 0 ? `<span class="text-base sm:text-sm font-bold text-tys-400 leading-none mt-2">${data.total}k</span>` : ''}
+                    ${timerText}
+                </button>
+            `;
+
+            const btn = container.querySelector('.table-btn');
+            if (btn) attachTableGestureEvents(btn, i);
+        }
+
+        function renderMap() {
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                renderTableNode(i);
+            }
+        }
+
+        function renderListView() {
+            const listGrid = document.getElementById('listGrid');
+            if(!listGrid) return;
+            const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
+            
+            const fragment = document.createDocumentFragment();
+
+            // Gom các bàn thoả điều kiện lọc/tìm kiếm, rồi sắp xếp theo mức độ khẩn cấp:
+            // 1) Chưa trả — bàn ngồi lâu nhất (dễ quên thu tiền nhất) lên đầu, bàn mới ngồi xuống dưới
+            // 2) Đã trả — bàn vừa thanh toán gần đây nhất lên trước
+            // 3) Trống — xếp cuối theo số thứ tự
+            let visibleTables = [];
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                const data = tablesData[i];
+
+                if (currentFilter !== 'all' && data.status !== currentFilter) continue;
+                if (query && !(`bàn ${i}`.includes(query) || i.toString() === query || data.note.toLowerCase().includes(query))) continue;
+
+                const elapsedMins = data.startTime ? Math.floor((Date.now() - data.startTime) / (1000 * 60)) : 0;
+                visibleTables.push({ i, data, elapsedMins });
+            }
+
+            const STATUS_PRIORITY = { unpaid: 0, paid: 1, empty: 2 };
+            visibleTables.sort((a, b) => {
+                const pa = STATUS_PRIORITY[a.data.status] ?? 3;
+                const pb = STATUS_PRIORITY[b.data.status] ?? 3;
+                if (pa !== pb) return pa - pb;
+                if (a.data.status === 'unpaid') return b.elapsedMins - a.elapsedMins;
+                if (a.data.status === 'paid') return (b.data.startTime || 0) - (a.data.startTime || 0);
+                return a.i - b.i;
+            });
+
+            visibleTables.forEach(({ i, data, elapsedMins }) => {
+                let statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-espresso-800 text-stone-500">Trống</span>`;
+
+                if (data.status === 'unpaid') {
+                    if (elapsedMins >= 45) {
+                        statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-700 text-tys-50 inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Quá 45 phút</span>`;
+                    } else {
+                        statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-950 text-brick-300 border border-brick-800 inline-flex items-center gap-1">Chưa thanh toán</span>`;
+                    }
+                }
+                if (data.status === 'paid') statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-sage-950 text-sage-300 border border-sage-700">Đã thanh toán</span>`;
+
+                const card = document.createElement('div');
+                card.className = "bg-espresso-900 p-3.5 rounded-xl border border-tys-900 flex flex-col justify-between hover:border-tys-700 transition cursor-pointer select-none active:scale-[0.98]";
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-tys-100 text-base">Bàn ${i}</span>
+                            ${statusBadge}
+                        </div>
+                        <div class="text-xs text-stone-400 space-y-1">
+                            <div class="text-sm sm:text-xs"><i class="fa-solid fa-coins text-tys-500 mr-1"></i> Tổng: <b class="text-tys-200 font-extrabold">${data.total * 1000}đ</b></div>
+                            ${data.startTime ? `<div class="text-sm sm:text-xs font-medium"><i class="fa-regular fa-clock mr-1"></i> Thời gian ngồi: ${elapsedMins} phút</div>` : ''}
+                            ${data.note ? `<div class="italic text-stone-500"><i class="fa-regular fa-note-sticky mr-1"></i> ${data.note}</div>` : ''}
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-2 border-t border-tys-900 flex items-center justify-between">
+                        ${data.status === 'unpaid' ? `
+                            <button onclick="event.stopPropagation(); triggerQuickStateTransition(${i}, '1-Chạm');" class="px-2.5 py-1 rounded-lg bg-sage-600 hover:bg-sage-500 text-ink font-bold text-[11px] flex items-center gap-1 transition active:scale-95">
+                                <i class="fa-solid fa-bolt"></i> Quick Pay
+                            </button>
+                        ` : data.status === 'paid' ? `
+                            <button onclick="event.stopPropagation(); triggerQuickStateTransition(${i}, '1-Chạm');" class="px-2.5 py-1 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-200 font-bold text-[11px] flex items-center gap-1 transition active:scale-95">
+                                <i class="fa-solid fa-check"></i> Dọn Xong
+                            </button>
+                        ` : `<span></span>`}
+                        <span class="text-[11px] font-bold text-tys-400 hover:underline">Chi tiết <i class="fa-solid fa-arrow-right text-[10px] ml-0.5"></i></span>
+                    </div>
+                `;
+                
+                attachTableGestureEvents(card, i);
+                fragment.appendChild(card);
+            });
+
+            listGrid.innerHTML = '';
+            listGrid.appendChild(fragment);
+        }
+
+        function updateDashboardStats() {
+            let unpaid = 0, paid = 0;
+            Object.values(tablesData).forEach(t => {
+                if (t.status === 'unpaid') unpaid++;
+                if (t.status === 'paid') paid++;
+            });
+            document.getElementById('unpaidCount').innerText = unpaid;
+            document.getElementById('paidCount').innerText = paid;
+
+            // Đồng bộ số liệu vào các chip lọc của thanh thao tác đáy màn hình (mobile)
+            const totalMobileEl = document.getElementById('filterAllCountMobile');
+            const unpaidMobileEl = document.getElementById('filterUnpaidCountMobile');
+            const paidMobileEl = document.getElementById('filterPaidCountMobile');
+            if (totalMobileEl) totalMobileEl.innerText = TOTAL_TABLES;
+            if (unpaidMobileEl) unpaidMobileEl.innerText = unpaid;
+            if (paidMobileEl) paidMobileEl.innerText = paid;
+        }
+
+        function filterStatus(status) {
+            currentFilter = status;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.dataset.filter === status) btn.className = "filter-btn active-filter px-2.5 py-1 rounded-lg bg-tys-500 text-ink font-bold whitespace-nowrap flex-1 sm:flex-none text-center";
+                else btn.className = "filter-btn px-2.5 py-1 rounded-lg text-stone-400 hover:bg-espresso-800 whitespace-nowrap flex-1 sm:flex-none text-center transition-colors";
+            });
+            // Đồng bộ trạng thái active cho các chip lọc trên thanh thao tác đáy màn hình (mobile)
+            document.querySelectorAll('.filter-btn-mobile').forEach(btn => {
+                const f = btn.dataset.filter;
+                const isActive = f === status;
+                const base = "filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl transition-colors";
+                if (isActive) {
+                    btn.className = `${base} bg-tys-500 text-ink font-bold`;
+                } else if (f === 'unpaid') {
+                    btn.className = `${base} text-brick-300 bg-espresso-950/70 border border-brick-900/40`;
+                } else if (f === 'paid') {
+                    btn.className = `${base} text-sage-300 bg-espresso-950/70 border border-sage-900/40`;
+                } else {
+                    btn.className = `${base} text-stone-400 bg-espresso-950/70 border border-tys-900`;
+                }
+            });
+            renderMap();
+            const listView = document.getElementById('listView');
+            if (listView && !listView.classList.contains('hidden')) {
+                renderListView();
+            }
+        }
+
+        function toggleView(mode) {
+            const mapView = document.getElementById('mapView');
+            const listView = document.getElementById('listView');
+            const btnViewMap = document.getElementById('btnViewMap');
+            const btnViewList = document.getElementById('btnViewList');
+            const btnToggleMobile = document.getElementById('btnToggleViewMobile');
+            const fab = document.getElementById('fabRecenter');
+
+            if (mode === 'map') {
+                mapView.classList.remove('hidden'); listView.classList.add('hidden');
+                btnViewMap.className = "p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink";
+                btnViewList.className = "p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors";
+                // Icon nút mobile hiển thị lối "chuyển sang Danh sách"; FAB Về giữa chỉ có ý nghĩa khi đang xem Sơ đồ
+                if (btnToggleMobile) btnToggleMobile.innerHTML = '<i class="fa-solid fa-list-ul text-sm"></i>';
+                if (fab) fab.classList.remove('hidden');
+                setTimeout(resetZoomAndFit, 20);
+            } else {
+                mapView.classList.add('hidden'); listView.classList.remove('hidden');
+                btnViewList.className = "p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink";
+                btnViewMap.className = "p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors";
+                // Icon nút mobile hiển thị lối "chuyển sang Sơ đồ"; ẩn FAB vì không còn map để căn giữa
+                if (btnToggleMobile) btnToggleMobile.innerHTML = '<i class="fa-solid fa-diagram-project text-sm"></i>';
+                if (fab) fab.classList.add('hidden');
+                renderListView();
+            }
+        }
+
+        function toggleViewMobile() {
+            const mapView = document.getElementById('mapView');
+            const isMapHidden = mapView && mapView.classList.contains('hidden');
+            toggleView(isMapHidden ? 'map' : 'list');
+        }
+
+        let selectedStatusInModal = 'empty';
+        let modalItems = [];
+
+        function openModal(tableId) {
+            activeTableId = tableId;
+            const data = tablesData[tableId];
+
+            document.getElementById('modalTableBadge').innerText = `B${tableId}`;
+            document.getElementById('modalTitle').innerText = `Quản Lý Bàn Số ${tableId}`;
+            document.getElementById('paymentMethodSelect').value = data.paymentMethod || 'Tiền mặt';
+            document.getElementById('tableNoteInput').value = data.note || '';
+            document.getElementById('customItemName').value = '';
+            document.getElementById('customItemPrice').value = '';
+            syncPaymentMethodButtons();
+
+            selectedStatusInModal = data.status || 'empty';
+            modalItems = [...(data.items || [])];
+
+            updateModalStatusButtons();
+            renderModalOrderList();
+
+            const quickPaymentActions = document.getElementById('quickPaymentActions');
+            if (data.status === 'unpaid') quickPaymentActions.classList.remove('hidden');
+            else quickPaymentActions.classList.add('hidden');
+
+            document.getElementById('tableModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('tableModal').classList.add('hidden');
+            activeTableId = null;
+        }
+
+        // 2 nút chọn phương thức thanh toán trên mobile (thay cho dropdown) —
+        // dùng chung 1 nguồn dữ liệu là #paymentMethodSelect để không phải sửa saveModalChanges()
+        function setPaymentMethodMobile(value) {
+            const select = document.getElementById('paymentMethodSelect');
+            if (select) select.value = value;
+            syncPaymentMethodButtons();
+        }
+
+        function syncPaymentMethodButtons() {
+            const select = document.getElementById('paymentMethodSelect');
+            const value = select ? select.value : 'Tiền mặt';
+            const btnCash = document.getElementById('btnPayCash');
+            const btnQR = document.getElementById('btnPayQR');
+            const activeClass = "payment-btn-mobile py-2 rounded-lg border text-[11px] font-bold flex items-center justify-center gap-1 transition active:scale-95 bg-tys-500 border-tys-500 text-ink";
+            const inactiveClass = "payment-btn-mobile py-2 rounded-lg border text-[11px] font-bold flex items-center justify-center gap-1 transition active:scale-95 bg-espresso-950 border-tys-900 text-stone-300";
+            if (btnCash) btnCash.className = (value === 'Tiền mặt') ? activeClass : inactiveClass;
+            if (btnQR) btnQR.className = (value === 'Chuyển khoản QR') ? activeClass : inactiveClass;
+        }
+
+        function setSelectStatus(status) {
+            selectedStatusInModal = status;
+            updateModalStatusButtons();
+        }
+
+        function updateModalStatusButtons() {
+            const map = { empty: 'btnStatusEmpty', unpaid: 'btnStatusUnpaid', paid: 'btnStatusPaid' };
+            Object.keys(map).forEach(key => {
+                const btn = document.getElementById(map[key]);
+                if (!btn) return;
+                if (key === selectedStatusInModal) {
+                    btn.classList.add('ring-2', 'ring-tys-500', 'bg-espresso-800');
+                    btn.classList.remove('bg-espresso-950');
+                } else {
+                    btn.classList.remove('ring-2', 'ring-tys-500', 'bg-espresso-800');
+                    btn.classList.add('bg-espresso-950');
+                }
+            });
+        }
+
+        function addPresetItem(name, price) {
+            modalItems.push({ name, price });
+            if (selectedStatusInModal === 'empty') { selectedStatusInModal = 'unpaid'; updateModalStatusButtons(); }
+            renderModalOrderList();
+        }
+
+        function addCustomNoteItem() {
+            const nameInput = document.getElementById('customItemName');
+            const priceInput = document.getElementById('customItemPrice');
+            const name = nameInput.value.trim();
+            const priceVal = parseFloat(priceInput.value.trim());
+
+            if (name !== '' || !isNaN(priceVal)) {
+                const itemName = name !== '' ? name : 'Món tự ghi';
+                const itemPrice = !isNaN(priceVal) ? priceVal : 0;
+                modalItems.push({ name: itemName, price: itemPrice });
+
+                if (selectedStatusInModal === 'empty') { selectedStatusInModal = 'unpaid'; updateModalStatusButtons(); }
+                nameInput.value = ''; priceInput.value = '';
+                renderModalOrderList();
+            }
+        }
+
+        function removeModalItem(index) {
+            modalItems.splice(index, 1);
+            renderModalOrderList();
+        }
+
+        function renderModalOrderList() {
+            const container = document.getElementById('modalOrderList');
+            container.innerHTML = '';
+            let sum = 0;
+            if (modalItems.length === 0) {
+                container.innerHTML = `<div class="text-[11px] text-stone-500 text-center py-2 italic">Chưa chọn món nào</div>`;
+            } else {
+                modalItems.forEach((item, idx) => {
+                    sum += item.price;
+                    const row = document.createElement('div');
+                    row.className = "flex items-center justify-between bg-stone-900 px-2.5 py-1 rounded border border-stone-800";
+                    row.innerHTML = `
+                        <span class="text-stone-200 font-medium truncate max-w-[200px]">${item.name}</span>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="font-bold text-tys-500">${item.price}k</span>
+                            <button type="button" onclick="removeModalItem(${idx})" class="text-stone-500 hover:text-brick-400 transition px-1"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+            }
+            document.getElementById('totalAmountDisplay').innerText = `Tổng: ${(sum * 1000).toLocaleString('vi-VN')}đ`;
+        }
+
+        function markAsPaidAndClose() {
+            if (!activeTableId) return;
+            selectedStatusInModal = 'paid';
+            saveModalChanges();
+        }
+
+        function saveModalChanges() {
+            if (!activeTableId) return;
+
+            const nameInput = document.getElementById('customItemName');
+            const priceInput = document.getElementById('customItemPrice');
+            const name = nameInput.value.trim();
+            const priceVal = parseFloat(priceInput.value.trim());
+
+            if (name !== '' || !isNaN(priceVal)) {
+                const itemName = name !== '' ? name : 'Món tự ghi';
+                const itemPrice = !isNaN(priceVal) ? priceVal : 0;
+                modalItems.push({ name: itemName, price: itemPrice });
+            }
+
+            const table = tablesData[activeTableId];
+            const prevStatus = table.status;
+
+            table.status = selectedStatusInModal;
+            table.items = [...modalItems];
+            table.total = modalItems.reduce((acc, curr) => acc + curr.price, 0);
+            table.paymentMethod = document.getElementById('paymentMethodSelect').value;
+            table.note = document.getElementById('tableNoteInput').value;
+
+            if (prevStatus === 'empty' && selectedStatusInModal !== 'empty') table.startTime = Date.now();
+            else if (selectedStatusInModal === 'empty') table.startTime = null;
+
+            saveData(); 
+            renderTableNode(activeTableId);
+            const listView = document.getElementById('listView');
+            if (listView && !listView.classList.contains('hidden')) renderListView(); 
+            closeModal();
+        }
+
+        function clearTableData() {
+            if (!activeTableId) return;
+            const targetId = activeTableId;
+            tablesData[targetId] = { id: targetId, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '' };
+            saveData(); 
+            renderTableNode(targetId);
+            const listView = document.getElementById('listView');
+            if (listView && !listView.classList.contains('hidden')) renderListView(); 
+            closeModal();
+        }
+
+        function openResetModal() { document.getElementById('resetModal').classList.remove('hidden'); }
+        function closeResetModal() { document.getElementById('resetModal').classList.add('hidden'); }
+        function confirmResetAllData() { generateDefaultData(); saveData(); renderMap(); renderListView(); closeResetModal(); }
+
+        let transferSourceId = null;
+        let transferMode = 'transfer';
+
+        function openTransferModal(sourceTableId) {
+            if (!sourceTableId) return;
+            transferSourceId = sourceTableId;
+            transferMode = 'transfer';
+
+            const sourceData = tablesData[sourceTableId];
+            if (!sourceData || (sourceData.status === 'empty' && sourceData.items.length === 0)) {
+                showQuickPayToast(sourceTableId, `Bàn ${sourceTableId} đang trống, không có dữ liệu để chuyển/gộp.`, {
+                    title: 'Lưu ý',
+                    borderColor: 'border-tys-500',
+                    iconBg: 'bg-tys-500',
+                    iconClass: 'fa-solid fa-circle-info',
+                    titleColor: 'text-tys-400'
+                });
+                return;
+            }
+
+            closeModal();
+
+            document.getElementById('transferModalTitle').innerText = `Chuyển / Gộp từ Bàn ${sourceTableId}`;
+            
+            const select = document.getElementById('targetTableSelect');
+            const fragment = document.createDocumentFragment();
+
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                if (i === sourceTableId) continue;
+                const targetData = tablesData[i];
+                let statusLabel = 'Trống';
+                if (targetData.status === 'unpaid') statusLabel = `Chưa trả (${targetData.total}k)`;
+                else if (targetData.status === 'paid') statusLabel = `Đã trả (${targetData.total}k)`;
+
+                const option = document.createElement('option');
+                option.value = i;
+                option.text = `Bàn ${i} - ${statusLabel}`;
+                fragment.appendChild(option);
+            }
+
+            select.innerHTML = '';
+            select.appendChild(fragment);
+
+            setTransferMode('transfer');
+            document.getElementById('transferModal').classList.remove('hidden');
+        }
+
+        function closeTransferModal() {
+            document.getElementById('transferModal').classList.add('hidden');
+            transferSourceId = null;
+        }
+
+        function setTransferMode(mode) {
+            transferMode = mode;
+            const btnTransfer = document.getElementById('btnModeTransfer');
+            const btnMerge = document.getElementById('btnModeMerge');
+            const badge = document.getElementById('transferActionBadge');
+
+            if (mode === 'transfer') {
+                btnTransfer.className = "p-2.5 rounded-xl border border-tys-600 bg-tys-900/40 text-tys-300 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
+                btnMerge.className = "p-2.5 rounded-xl border border-tys-900 bg-espresso-950 text-stone-400 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
+                badge.innerText = "Chuyển bàn";
+                badge.className = "px-2 py-0.5 rounded bg-tys-900/60 text-tys-300 border border-tys-800 text-[9px]";
+            } else {
+                btnMerge.className = "p-2.5 rounded-xl border border-tys-600 bg-tys-900/40 text-tys-300 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
+                btnTransfer.className = "p-2.5 rounded-xl border border-tys-900 bg-espresso-950 text-stone-400 font-bold flex items-center justify-center gap-1.5 transition active:scale-95";
+                badge.innerText = "Gộp bàn";
+                badge.className = "px-2 py-0.5 rounded bg-purple-900/40 text-purple-300 border border-purple-800 text-[9px]";
+            }
+
+            updateTransferPreview();
+        }
+
+        function updateTransferPreview() {
+            if (!transferSourceId) return;
+            const targetSelect = document.getElementById('targetTableSelect');
+            if (!targetSelect.value) return;
+
+            const targetId = parseInt(targetSelect.value);
+            const source = tablesData[transferSourceId];
+            const target = tablesData[targetId];
+
+            if (!source || !target) return;
+
+            const previewBox = document.getElementById('transferPreviewBox');
+
+            if (transferMode === 'transfer') {
+                previewBox.innerHTML = `
+                    <div class="flex items-center justify-between text-tys-200 font-semibold">
+                        <span>Nguồn: Bàn ${transferSourceId} (${source.total}k)</span>
+                        <i class="fa-solid fa-arrow-right text-stone-500"></i>
+                        <span>Đích: Bàn ${targetId}</span>
+                    </div>
+                    <div class="text-[11px] text-stone-400 mt-1">
+                        • Tất cả ${source.items.length} món (${source.total}k) từ <b>Bàn ${transferSourceId}</b> sẽ chuyển sang <b>Bàn ${targetId}</b>.<br>
+                        • <b>Bàn ${transferSourceId}</b> sẽ trở về trạng thái <b>Trống</b>.
+                    </div>
+                `;
+            } else {
+                const combinedTotal = (source.total || 0) + (target.total || 0);
+                const combinedItemsCount = (source.items ? source.items.length : 0) + (target.items ? target.items.length : 0);
+
+                previewBox.innerHTML = `
+                    <div class="flex items-center justify-between text-purple-400 font-semibold">
+                        <span>Bàn ${transferSourceId} (${source.total}k) + Bàn ${targetId} (${target.total}k)</span>
+                        <i class="fa-solid fa-plus text-stone-500"></i>
+                    </div>
+                    <div class="text-[11px] text-stone-300 font-bold mt-1">
+                        ➔ Tổng sau khi gộp Bàn ${targetId}: <span class="text-tys-400">${combinedTotal}k</span> (${combinedItemsCount} món)
+                    </div>
+                    <div class="text-[10px] text-stone-400">
+                        • <b>Bàn ${transferSourceId}</b> sẽ trống sau khi gộp.<br>
+                        • Thời gian ngồi của Bàn ${targetId} sẽ lấy mốc sớm nhất.
+                    </div>
+                `;
+            }
+        }
+
+        function executeTransferOrMerge() {
+            if (!transferSourceId) return;
+            const targetId = parseInt(document.getElementById('targetTableSelect').value);
+            if (!targetId || targetId === transferSourceId) return;
+
+            const source = tablesData[transferSourceId];
+            const target = tablesData[targetId];
+
+            const srcId = transferSourceId;
+
+            lastQuickPayState = {
+                tableId: targetId,
+                status: target.status,
+                items: [...target.items],
+                total: target.total,
+                startTime: target.startTime,
+                paymentMethod: target.paymentMethod,
+                note: target.note,
+                sourceBackup: {
+                    id: srcId,
+                    status: source.status,
+                    items: [...source.items],
+                    total: source.total,
+                    startTime: source.startTime,
+                    paymentMethod: source.paymentMethod,
+                    note: source.note
+                }
+            };
+
+            if (transferMode === 'transfer') {
+                tablesData[targetId] = {
+                    id: targetId,
+                    status: source.status === 'empty' ? 'unpaid' : source.status,
+                    items: [...source.items],
+                    total: source.total,
+                    startTime: source.startTime,
+                    paymentMethod: source.paymentMethod || 'Tiền mặt',
+                    note: source.note ? `(Từ B${srcId}) ${source.note}` : `Chuyển từ Bàn ${srcId}`
+                };
+
+                tablesData[srcId] = {
+                    id: srcId,
+                    status: 'empty',
+                    items: [],
+                    total: 0,
+                    startTime: null,
+                    paymentMethod: 'Tiền mặt',
+                    note: ''
+                };
+
+                showQuickPayToast(targetId, `Đã chuyển thành công từ <b>Bàn ${srcId}</b> sang <b>Bàn ${targetId}</b>!`, {
+                    title: 'Chuyển bàn thành công!',
+                    borderColor: 'border-tys-500',
+                    iconBg: 'bg-tys-500',
+                    iconClass: 'fa-solid fa-right-left',
+                    titleColor: 'text-tys-400'
+                });
+
+            } else {
+                const mergedItems = [...(target.items || []), ...(source.items || [])];
+                const mergedTotal = (target.total || 0) + (source.total || 0);
+                
+                let earliestTime = target.startTime;
+                if (source.startTime && (!earliestTime || source.startTime < earliestTime)) {
+                    earliestTime = source.startTime;
+                }
+
+                let mergedStatus = target.status;
+                if (source.status === 'unpaid' || target.status === 'unpaid') {
+                    mergedStatus = 'unpaid';
+                } else if (source.status === 'paid' && target.status === 'paid') {
+                    mergedStatus = 'paid';
+                }
+
+                let combinedNote = [target.note, source.note ? `(Gộp B${srcId}: ${source.note})` : '']
+                                    .filter(Boolean).join(' | ');
+
+                tablesData[targetId] = {
+                    id: targetId,
+                    status: mergedStatus,
+                    items: mergedItems,
+                    total: mergedTotal,
+                    startTime: earliestTime || Date.now(),
+                    paymentMethod: target.paymentMethod || source.paymentMethod || 'Tiền mặt',
+                    note: combinedNote || `Gộp từ Bàn ${srcId}`
+                };
+
+                tablesData[srcId] = {
+                    id: srcId,
+                    status: 'empty',
+                    items: [],
+                    total: 0,
+                    startTime: null,
+                    paymentMethod: 'Tiền mặt',
+                    note: ''
+                };
+
+                showQuickPayToast(targetId, `Đã gộp thành công <b>Bàn ${srcId}</b> vào <b>Bàn ${targetId}</b> (Tổng: ${mergedTotal}k)!`, {
+                    title: 'Gộp bàn thành công!',
+                    borderColor: 'border-purple-700',
+                    iconBg: 'bg-purple-700',
+                    iconClass: 'fa-solid fa-object-group',
+                    titleColor: 'text-purple-500'
+                });
+            }
+
+            saveData();
+            closeTransferModal();
+
+            requestAnimationFrame(() => {
+                renderTableNode(srcId);
+                renderTableNode(targetId);
+
+                const targetBtn = document.querySelector(`#table-node-${targetId} .table-btn`);
+                if (targetBtn) {
+                    targetBtn.classList.add('transfer-success-flash');
+                    setTimeout(() => targetBtn.classList.remove('transfer-success-flash'), 600);
+                }
+
+                const listView = document.getElementById('listView');
+                if (listView && !listView.classList.contains('hidden')) {
+                    renderListView();
+                }
+            });
+
+            playQuickPaySound();
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('liveClock').innerText = now.toLocaleTimeString('vi-VN') + " - " + now.toLocaleDateString('vi-VN');
+        }
+
+        window.onload = function() {
+            initData();
+            renderMap();
+            updateDashboardStats();
+            updateClock();
+            
+            initInteractiveMapEvents();
+            
+            resetZoomAndFit();
+            setTimeout(resetZoomAndFit, 100);
+
+            setInterval(updateClock, 1000);
+            
+            setInterval(() => {
+                renderMap();
+                if(!document.getElementById('listView').classList.contains('hidden')) {
+                    renderListView(); 
+                }
+            }, 15000); 
+        };
+
+        window.addEventListener('resize', resetZoomAndFit);
+        window.addEventListener('orientationchange', () => {
+            setTimeout(resetZoomAndFit, 200);
+        });
+    </script>
+</body>
+</html>
