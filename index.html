@@ -174,77 +174,82 @@
 </head>
 <body class="h-screen flex flex-col font-sans antialiased overflow-hidden bg-espresso-950">
 
-    <header class="bg-espresso-900/95 backdrop-blur-md border-b border-tys-500/20 shrink-0 px-3 py-2.5 z-40">
-        <div class="max-w-[1700px] mx-auto flex flex-wrap items-center justify-between gap-2.5">
+    <header class="bg-espresso-900/95 backdrop-blur-md border-b border-tys-500/20 shrink-0 px-2 sm:px-3 py-2 sm:py-2.5 z-40">
+        <div class="max-w-[1700px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2.5">
             
-            <!-- Left Group: Logo, Title & Stats merged -->
-            <div class="flex flex-wrap items-center gap-3 sm:gap-5">
-                <div class="flex items-center space-x-3">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-espresso-900 p-1.5 flex items-center justify-center shadow-lg border border-tys-500/50 overflow-hidden shrink-0 transition-all hover:border-tys-500">
+            <!-- TOP ROW MOBILE: Logo + Stats Side-by-Side -->
+            <div class="flex flex-row items-center justify-between w-full md:w-auto gap-2">
+                
+                <!-- Logo & Title -->
+                <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+                    <div class="w-11 h-11 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-espresso-900 p-1 sm:p-1.5 flex items-center justify-center shadow-lg border border-tys-500/50 overflow-hidden shrink-0 transition-all hover:border-tys-500">
                         <img src="logo.png" 
                              alt="TYS Cafe Logo" 
-                             class="w-full h-full object-contain rounded-xl transition-transform hover:scale-110" 
+                             class="w-full h-full object-contain rounded-lg sm:rounded-xl transition-transform hover:scale-110" 
                              onerror="if(this.src.endsWith('logo.png')){this.src='logo.jpg';}else if(this.src.endsWith('logo.jpg')){this.src='logo.webp';}else{this.onerror=null;this.src='https://placehold.co/150x150/14110f/c69214?text=TYS';}">
                     </div>
                     <div>
-                        <h1 class="font-extrabold text-base sm:text-lg tracking-tight leading-none text-amber-100 flex items-center gap-1.5">
+                        <h1 class="font-extrabold text-[13px] sm:text-lg tracking-tight leading-none text-amber-100 flex items-center gap-1.5">
                             TYS CAFE
-                            <span class="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 uppercase tracking-wide flex items-center gap-1">
+                            <span class="hidden sm:flex text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 uppercase tracking-wide items-center gap-1">
                                 <i class="fa-solid fa-bolt text-[10px]"></i> QUICK PAY
                             </span>
                         </h1>
-                        <p class="text-[11px] text-stone-400 mt-1" id="liveClock">--:--:--</p>
+                        <p class="text-[9px] sm:text-[11px] text-stone-400 mt-0.5 sm:mt-1" id="liveClock">--:--:--</p>
                     </div>
                 </div>
 
-                <!-- Dashboard Stats - Moved next to Logo & Title -->
-                <div class="flex items-center gap-1.5 text-xs bg-stone-900/90 px-2.5 py-1.5 rounded-xl border border-stone-800 overflow-x-auto max-w-full shadow-sm">
-                    <div class="px-2 py-0.5 rounded-lg bg-stone-800/80 text-stone-300 flex items-center gap-1 shrink-0">
-                        <span class="text-[10px] text-stone-400">Tổng:</span>
+                <!-- Dashboard Stats (Moved here to sit next to Logo) -->
+                <div class="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs bg-stone-900/90 p-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl border border-stone-800 shrink-0">
+                    <div class="px-1.5 sm:px-2 py-0.5 rounded-md bg-stone-800/80 text-stone-300 flex items-center gap-1 shrink-0">
+                        <span class="text-[9px] sm:text-[10px] text-stone-400">Tổng:</span>
                         <strong id="totalTablesCount">28</strong>
                     </div>
-                    <div class="px-2 py-0.5 rounded-lg bg-emerald-950/60 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 shrink-0">
+                    <div class="px-1.5 sm:px-2 py-0.5 rounded-md bg-emerald-950/60 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 shrink-0">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                        <span class="text-[10px] text-emerald-400">Đã trả:</span>
+                        <span class="text-[9px] sm:text-[10px] text-emerald-400 hidden sm:inline">Đã trả:</span>
                         <strong id="paidCount">0</strong>
                     </div>
-                    <div class="px-2 py-0.5 rounded-lg bg-red-950/60 text-red-300 border border-red-500/40 flex items-center gap-1 shrink-0 animate-pulse">
+                    <div class="px-1.5 sm:px-2 py-0.5 rounded-md bg-red-950/60 text-red-300 border border-red-500/40 flex items-center gap-1 shrink-0 animate-pulse">
                         <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                        <span class="text-[10px] text-red-400">Cần thu:</span>
+                        <span class="text-[9px] sm:text-[10px] text-red-400 hidden sm:inline">Cần thu:</span>
                         <strong id="unpaidCount" class="text-red-200">0</strong>
                     </div>
                 </div>
+
             </div>
 
-            <!-- Right Group: Controls & Filters -->
-            <div class="flex items-center gap-1.5 ml-auto">
+            <!-- BOTTOM ROW MOBILE / RIGHT SECTION DESKTOP: Filters & Actions -->
+            <div class="flex items-center justify-between w-full md:w-auto gap-1.5">
+                
                 <!-- Filter Buttons -->
-                <div class="flex items-center gap-0.5 bg-stone-900/90 p-1 rounded-xl border border-stone-800 text-[11px] overflow-x-auto">
-                    <button onclick="filterStatus('all')" class="filter-btn active-filter px-2 py-0.5 rounded-lg bg-tys-500 text-stone-950 font-bold" data-filter="all">Tất cả</button>
-                    <button onclick="filterStatus('unpaid')" class="filter-btn px-2 py-0.5 rounded-lg text-red-400 hover:bg-stone-800" data-filter="unpaid">
+                <div class="flex items-center gap-0.5 bg-stone-900/90 p-1 rounded-xl border border-stone-800 text-[11px] overflow-x-auto w-full sm:w-auto">
+                    <button onclick="filterStatus('all')" class="filter-btn active-filter px-2 py-1 rounded-lg bg-tys-500 text-stone-950 font-bold whitespace-nowrap flex-1 sm:flex-none text-center" data-filter="all">Tất cả</button>
+                    <button onclick="filterStatus('unpaid')" class="filter-btn px-2 py-1 rounded-lg text-red-400 hover:bg-stone-800 whitespace-nowrap flex-1 sm:flex-none text-center" data-filter="unpaid">
                         <i class="fa-solid fa-circle text-[7px] text-red-500 mr-1"></i>Cần thu
                     </button>
-                    <button onclick="filterStatus('paid')" class="filter-btn px-2 py-0.5 rounded-lg text-emerald-400 hover:bg-stone-800" data-filter="paid">
+                    <button onclick="filterStatus('paid')" class="filter-btn px-2 py-1 rounded-lg text-emerald-400 hover:bg-stone-800 whitespace-nowrap flex-1 sm:flex-none text-center" data-filter="paid">
                         <i class="fa-solid fa-circle text-[7px] text-emerald-500 mr-1"></i>Đã trả
                     </button>
                 </div>
 
+                <!-- Action View Buttons -->
                 <div class="flex items-center gap-1 shrink-0">
-                    <button onclick="toggleView('map')" id="btnViewMap" class="p-2 rounded-xl text-xs font-bold bg-tys-500 text-stone-950 shadow" title="Xem Sơ Đồ">
-                        <i class="fa-solid fa-map"></i>
+                    <button onclick="toggleView('map')" id="btnViewMap" class="p-1.5 sm:p-2 rounded-xl text-xs font-bold bg-tys-500 text-stone-950 shadow" title="Xem Sơ Đồ">
+                        <i class="fa-solid fa-map w-4 h-4 flex items-center justify-center"></i>
                     </button>
-                    <button onclick="resetZoomAndFit()" class="p-2 rounded-xl text-xs font-medium bg-stone-900 text-amber-300 border border-stone-800 hover:bg-stone-800" title="Hiện toàn bộ sơ đồ">
-                        <i class="fa-solid fa-expand"></i>
+                    <button onclick="resetZoomAndFit()" class="p-1.5 sm:p-2 rounded-xl text-xs font-medium bg-stone-900 text-amber-300 border border-stone-800 hover:bg-stone-800" title="Hiện toàn bộ sơ đồ">
+                        <i class="fa-solid fa-expand w-4 h-4 flex items-center justify-center"></i>
                     </button>
-                    <button onclick="toggleView('list')" id="btnViewList" class="p-2 rounded-xl text-xs font-medium bg-stone-900 text-stone-300 border border-stone-800 hover:bg-stone-800" title="Xem Danh Sách">
-                        <i class="fa-solid fa-list-check"></i>
+                    <button onclick="toggleView('list')" id="btnViewList" class="p-1.5 sm:p-2 rounded-xl text-xs font-medium bg-stone-900 text-stone-300 border border-stone-800 hover:bg-stone-800" title="Xem Danh Sách">
+                        <i class="fa-solid fa-list-check w-4 h-4 flex items-center justify-center"></i>
                     </button>
-                    <button onclick="openResetModal()" title="Đặt lại dữ liệu" class="p-2 rounded-xl text-xs font-medium bg-stone-900 text-stone-400 hover:text-red-400 border border-stone-800">
-                        <i class="fa-solid fa-rotate-right"></i>
+                    <button onclick="openResetModal()" title="Đặt lại dữ liệu" class="p-1.5 sm:p-2 rounded-xl text-xs font-medium bg-stone-900 text-stone-400 hover:text-red-400 border border-stone-800">
+                        <i class="fa-solid fa-rotate-right w-4 h-4 flex items-center justify-center"></i>
                     </button>
                 </div>
-            </div>
 
+            </div>
         </div>
     </header>
 
@@ -325,10 +330,6 @@
                         <div class="absolute top-[760px] left-[1180px]" id="table-node-26"></div>
                         <div class="absolute top-[760px] left-[1260px]" id="table-node-27"></div>
                         <div class="absolute top-[650px] left-[1260px]" id="table-node-28"></div>
-                        
-                        <!-- Ẩn node 29 và 30 vì tổng còn 28 bàn -->
-                        <div class="hidden" id="table-node-29"></div>
-                        <div class="hidden" id="table-node-30"></div>
                     </div>
                 </div>
             </div>
@@ -367,7 +368,7 @@
         </div>
     </div>
 
-    <!-- Table Details Modal -->
+    <!-- Table Details Modal (đã xóa trạng thái Cần Dọn) -->
     <div id="tableModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4">
         <div class="bg-espresso-900 border border-tys-500/30 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh] text-stone-200 modal-fade-in">
             
@@ -483,6 +484,7 @@
         </div>
     </div>
 
+    <!-- Transfer/Merge Modal -->
     <div id="transferModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
         <div class="bg-espresso-900 border border-tys-500/30 w-full max-w-md rounded-2xl p-4 space-y-4 text-stone-200 shadow-2xl modal-fade-in">
             <div class="flex items-center justify-between border-b border-stone-800 pb-2.5">
@@ -553,8 +555,7 @@
     </div>
 
     <script>
-        // Cập nhật giới hạn tổng 28 bàn
-        const TOTAL_TABLES = 28; 
+        const TOTAL_TABLES = 28;
         let tablesData = {};
         let activeTableId = null;
         let currentFilter = 'all';
@@ -1084,11 +1085,8 @@
         function updateDashboardStats() {
             let unpaid = 0, paid = 0;
             Object.values(tablesData).forEach(t => {
-                // Đảm bảo chỉ đếm các bàn trong giới hạn 28 bàn
-                if (t.id <= TOTAL_TABLES) {
-                    if (t.status === 'unpaid') unpaid++;
-                    if (t.status === 'paid') paid++;
-                }
+                if (t.status === 'unpaid') unpaid++;
+                if (t.status === 'paid') paid++;
             });
             document.getElementById('unpaidCount').innerText = unpaid;
             document.getElementById('paidCount').innerText = paid;
@@ -1097,8 +1095,8 @@
         function filterStatus(status) {
             currentFilter = status;
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                if (btn.dataset.filter === status) btn.className = "filter-btn active-filter px-2 py-0.5 rounded-lg bg-tys-500 text-stone-950 font-bold";
-                else btn.className = "filter-btn px-2 py-0.5 rounded-lg text-stone-400 hover:bg-stone-800";
+                if (btn.dataset.filter === status) btn.className = "filter-btn active-filter px-2 py-1 rounded-lg bg-tys-500 text-stone-950 font-bold whitespace-nowrap flex-1 sm:flex-none text-center";
+                else btn.className = "filter-btn px-2 py-1 rounded-lg text-stone-400 hover:bg-stone-800 whitespace-nowrap flex-1 sm:flex-none text-center";
             });
             renderMap();
             const listView = document.getElementById('listView');
@@ -1115,13 +1113,13 @@
 
             if (mode === 'map') {
                 mapView.classList.remove('hidden'); listView.classList.add('hidden');
-                btnViewMap.className = "p-2 rounded-xl text-xs font-bold bg-tys-500 text-stone-950 shadow";
-                btnViewList.className = "p-2 rounded-xl text-xs font-medium bg-stone-900 text-stone-300 border border-stone-800 hover:bg-stone-800";
+                btnViewMap.className = "p-1.5 sm:p-2 rounded-xl text-xs font-bold bg-tys-500 text-stone-950 shadow";
+                btnViewList.className = "p-1.5 sm:p-2 rounded-xl text-xs font-medium bg-stone-900 text-stone-300 border border-stone-800 hover:bg-stone-800";
                 setTimeout(resetZoomAndFit, 20);
             } else {
                 mapView.classList.add('hidden'); listView.classList.remove('hidden');
-                btnViewList.className = "p-2 rounded-xl text-xs font-bold bg-tys-500 text-stone-950 shadow";
-                btnViewMap.className = "p-2 rounded-xl text-xs font-medium bg-stone-900 text-stone-300 border border-stone-800 hover:bg-stone-800";
+                btnViewList.className = "p-1.5 sm:p-2 rounded-xl text-xs font-bold bg-tys-500 text-stone-950 shadow";
+                btnViewMap.className = "p-1.5 sm:p-2 rounded-xl text-xs font-medium bg-stone-900 text-stone-300 border border-stone-800 hover:bg-stone-800";
                 renderListView();
             }
         }
