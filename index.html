@@ -258,81 +258,83 @@
             
             <div id="mapView" class="w-full h-full flex items-center justify-center relative overflow-hidden">
                 <div id="mapContainer" class="floorplan-container relative w-full h-full rounded-2xl border border-tys-500/20 overflow-hidden select-none">
-                    <div class="absolute inset-0 bg-[radial-gradient(#3a302a_1.5px,transparent_1.5px)] [background-size:28px_28px] opacity-40 rounded-2xl pointer-events-none"></div>
+                    <!-- Background pattern scaled up 1.5x -->
+                    <div class="absolute inset-0 bg-[radial-gradient(#3a302a_2px,transparent_2px)] [background-size:42px_42px] opacity-40 rounded-2xl pointer-events-none"></div>
 
-                    <div id="mapWrapper" class="absolute w-[1400px] h-[900px] left-0 top-0">
+                    <!-- Kích thước map 1.5x: 2100x1350 (Từ 1400x900) -->
+                    <div id="mapWrapper" class="absolute w-[2100px] h-[1350px] left-0 top-0">
                         <!-- Viền khung bảo vệ toàn bộ sơ đồ -->
-                        <div class="absolute inset-3 rounded-3xl border-2 border-dashed border-stone-700/50 pointer-events-none"></div>
+                        <div class="absolute inset-4 rounded-[48px] border-2 border-dashed border-stone-700/50 pointer-events-none"></div>
                         
-                        <div class="absolute top-[30px] left-[300px] w-[190px] h-[240px] rounded-2xl border-2 border-stone-600 bg-stone-900/50 flex flex-col items-center justify-start pt-2"></div>
-                        <div class="absolute top-[30px] left-[500px] w-[640px] h-[260px] border-2 border-stone-600 bg-stone-900/40 rounded-2xl flex items-center justify-center">
+                        <!-- Các mảng khối kiến trúc đã nhân 1.5 tọa độ & kích thước -->
+                        <div class="absolute top-[45px] left-[450px] w-[285px] h-[360px] rounded-[24px] border-2 border-stone-600 bg-stone-900/50 flex flex-col items-center justify-start pt-3"></div>
+                        <div class="absolute top-[45px] left-[750px] w-[960px] h-[390px] border-2 border-stone-600 bg-stone-900/40 rounded-[24px] flex items-center justify-center">
                             <div class="text-center opacity-40">
-                                <i class="fa-solid fa-snowflake text-3xl text-tys-500 mb-1"></i>
-                                <div class="text-xs font-black text-amber-200 tracking-wider">PHÒNG LẠNH</div>
+                                <i class="fa-solid fa-snowflake text-5xl text-tys-500 mb-2"></i>
+                                <div class="text-sm font-black text-amber-200 tracking-wider">PHÒNG LẠNH</div>
                             </div>
                         </div>
 
-                        <div class="absolute top-[290px] left-[700px] w-[440px] h-[100px] rounded-2xl border-2 border-stone-600 bg-stone-900/50"></div>
-                        <div class="absolute top-[390px] left-[750px] w-[390px] h-[12px] border-2 border-stone-600 bg-stone-800/80 rounded-b-md"></div>
+                        <div class="absolute top-[435px] left-[1050px] w-[660px] h-[150px] rounded-[24px] border-2 border-stone-600 bg-stone-900/50"></div>
+                        <div class="absolute top-[585px] left-[1125px] w-[585px] h-[18px] border-2 border-stone-600 bg-stone-800/80 rounded-b-lg"></div>
 
-                        <div class="absolute top-[290px] left-[500px] w-[36px] h-[45px] border-2 border-t-0 border-stone-600 rounded-b-full bg-stone-900/60"></div>
-                        <div class="absolute top-[290px] left-[610px] w-[36px] h-[45px] border-2 border-t-0 border-stone-600 rounded-b-full bg-stone-900/60"></div>
+                        <div class="absolute top-[435px] left-[750px] w-[54px] h-[68px] border-2 border-t-0 border-stone-600 rounded-b-full bg-stone-900/60"></div>
+                        <div class="absolute top-[435px] left-[915px] w-[54px] h-[68px] border-2 border-t-0 border-stone-600 rounded-b-full bg-stone-900/60"></div>
 
-                        <div class="absolute top-[290px] left-[536px] w-[74px] h-[580px] border-x-2 border-stone-600/80 bg-stone-900/20 flex flex-col items-center justify-around py-10 pointer-events-none">
-                            <span class="text-[9px] font-bold text-stone-600 uppercase -rotate-90 tracking-widest">Lối đi chính</span>
-                            <span class="text-[9px] font-bold text-stone-600 uppercase -rotate-90 tracking-widest">Lối đi chính</span>
+                        <div class="absolute top-[435px] left-[804px] w-[111px] h-[870px] border-x-2 border-stone-600/80 bg-stone-900/20 flex flex-col items-center justify-around py-16 pointer-events-none">
+                            <span class="text-[13px] font-bold text-stone-600 uppercase -rotate-90 tracking-widest">Lối đi chính</span>
+                            <span class="text-[13px] font-bold text-stone-600 uppercase -rotate-90 tracking-widest">Lối đi chính</span>
                         </div>
 
-                        <!-- Cây xanh -->
-                        <div class="absolute top-[220px] left-[130px] w-14 h-14 rounded-full border-2 border-emerald-600/60 bg-emerald-950/40 flex items-center justify-center text-emerald-400/70 shadow-lg"><i class="fa-solid fa-tree text-base"></i></div>
-                        <div class="absolute top-[480px] left-[130px] w-14 h-14 rounded-full border-2 border-emerald-600/60 bg-emerald-950/40 flex items-center justify-center text-emerald-400/70 shadow-lg"><i class="fa-solid fa-tree text-base"></i></div>
-                        <div class="absolute top-[680px] left-[170px] w-14 h-14 rounded-full border-2 border-emerald-600/60 bg-emerald-950/40 flex items-center justify-center text-emerald-400/70 shadow-lg"><i class="fa-solid fa-tree text-base"></i></div>
-                        <div class="absolute top-[690px] left-[846px] w-14 h-14 rounded-full border-2 border-emerald-600/60 bg-emerald-950/40 flex items-center justify-center text-emerald-400/70 shadow-lg"><i class="fa-solid fa-tree text-base"></i></div>
+                        <!-- Cây xanh (scaled size) -->
+                        <div class="absolute top-[330px] left-[195px] w-[84px] h-[84px] rounded-full border-2 border-emerald-600/60 bg-emerald-950/40 flex items-center justify-center text-emerald-400/70 shadow-lg"><i class="fa-solid fa-tree text-2xl"></i></div>
+                        <div class="absolute top-[720px] left-[195px] w-[84px] h-[84px] rounded-full border-2 border-emerald-600/60 bg-emerald-950/40 flex items-center justify-center text-emerald-400/70 shadow-lg"><i class="fa-solid fa-tree text-2xl"></i></div>
+                        <div class="absolute top-[1020px] left-[255px] w-[84px] h-[84px] rounded-full border-2 border-emerald-600/60 bg-emerald-950/40 flex items-center justify-center text-emerald-400/70 shadow-lg"><i class="fa-solid fa-tree text-2xl"></i></div>
+                        <div class="absolute top-[1035px] left-[1269px] w-[84px] h-[84px] rounded-full border-2 border-emerald-600/60 bg-emerald-950/40 flex items-center justify-center text-emerald-400/70 shadow-lg"><i class="fa-solid fa-tree text-2xl"></i></div>
 
                         <!-- Ghế Băng Dài -->
-                        <div class="absolute top-[850px] left-[240px] w-[260px] h-6 border-2 border-stone-600 bg-stone-800/90 rounded-md flex items-center justify-center"></div>
-                        <div class="absolute top-[850px] left-[740px] w-[420px] h-6 border-2 border-stone-600 bg-stone-800/90 rounded-md flex items-center justify-center"></div>
+                        <div class="absolute top-[1275px] left-[360px] w-[390px] h-[36px] border-2 border-stone-600 bg-stone-800/90 rounded-lg flex items-center justify-center"></div>
+                        <div class="absolute top-[1275px] left-[1110px] w-[630px] h-[36px] border-2 border-stone-600 bg-stone-800/90 rounded-lg flex items-center justify-center"></div>
 
-                        <!-- Table Nodes -->
-                        <div class="absolute top-[60px] left-[60px]" id="table-node-1"></div>
-                        <div class="absolute top-[40px] left-[160px]" id="table-node-2"></div>
-                        <div class="absolute top-[120px] left-[160px]" id="table-node-3"></div>
+                        <!-- Table Nodes (Tọa độ x1.5) -->
+                        <div class="absolute top-[90px] left-[90px]" id="table-node-1"></div>
+                        <div class="absolute top-[60px] left-[240px]" id="table-node-2"></div>
+                        <div class="absolute top-[180px] left-[240px]" id="table-node-3"></div>
 
-                        <div class="absolute top-[130px] left-[310px]" id="table-node-15"></div>
-                        <div class="absolute top-[130px] left-[390px]" id="table-node-16"></div>
+                        <div class="absolute top-[195px] left-[465px]" id="table-node-15"></div>
+                        <div class="absolute top-[195px] left-[585px]" id="table-node-16"></div>
 
-                        <div class="absolute top-[320px] left-[60px]" id="table-node-4"></div>
-                        <div class="absolute top-[400px] left-[60px]" id="table-node-5"></div>
-                        <div class="absolute top-[360px] left-[160px]" id="table-node-6"></div>
+                        <div class="absolute top-[480px] left-[90px]" id="table-node-4"></div>
+                        <div class="absolute top-[600px] left-[90px]" id="table-node-5"></div>
+                        <div class="absolute top-[540px] left-[240px]" id="table-node-6"></div>
 
-                        <div class="absolute top-[600px] left-[60px]" id="table-node-7"></div>
-                        <div class="absolute top-[720px] left-[80px]" id="table-node-8"></div>
+                        <div class="absolute top-[900px] left-[90px]" id="table-node-7"></div>
+                        <div class="absolute top-[1080px] left-[120px]" id="table-node-8"></div>
 
-                        <div class="absolute top-[500px] left-[220px]" id="table-node-9"></div>
-                        <div class="absolute top-[500px] left-[300px]" id="table-node-10"></div>
+                        <div class="absolute top-[750px] left-[330px]" id="table-node-9"></div>
+                        <div class="absolute top-[750px] left-[450px]" id="table-node-10"></div>
 
-                        <div class="absolute top-[700px] left-[260px]" id="table-node-11"></div>
-                        <div class="absolute top-[780px] left-[260px]" id="table-node-12"></div>
-                        <div class="absolute top-[780px] left-[360px]" id="table-node-13"></div>
+                        <div class="absolute top-[1050px] left-[390px]" id="table-node-11"></div>
+                        <div class="absolute top-[1170px] left-[390px]" id="table-node-12"></div>
+                        <div class="absolute top-[1170px] left-[540px]" id="table-node-13"></div>
 
-                        <div class="absolute top-[310px] left-[740px]" id="table-node-17"></div>
-                        <div class="absolute top-[310px] left-[940px]" id="table-node-18"></div>
+                        <div class="absolute top-[465px] left-[1110px]" id="table-node-17"></div>
+                        <div class="absolute top-[465px] left-[1410px]" id="table-node-18"></div>
 
-                        <div class="absolute top-[420px] left-[800px]" id="table-node-19"></div>
-                        <div class="absolute top-[420px] left-[880px]" id="table-node-20"></div>
-                        <div class="absolute top-[420px] left-[960px]" id="table-node-21"></div>
+                        <div class="absolute top-[630px] left-[1200px]" id="table-node-19"></div>
+                        <div class="absolute top-[630px] left-[1320px]" id="table-node-20"></div>
+                        <div class="absolute top-[630px] left-[1440px]" id="table-node-21"></div>
 
-                        <div class="absolute top-[760px] left-[750px]" id="table-node-22"></div>
-                        <div class="absolute top-[760px] left-[840px]" id="table-node-23"></div>
-                        <div class="absolute top-[760px] left-[930px]" id="table-node-24"></div>
-                        <div class="absolute top-[760px] left-[1020px]" id="table-node-25"></div>
+                        <div class="absolute top-[1140px] left-[1125px]" id="table-node-22"></div>
+                        <div class="absolute top-[1140px] left-[1260px]" id="table-node-23"></div>
+                        <div class="absolute top-[1140px] left-[1395px]" id="table-node-24"></div>
+                        <div class="absolute top-[1140px] left-[1530px]" id="table-node-25"></div>
 
-                        <div class="absolute top-[760px] left-[1180px]" id="table-node-26"></div>
-                        <div class="absolute top-[760px] left-[1260px]" id="table-node-27"></div>
-                        <div class="absolute top-[650px] left-[1260px]" id="table-node-28"></div>
+                        <div class="absolute top-[1140px] left-[1770px]" id="table-node-26"></div>
+                        <div class="absolute top-[1140px] left-[1890px]" id="table-node-27"></div>
+                        <div class="absolute top-[975px] left-[1890px]" id="table-node-28"></div>
                         
-                        <!-- Mới: Bàn 29 (Phía sau B26, Cạnh trái B28) -->
-                        <div class="absolute top-[650px] left-[1180px]" id="table-node-29"></div>
+                        <div class="absolute top-[975px] left-[1770px]" id="table-node-29"></div>
                     </div>
                 </div>
             </div>
@@ -563,8 +565,9 @@
         let activeTableId = null;
         let currentFilter = 'all';
 
-        const MAP_BASE_WIDTH = 1400;
-        const MAP_BASE_HEIGHT = 900;
+        // Cập nhật Base Width và Height mới (scale 1.5x)
+        const MAP_BASE_WIDTH = 2100;
+        const MAP_BASE_HEIGHT = 1350;
         let scale = 1.0;
         let panX = 0;
         let panY = 0;
@@ -974,26 +977,27 @@
             let elapsedMins = 0;
             if (data.startTime && data.status !== 'empty') {
                 elapsedMins = Math.floor((Date.now() - data.startTime) / (1000 * 60));
-                timerText = `<div class="text-[9.5px] opacity-80 mt-0.5 font-medium"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</div>`;
+                timerText = `<div class="text-xs opacity-80 mt-1 font-medium"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</div>`;
             }
 
+            // Đã scale các kích thước UI con bên trong nút bấm cho hợp lý
             if (data.status === 'unpaid') {
                 if (elapsedMins >= 45) {
                     bgStyle = "bg-red-700 border-red-400 text-yellow-100 pulse-unpaid-fast shadow-xl shadow-red-600/50";
-                    badgeHTML = `<span class="absolute -top-2.5 -right-2 px-1.5 py-0.5 rounded-full text-[9px] font-black bg-stone-900 text-red-400 shadow-lg flex items-center gap-1 border border-red-500/50"><i class="fa-solid fa-triangle-exclamation"></i> >45P</span>`;
-                    coffeeIconHTML = `<span class="absolute -top-2.5 -left-2 w-5 h-5 rounded-full bg-stone-900 text-red-500 flex items-center justify-center text-[10px] shadow-lg animate-bounce border border-red-400"><i class="fa-solid fa-triangle-exclamation"></i></span>`;
+                    badgeHTML = `<span class="absolute -top-3.5 -right-3 px-2 py-1 rounded-full text-[11px] font-black bg-stone-900 text-red-400 shadow-lg flex items-center gap-1 border border-red-500/50"><i class="fa-solid fa-triangle-exclamation"></i> >45P</span>`;
+                    coffeeIconHTML = `<span class="absolute -top-3.5 -left-3 w-8 h-8 rounded-full bg-stone-900 text-red-500 flex items-center justify-center text-sm shadow-lg animate-bounce border border-red-400"><i class="fa-solid fa-triangle-exclamation"></i></span>`;
                 } else if (elapsedMins >= 30) {
                     bgStyle = "bg-red-900 border-red-500 text-red-100 pulse-unpaid shadow-lg shadow-red-900/80";
-                    badgeHTML = `<span class="absolute -top-2.5 -right-2 px-1.5 py-0.5 rounded-full text-[9px] font-black bg-red-600 text-white shadow-lg border border-red-400">CHƯA TRẢ</span>`;
-                    coffeeIconHTML = `<span class="absolute -top-2.5 -left-2 w-5 h-5 rounded-full bg-amber-500 text-stone-950 flex items-center justify-center text-[10px] shadow-lg border border-amber-300"><i class="fa-solid fa-mug-hot"></i></span>`;
+                    badgeHTML = `<span class="absolute -top-3.5 -right-3 px-2 py-1 rounded-full text-[11px] font-black bg-red-600 text-white shadow-lg border border-red-400">CHƯA TRẢ</span>`;
+                    coffeeIconHTML = `<span class="absolute -top-3.5 -left-3 w-8 h-8 rounded-full bg-amber-500 text-stone-950 flex items-center justify-center text-sm shadow-lg border border-amber-300"><i class="fa-solid fa-mug-hot"></i></span>`;
                 } else {
                     bgStyle = "bg-red-950/70 border-red-600/80 text-red-400 backdrop-blur-sm"; 
-                    badgeHTML = `<span class="absolute -top-2.5 -right-2 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-red-800 text-red-200 shadow-lg border border-red-600/50">CHƯA TRẢ</span>`;
-                    coffeeIconHTML = `<span class="absolute -top-2.5 -left-2 w-5 h-5 rounded-full bg-stone-800 text-amber-500 flex items-center justify-center text-[10px] shadow-lg border border-stone-600"><i class="fa-solid fa-mug-hot"></i></span>`;
+                    badgeHTML = `<span class="absolute -top-3.5 -right-3 px-2 py-1 rounded-full text-[11px] font-bold bg-red-800 text-red-200 shadow-lg border border-red-600/50">CHƯA TRẢ</span>`;
+                    coffeeIconHTML = `<span class="absolute -top-3.5 -left-3 w-8 h-8 rounded-full bg-stone-800 text-amber-500 flex items-center justify-center text-sm shadow-lg border border-stone-600"><i class="fa-solid fa-mug-hot"></i></span>`;
                 }
             } else if (data.status === 'paid') {
                 bgStyle = "bg-emerald-950/95 border-emerald-500 text-emerald-300 shadow-sm shadow-emerald-500/20";
-                badgeHTML = `<span class="absolute -top-2.5 -right-2 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-700 text-emerald-100 shadow-lg border border-emerald-500/50">ĐÃ TRẢ</span>`;
+                badgeHTML = `<span class="absolute -top-3.5 -right-3 px-2 py-1 rounded-full text-[11px] font-bold bg-emerald-700 text-emerald-100 shadow-lg border border-emerald-500/50">ĐÃ TRẢ</span>`;
             }
 
             const isFiltered = (currentFilter === 'all') ||
@@ -1003,12 +1007,13 @@
 
             const opacityClass = isFiltered ? "opacity-100 scale-100" : "opacity-20 scale-90 pointer-events-none";
 
+            // Nút bấm từ 68px tăng thành 102px
             container.innerHTML = `
-                <button type="button" class="table-btn relative w-[68px] h-[68px] rounded-2xl border-2 border-solid ${bgStyle} ${opacityClass} flex flex-col items-center justify-center p-1 shadow-xl transition-all">
+                <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-3xl border-2 border-solid ${bgStyle} ${opacityClass} flex flex-col items-center justify-center p-1.5 shadow-xl transition-all">
                     ${badgeHTML}
                     ${coffeeIconHTML}
-                    <span class="text-sm font-extrabold leading-none">B${i}</span>
-                    ${data.total > 0 ? `<span class="text-[10px] font-bold text-tys-500 leading-none mt-1">${data.total}k</span>` : ''}
+                    <span class="text-xl font-extrabold leading-none">B${i}</span>
+                    ${data.total > 0 ? `<span class="text-sm font-bold text-tys-500 leading-none mt-1.5">${data.total}k</span>` : ''}
                     ${timerText}
                 </button>
             `;
