@@ -334,42 +334,80 @@
                         0 0 70px 20px rgba(201,148,74,0.08);
         }
 
-        /* ---------- Nút bật/tắt giao diện — "minimal moon toggle" ---------- */
+        /* ---------- Nút bật/tắt giao diện — dạng nút gạt (switch) sáng/tối ---------- */
         .theme-toggle-btn {
             position: absolute;
             right: 0.75rem;
             top: calc(0.75rem + env(safe-area-inset-top, 0px));
-            width: 34px;
-            height: 34px;
-            border-radius: 999px;
-            border: 1px solid rgba(26, 21, 16, 0.10);
-            background: rgba(255, 255, 255, 0.45);
+            width: 56px;
+            height: 30px;
+            padding: 0;
+            border: none;
+            background: none;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
-            box-shadow: 0 1px 2px rgba(26,21,16,0.06);
+            -webkit-tap-highlight-color: transparent;
         }
         @media (min-width: 640px) {
-            .theme-toggle-btn { right: 1rem; top: calc(0.85rem + env(safe-area-inset-top, 0px)); }
+            .theme-toggle-btn { right: 1rem; top: calc(0.9rem + env(safe-area-inset-top, 0px)); }
         }
-        .theme-toggle-thumb {
+        .theme-toggle-track {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7px;
+            background: linear-gradient(180deg, #fdf6ea 0%, #f3e6cf 100%);
+            border: 1px solid rgba(26, 21, 16, 0.10);
+            box-shadow: inset 0 1px 3px rgba(26,21,16,0.10), 0 1px 2px rgba(26,21,16,0.05);
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        .theme-toggle-track .track-icon {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            color: #8a5a2e;
+            width: 14px;
+            height: 14px;
+            position: relative;
+            z-index: 1;
         }
-        .theme-toggle-thumb .moon-icon { display: none; }
-        html[data-theme="dark"] .theme-toggle-btn {
-            background: rgba(230, 196, 140, 0.06);
+        .theme-toggle-track .track-icon.icon-sun { color: #C9944A; }
+        .theme-toggle-track .track-icon.icon-sun svg { width: 14px; height: 14px; }
+        .theme-toggle-track .track-icon.icon-moon { color: #b9afa0; font-size: 12px; opacity: 0.7; }
+        .theme-toggle-thumb {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 32% 28%, #fffdf7 0%, #ffe9b8 45%, #E1B66E 100%);
+            box-shadow: 0 2px 5px rgba(26,21,16,0.25), 0 0 0 1px rgba(225,182,110,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateX(0);
+            transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1), background 0.4s ease, box-shadow 0.4s ease;
+        }
+        html[data-theme="dark"] .theme-toggle-track {
+            background: linear-gradient(180deg, #241c14 0%, #15110c 100%);
             border-color: rgba(230, 196, 140, 0.16);
-            box-shadow: 0 0 14px 1px rgba(201,148,74,0.16);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5), 0 0 12px 1px rgba(201,148,74,0.14);
         }
-        html[data-theme="dark"] .theme-toggle-thumb { color: #E1B66E; }
-        html[data-theme="dark"] .theme-toggle-thumb .sun-icon { display: none; }
-        html[data-theme="dark"] .theme-toggle-thumb .moon-icon { display: block; }
+        html[data-theme="dark"] .theme-toggle-track .track-icon.icon-sun { color: #6e685d; opacity: 0.55; }
+        html[data-theme="dark"] .theme-toggle-track .track-icon.icon-moon { color: #E1B66E; opacity: 1; }
+        html[data-theme="dark"] .theme-toggle-thumb {
+            transform: translateX(26px);
+            background: radial-gradient(circle at 32% 28%, #3a2e20 0%, #241c14 100%);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5), 0 0 0 1px rgba(230,196,140,0.25), 0 0 10px 1px rgba(201,148,74,0.35);
+        }
+        .theme-toggle-thumb .thumb-sun { display: flex; align-items: center; justify-content: center; width: 14px; height: 14px; color: #a9793a; }
+        .theme-toggle-thumb .thumb-sun svg { width: 13px; height: 13px; }
+        .theme-toggle-thumb .thumb-moon { display: none; align-items: center; justify-content: center; width: 14px; height: 14px; color: #E1B66E; font-size: 12px; }
+        html[data-theme="dark"] .theme-toggle-thumb .thumb-sun { display: none; }
+        html[data-theme="dark"] .theme-toggle-thumb .thumb-moon { display: flex; }
 
         /* ---------- Lớp kính mờ cho các khối điều hướng chính ---------- */
         html[data-theme="dark"] #mainHeader {
@@ -542,10 +580,46 @@
                     </div>
                 </div>
             </div>
-            <button type="button" id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Chuyển giao diện sáng / tối">
-                <span class="theme-toggle-thumb">
-                    <i class="fa-solid fa-sun sun-icon"></i>
-                    <i class="fa-solid fa-moon moon-icon"></i>
+            <button type="button" id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Chuyển giao diện sáng / tối" role="switch" aria-checked="false">
+                <span class="theme-toggle-track">
+                    <span class="track-icon icon-sun">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="4.6" fill="currentColor"/>
+                            <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                                <line x1="12" y1="1.5" x2="12" y2="4"/>
+                                <line x1="12" y1="20" x2="12" y2="22.5"/>
+                                <line x1="4.22" y1="4.22" x2="5.93" y2="5.93"/>
+                                <line x1="18.07" y1="18.07" x2="19.78" y2="19.78"/>
+                                <line x1="1.5" y1="12" x2="4" y2="12"/>
+                                <line x1="20" y1="12" x2="22.5" y2="12"/>
+                                <line x1="4.22" y1="19.78" x2="5.93" y2="18.07"/>
+                                <line x1="18.07" y1="5.93" x2="19.78" y2="4.22"/>
+                            </g>
+                        </svg>
+                    </span>
+                    <span class="track-icon icon-moon">
+                        <i class="fa-solid fa-moon"></i>
+                    </span>
+                    <span class="theme-toggle-thumb">
+                        <span class="thumb-sun">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="12" cy="12" r="4.6" fill="currentColor"/>
+                                <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                                    <line x1="12" y1="1.5" x2="12" y2="4"/>
+                                    <line x1="12" y1="20" x2="12" y2="22.5"/>
+                                    <line x1="4.22" y1="4.22" x2="5.93" y2="5.93"/>
+                                    <line x1="18.07" y1="18.07" x2="19.78" y2="19.78"/>
+                                    <line x1="1.5" y1="12" x2="4" y2="12"/>
+                                    <line x1="20" y1="12" x2="22.5" y2="12"/>
+                                    <line x1="4.22" y1="19.78" x2="5.93" y2="18.07"/>
+                                    <line x1="18.07" y1="5.93" x2="19.78" y2="4.22"/>
+                                </g>
+                            </svg>
+                        </span>
+                        <span class="thumb-moon">
+                            <i class="fa-solid fa-moon"></i>
+                        </span>
+                    </span>
                 </span>
             </button>
         </div>
@@ -2051,6 +2125,8 @@
         function applyTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             try { localStorage.setItem('tysTheme', theme); } catch(e) {}
+            const btn = document.getElementById('themeToggleBtn');
+            if (btn) btn.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
         }
 
         function toggleTheme() {
@@ -2065,6 +2141,10 @@
             const theme = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             document.documentElement.setAttribute('data-theme', theme);
         })();
+        window.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('themeToggleBtn');
+            if (btn) btn.setAttribute('aria-checked', document.documentElement.getAttribute('data-theme') === 'dark' ? 'true' : 'false');
+        });
 
         function updateClock() {
             const now = new Date();
