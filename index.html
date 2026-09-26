@@ -204,34 +204,6 @@
             will-change: transform;
             transform-origin: 0 0;
             transition: transform 0.05s ease-out;
-            --tbl-boost: 1;
-        }
-
-        /* ================================================================
-           CHẾ ĐỘ RÚT GỌN CHO NÚT BÀN (mobile fit-to-screen)
-           ----------------------------------------------------------------
-           29 bàn được đặt sát nhau theo đúng mặt bằng thật (khoảng cách tối
-           thiểu giữa 2 tâm bàn chỉ ~120px ở toạ độ gốc) nên KHÔNG thể phóng
-           to khung từng bàn thêm nhiều mà không bị đè lên bàn kế bên — và
-           việc tăng mức zoom mặc định sẽ khiến sơ đồ không còn vừa 1 màn
-           hình (phải cuộn/kéo mới thấy hết bàn). Thay vào đó: khi khung bàn
-           hiển thị ra màn hình quá nhỏ để đọc (điện thoại ở mức zoom vừa
-           khít), ta ẩn bớt các chi tiết phụ (nhãn "Bàn", giá tiền, giờ
-           ngồi, nhãn trạng thái dạng chữ) và CHỈ giữ lại số bàn thật to +
-           màu nền đặc trưng cho từng trạng thái — dễ nhận biết bằng mắt dù
-           bàn rất nhỏ. Số bàn còn được phép "nhoi" to hơn khung 1 chút
-           (biến --tbl-boost, JS tính theo mức zoom hiện tại) để luôn đọc
-           được, mà kích thước/khoảng cách thật của sơ đồ hoàn toàn không đổi.
-           ================================================================ */
-        .table-compact-view { display: none; }
-        .table-full-view { display: flex; }
-
-        #mapWrapper.map-compact .table-full-view { display: none; }
-        #mapWrapper.map-compact .table-compact-view { display: flex; }
-
-        .table-compact-num {
-            transform: scale(var(--tbl-boost, 1));
-            transition: transform 0.12s ease-out;
         }
 
         ::-webkit-scrollbar {
@@ -756,32 +728,6 @@
             const cx = MAP_BASE_WIDTH / 2;
             const cy = MAP_BASE_HEIGHT / 2;
             wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${scale}) translate(${cx}px, ${cy}px) rotate(180deg) translate(${-cx}px, ${-cy}px)`;
-
-            updateAdaptiveTableDisplay(wrapper);
-        }
-
-        // Tính xem khung bàn (102px gốc) đang hiển thị thực tế bao nhiêu px trên màn hình
-        // ở mức zoom hiện tại. Nếu quá nhỏ để đọc, bật chế độ rút gọn (.map-compact) và
-        // tính độ "nhoi" thêm cho riêng con số bàn (--tbl-boost) sao cho luôn đọc được,
-        // nhưng vẫn giới hạn để không chồng lấn sang bàn sát bên (khoảng cách tối thiểu
-        // giữa các bàn ~120px gốc, chỉ chừa dư khoảng 18px so với khung bàn 102px).
-        function updateAdaptiveTableDisplay(wrapper) {
-            wrapper = wrapper || document.getElementById('mapWrapper');
-            if (!wrapper) return;
-
-            const TABLE_BOX_PX = 102;
-            const COMPACT_THRESHOLD_PX = 45;   // Dưới ngưỡng này, nhãn/giá/giờ không còn đọc nổi
-            const MIN_DIGIT_PX = 15;           // Cỡ số bàn tối thiểu mong muốn trên màn hình
-            const COMPACT_DIGIT_BASE_PX = 44;  // Cỡ chữ gốc của số bàn ở bản rút gọn (khớp text-[44px] bên dưới)
-            const MAX_BOOST = 1.8;             // Chặn trên để tránh đè lên bàn sát bên
-
-            const effectivePx = TABLE_BOX_PX * scale;
-            const isCompact = effectivePx < COMPACT_THRESHOLD_PX;
-            wrapper.classList.toggle('map-compact', isCompact);
-
-            let boost = MIN_DIGIT_PX / (COMPACT_DIGIT_BASE_PX * scale);
-            boost = Math.max(1, Math.min(boost, MAX_BOOST));
-            wrapper.style.setProperty('--tbl-boost', boost.toFixed(3));
         }
 
         function resetZoomAndFit() {
@@ -1143,11 +1089,6 @@
             let badgeHTML = "";
             let timerText = "";
 
-            // Nền đặc (solid) dùng riêng cho bản rút gọn: cần độ tương phản màu mạnh để
-            // nhận biết trạng thái bằng mắt ngay cả khi khung bàn chỉ còn vài chục px.
-            let compactBg = "bg-espresso-800 text-stone-500";
-            let compactCornerHTML = "";
-
             let elapsedMins = 0;
             if (data.startTime && data.status !== 'empty') {
                 elapsedMins = Math.floor((Date.now() - data.startTime) / (1000 * 60));
@@ -1160,24 +1101,19 @@
                     bgStyle = "bg-brick-800 border-brick-accent text-tys-50 pulse-unpaid-fast";
                     numColor = "text-tys-50";
                     badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-tys-50 text-brick-ink flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Quá 45p</span>`;
-                    compactBg = "bg-brick-800 text-tys-50";
-                    compactCornerHTML = `<span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-tys-50 text-brick-ink flex items-center justify-center text-[9px] leading-none"><i class="fa-solid fa-triangle-exclamation"></i></span>`;
                 } else if (elapsedMins >= 30) {
                     bgStyle = "bg-brick-900 border-brick-600 text-brick-100 pulse-unpaid";
                     numColor = "text-brick-100";
                     badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-600 text-tys-50 whitespace-nowrap">Chưa trả</span>`;
-                    compactBg = "bg-brick-700 text-tys-50";
                 } else {
                     bgStyle = "bg-brick-950/70 border-brick-800 text-brick-300 backdrop-blur-sm"; 
                     numColor = "text-brick-ink";
                     badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-800 text-brick-200 whitespace-nowrap">Chưa trả</span>`;
-                    compactBg = "bg-brick-600 text-tys-50";
                 }
             } else if (data.status === 'paid') {
                 bgStyle = "bg-sage-950/80 border-sage-600 text-sage-200";
                 numColor = "text-sage-300";
                 badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-sage-700 text-sage-50 whitespace-nowrap">Đã trả</span>`;
-                compactBg = "bg-sage-600 text-ink";
             }
 
             const isFiltered = (currentFilter === 'all') ||
@@ -1189,21 +1125,12 @@
 
             // Nút bấm từ 68px tăng thành 102px
             container.innerHTML = `
-                <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} flex flex-col items-center justify-center p-1.5 transition-all overflow-visible">
-                    <!-- Bản đầy đủ: hiện khi khung bàn đủ lớn để đọc (desktop / đã zoom vào) -->
-                    <div class="table-full-view flex flex-col items-center justify-center w-full h-full">
-                        ${badgeHTML}
-                        <span class="text-[9px] font-bold uppercase tracking-[0.18em] leading-none opacity-60 ${numColor}">Bàn</span>
-                        <span class="text-[32px] font-extrabold leading-none tracking-tight tabular-nums ${numColor} mt-0.5">${i}</span>
-                        ${data.total > 0 ? `<span class="text-base sm:text-sm font-bold text-tys-400 leading-none mt-2">${data.total}k</span>` : ''}
-                        ${timerText}
-                    </div>
-                    <!-- Bản rút gọn: hiện khi khung bàn quá nhỏ để đọc (fit-to-screen trên mobile) -->
-                    <!-- Chỉ giữ số bàn thật to + màu nền đặc trưng cho trạng thái - chạm vào để xem chi tiết -->
-                    <div class="table-compact-view items-center justify-center w-full h-full rounded-xl ${compactBg} relative">
-                        ${compactCornerHTML}
-                        <span class="table-compact-num font-extrabold leading-none tabular-nums text-[44px]">${i}</span>
-                    </div>
+                <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} flex flex-col items-center justify-center p-1.5 transition-all">
+                    ${badgeHTML}
+                    <span class="text-[9px] font-bold uppercase tracking-[0.18em] leading-none opacity-60 ${numColor}">Bàn</span>
+                    <span class="text-[32px] font-extrabold leading-none tracking-tight tabular-nums ${numColor} mt-0.5">${i}</span>
+                    ${data.total > 0 ? `<span class="text-base sm:text-sm font-bold text-tys-400 leading-none mt-2">${data.total}k</span>` : ''}
+                    ${timerText}
                 </button>
             `;
 
