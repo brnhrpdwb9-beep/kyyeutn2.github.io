@@ -335,10 +335,13 @@
         }
 
         /* ---------- Nút bật/tắt giao diện — dạng nút gạt (switch) sáng/tối ---------- */
+        /* Đặt ngay trong sơ đồ gốc (mapContainer), góc trên cùng bên phải, nổi trên bản đồ
+           thay vì nằm trong mastheadBar. z-index cao để luôn nổi trên mapWrapper/bàn. */
         .theme-toggle-btn {
             position: absolute;
             right: 0.75rem;
-            top: calc(0.75rem + env(safe-area-inset-top, 0px));
+            top: 0.75rem;
+            z-index: 30;
             width: 56px;
             height: 30px;
             padding: 0;
@@ -348,7 +351,7 @@
             -webkit-tap-highlight-color: transparent;
         }
         @media (min-width: 640px) {
-            .theme-toggle-btn { right: 1rem; top: calc(0.9rem + env(safe-area-inset-top, 0px)); }
+            .theme-toggle-btn { right: 1rem; top: 1rem; }
         }
         .theme-toggle-track {
             position: relative;
@@ -580,48 +583,6 @@
                     </div>
                 </div>
             </div>
-            <button type="button" id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Chuyển giao diện sáng / tối" role="switch" aria-checked="false">
-                <span class="theme-toggle-track">
-                    <span class="track-icon icon-sun">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="12" cy="12" r="4.6" fill="currentColor"/>
-                            <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                                <line x1="12" y1="1.5" x2="12" y2="4"/>
-                                <line x1="12" y1="20" x2="12" y2="22.5"/>
-                                <line x1="4.22" y1="4.22" x2="5.93" y2="5.93"/>
-                                <line x1="18.07" y1="18.07" x2="19.78" y2="19.78"/>
-                                <line x1="1.5" y1="12" x2="4" y2="12"/>
-                                <line x1="20" y1="12" x2="22.5" y2="12"/>
-                                <line x1="4.22" y1="19.78" x2="5.93" y2="18.07"/>
-                                <line x1="18.07" y1="5.93" x2="19.78" y2="4.22"/>
-                            </g>
-                        </svg>
-                    </span>
-                    <span class="track-icon icon-moon">
-                        <i class="fa-solid fa-moon"></i>
-                    </span>
-                    <span class="theme-toggle-thumb">
-                        <span class="thumb-sun">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="12" cy="12" r="4.6" fill="currentColor"/>
-                                <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-                                    <line x1="12" y1="1.5" x2="12" y2="4"/>
-                                    <line x1="12" y1="20" x2="12" y2="22.5"/>
-                                    <line x1="4.22" y1="4.22" x2="5.93" y2="5.93"/>
-                                    <line x1="18.07" y1="18.07" x2="19.78" y2="19.78"/>
-                                    <line x1="1.5" y1="12" x2="4" y2="12"/>
-                                    <line x1="20" y1="12" x2="22.5" y2="12"/>
-                                    <line x1="4.22" y1="19.78" x2="5.93" y2="18.07"/>
-                                    <line x1="18.07" y1="5.93" x2="19.78" y2="4.22"/>
-                                </g>
-                            </svg>
-                        </span>
-                        <span class="thumb-moon">
-                            <i class="fa-solid fa-moon"></i>
-                        </span>
-                    </span>
-                </span>
-            </button>
         </div>
 
         <!-- TOOLBAR: số liệu + bộ lọc + nút thao tác — di chuyển xuống thanh điều khiển đáy màn hình
@@ -807,6 +768,50 @@
                         
                         <div class="absolute top-[975px] left-[1770px]" id="table-node-29"></div>
                     </div>
+
+                    <!-- Công tắc chuyển giao diện sáng/tối — đặt ngay trong sơ đồ gốc, góc trên cùng bên phải -->
+                    <button type="button" id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Chuyển giao diện sáng / tối" role="switch" aria-checked="false">
+                        <span class="theme-toggle-track">
+                            <span class="track-icon icon-sun">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="12" cy="12" r="4.6" fill="currentColor"/>
+                                    <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                                        <line x1="12" y1="1.5" x2="12" y2="4"/>
+                                        <line x1="12" y1="20" x2="12" y2="22.5"/>
+                                        <line x1="4.22" y1="4.22" x2="5.93" y2="5.93"/>
+                                        <line x1="18.07" y1="18.07" x2="19.78" y2="19.78"/>
+                                        <line x1="1.5" y1="12" x2="4" y2="12"/>
+                                        <line x1="20" y1="12" x2="22.5" y2="12"/>
+                                        <line x1="4.22" y1="19.78" x2="5.93" y2="18.07"/>
+                                        <line x1="18.07" y1="5.93" x2="19.78" y2="4.22"/>
+                                    </g>
+                                </svg>
+                            </span>
+                            <span class="track-icon icon-moon">
+                                <i class="fa-solid fa-moon"></i>
+                            </span>
+                            <span class="theme-toggle-thumb">
+                                <span class="thumb-sun">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="12" cy="12" r="4.6" fill="currentColor"/>
+                                        <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                                            <line x1="12" y1="1.5" x2="12" y2="4"/>
+                                            <line x1="12" y1="20" x2="12" y2="22.5"/>
+                                            <line x1="4.22" y1="4.22" x2="5.93" y2="5.93"/>
+                                            <line x1="18.07" y1="18.07" x2="19.78" y2="19.78"/>
+                                            <line x1="1.5" y1="12" x2="4" y2="12"/>
+                                            <line x1="20" y1="12" x2="22.5" y2="12"/>
+                                            <line x1="4.22" y1="19.78" x2="5.93" y2="18.07"/>
+                                            <line x1="18.07" y1="5.93" x2="19.78" y2="4.22"/>
+                                        </g>
+                                    </svg>
+                                </span>
+                                <span class="thumb-moon">
+                                    <i class="fa-solid fa-moon"></i>
+                                </span>
+                            </span>
+                        </span>
+                    </button>
                 </div>
             </div>
 
