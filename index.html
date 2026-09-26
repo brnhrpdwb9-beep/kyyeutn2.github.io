@@ -546,16 +546,16 @@
                     <div id="modalOrderList" class="min-h-[45px] max-h-[100px] overflow-y-auto space-y-1 text-xs bg-espresso-950 p-1.5 rounded-lg border border-tys-900"></div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                    <div>
+                <div class="grid grid-cols-1 gap-2 text-xs">
+                    <div class="hidden">
                         <label class="block font-semibold text-stone-500 text-[10px] uppercase mb-1">Thanh toán bằng</label>
                         <!-- PC/tablet (sm trở lên): dropdown như cũ -->
-                        <select id="paymentMethodSelect" onchange="syncPaymentMethodButtons()" class="hidden sm:block w-full bg-espresso-950 border border-tys-900 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-600">
+                        <select id="paymentMethodSelect" onchange="syncPaymentMethodButtons()" class="w-full bg-espresso-950 border border-tys-900 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-600">
                             <option value="Tiền mặt">Tiền mặt</option>
                             <option value="Chuyển khoản QR">Chuyển khoản VietQR</option>
                         </select>
                         <!-- Mobile: 2 nút to, bấm 1 lần thay vì mở dropdown -->
-                        <div class="sm:hidden grid grid-cols-2 gap-1.5">
+                        <div class="grid grid-cols-2 gap-1.5">
                             <button type="button" id="btnPayCash" onclick="setPaymentMethodMobile('Tiền mặt')" class="payment-btn-mobile py-2 rounded-lg border text-[11px] font-bold flex items-center justify-center gap-1 transition active:scale-95">
                                 <span>💵</span> Tiền mặt
                             </button>
