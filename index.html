@@ -397,29 +397,8 @@
            Các ellipse to, mềm, cường độ khác nhau để tạo chiều sâu & phân cấp,
            cộng thêm vài mảng loang lệch không đều như ánh đèn phản chiếu mặt gỗ. */
         html[data-theme="dark"] .floorplan-container {
-            background:
-                /* --- vùng bàn khu trái-trên (đèn chính, sáng nhất) --- */
-                radial-gradient(ellipse 620px 460px at 14% 14%, rgba(255,206,140,0.16) 0%, rgba(238,186,120,0.095) 22%, rgba(219,166,100,0.05) 40%, rgba(201,148,74,0.022) 58%, rgba(201,148,74,0) 74%),
-                /* --- vùng bàn khu trái-giữa/dưới --- */
-                radial-gradient(ellipse 660px 520px at 18% 46%, rgba(240,190,120,0.13) 0%, rgba(219,166,100,0.075) 24%, rgba(201,148,74,0.036) 44%, rgba(201,148,74,0) 70%),
-                radial-gradient(ellipse 600px 480px at 15% 80%, rgba(230,180,112,0.11) 0%, rgba(210,158,92,0.06) 26%, rgba(201,148,74,0.026) 46%, rgba(201,148,74,0) 70%),
-                /* --- phòng lạnh / khu giữa, ánh sáng dịu hơn hẳn (không phải chỗ ngồi chính) --- */
-                radial-gradient(ellipse 820px 520px at 46% 22%, rgba(225,182,110,0.055) 0%, rgba(201,148,74,0.028) 32%, rgba(201,148,74,0) 62%),
-                radial-gradient(ellipse 520px 480px at 40% 62%, rgba(220,172,104,0.075) 0%, rgba(201,148,74,0.03) 34%, rgba(201,148,74,0) 62%),
-                /* --- dãy bàn khu phải-trên, nguồn sáng mạnh thứ nhì --- */
-                radial-gradient(ellipse 680px 480px at 78% 20%, rgba(248,198,132,0.15) 0%, rgba(230,178,108,0.088) 22%, rgba(210,158,92,0.042) 42%, rgba(201,148,74,0) 70%),
-                /* --- dãy bàn khu phải-giữa --- */
-                radial-gradient(ellipse 640px 500px at 82% 50%, rgba(238,188,118,0.125) 0%, rgba(216,164,98,0.07) 24%, rgba(201,148,74,0.03) 46%, rgba(201,148,74,0) 72%),
-                /* --- dãy bàn khu phải-dưới, trải rộng dọc băng ghế dài --- */
-                radial-gradient(ellipse 760px 460px at 74% 86%, rgba(240,190,120,0.13) 0%, rgba(219,166,100,0.075) 24%, rgba(201,148,74,0.034) 46%, rgba(201,148,74,0) 72%),
-                radial-gradient(ellipse 520px 420px at 96% 82%, rgba(225,178,112,0.09) 0%, rgba(201,148,74,0.04) 30%, rgba(201,148,74,0) 62%),
-                /* --- loang không đều, như ánh đèn phản chiếu lệch tâm trên mặt gỗ --- */
-                radial-gradient(ellipse 340px 260px at 26% 30%, rgba(255,214,150,0.05) 0%, rgba(255,214,150,0) 68%),
-                radial-gradient(ellipse 300px 240px at 70% 62%, rgba(255,214,150,0.045) 0%, rgba(255,214,150,0) 66%),
-                radial-gradient(ellipse 260px 220px at 60% 12%, rgba(255,214,150,0.04) 0%, rgba(255,214,150,0) 64%),
-                /* --- nền tối sâu, viền 4 góc gần như tắt hẳn ánh sáng --- */
-                radial-gradient(ellipse 1500px 1100px at 50% 50%, #16110c 0%, #100d09 46%, #0b0907 72%, #070605 100%);
-            box-shadow: inset 0 0 0 1px rgba(230,196,140,0.045), inset 0 2px 54px rgba(0,0,0,0.62), inset 0 0 120px rgba(0,0,0,0.35);
+            background: radial-gradient(circle at 28% 18%, #201911 0%, #171310 55%, #100d0a 100%);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), inset 0 2px 28px rgba(0, 0, 0, 0.45);
         }
 
         /* ---------- Lớp "đèn treo" theo từng cụm bàn — nằm trong mapWrapper nên
