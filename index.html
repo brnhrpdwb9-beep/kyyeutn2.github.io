@@ -37,10 +37,10 @@
                             100: '#2e2013',
                             200: '#4a3623',
                             300: '#6b4f35',
-                            400: '#8a5a2e',
-                            500: '#9c6b3a',
-                            600: '#7d5527',
-                            700: '#c9a876',
+                            400: '#b9803d',
+                            500: '#C9944A',
+                            600: '#a9793a',
+                            700: '#E1B66E',
                             800: '#e3d2b8',
                             900: '#ede6d9',
                         },
@@ -130,17 +130,17 @@
             animation: pulse-brick 2.2s infinite ease-in-out;
         }
         @keyframes pulse-brick {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(168, 52, 32, 0.35); }
-            50% { box-shadow: 0 0 0 7px rgba(168, 52, 32, 0); }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(226, 114, 76, 0.30); }
+            50% { box-shadow: 0 0 0 6px rgba(226, 114, 76, 0); }
         }
 
         /* Mức 3: Trên 45 phút (cảnh báo rõ hơn, vẫn tiết chế) */
         .pulse-unpaid-fast {
-            animation: pulse-brick-fast 1s infinite ease-in-out;
+            animation: pulse-brick-fast 1.3s infinite ease-in-out;
         }
         @keyframes pulse-brick-fast {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(210, 73, 44, 0.45); border-color: #e2724c; }
-            50% { box-shadow: 0 0 0 8px rgba(210, 73, 44, 0); border-color: #8f2a1a; }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(226, 114, 76, 0.40); border-color: #e2724c; }
+            50% { box-shadow: 0 0 0 7px rgba(226, 114, 76, 0); border-color: #c0432b; }
         }
 
         .table-btn {
@@ -162,8 +162,8 @@
 
         .table-btn.holding-quick-empty {
             transform: scale(1.08) !important;
-            box-shadow: 0 0 0 5px rgba(156, 107, 58, 0.30) !important;
-            border-color: #9c6b3a !important;
+            box-shadow: 0 0 0 5px rgba(201, 148, 74, 0.30) !important;
+            border-color: #C9944A !important;
             animation: hold-charge 0.5s ease-in-out forwards;
         }
 
@@ -196,7 +196,7 @@
         }
         @keyframes success-burst-transfer {
             0% { transform: scale(1); }
-            45% { transform: scale(1.08); background-color: #9c6b3a !important; border-color: #9c6b3a !important; color: #fbf8f3 !important; }
+            45% { transform: scale(1.08); background-color: #C9944A !important; border-color: #C9944A !important; color: #1a1510 !important; }
             100% { transform: scale(1); }
         }
 
@@ -235,187 +235,244 @@
         }
 
         /* =========================================================
-           GIAO DIỆN TỐI — "Midnight Copper"
-           Chuyển màu mượt khi đổi theme, không đụng vào transform
+           GIAO DIỆN TỐI — "Warm Night Café"
+           Nền nâu-đen ấm, ánh vàng champagne, hiệu ứng ánh sáng đèn
+           bàn khuếch tán dịu nhẹ. Chuyển màu mượt khi đổi theme.
            ========================================================= */
         body, #mastheadBar, .floorplan-container, ::-webkit-scrollbar-track, ::-webkit-scrollbar-thumb,
         [class*="bg-espresso"], [class*="bg-stone"], [class*="bg-tys"], [class*="bg-sage"], [class*="bg-brick"],
         [class*="text-espresso"], [class*="text-stone"], [class*="text-tys"], [class*="text-sage"], [class*="text-brick"],
         [class*="border-espresso"], [class*="border-stone"], [class*="border-tys"], [class*="border-sage"], [class*="border-brick"] {
-            transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
         }
 
-        /* ---------- Nút bật/tắt giao diện tối ---------- */
+        :root {
+            --glow-gold: rgba(201,148,74,0.30);
+            --glow-gold-strong: rgba(225,182,110,0.55);
+            --glow-sage: rgba(111,168,78,0.30);
+            --glow-coral: rgba(217,119,87,0.32);
+            --hairline: rgba(26,21,16,0.08);
+        }
+        html[data-theme="dark"] {
+            --glow-gold: rgba(201,148,74,0.30);
+            --glow-gold-strong: rgba(225,182,110,0.55);
+            --glow-sage: rgba(122,168,101,0.26);
+            --glow-coral: rgba(217,119,87,0.34);
+            --hairline: rgba(230,196,140,0.07);
+        }
+
+        /* ---------- Lưới chấm sàn — cực kỳ mờ nhạt ---------- */
+        .floor-dot-grid {
+            background-image: radial-gradient(#c9bfae 1.5px, transparent 1.5px);
+            background-size: 42px 42px;
+            opacity: 0.22;
+        }
+        html[data-theme="dark"] .floor-dot-grid {
+            background-image: radial-gradient(rgba(225,182,110,0.55) 1px, transparent 1px);
+            background-size: 46px 46px;
+            opacity: 0.08;
+        }
+
+        /* ---------- Hiệu ứng ánh sáng cho bàn ---------- */
+        @keyframes breathe-warm {
+            0%, 100% { box-shadow: 0 0 10px 1px var(--glow-gold); }
+            50% { box-shadow: 0 0 24px 5px var(--glow-gold); }
+        }
+        .table-active-breathe { animation: breathe-warm 4.8s ease-in-out infinite; }
+
+        .table-paid-halo { box-shadow: 0 0 14px 2px var(--glow-sage); }
+
+        /* ---------- FAB hổ phách — bóng đổ mềm, ánh sáng lan toả nhẹ ---------- */
+        .fab-glow { box-shadow: 0 10px 26px -8px rgba(12,11,9,0.55), 0 0 20px 2px var(--glow-gold); }
+
+        .table-selected-glow {
+            border-color: #E1B66E !important;
+            box-shadow: 0 0 0 1.5px rgba(225,182,110,0.85),
+                        0 0 20px 4px var(--glow-gold-strong),
+                        0 0 44px 12px rgba(225,182,110,0.16) !important;
+        }
+
+        /* ---------- Nút bật/tắt giao diện — "minimal moon toggle" ---------- */
         .theme-toggle-btn {
             position: absolute;
-            right: 0.625rem;
-            top: calc(0.625rem + env(safe-area-inset-top, 0px));
-            width: 52px;
-            height: 30px;
+            right: 0.75rem;
+            top: calc(0.75rem + env(safe-area-inset-top, 0px));
+            width: 34px;
+            height: 34px;
             border-radius: 999px;
-            padding: 3px;
-            border: 1px solid rgba(156, 107, 58, 0.35);
-            background: linear-gradient(135deg, #ede6d9, #dad5ca);
+            border: 1px solid rgba(26, 21, 16, 0.10);
+            background: rgba(255, 255, 255, 0.45);
             cursor: pointer;
             display: flex;
             align-items: center;
-            transition: background 0.35s ease, border-color 0.35s ease;
-            box-shadow: inset 0 1px 3px rgba(26,21,16,0.12);
+            justify-content: center;
+            transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+            box-shadow: 0 1px 2px rgba(26,21,16,0.06);
         }
         @media (min-width: 640px) {
-            .theme-toggle-btn { right: 1rem; top: calc(0.75rem + env(safe-area-inset-top, 0px)); }
+            .theme-toggle-btn { right: 1rem; top: calc(0.85rem + env(safe-area-inset-top, 0px)); }
         }
         .theme-toggle-thumb {
-            width: 22px;
-            height: 22px;
-            border-radius: 999px;
-            background: linear-gradient(160deg, #ffe6b8, #f4c47a);
             display: flex;
             align-items: center;
             justify-content: center;
-            transform: translateX(0);
-            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.35s ease;
-            box-shadow: 0 1px 3px rgba(26,21,16,0.35);
-            font-size: 11px;
-            color: #7d5527;
+            font-size: 12px;
+            color: #8a5a2e;
         }
         .theme-toggle-thumb .moon-icon { display: none; }
         html[data-theme="dark"] .theme-toggle-btn {
-            background: linear-gradient(135deg, #241d15, #17130f);
-            border-color: rgba(224, 162, 86, 0.35);
+            background: rgba(230, 196, 140, 0.06);
+            border-color: rgba(230, 196, 140, 0.16);
+            box-shadow: 0 0 14px 1px rgba(201,148,74,0.16);
         }
-        html[data-theme="dark"] .theme-toggle-thumb {
-            transform: translateX(22px);
-            background: linear-gradient(160deg, #3a2c1c, #1e1811);
-            color: #f0b673;
-        }
+        html[data-theme="dark"] .theme-toggle-thumb { color: #E1B66E; }
         html[data-theme="dark"] .theme-toggle-thumb .sun-icon { display: none; }
         html[data-theme="dark"] .theme-toggle-thumb .moon-icon { display: block; }
 
+        /* ---------- Lớp kính mờ cho các khối điều hướng chính ---------- */
+        html[data-theme="dark"] #mainHeader {
+            box-shadow: 0 1px 0 rgba(230,196,140,0.055), 0 16px 34px -22px rgba(0,0,0,0.65);
+        }
+        html[data-theme="dark"] #mobileActionBar {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 -1px 0 rgba(230,196,140,0.055), 0 -16px 34px -20px rgba(0,0,0,0.6);
+        }
+        html[data-theme="dark"] #tableModal > div,
+        html[data-theme="dark"] #transferModal > div,
+        html[data-theme="dark"] #resetModal > div {
+            box-shadow: 0 26px 60px -22px rgba(0,0,0,0.7), 0 0 0 1px rgba(230,196,140,0.05) inset;
+        }
+
         /* ---------- Nền & khung sàn ---------- */
         html[data-theme="dark"] body {
-            background-color: #100d0b;
-            color: #f2ead9;
+            background-color: #0C0B09;
+            color: #F2EDE4;
         }
         html[data-theme="dark"] .floorplan-container {
-            background: radial-gradient(circle at 28% 18%, #201911 0%, #171310 55%, #100d0a 100%);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), inset 0 2px 28px rgba(0, 0, 0, 0.45);
+            background:
+                radial-gradient(ellipse 900px 620px at 22% 18%, rgba(201,148,74,0.11) 0%, rgba(201,148,74,0) 62%),
+                radial-gradient(ellipse 700px 520px at 80% 28%, rgba(225,182,110,0.08) 0%, rgba(225,182,110,0) 60%),
+                radial-gradient(ellipse 820px 640px at 42% 84%, rgba(201,148,74,0.09) 0%, rgba(201,148,74,0) 62%),
+                radial-gradient(ellipse 600px 500px at 88% 86%, rgba(201,148,74,0.06) 0%, rgba(201,148,74,0) 60%),
+                radial-gradient(circle at 50% 50%, #14100b 0%, #0f0c09 55%, #0a0807 100%);
+            box-shadow: inset 0 0 0 1px rgba(230,196,140,0.045), inset 0 2px 44px rgba(0,0,0,0.55);
         }
-        html[data-theme="dark"] ::-webkit-scrollbar-track { background: #1a1510; }
-        html[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #4a3a26; }
+        html[data-theme="dark"] ::-webkit-scrollbar-track { background: #120f0c; }
+        html[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #3a2f21; }
 
         /* ---------- espresso (bề mặt / khối kiến trúc) ---------- */
-        html[data-theme="dark"] .bg-espresso-700 { background-color: #241d15; }
-        html[data-theme="dark"] .bg-espresso-800 { background-color: #1c1610; }
-        html[data-theme="dark"] .bg-espresso-800\/80 { background-color: rgb(28 22 16 / 0.8); }
-        html[data-theme="dark"] .bg-espresso-900 { background-color: #1a1510; }
-        html[data-theme="dark"] .bg-espresso-900\/15 { background-color: rgb(26 21 16 / 0.15); }
-        html[data-theme="dark"] .bg-espresso-900\/30 { background-color: rgb(26 21 16 / 0.30); }
-        html[data-theme="dark"] .bg-espresso-900\/40 { background-color: rgb(26 21 16 / 0.40); }
-        html[data-theme="dark"] .bg-espresso-900\/60 { background-color: rgb(26 21 16 / 0.60); }
-        html[data-theme="dark"] .bg-espresso-900\/95 { background-color: rgb(20 16 13 / 0.95); }
-        html[data-theme="dark"] .bg-espresso-950 { background-color: #141110; }
-        html[data-theme="dark"] .bg-espresso-950\/70 { background-color: rgb(20 17 16 / 0.7); }
+        html[data-theme="dark"] .bg-espresso-700 { background-color: #241c14; }
+        html[data-theme="dark"] .bg-espresso-800 { background-color: #17130e; }
+        html[data-theme="dark"] .bg-espresso-800\/80 { background-color: rgb(23 19 14 / 0.8); }
+        html[data-theme="dark"] .bg-espresso-900 { background-color: #120f0b; }
+        html[data-theme="dark"] .bg-espresso-900\/15 { background-color: rgb(18 15 11 / 0.15); }
+        html[data-theme="dark"] .bg-espresso-900\/30 { background-color: rgb(18 15 11 / 0.30); }
+        html[data-theme="dark"] .bg-espresso-900\/40 { background-color: rgb(18 15 11 / 0.40); }
+        html[data-theme="dark"] .bg-espresso-900\/60 { background-color: rgb(18 15 11 / 0.60); }
+        html[data-theme="dark"] .bg-espresso-900\/95 { background-color: rgb(15 12 9 / 0.95); }
+        html[data-theme="dark"] .bg-espresso-950 { background-color: #0C0B09; }
+        html[data-theme="dark"] .bg-espresso-950\/70 { background-color: rgb(12 11 9 / 0.7); }
         html[data-theme="dark"] .hover\:bg-espresso-700:hover { background-color: #2c2318; }
-        html[data-theme="dark"] .hover\:bg-espresso-800:hover { background-color: #2a2117; }
+        html[data-theme="dark"] .hover\:bg-espresso-800:hover { background-color: #201a12; }
 
-        /* ---------- stone (phân cấp chữ trung tính) ---------- */
-        html[data-theme="dark"] .bg-stone-900 { background-color: #241d15; }
-        html[data-theme="dark"] .border-stone-700\/50 { border-color: rgb(74 61 42 / 0.5); }
-        html[data-theme="dark"] .border-stone-700\/70 { border-color: rgb(74 61 42 / 0.7); }
-        html[data-theme="dark"] .border-stone-800 { border-color: #2a2118; }
-        html[data-theme="dark"] .text-stone-100 { color: #f5efe4; }
-        html[data-theme="dark"] .text-stone-200 { color: #e3d8c4; }
-        html[data-theme="dark"] .text-stone-300 { color: #c9baa0; }
-        html[data-theme="dark"] .text-stone-400 { color: #a9987f; }
-        html[data-theme="dark"] .text-stone-500 { color: #8f7d65; }
-        html[data-theme="dark"] .text-stone-600 { color: #71614a; }
-        html[data-theme="dark"] .hover\:text-stone-100:hover { color: #fbf6ee; }
+        /* ---------- stone (phân cấp chữ — ngà ấm) ---------- */
+        html[data-theme="dark"] .bg-stone-900 { background-color: #1c1710; }
+        html[data-theme="dark"] .border-stone-700\/50 { border-color: rgb(90 74 52 / 0.5); }
+        html[data-theme="dark"] .border-stone-700\/70 { border-color: rgb(90 74 52 / 0.55); }
+        html[data-theme="dark"] .border-stone-800 { border-color: #241d15; }
+        html[data-theme="dark"] .text-stone-100 { color: #F7F2E7; }
+        html[data-theme="dark"] .text-stone-200 { color: #E9E1D2; }
+        html[data-theme="dark"] .text-stone-300 { color: #CBBFA9; }
+        html[data-theme="dark"] .text-stone-400 { color: #A79880; }
+        html[data-theme="dark"] .text-stone-500 { color: #8A7C68; }
+        html[data-theme="dark"] .text-stone-600 { color: #6b5f4d; }
+        html[data-theme="dark"] .hover\:text-stone-100:hover { color: #FBF7EE; }
 
-        /* ---------- tys (thương hiệu — đồng/hổ phách) ---------- */
-        html[data-theme="dark"] .bg-tys-50 { background-color: #1f160b; }
-        html[data-theme="dark"] .bg-tys-500 { background-color: #c9853e; }
-        html[data-theme="dark"] .bg-tys-500\/10 { background-color: rgb(201 133 62 / 0.16); }
-        html[data-theme="dark"] .bg-tys-600 { background-color: #a86a30; }
-        html[data-theme="dark"] .bg-tys-900 { background-color: #241a10; }
-        html[data-theme="dark"] .bg-tys-900\/40 { background-color: rgb(36 26 16 / 0.4); }
-        html[data-theme="dark"] .bg-tys-900\/50 { background-color: rgb(36 26 16 / 0.5); }
-        html[data-theme="dark"] .bg-tys-900\/60 { background-color: rgb(36 26 16 / 0.6); }
-        html[data-theme="dark"] .border-tys-500 { border-color: #c9853e; }
-        html[data-theme="dark"] .border-tys-600 { border-color: #a86a30; }
-        html[data-theme="dark"] .border-tys-700 { border-color: #4a3a26; }
-        html[data-theme="dark"] .border-tys-800 { border-color: #3a2c1c; }
-        html[data-theme="dark"] .border-tys-800\/60 { border-color: rgb(58 44 28 / 0.6); }
-        html[data-theme="dark"] .border-tys-900 { border-color: #34281a; }
-        html[data-theme="dark"] .text-tys-50 { color: #fbf6ee; }
-        html[data-theme="dark"] .text-tys-100 { color: #f2d9b8; }
-        html[data-theme="dark"] .text-tys-200 { color: #e6c69a; }
-        html[data-theme="dark"] .text-tys-300 { color: #d9b17c; }
-        html[data-theme="dark"] .text-tys-400 { color: #e0a256; }
-        html[data-theme="dark"] .text-tys-500 { color: #d6924f; }
-        html[data-theme="dark"] .text-tys-600 { color: #b47a3c; }
-        html[data-theme="dark"] .focus\:border-tys-600:focus { border-color: #c9853e; }
-        html[data-theme="dark"] .hover\:bg-tys-500:hover { background-color: #c9853e; }
-        html[data-theme="dark"] .hover\:bg-tys-500\/10:hover { background-color: rgb(201 133 62 / 0.16); }
-        html[data-theme="dark"] .hover\:bg-tys-600:hover { background-color: #a86a30; }
-        html[data-theme="dark"] .hover\:border-tys-700:hover { border-color: #4a3a26; }
+        /* ---------- tys (thương hiệu — vàng champagne) ---------- */
+        html[data-theme="dark"] .bg-tys-50 { background-color: #1c1509; }
+        html[data-theme="dark"] .bg-tys-500 { background-color: #C9944A; }
+        html[data-theme="dark"] .bg-tys-500\/10 { background-color: rgb(201 148 74 / 0.14); }
+        html[data-theme="dark"] .bg-tys-600 { background-color: #B07F3E; }
+        html[data-theme="dark"] .bg-tys-900 { background-color: #1E170D; }
+        html[data-theme="dark"] .bg-tys-900\/40 { background-color: rgb(30 23 13 / 0.4); }
+        html[data-theme="dark"] .bg-tys-900\/50 { background-color: rgb(30 23 13 / 0.5); }
+        html[data-theme="dark"] .bg-tys-900\/60 { background-color: rgb(30 23 13 / 0.6); }
+        html[data-theme="dark"] .border-tys-500 { border-color: #C9944A; }
+        html[data-theme="dark"] .border-tys-600 { border-color: #B07F3E; }
+        html[data-theme="dark"] .border-tys-700 { border-color: rgba(230,196,140,0.16); }
+        html[data-theme="dark"] .border-tys-800 { border-color: rgba(230,196,140,0.10); }
+        html[data-theme="dark"] .border-tys-800\/60 { border-color: rgba(230,196,140,0.06); }
+        html[data-theme="dark"] .border-tys-900 { border-color: var(--hairline); }
+        html[data-theme="dark"] .text-tys-50 { color: #FBF3E4; }
+        html[data-theme="dark"] .text-tys-100 { color: #F0DDB8; }
+        html[data-theme="dark"] .text-tys-200 { color: #E7CD9C; }
+        html[data-theme="dark"] .text-tys-300 { color: #DCB77D; }
+        html[data-theme="dark"] .text-tys-400 { color: #E1B66E; }
+        html[data-theme="dark"] .text-tys-500 { color: #C9944A; }
+        html[data-theme="dark"] .text-tys-600 { color: #A9793A; }
+        html[data-theme="dark"] .focus\:border-tys-600:focus { border-color: #B07F3E; }
+        html[data-theme="dark"] .hover\:bg-tys-500:hover { background-color: #C9944A; }
+        html[data-theme="dark"] .hover\:bg-tys-500\/10:hover { background-color: rgb(201 148 74 / 0.14); }
+        html[data-theme="dark"] .hover\:bg-tys-600:hover { background-color: #B07F3E; }
+        html[data-theme="dark"] .hover\:border-tys-700:hover { border-color: rgba(230,196,140,0.20); }
 
-        /* ---------- sage (trạng thái Đã trả — xanh ngọc) ---------- */
-        html[data-theme="dark"] .bg-sage-500 { background-color: #34d399; }
-        html[data-theme="dark"] .bg-sage-600 { background-color: #22c55e; }
-        html[data-theme="dark"] .bg-sage-700 { background-color: #1f9d55; }
-        html[data-theme="dark"] .bg-sage-950 { background-color: #0f2418; }
-        html[data-theme="dark"] .bg-sage-950\/30 { background-color: rgb(15 36 24 / 0.35); }
-        html[data-theme="dark"] .bg-sage-950\/80 { background-color: rgb(15 36 24 / 0.85); }
-        html[data-theme="dark"] .border-sage-500 { border-color: #34d399; }
-        html[data-theme="dark"] .border-sage-600 { border-color: #22c55e; }
-        html[data-theme="dark"] .border-sage-700 { border-color: #1f9d55; }
-        html[data-theme="dark"] .border-sage-700\/50 { border-color: rgb(31 157 85 / 0.5); }
-        html[data-theme="dark"] .border-sage-900\/40 { border-color: rgb(15 36 24 / 0.5); }
-        html[data-theme="dark"] .text-sage-200 { color: #a7f0c4; }
-        html[data-theme="dark"] .text-sage-300 { color: #7de6ac; }
-        html[data-theme="dark"] .text-sage-400 { color: #4ade80; }
-        html[data-theme="dark"] .text-sage-50 { color: #eafff2; }
-        html[data-theme="dark"] .text-sage-500\/80 { color: rgb(52 211 153 / 0.85); }
-        html[data-theme="dark"] .hover\:bg-sage-500:hover { background-color: #34d399; }
-        html[data-theme="dark"] .hover\:text-sage-300:hover { color: #7de6ac; }
+        /* ---------- sage (trạng thái Đã trả — xanh lá tự nhiên, trầm) ---------- */
+        html[data-theme="dark"] .bg-sage-500 { background-color: #6FA84E; }
+        html[data-theme="dark"] .bg-sage-600 { background-color: #5C8A41; }
+        html[data-theme="dark"] .bg-sage-700 { background-color: #4C7236; }
+        html[data-theme="dark"] .bg-sage-950 { background-color: #10160D; }
+        html[data-theme="dark"] .bg-sage-950\/30 { background-color: rgb(16 22 13 / 0.35); }
+        html[data-theme="dark"] .bg-sage-950\/80 { background-color: rgb(16 22 13 / 0.85); }
+        html[data-theme="dark"] .border-sage-500 { border-color: #6FA84E; }
+        html[data-theme="dark"] .border-sage-600 { border-color: #5C8A41; }
+        html[data-theme="dark"] .border-sage-700 { border-color: #4C7236; }
+        html[data-theme="dark"] .border-sage-700\/50 { border-color: rgb(76 114 54 / 0.5); }
+        html[data-theme="dark"] .border-sage-900\/40 { border-color: rgb(16 22 13 / 0.5); }
+        html[data-theme="dark"] .text-sage-200 { color: #CFE3C0; }
+        html[data-theme="dark"] .text-sage-300 { color: #A9CE93; }
+        html[data-theme="dark"] .text-sage-400 { color: #8DBB6F; }
+        html[data-theme="dark"] .text-sage-50 { color: #EAF3E1; }
+        html[data-theme="dark"] .text-sage-500\/80 { color: rgb(111 168 78 / 0.85); }
+        html[data-theme="dark"] .hover\:bg-sage-500:hover { background-color: #6FA84E; }
+        html[data-theme="dark"] .hover\:text-sage-300:hover { color: #A9CE93; }
 
-        /* ---------- brick (trạng thái Chưa trả — cam san hô) ---------- */
-        html[data-theme="dark"] .bg-brick-400 { background-color: #ff7a4d; }
-        html[data-theme="dark"] .bg-brick-500 { background-color: #ff6b3d; }
-        html[data-theme="dark"] .bg-brick-500\/10 { background-color: rgb(255 107 61 / 0.16); }
-        html[data-theme="dark"] .bg-brick-600 { background-color: #e0552e; }
-        html[data-theme="dark"] .bg-brick-700 { background-color: #b8461f; }
-        html[data-theme="dark"] .bg-brick-800 { background-color: #3f140c; }
-        html[data-theme="dark"] .bg-brick-900 { background-color: #3a160f; }
-        html[data-theme="dark"] .bg-brick-950 { background-color: #1c0f0b; }
-        html[data-theme="dark"] .bg-brick-950\/40 { background-color: rgb(28 15 11 / 0.5); }
-        html[data-theme="dark"] .bg-brick-950\/60 { background-color: rgb(28 15 11 / 0.65); }
-        html[data-theme="dark"] .bg-brick-950\/70 { background-color: rgb(28 15 11 / 0.75); }
-        html[data-theme="dark"] .border-brick-600 { border-color: #e0552e; }
-        html[data-theme="dark"] .border-brick-800 { border-color: #402019; }
-        html[data-theme="dark"] .border-brick-900\/40 { border-color: rgb(58 22 15 / 0.5); }
-        html[data-theme="dark"] .border-brick-accent { border-color: #ff8a5c; }
-        html[data-theme="dark"] .text-brick-100 { color: #ffd6c4; }
-        html[data-theme="dark"] .text-brick-200 { color: #ffe3d8; }
-        html[data-theme="dark"] .text-brick-300 { color: #f0a98d; }
-        html[data-theme="dark"] .text-brick-400 { color: #ff6b4a; }
-        html[data-theme="dark"] .text-brick-ink { color: #ffcab0; }
-        html[data-theme="dark"] .hover\:bg-brick-500\/10:hover { background-color: rgb(255 107 61 / 0.16); }
-        html[data-theme="dark"] .hover\:bg-brick-600:hover { background-color: #e0552e; }
-        html[data-theme="dark"] .hover\:text-brick-300:hover { color: #f0a98d; }
-        html[data-theme="dark"] .hover\:text-brick-400:hover { color: #ff6b4a; }
+        /* ---------- brick (trạng thái Chưa trả — san hô ấm, trầm) ---------- */
+        html[data-theme="dark"] .bg-brick-400 { background-color: #E2896A; }
+        html[data-theme="dark"] .bg-brick-500 { background-color: #D97757; }
+        html[data-theme="dark"] .bg-brick-500\/10 { background-color: rgb(217 119 87 / 0.14); }
+        html[data-theme="dark"] .bg-brick-600 { background-color: #C2664A; }
+        html[data-theme="dark"] .bg-brick-700 { background-color: #A6543C; }
+        html[data-theme="dark"] .bg-brick-800 { background-color: #3A1F16; }
+        html[data-theme="dark"] .bg-brick-900 { background-color: #33190F; }
+        html[data-theme="dark"] .bg-brick-950 { background-color: #1C110B; }
+        html[data-theme="dark"] .bg-brick-950\/40 { background-color: rgb(28 17 11 / 0.5); }
+        html[data-theme="dark"] .bg-brick-950\/60 { background-color: rgb(28 17 11 / 0.65); }
+        html[data-theme="dark"] .bg-brick-950\/70 { background-color: rgb(28 17 11 / 0.75); }
+        html[data-theme="dark"] .border-brick-600 { border-color: #C2664A; }
+        html[data-theme="dark"] .border-brick-800 { border-color: #402A20; }
+        html[data-theme="dark"] .border-brick-900\/40 { border-color: rgb(51 25 15 / 0.5); }
+        html[data-theme="dark"] .border-brick-accent { border-color: #E2896A; }
+        html[data-theme="dark"] .text-brick-100 { color: #F3D4C4; }
+        html[data-theme="dark"] .text-brick-200 { color: #F6E0D2; }
+        html[data-theme="dark"] .text-brick-300 { color: #E3AD91; }
+        html[data-theme="dark"] .text-brick-400 { color: #D97757; }
+        html[data-theme="dark"] .text-brick-ink { color: #F0C4AC; }
+        html[data-theme="dark"] .hover\:bg-brick-500\/10:hover { background-color: rgb(217 119 87 / 0.14); }
+        html[data-theme="dark"] .hover\:bg-brick-600:hover { background-color: #C2664A; }
+        html[data-theme="dark"] .hover\:text-brick-300:hover { color: #E3AD91; }
+        html[data-theme="dark"] .hover\:text-brick-400:hover { color: #D97757; }
 
-        /* Vệt sáng (pulse) trạng thái "Chưa trả" — giữ tông cam ấm nổi trên nền tối */
-        html[data-theme="dark"] .pulse-unpaid { animation: pulse-brick-dark 2.2s infinite ease-in-out; }
-        html[data-theme="dark"] .pulse-unpaid-fast { animation: pulse-brick-fast-dark 1s infinite ease-in-out; }
+        /* Vệt sáng (pulse) trạng thái "Chưa trả" — cam san hô ấm, dịu, không chói */
+        html[data-theme="dark"] .pulse-unpaid { animation: pulse-brick-dark 2.6s infinite ease-in-out; }
+        html[data-theme="dark"] .pulse-unpaid-fast { animation: pulse-brick-fast-dark 1.3s infinite ease-in-out; }
         @keyframes pulse-brick-dark {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 61, 0.4); }
-            50% { box-shadow: 0 0 0 7px rgba(255, 107, 61, 0); }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 87, 0.32); }
+            50% { box-shadow: 0 0 0 6px rgba(217, 119, 87, 0); }
         }
         @keyframes pulse-brick-fast-dark {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 138, 92, 0.5); border-color: #ff8a5c; }
-            50% { box-shadow: 0 0 0 8px rgba(255, 138, 92, 0); border-color: #ffb088; }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(226, 137, 106, 0.42); border-color: #E2896A; }
+            50% { box-shadow: 0 0 0 7px rgba(226, 137, 106, 0); border-color: #F0A98A; }
         }
     </style>
 </head>
@@ -450,8 +507,9 @@
             </button>
         </div>
 
-        <!-- TOOLBAR: số liệu + bộ lọc + nút thao tác -->
-        <div class="px-2 sm:px-4 py-2 sm:py-2.5">
+        <!-- TOOLBAR: số liệu + bộ lọc + nút thao tác — di chuyển xuống thanh điều khiển đáy màn hình
+             để giữ header nhẹ nhàng, tối giản. Giữ nguyên các phần tử & id để không phá vỡ logic JS. -->
+        <div class="hidden">
             <div class="max-w-[1700px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-2.5">
 
                 <!-- Dashboard Stats -->
@@ -511,42 +569,45 @@
         </div>
     </header>
 
-    <!-- MOBILE BOTTOM ACTION BAR — chỉ hiển thị < sm (điện thoại), PC/tablet không đổi -->
-    <nav id="mobileActionBar" class="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-espresso-900/95 backdrop-blur border-t border-tys-900 px-2 pt-1.5 pb-[calc(0.375rem+env(safe-area-inset-bottom))] flex items-center gap-1.5 shadow-[0_-4px_16px_rgba(26,21,16,0.18)]">
-        <button onclick="filterStatus('all')" data-filter="all" class="filter-btn-mobile active-filter-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl bg-tys-500 text-ink font-bold transition-colors">
-            <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterAllCountMobile">29</span>
-            <span class="text-[9px] font-bold uppercase tracking-wide leading-none">Tất cả</span>
-        </button>
-        <button onclick="filterStatus('unpaid')" data-filter="unpaid" class="filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-brick-300 bg-espresso-950/70 border border-brick-900/40 transition-colors">
-            <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterUnpaidCountMobile">0</span>
-            <span class="text-[9px] font-bold uppercase tracking-wide leading-none">Cần thu</span>
-        </button>
-        <button onclick="filterStatus('paid')" data-filter="paid" class="filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl text-sage-300 bg-espresso-950/70 border border-sage-900/40 transition-colors">
-            <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterPaidCountMobile">0</span>
-            <span class="text-[9px] font-bold uppercase tracking-wide leading-none">Đã trả</span>
-        </button>
-        <div class="w-px h-8 bg-tys-900 shrink-0"></div>
-        <button onclick="toggleViewMobile()" id="btnToggleViewMobile" class="shrink-0 w-11 h-11 rounded-xl bg-espresso-950/70 border border-tys-900 text-tys-300 flex items-center justify-center active:scale-90 transition" title="Chuyển đổi Sơ đồ / Danh sách" aria-label="Chuyển đổi chế độ xem">
-            <i class="fa-solid fa-list-ul text-sm"></i>
-        </button>
-        <button onclick="openResetModal()" class="shrink-0 w-11 h-11 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-500 flex items-center justify-center active:scale-90 transition" title="Đặt lại dữ liệu" aria-label="Đặt lại dữ liệu">
-            <!-- Đổi icon reset ở đây thay vì fa-ellipsis -->
-            <i class="fa-solid fa-rotate-right text-sm"></i>
-        </button>
+    <!-- BOTTOM CONTROL BAR — thanh điều khiển chính, hiển thị ở mọi kích thước màn hình -->
+    <nav id="mobileActionBar" class="fixed bottom-0 inset-x-0 z-40 bg-espresso-900/95 backdrop-blur-xl border-t border-tys-900 px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] flex items-center justify-center shadow-[0_-4px_20px_rgba(26,21,16,0.10)]">
+        <div class="w-full max-w-[560px] flex items-center gap-1.5 sm:gap-2">
+            <button onclick="filterStatus('all')" data-filter="all" class="filter-btn-mobile active-filter-mobile nav-chip-glow flex-1 flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl bg-tys-500 text-ink font-bold transition-all">
+                <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterAllCountMobile">29</span>
+                <span class="text-[9px] font-bold uppercase tracking-wide leading-none mt-0.5">Tất cả</span>
+            </button>
+            <button onclick="filterStatus('unpaid')" data-filter="unpaid" class="filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl text-brick-300 bg-espresso-950/70 border border-brick-900/40 transition-all">
+                <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterUnpaidCountMobile">0</span>
+                <span class="text-[9px] font-bold uppercase tracking-wide leading-none mt-0.5">Cần thu</span>
+            </button>
+            <button onclick="filterStatus('paid')" data-filter="paid" class="filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl text-sage-300 bg-espresso-950/70 border border-sage-900/40 transition-all">
+                <span class="text-[15px] font-extrabold leading-none tabular-nums" id="filterPaidCountMobile">0</span>
+                <span class="text-[9px] font-bold uppercase tracking-wide leading-none mt-0.5">Đã trả</span>
+            </button>
+            <div class="w-px h-8 bg-tys-900 shrink-0"></div>
+            <button onclick="toggleViewMobile()" id="btnToggleViewMobile" class="shrink-0 w-12 h-12 rounded-xl bg-espresso-950/70 border border-tys-900 text-tys-300 flex flex-col items-center justify-center gap-0.5 active:scale-90 transition" title="Chuyển đổi Sơ đồ / Danh sách" aria-label="Chuyển đổi chế độ xem">
+                <i class="fa-solid fa-list-ul text-[13px]"></i>
+                <span class="text-[8px] font-bold uppercase tracking-wide leading-none">List</span>
+            </button>
+            <button onclick="openResetModal()" class="shrink-0 w-12 h-12 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-500 flex flex-col items-center justify-center gap-0.5 active:scale-90 transition" title="Đặt lại dữ liệu" aria-label="Đặt lại dữ liệu">
+                <i class="fa-solid fa-rotate-right text-[13px]"></i>
+                <span class="text-[8px] font-bold uppercase tracking-wide leading-none">Refresh</span>
+            </button>
+        </div>
     </nav>
 
-    <!-- FAB "Về giữa" — chỉ hiển thị < sm và khi đang ở chế độ Sơ đồ -->
-    <button onclick="resetZoomAndFit()" id="fabRecenter" class="sm:hidden fixed right-3 bottom-[84px] z-40 w-12 h-12 rounded-full bg-tys-500 text-ink shadow-lg shadow-tys-900/40 border border-tys-600 flex items-center justify-center active:scale-90 transition" title="Về giữa - Hiện toàn bộ sơ đồ" aria-label="Về giữa">
+    <!-- FAB "Về giữa / Hiện toàn bộ sơ đồ" — control nổi màu hổ phách ấm, đổ bóng dịu -->
+    <button onclick="resetZoomAndFit()" id="fabRecenter" class="fab-glow fixed right-3 sm:right-6 bottom-[94px] sm:bottom-[104px] z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-tys-500 text-ink border border-tys-600 flex items-center justify-center active:scale-90 transition" title="Về giữa - Hiện toàn bộ sơ đồ" aria-label="Về giữa">
         <i class="fa-solid fa-expand text-base"></i>
     </button>
 
-    <main class="flex-1 p-1.5 sm:p-2 md:p-3 pb-24 sm:pb-2 md:pb-3 overflow-hidden flex flex-col justify-center items-center relative">
+    <main class="flex-1 p-1.5 sm:p-2 md:p-3 pb-24 overflow-hidden flex flex-col justify-center items-center relative">
         <div class="w-full h-full max-w-[1800px] flex items-center justify-center relative">
             
             <div id="mapView" class="w-full h-full flex items-center justify-center relative overflow-hidden">
                 <div id="mapContainer" class="floorplan-container relative w-full h-full rounded-2xl border border-tys-900 overflow-hidden select-none">
                     <!-- Background pattern scaled up 1.5x -->
-                    <div class="absolute inset-0 bg-[radial-gradient(#c9bfae_1.5px,transparent_1.5px)] [background-size:42px_42px] opacity-30 rounded-2xl pointer-events-none"></div>
+                    <div class="absolute inset-0 floor-dot-grid rounded-2xl pointer-events-none"></div>
 
                     <!-- Kích thước map 1.5x: 2100x1350 (Từ 1400x900) -->
                     <div id="mapWrapper" class="absolute w-[2100px] h-[1350px] left-0 top-0">
@@ -1008,7 +1069,8 @@
         }
 
         function initData() {
-            const saved = localStorage.getItem('cafe_tables_tys');
+            let saved = null;
+            try { saved = localStorage.getItem('cafe_tables_tys'); } catch(e) {}
             if (saved) {
                 try {
                     tablesData = JSON.parse(saved);
@@ -1042,7 +1104,7 @@
         }
 
         function saveData() {
-            localStorage.setItem('cafe_tables_tys', JSON.stringify(tablesData));
+            try { localStorage.setItem('cafe_tables_tys', JSON.stringify(tablesData)); } catch(e) {}
             updateDashboardStats();
         }
 
@@ -1274,8 +1336,8 @@
             container.style.transform = 'rotate(180deg)';
 
             const data = tablesData[i];
-            let bgStyle = "bg-espresso-900 border-tys-700 text-stone-500 shadow-[0_3px_10px_-2px_rgba(74,54,35,0.20),0_1px_2px_rgba(26,21,16,0.08)]";
-            let numColor = "text-stone-200";
+            let bgStyle = "bg-espresso-900 border-tys-800 text-stone-500 shadow-[0_4px_14px_-4px_rgba(12,11,9,0.45),0_1px_2px_rgba(12,11,9,0.15)]";
+            let numColor = "text-stone-400";
             let badgeHTML = "";
             let timerText = "";
 
@@ -1285,7 +1347,8 @@
                 timerText = `<div class="text-xs sm:text-[10px] opacity-75 mt-1 font-semibold tabular-nums"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</div>`;
             }
 
-            // Đã scale các kích thước UI con bên trong nút bấm cho hợp lý
+            // Đã scale các kích thước UI con bên trong nút bấm cho hợp lý.
+            // 3 mức trạng thái "Chưa trả": mới ngồi (ánh vàng ấm, thở nhẹ) → 30p (báo nhẹ, san hô mờ) → 45p+ (báo rõ hơn, san hô đậm)
             if (data.status === 'unpaid') {
                 if (elapsedMins >= 45) {
                     bgStyle = "bg-brick-800 border-brick-accent text-tys-50 pulse-unpaid-fast";
@@ -1296,12 +1359,12 @@
                     numColor = "text-brick-100";
                     badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-600 text-tys-50 whitespace-nowrap">Chưa trả</span>`;
                 } else {
-                    bgStyle = "bg-brick-950/70 border-brick-800 text-brick-300 backdrop-blur-sm"; 
-                    numColor = "text-brick-ink";
-                    badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-800 text-brick-200 whitespace-nowrap">Chưa trả</span>`;
+                    bgStyle = "bg-tys-900/60 border-tys-600 text-tys-100 table-active-breathe";
+                    numColor = "text-tys-100";
+                    badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-tys-600 text-tys-50 whitespace-nowrap">Chưa trả</span>`;
                 }
             } else if (data.status === 'paid') {
-                bgStyle = "bg-sage-950/80 border-sage-600 text-sage-200";
+                bgStyle = "bg-sage-950/80 border-sage-600 text-sage-200 table-paid-halo";
                 numColor = "text-sage-300";
                 badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-sage-700 text-sage-50 whitespace-nowrap">Đã trả</span>`;
             }
@@ -1312,10 +1375,11 @@
                                (currentFilter === 'empty' && data.status === 'empty');
 
             const opacityClass = isFiltered ? "opacity-100 scale-100" : "opacity-20 scale-90 pointer-events-none";
+            const selectedClass = (activeTableId === i) ? "table-selected-glow" : "";
 
             // Nút bấm từ 68px tăng thành 102px
             container.innerHTML = `
-                <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} flex flex-col items-center justify-center p-1.5 transition-all">
+                <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} ${selectedClass} flex flex-col items-center justify-center p-1.5 transition-all">
                     ${badgeHTML}
                     <span class="text-[10px] font-bold uppercase tracking-[0.18em] leading-none opacity-60 ${numColor}">Bàn</span>
                     <span class="text-[42px] font-extrabold leading-none tracking-tight tabular-nums ${numColor} mt-0.5">${i}</span>
@@ -1372,8 +1436,10 @@
                 if (data.status === 'unpaid') {
                     if (elapsedMins >= 45) {
                         statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-700 text-tys-50 inline-flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Quá 45 phút</span>`;
-                    } else {
+                    } else if (elapsedMins >= 30) {
                         statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-950 text-brick-300 border border-brick-800 inline-flex items-center gap-1">Chưa thanh toán</span>`;
+                    } else {
+                        statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-tys-900 text-tys-300 border border-tys-700 inline-flex items-center gap-1">Chưa thanh toán</span>`;
                     }
                 }
                 if (data.status === 'paid') statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-sage-950 text-sage-300 border border-sage-700">Đã thanh toán</span>`;
@@ -1443,9 +1509,9 @@
             document.querySelectorAll('.filter-btn-mobile').forEach(btn => {
                 const f = btn.dataset.filter;
                 const isActive = f === status;
-                const base = "filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-xl transition-colors";
+                const base = "filter-btn-mobile flex-1 flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl transition-all";
                 if (isActive) {
-                    btn.className = `${base} bg-tys-500 text-ink font-bold`;
+                    btn.className = `${base} bg-tys-500 text-ink font-bold nav-chip-glow`;
                 } else if (f === 'unpaid') {
                     btn.className = `${base} text-brick-300 bg-espresso-950/70 border border-brick-900/40`;
                 } else if (f === 'paid') {
@@ -1498,6 +1564,7 @@
         let modalItems = [];
 
         function openModal(tableId) {
+            const prevActiveId = activeTableId;
             activeTableId = tableId;
             const data = tablesData[tableId];
 
@@ -1520,11 +1587,15 @@
             else quickPaymentActions.classList.add('hidden');
 
             document.getElementById('tableModal').classList.remove('hidden');
+            renderTableNode(tableId);
+            if (prevActiveId && prevActiveId !== tableId) renderTableNode(prevActiveId);
         }
 
         function closeModal() {
             document.getElementById('tableModal').classList.add('hidden');
+            const prevActiveId = activeTableId;
             activeTableId = null;
+            if (prevActiveId) renderTableNode(prevActiveId);
         }
 
         // 2 nút chọn phương thức thanh toán trên mobile (thay cho dropdown) —
