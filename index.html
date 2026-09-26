@@ -1063,51 +1063,63 @@
         let activeTableId = null;
         let currentFilter = 'all';
 
-        // ================== DỮ LIỆU THỰC ĐƠN (TOÀN BỘ MENU) ==================
+        // ================== DỮ LIỆU THỰC ĐƠN (TOÀN BỘ MENU TYS COFFEE) ==================
         // Toàn bộ menu được đưa vào đây. Chỉ những món có bestSeller:true mới hiện
         // sẵn ở ngoài (mục "Best seller"); các món còn lại tìm qua ô tìm kiếm.
-        // Muốn thêm/sửa/xoá món, chỉ cần chỉnh mảng này — giao diện tự cập nhật.
+        // Món có "sizes: {M, L}" sẽ hiện 2 nút chọn size (M/L) thay vì 1 giá duy nhất.
+        // Muốn thêm/sửa/xoá món hay đổi món best seller, chỉ cần chỉnh mảng này —
+        // giao diện tự cập nhật, không cần sửa chỗ khác.
         const MENU_DATA = [
-            // Cà phê
-            { name: 'Cà phê đen đá', price: 22, category: 'Cà phê', bestSeller: true },
-            { name: 'Cà phê sữa đá', price: 25, category: 'Cà phê', bestSeller: true },
-            { name: 'Bạc xỉu', price: 25, category: 'Cà phê', bestSeller: true },
-            { name: 'Cà phê đen nóng', price: 20, category: 'Cà phê' },
-            { name: 'Cà phê sữa nóng', price: 23, category: 'Cà phê' },
-            { name: 'Cappuccino', price: 35, category: 'Cà phê', bestSeller: true },
-            { name: 'Latte', price: 35, category: 'Cà phê' },
-            { name: 'Americano', price: 30, category: 'Cà phê' },
-            { name: 'Espresso', price: 28, category: 'Cà phê' },
-            { name: 'Mocha', price: 38, category: 'Cà phê' },
-            // Trà
-            { name: 'Trà đào cam sả', price: 35, category: 'Trà', bestSeller: true },
-            { name: 'Trà tắc', price: 20, category: 'Trà', bestSeller: true },
-            { name: 'Trà vải', price: 32, category: 'Trà' },
-            { name: 'Trà atiso', price: 25, category: 'Trà' },
-            { name: 'Hồng trà sữa', price: 30, category: 'Trà' },
-            { name: 'Trà xanh sữa', price: 30, category: 'Trà' },
-            // Nước ép & Sinh tố
-            { name: 'Sinh tố bơ', price: 35, category: 'Sinh tố' },
-            { name: 'Sinh tố xoài', price: 32, category: 'Sinh tố' },
-            { name: 'Sinh tố dâu', price: 35, category: 'Sinh tố' },
-            { name: 'Nước ép cam', price: 30, category: 'Nước ép' },
-            { name: 'Nước ép dưa hấu', price: 28, category: 'Nước ép' },
-            // Đá xay
-            { name: 'Cà phê đá xay', price: 39, category: 'Đá xay' },
-            { name: 'Chocolate đá xay', price: 39, category: 'Đá xay' },
-            { name: 'Matcha đá xay', price: 42, category: 'Đá xay' },
-            // Bánh & Ăn nhẹ
-            { name: 'Bánh mì que', price: 15, category: 'Ăn nhẹ' },
-            { name: 'Bánh croissant', price: 25, category: 'Ăn nhẹ' },
-            { name: 'Bánh flan', price: 18, category: 'Ăn nhẹ' },
-            { name: 'Bánh tiramisu', price: 35, category: 'Ăn nhẹ' },
-            { name: 'Khoai tây chiên', price: 25, category: 'Ăn nhẹ' },
-            // Nước ngọt / khác
-            { name: 'Coca Cola', price: 15, category: 'Nước ngọt' },
-            { name: 'Pepsi', price: 15, category: 'Nước ngọt' },
-            { name: 'Sting dâu', price: 15, category: 'Nước ngọt' },
-            { name: '7Up', price: 15, category: 'Nước ngọt' },
-            { name: 'Nước suối', price: 10, category: 'Nước ngọt' },
+            // PHÊ PHIN
+            { name: 'Cà Phê Đen Đá', price: 22, category: 'Phê phin', bestSeller: true },
+            { name: 'Cà Phê Sữa Đá', price: 25, category: 'Phê phin', bestSeller: true },
+            { name: 'Cà Phê Kem Muối', price: 28, category: 'Phê phin' },
+            { name: 'Bạc Xỉu', price: 28, category: 'Phê phin', bestSeller: true },
+            { name: 'Cà Phê Đá Xay', price: 35, category: 'Phê phin' },
+            { name: 'Cookie & Cream', price: 45, category: 'Phê phin' },
+            { name: 'Hạnh Nhân Đá Xay', price: 45, category: 'Phê phin' },
+            { name: 'Caramel Đá Xay', price: 45, category: 'Phê phin' },
+            // PHA MÁY
+            { name: 'Espresso Đá', price: 22, category: 'Pha máy' },
+            { name: 'Espresso Sữa Đá', price: 25, category: 'Pha máy' },
+            { name: 'Capuchino Nóng', price: 45, category: 'Pha máy' },
+            { name: 'Capuchino Đá', price: 45, category: 'Pha máy' },
+            { name: 'Latte', price: 45, category: 'Pha máy' },
+            { name: 'Latte Đá', price: 45, category: 'Pha máy' },
+            { name: 'Mocha Đá Xay', price: 45, category: 'Pha máy' },
+            // CACAO - MATCHA
+            { name: 'Cacao Sữa Nóng', price: 28, category: 'Cacao - Matcha' },
+            { name: 'Cacao Sữa Đá', price: 28, category: 'Cacao - Matcha', bestSeller: true },
+            { name: 'Cacao Kem Phô Mai', price: 35, category: 'Cacao - Matcha' },
+            { name: 'Cacao Đá Xay', price: 35, category: 'Cacao - Matcha' },
+            { name: 'Matcha Latte', price: 35, category: 'Cacao - Matcha', bestSeller: true },
+            { name: 'Matcha Kem Phô Mai', price: 35, category: 'Cacao - Matcha' },
+            { name: 'Matcha Đá Xay', price: 45, category: 'Cacao - Matcha' },
+            { name: 'Matcha Cookie Đá Xay', price: 45, category: 'Cacao - Matcha' },
+            { name: 'Matcha Tàu Phớ', price: 38, category: 'Cacao - Matcha' },
+            // TRÀ TRÁI CÂY (Size M / L)
+            { name: 'Trà Đào', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Trà Đào Cam Sả', sizes: { M: 28, L: 32 }, category: 'Trà trái cây', bestSeller: true },
+            { name: 'Trà Vải', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Trà Dâu', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Trà Việt Quất', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Trà Tắc Thái Xí Muội', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Trà Nhiệt Đới', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Trà Dâu Tằm', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Trà Quế Hoa', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Trà Xoài Chanh Dây', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Trà Hibiscus', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Trà Bạc Hà', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Trà Sen Vàng', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Lục Trà Macchiato', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Trà Tắc', sizes: { M: 28, L: 32 }, category: 'Trà trái cây', bestSeller: true },
+            // TRÀ SỮA (Size M / L)
+            { name: 'Trà Sữa Khoai Môn', sizes: { M: 25, L: 29 }, category: 'Trà sữa' },
+            { name: 'Trà Sữa Gạo Rang', sizes: { M: 25, L: 29 }, category: 'Trà sữa' },
+            { name: 'Sữa Tươi Trân Châu Đường Đen', sizes: { M: 25, L: 29 }, category: 'Trà sữa' },
+            { name: 'Trà Sữa Bạch Lan', sizes: { M: 28, L: 32 }, category: 'Trà sữa' },
+            { name: 'Trà Sữa Thái Xanh', sizes: { M: 25, L: 29 }, category: 'Trà sữa' },
+            { name: 'Trà Sữa Truyền Thống', sizes: { M: 25, L: 29 }, category: 'Trà sữa', bestSeller: true },
         ];
 
         // Bỏ dấu tiếng Việt để tìm kiếm không cần gõ dấu (vd: "ca phe" vẫn ra "Cà phê")
@@ -1116,6 +1128,23 @@
                 .toLowerCase()
                 .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
                 .replace(/đ/g, 'd');
+        }
+
+        // Món có size M/L được "khai triển" thành từng lựa chọn riêng (VD: "Trà Đào (Size M)"),
+        // dùng cho cả ô tìm kiếm lẫn khi thêm vào danh sách món đã gọi.
+        function getMenuVariants(item) {
+            if (item.sizes) {
+                return Object.keys(item.sizes).map(size => ({
+                    name: `${item.name} (Size ${size})`,
+                    price: item.sizes[size],
+                    bestSeller: !!item.bestSeller,
+                }));
+            }
+            return [{ name: item.name, price: item.price, bestSeller: !!item.bestSeller }];
+        }
+
+        function getAllMenuVariants() {
+            return MENU_DATA.flatMap(getMenuVariants);
         }
 
         // Cập nhật Base Width và Height mới (scale 1.5x)
@@ -1805,12 +1834,30 @@
             const grid = document.getElementById('bestSellerGrid');
             if (!grid) return;
             const bestSellers = MENU_DATA.filter(item => item.bestSeller);
-            grid.innerHTML = bestSellers.map(item => `
-                <button type="button" onclick="addPresetItem('${item.name.replace(/'/g, "\\'")}', ${item.price})" class="py-1.5 px-2.5 rounded-lg bg-tys-900/50 border border-tys-800 hover:bg-tys-500 hover:text-ink text-tys-200 font-semibold transition text-xs flex items-center justify-between group text-left">
-                    <span class="truncate mr-1"><i class="fa-solid fa-circle-plus mr-1 text-tys-500 group-hover:text-ink"></i>${item.name}</span>
-                    <span class="font-bold text-tys-400 group-hover:text-ink shrink-0">${item.price}k</span>
-                </button>
-            `).join('');
+            grid.innerHTML = bestSellers.map(item => {
+                const safeName = item.name.replace(/'/g, "\\'");
+                if (item.sizes) {
+                    // Món có size M/L -> hiện tên món + 2 nút chọn size ngay trong 1 thẻ
+                    return `
+                        <div class="rounded-lg bg-tys-900/50 border border-tys-800 overflow-hidden flex flex-col">
+                            <div class="px-2.5 pt-1.5 pb-1 text-[11px] font-semibold text-tys-200 truncate">${item.name}</div>
+                            <div class="flex border-t border-tys-800">
+                                ${Object.keys(item.sizes).map((size, i) => `
+                                    <button type="button" onclick="addPresetItem('${safeName} (Size ${size})', ${item.sizes[size]})" class="flex-1 py-1.5 text-[11px] font-bold text-tys-400 hover:bg-tys-500 hover:text-ink transition ${i > 0 ? 'border-l border-tys-800' : ''}">
+                                        ${size} · ${item.sizes[size]}k
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                return `
+                    <button type="button" onclick="addPresetItem('${safeName}', ${item.price})" class="py-1.5 px-2.5 rounded-lg bg-tys-900/50 border border-tys-800 hover:bg-tys-500 hover:text-ink text-tys-200 font-semibold transition text-xs flex items-center justify-between group text-left">
+                        <span class="truncate mr-1"><i class="fa-solid fa-circle-plus mr-1 text-tys-500 group-hover:text-ink"></i>${item.name}</span>
+                        <span class="font-bold text-tys-400 group-hover:text-ink shrink-0">${item.price}k</span>
+                    </button>
+                `;
+            }).join('');
         }
 
         function hideMenuSearchResults() {
@@ -1819,7 +1866,8 @@
         }
 
         // Tìm trong toàn bộ MENU_DATA (không dấu vẫn tìm được) — dùng khi khách kêu món
-        // không nằm trong danh sách best seller hiện sẵn.
+        // không nằm trong danh sách best seller hiện sẵn. Món có size M/L được tách thành
+        // 2 dòng kết quả riêng (VD: "Trà Đào (Size M)" và "Trà Đào (Size L)").
         function handleMenuSearch() {
             const input = document.getElementById('menuSearchInput');
             const box = document.getElementById('menuSearchResults');
@@ -1827,7 +1875,7 @@
 
             if (!query) { hideMenuSearchResults(); return; }
 
-            const matches = MENU_DATA.filter(item => normalizeVN(item.name).includes(query)).slice(0, 8);
+            const matches = getAllMenuVariants().filter(v => normalizeVN(v.name).includes(query)).slice(0, 8);
 
             if (matches.length === 0) {
                 box.innerHTML = `<div class="px-3 py-2 text-[11px] text-stone-500 italic">Không tìm thấy món phù hợp</div>`;
@@ -1835,10 +1883,10 @@
                 return;
             }
 
-            box.innerHTML = matches.map(item => `
-                <button type="button" onclick="selectMenuItem('${item.name.replace(/'/g, "\\'")}', ${item.price})" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-espresso-800 transition">
-                    <span class="text-stone-200 font-medium truncate mr-2">${item.name}</span>
-                    <span class="text-tys-400 font-bold text-[11px] shrink-0">${item.price}k</span>
+            box.innerHTML = matches.map(v => `
+                <button type="button" onclick="selectMenuItem('${v.name.replace(/'/g, "\\'")}', ${v.price})" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-espresso-800 transition">
+                    <span class="text-stone-200 font-medium truncate mr-2">${v.name}</span>
+                    <span class="text-tys-400 font-bold text-[11px] shrink-0">${v.price}k</span>
                 </button>
             `).join('');
             box.classList.remove('hidden');
@@ -1849,7 +1897,7 @@
             event.preventDefault();
             const query = normalizeVN(document.getElementById('menuSearchInput').value.trim());
             if (!query) return;
-            const match = MENU_DATA.find(item => normalizeVN(item.name).includes(query));
+            const match = getAllMenuVariants().find(v => normalizeVN(v.name).includes(query));
             if (match) selectMenuItem(match.name, match.price);
         }
 
