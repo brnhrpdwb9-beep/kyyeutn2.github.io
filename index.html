@@ -1130,23 +1130,6 @@
                 .replace(/đ/g, 'd');
         }
 
-        // Món có size M/L được "khai triển" thành từng lựa chọn riêng (VD: "Trà Đào (Size M)"),
-        // dùng cho cả ô tìm kiếm lẫn khi thêm vào danh sách món đã gọi.
-        function getMenuVariants(item) {
-            if (item.sizes) {
-                return Object.keys(item.sizes).map(size => ({
-                    name: `${item.name} (Size ${size})`,
-                    price: item.sizes[size],
-                    bestSeller: !!item.bestSeller,
-                }));
-            }
-            return [{ name: item.name, price: item.price, bestSeller: !!item.bestSeller }];
-        }
-
-        function getAllMenuVariants() {
-            return MENU_DATA.flatMap(getMenuVariants);
-        }
-
         // Cập nhật Base Width và Height mới (scale 1.5x)
         const MAP_BASE_WIDTH = 2100;
         const MAP_BASE_HEIGHT = 1350;
@@ -1837,17 +1820,17 @@
             grid.innerHTML = bestSellers.map(item => {
                 const safeName = item.name.replace(/'/g, "\\'");
                 if (item.sizes) {
-                    // Món có size M/L -> hiện tên món + 2 nút chọn size ngay trong 1 thẻ
+                    // Món có size M/L -> nhấn vào phần chính (tên món) mặc định thêm size M,
+                    // chỉ khi khách muốn size L mới cần bấm riêng nút "L" nhỏ bên phải.
                     return `
-                        <div class="rounded-lg bg-tys-900/50 border border-tys-800 overflow-hidden flex flex-col">
-                            <div class="px-2.5 pt-1.5 pb-1 text-[11px] font-semibold text-tys-200 truncate">${item.name}</div>
-                            <div class="flex border-t border-tys-800">
-                                ${Object.keys(item.sizes).map((size, i) => `
-                                    <button type="button" onclick="addPresetItem('${safeName} (Size ${size})', ${item.sizes[size]})" class="flex-1 py-1.5 text-[11px] font-bold text-tys-400 hover:bg-tys-500 hover:text-ink transition ${i > 0 ? 'border-l border-tys-800' : ''}">
-                                        ${size} · ${item.sizes[size]}k
-                                    </button>
-                                `).join('')}
-                            </div>
+                        <div class="rounded-lg bg-tys-900/50 border border-tys-800 overflow-hidden flex items-stretch">
+                            <button type="button" onclick="addPresetItem('${safeName} (Size M)', ${item.sizes.M})" class="flex-1 min-w-0 py-1.5 px-2.5 hover:bg-tys-500 hover:text-ink text-tys-200 font-semibold transition text-xs flex items-center justify-between group text-left">
+                                <span class="truncate mr-1"><i class="fa-solid fa-circle-plus mr-1 text-tys-500 group-hover:text-ink"></i>${item.name}</span>
+                                <span class="font-bold text-tys-400 group-hover:text-ink shrink-0">${item.sizes.M}k</span>
+                            </button>
+                            <button type="button" onclick="addPresetItem('${safeName} (Size L)', ${item.sizes.L})" title="Thêm size L (${item.sizes.L}k)" class="w-8 shrink-0 border-l border-tys-800 text-[10px] font-bold text-stone-400 hover:bg-tys-500 hover:text-ink transition flex items-center justify-center">
+                                L
+                            </button>
                         </div>
                     `;
                 }
@@ -1866,8 +1849,8 @@
         }
 
         // Tìm trong toàn bộ MENU_DATA (không dấu vẫn tìm được) — dùng khi khách kêu món
-        // không nằm trong danh sách best seller hiện sẵn. Món có size M/L được tách thành
-        // 2 dòng kết quả riêng (VD: "Trà Đào (Size M)" và "Trà Đào (Size L)").
+        // không nằm trong danh sách best seller hiện sẵn. Món có size M/L: bấm vào dòng
+        // (tên + giá) sẽ mặc định thêm size M; muốn size L thì bấm nút "L" nhỏ bên phải.
         function handleMenuSearch() {
             const input = document.getElementById('menuSearchInput');
             const box = document.getElementById('menuSearchResults');
@@ -1875,7 +1858,7 @@
 
             if (!query) { hideMenuSearchResults(); return; }
 
-            const matches = getAllMenuVariants().filter(v => normalizeVN(v.name).includes(query)).slice(0, 8);
+            const matches = MENU_DATA.filter(item => normalizeVN(item.name).includes(query)).slice(0, 8);
 
             if (matches.length === 0) {
                 box.innerHTML = `<div class="px-3 py-2 text-[11px] text-stone-500 italic">Không tìm thấy món phù hợp</div>`;
@@ -1883,12 +1866,28 @@
                 return;
             }
 
-            box.innerHTML = matches.map(v => `
-                <button type="button" onclick="selectMenuItem('${v.name.replace(/'/g, "\\'")}', ${v.price})" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-espresso-800 transition">
-                    <span class="text-stone-200 font-medium truncate mr-2">${v.name}</span>
-                    <span class="text-tys-400 font-bold text-[11px] shrink-0">${v.price}k</span>
-                </button>
-            `).join('');
+            box.innerHTML = matches.map(item => {
+                const safeName = item.name.replace(/'/g, "\\'");
+                if (item.sizes) {
+                    return `
+                        <div class="w-full flex items-center hover:bg-espresso-800 transition">
+                            <button type="button" onclick="selectMenuItem('${safeName} (Size M)', ${item.sizes.M})" class="flex-1 min-w-0 flex items-center justify-between px-3 py-2 text-left">
+                                <span class="text-stone-200 font-medium truncate mr-2">${item.name}</span>
+                                <span class="text-tys-400 font-bold text-[11px] shrink-0">${item.sizes.M}k</span>
+                            </button>
+                            <button type="button" onclick="selectMenuItem('${safeName} (Size L)', ${item.sizes.L})" title="Thêm size L (${item.sizes.L}k)" class="w-9 h-full shrink-0 border-l border-tys-900 text-[10px] font-bold text-stone-500 hover:text-tys-300 transition flex items-center justify-center py-2">
+                                L
+                            </button>
+                        </div>
+                    `;
+                }
+                return `
+                    <button type="button" onclick="selectMenuItem('${safeName}', ${item.price})" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-espresso-800 transition">
+                        <span class="text-stone-200 font-medium truncate mr-2">${item.name}</span>
+                        <span class="text-tys-400 font-bold text-[11px] shrink-0">${item.price}k</span>
+                    </button>
+                `;
+            }).join('');
             box.classList.remove('hidden');
         }
 
@@ -1897,8 +1896,11 @@
             event.preventDefault();
             const query = normalizeVN(document.getElementById('menuSearchInput').value.trim());
             if (!query) return;
-            const match = getAllMenuVariants().find(v => normalizeVN(v.name).includes(query));
-            if (match) selectMenuItem(match.name, match.price);
+            const match = MENU_DATA.find(item => normalizeVN(item.name).includes(query));
+            if (!match) return;
+            // Enter nhanh -> mặc định thêm size M nếu món có size
+            if (match.sizes) selectMenuItem(`${match.name} (Size M)`, match.sizes.M);
+            else selectMenuItem(match.name, match.price);
         }
 
         // Thêm món tìm được từ ô tìm kiếm, rồi dọn ô tìm kiếm để gõ tiếp món khác
