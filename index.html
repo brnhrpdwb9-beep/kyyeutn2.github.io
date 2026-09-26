@@ -233,6 +233,190 @@
             from { opacity: 0; transform: scale(0.97) translateY(4px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
+
+        /* =========================================================
+           GIAO DIỆN TỐI — "Midnight Copper"
+           Chuyển màu mượt khi đổi theme, không đụng vào transform
+           ========================================================= */
+        body, #mastheadBar, .floorplan-container, ::-webkit-scrollbar-track, ::-webkit-scrollbar-thumb,
+        [class*="bg-espresso"], [class*="bg-stone"], [class*="bg-tys"], [class*="bg-sage"], [class*="bg-brick"],
+        [class*="text-espresso"], [class*="text-stone"], [class*="text-tys"], [class*="text-sage"], [class*="text-brick"],
+        [class*="border-espresso"], [class*="border-stone"], [class*="border-tys"], [class*="border-sage"], [class*="border-brick"] {
+            transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        /* ---------- Nút bật/tắt giao diện tối ---------- */
+        .theme-toggle-btn {
+            position: absolute;
+            right: 0.625rem;
+            top: calc(0.625rem + env(safe-area-inset-top, 0px));
+            width: 52px;
+            height: 30px;
+            border-radius: 999px;
+            padding: 3px;
+            border: 1px solid rgba(156, 107, 58, 0.35);
+            background: linear-gradient(135deg, #ede6d9, #dad5ca);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background 0.35s ease, border-color 0.35s ease;
+            box-shadow: inset 0 1px 3px rgba(26,21,16,0.12);
+        }
+        @media (min-width: 640px) {
+            .theme-toggle-btn { right: 1rem; top: calc(0.75rem + env(safe-area-inset-top, 0px)); }
+        }
+        .theme-toggle-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            background: linear-gradient(160deg, #ffe6b8, #f4c47a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateX(0);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.35s ease;
+            box-shadow: 0 1px 3px rgba(26,21,16,0.35);
+            font-size: 11px;
+            color: #7d5527;
+        }
+        .theme-toggle-thumb .moon-icon { display: none; }
+        html[data-theme="dark"] .theme-toggle-btn {
+            background: linear-gradient(135deg, #241d15, #17130f);
+            border-color: rgba(224, 162, 86, 0.35);
+        }
+        html[data-theme="dark"] .theme-toggle-thumb {
+            transform: translateX(22px);
+            background: linear-gradient(160deg, #3a2c1c, #1e1811);
+            color: #f0b673;
+        }
+        html[data-theme="dark"] .theme-toggle-thumb .sun-icon { display: none; }
+        html[data-theme="dark"] .theme-toggle-thumb .moon-icon { display: block; }
+
+        /* ---------- Nền & khung sàn ---------- */
+        html[data-theme="dark"] body {
+            background-color: #100d0b;
+            color: #f2ead9;
+        }
+        html[data-theme="dark"] .floorplan-container {
+            background: radial-gradient(circle at 28% 18%, #201911 0%, #171310 55%, #100d0a 100%);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), inset 0 2px 28px rgba(0, 0, 0, 0.45);
+        }
+        html[data-theme="dark"] ::-webkit-scrollbar-track { background: #1a1510; }
+        html[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #4a3a26; }
+
+        /* ---------- espresso (bề mặt / khối kiến trúc) ---------- */
+        html[data-theme="dark"] .bg-espresso-700 { background-color: #241d15; }
+        html[data-theme="dark"] .bg-espresso-800 { background-color: #1c1610; }
+        html[data-theme="dark"] .bg-espresso-800\/80 { background-color: rgb(28 22 16 / 0.8); }
+        html[data-theme="dark"] .bg-espresso-900 { background-color: #1a1510; }
+        html[data-theme="dark"] .bg-espresso-900\/15 { background-color: rgb(26 21 16 / 0.15); }
+        html[data-theme="dark"] .bg-espresso-900\/30 { background-color: rgb(26 21 16 / 0.30); }
+        html[data-theme="dark"] .bg-espresso-900\/40 { background-color: rgb(26 21 16 / 0.40); }
+        html[data-theme="dark"] .bg-espresso-900\/60 { background-color: rgb(26 21 16 / 0.60); }
+        html[data-theme="dark"] .bg-espresso-900\/95 { background-color: rgb(20 16 13 / 0.95); }
+        html[data-theme="dark"] .bg-espresso-950 { background-color: #141110; }
+        html[data-theme="dark"] .bg-espresso-950\/70 { background-color: rgb(20 17 16 / 0.7); }
+        html[data-theme="dark"] .hover\:bg-espresso-700:hover { background-color: #2c2318; }
+        html[data-theme="dark"] .hover\:bg-espresso-800:hover { background-color: #2a2117; }
+
+        /* ---------- stone (phân cấp chữ trung tính) ---------- */
+        html[data-theme="dark"] .bg-stone-900 { background-color: #241d15; }
+        html[data-theme="dark"] .border-stone-700\/50 { border-color: rgb(74 61 42 / 0.5); }
+        html[data-theme="dark"] .border-stone-700\/70 { border-color: rgb(74 61 42 / 0.7); }
+        html[data-theme="dark"] .border-stone-800 { border-color: #2a2118; }
+        html[data-theme="dark"] .text-stone-100 { color: #f5efe4; }
+        html[data-theme="dark"] .text-stone-200 { color: #e3d8c4; }
+        html[data-theme="dark"] .text-stone-300 { color: #c9baa0; }
+        html[data-theme="dark"] .text-stone-400 { color: #a9987f; }
+        html[data-theme="dark"] .text-stone-500 { color: #8f7d65; }
+        html[data-theme="dark"] .text-stone-600 { color: #71614a; }
+        html[data-theme="dark"] .hover\:text-stone-100:hover { color: #fbf6ee; }
+
+        /* ---------- tys (thương hiệu — đồng/hổ phách) ---------- */
+        html[data-theme="dark"] .bg-tys-50 { background-color: #1f160b; }
+        html[data-theme="dark"] .bg-tys-500 { background-color: #c9853e; }
+        html[data-theme="dark"] .bg-tys-500\/10 { background-color: rgb(201 133 62 / 0.16); }
+        html[data-theme="dark"] .bg-tys-600 { background-color: #a86a30; }
+        html[data-theme="dark"] .bg-tys-900 { background-color: #241a10; }
+        html[data-theme="dark"] .bg-tys-900\/40 { background-color: rgb(36 26 16 / 0.4); }
+        html[data-theme="dark"] .bg-tys-900\/50 { background-color: rgb(36 26 16 / 0.5); }
+        html[data-theme="dark"] .bg-tys-900\/60 { background-color: rgb(36 26 16 / 0.6); }
+        html[data-theme="dark"] .border-tys-500 { border-color: #c9853e; }
+        html[data-theme="dark"] .border-tys-600 { border-color: #a86a30; }
+        html[data-theme="dark"] .border-tys-700 { border-color: #4a3a26; }
+        html[data-theme="dark"] .border-tys-800 { border-color: #3a2c1c; }
+        html[data-theme="dark"] .border-tys-800\/60 { border-color: rgb(58 44 28 / 0.6); }
+        html[data-theme="dark"] .border-tys-900 { border-color: #34281a; }
+        html[data-theme="dark"] .text-tys-50 { color: #fbf6ee; }
+        html[data-theme="dark"] .text-tys-100 { color: #f2d9b8; }
+        html[data-theme="dark"] .text-tys-200 { color: #e6c69a; }
+        html[data-theme="dark"] .text-tys-300 { color: #d9b17c; }
+        html[data-theme="dark"] .text-tys-400 { color: #e0a256; }
+        html[data-theme="dark"] .text-tys-500 { color: #d6924f; }
+        html[data-theme="dark"] .text-tys-600 { color: #b47a3c; }
+        html[data-theme="dark"] .focus\:border-tys-600:focus { border-color: #c9853e; }
+        html[data-theme="dark"] .hover\:bg-tys-500:hover { background-color: #c9853e; }
+        html[data-theme="dark"] .hover\:bg-tys-500\/10:hover { background-color: rgb(201 133 62 / 0.16); }
+        html[data-theme="dark"] .hover\:bg-tys-600:hover { background-color: #a86a30; }
+        html[data-theme="dark"] .hover\:border-tys-700:hover { border-color: #4a3a26; }
+
+        /* ---------- sage (trạng thái Đã trả — xanh ngọc) ---------- */
+        html[data-theme="dark"] .bg-sage-500 { background-color: #34d399; }
+        html[data-theme="dark"] .bg-sage-600 { background-color: #22c55e; }
+        html[data-theme="dark"] .bg-sage-700 { background-color: #1f9d55; }
+        html[data-theme="dark"] .bg-sage-950 { background-color: #0f2418; }
+        html[data-theme="dark"] .bg-sage-950\/30 { background-color: rgb(15 36 24 / 0.35); }
+        html[data-theme="dark"] .bg-sage-950\/80 { background-color: rgb(15 36 24 / 0.85); }
+        html[data-theme="dark"] .border-sage-500 { border-color: #34d399; }
+        html[data-theme="dark"] .border-sage-600 { border-color: #22c55e; }
+        html[data-theme="dark"] .border-sage-700 { border-color: #1f9d55; }
+        html[data-theme="dark"] .border-sage-700\/50 { border-color: rgb(31 157 85 / 0.5); }
+        html[data-theme="dark"] .border-sage-900\/40 { border-color: rgb(15 36 24 / 0.5); }
+        html[data-theme="dark"] .text-sage-200 { color: #a7f0c4; }
+        html[data-theme="dark"] .text-sage-300 { color: #7de6ac; }
+        html[data-theme="dark"] .text-sage-400 { color: #4ade80; }
+        html[data-theme="dark"] .text-sage-50 { color: #eafff2; }
+        html[data-theme="dark"] .text-sage-500\/80 { color: rgb(52 211 153 / 0.85); }
+        html[data-theme="dark"] .hover\:bg-sage-500:hover { background-color: #34d399; }
+        html[data-theme="dark"] .hover\:text-sage-300:hover { color: #7de6ac; }
+
+        /* ---------- brick (trạng thái Chưa trả — cam san hô) ---------- */
+        html[data-theme="dark"] .bg-brick-400 { background-color: #ff7a4d; }
+        html[data-theme="dark"] .bg-brick-500 { background-color: #ff6b3d; }
+        html[data-theme="dark"] .bg-brick-500\/10 { background-color: rgb(255 107 61 / 0.16); }
+        html[data-theme="dark"] .bg-brick-600 { background-color: #e0552e; }
+        html[data-theme="dark"] .bg-brick-700 { background-color: #b8461f; }
+        html[data-theme="dark"] .bg-brick-800 { background-color: #3f140c; }
+        html[data-theme="dark"] .bg-brick-900 { background-color: #3a160f; }
+        html[data-theme="dark"] .bg-brick-950 { background-color: #1c0f0b; }
+        html[data-theme="dark"] .bg-brick-950\/40 { background-color: rgb(28 15 11 / 0.5); }
+        html[data-theme="dark"] .bg-brick-950\/60 { background-color: rgb(28 15 11 / 0.65); }
+        html[data-theme="dark"] .bg-brick-950\/70 { background-color: rgb(28 15 11 / 0.75); }
+        html[data-theme="dark"] .border-brick-600 { border-color: #e0552e; }
+        html[data-theme="dark"] .border-brick-800 { border-color: #402019; }
+        html[data-theme="dark"] .border-brick-900\/40 { border-color: rgb(58 22 15 / 0.5); }
+        html[data-theme="dark"] .border-brick-accent { border-color: #ff8a5c; }
+        html[data-theme="dark"] .text-brick-100 { color: #ffd6c4; }
+        html[data-theme="dark"] .text-brick-200 { color: #ffe3d8; }
+        html[data-theme="dark"] .text-brick-300 { color: #f0a98d; }
+        html[data-theme="dark"] .text-brick-400 { color: #ff6b4a; }
+        html[data-theme="dark"] .text-brick-ink { color: #ffcab0; }
+        html[data-theme="dark"] .hover\:bg-brick-500\/10:hover { background-color: rgb(255 107 61 / 0.16); }
+        html[data-theme="dark"] .hover\:bg-brick-600:hover { background-color: #e0552e; }
+        html[data-theme="dark"] .hover\:text-brick-300:hover { color: #f0a98d; }
+        html[data-theme="dark"] .hover\:text-brick-400:hover { color: #ff6b4a; }
+
+        /* Vệt sáng (pulse) trạng thái "Chưa trả" — giữ tông cam ấm nổi trên nền tối */
+        html[data-theme="dark"] .pulse-unpaid { animation: pulse-brick-dark 2.2s infinite ease-in-out; }
+        html[data-theme="dark"] .pulse-unpaid-fast { animation: pulse-brick-fast-dark 1s infinite ease-in-out; }
+        @keyframes pulse-brick-dark {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 61, 0.4); }
+            50% { box-shadow: 0 0 0 7px rgba(255, 107, 61, 0); }
+        }
+        @keyframes pulse-brick-fast-dark {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 138, 92, 0.5); border-color: #ff8a5c; }
+            50% { box-shadow: 0 0 0 8px rgba(255, 138, 92, 0); border-color: #ffb088; }
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col font-sans antialiased overflow-hidden bg-espresso-950">
@@ -241,7 +425,7 @@
 
         <!-- MASTHEAD: logo + tên thương hiệu + badge + đồng hồ — thương hiệu độc lập, canh giữa,
              tách khỏi thanh công cụ bên dưới bằng viền mảnh cho sang trọng -->
-        <div id="mastheadBar" class="border-b border-tys-800/60 px-2 sm:px-4 py-2 sm:py-2.5">
+        <div id="mastheadBar" class="relative border-b border-tys-800/60 px-2 sm:px-4 py-2 sm:py-2.5">
             <div class="max-w-[1700px] mx-auto flex items-center justify-center">
                 <div class="flex items-center space-x-2.5 sm:space-x-3">
                     <div class="w-12 h-12 rounded-xl bg-espresso-950 p-1.5 flex items-center justify-center border border-tys-700 shadow-sm shadow-tys-900/10 overflow-hidden shrink-0">
@@ -258,6 +442,12 @@
                     </div>
                 </div>
             </div>
+            <button type="button" id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Chuyển giao diện sáng / tối">
+                <span class="theme-toggle-thumb">
+                    <i class="fa-solid fa-sun sun-icon"></i>
+                    <i class="fa-solid fa-moon moon-icon"></i>
+                </span>
+            </button>
         </div>
 
         <!-- TOOLBAR: số liệu + bộ lọc + nút thao tác -->
@@ -1737,6 +1927,24 @@
 
             playQuickPaySound();
         }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            try { localStorage.setItem('tysTheme', theme); } catch(e) {}
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+            if (navigator.vibrate) { try { navigator.vibrate(20); } catch(e){} }
+        }
+
+        (function initTheme() {
+            let saved = null;
+            try { saved = localStorage.getItem('tysTheme'); } catch(e) {}
+            const theme = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
 
         function updateClock() {
             const now = new Date();
