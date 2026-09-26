@@ -891,25 +891,51 @@
                     </div>
                 </div>
 
+                <!-- THÔNG TIN BÀN — trọng tâm hiển thị: món đã gọi + tổng tiền. Luôn hiện,
+                     kể cả khi bàn còn trống (sẽ hiện "Chưa chọn món nào"). -->
                 <div class="bg-espresso-950/70 p-2.5 rounded-xl border border-tys-900 space-y-2">
-                    
                     <div class="flex items-center justify-between">
                         <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wide flex items-center gap-1">
-                            <i class="fa-solid fa-mug-hot text-tys-500"></i> Chọn món nhanh
+                            <i class="fa-solid fa-receipt text-tys-500"></i> Món đã gọi
                         </span>
                         <span class="text-sm sm:text-xs font-bold text-tys-400" id="totalAmountDisplay">Tổng: 0đ</span>
                     </div>
 
-                    <div class="flex items-center gap-2">
-                        <button type="button" onclick="addPresetItem('Cà phê đen đá', 22)" class="w-full py-1.5 px-3 rounded-lg bg-tys-900/50 border border-tys-800 hover:bg-tys-500 hover:text-ink text-tys-200 font-semibold transition text-xs flex items-center justify-between group">
-                            <span><i class="fa-solid fa-circle-plus mr-1.5 text-tys-500 group-hover:text-ink"></i> Cà phê đen đá</span>
-                            <span class="font-bold text-tys-400 group-hover:text-ink">22k</span>
+                    <div id="modalOrderList" class="min-h-[45px] max-h-[130px] overflow-y-auto space-y-1 text-xs bg-espresso-950 p-1.5 rounded-lg border border-tys-900"></div>
+
+                    <button type="button" id="btnAddMoreOrder" onclick="toggleOrderPanel(true)" class="hidden w-full py-1.5 px-3 rounded-lg bg-espresso-800 hover:bg-tys-500 hover:text-ink text-tys-300 font-bold transition text-xs flex items-center justify-center gap-1.5 border border-tys-800">
+                        <i class="fa-solid fa-plus"></i> Khách kêu thêm món
+                    </button>
+                </div>
+
+                <!-- GỌI MÓN — best seller (từ MENU_DATA) + tìm toàn bộ thực đơn + món tự ghi.
+                     Mở sẵn khi bàn còn trống chưa order; thu gọn khi bàn đã có món (bấm nút
+                     "Khách kêu thêm món" ở trên để mở lại). -->
+                <div id="orderPanel" class="bg-espresso-950/70 p-2.5 rounded-xl border border-tys-900 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wide flex items-center gap-1">
+                            <i class="fa-solid fa-mug-hot text-tys-500"></i> Gọi món
+                        </span>
+                        <button type="button" id="btnCollapseOrder" onclick="toggleOrderPanel(false)" class="hidden text-[10px] font-bold text-stone-500 hover:text-stone-300 transition">
+                            <i class="fa-solid fa-chevron-up mr-1"></i>Thu gọn
                         </button>
+                    </div>
+
+                    <!-- Tìm món trong toàn bộ menu (dùng khi khách kêu món không phải best seller) -->
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 text-[11px] z-10"></i>
+                        <input type="text" id="menuSearchInput" oninput="handleMenuSearch()" onkeydown="handleMenuSearchKeydown(event)" placeholder="Tìm món trong thực đơn (VD: trà đào, latte...)..." class="w-full bg-espresso-900 border border-tys-900 rounded-lg pl-8 pr-3 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
+                        <div id="menuSearchResults" class="hidden absolute z-20 left-0 right-0 mt-1 max-h-[180px] overflow-y-auto bg-espresso-900 border border-tys-800 rounded-lg shadow-xl divide-y divide-tys-950/80"></div>
+                    </div>
+
+                    <div>
+                        <div class="text-[10px] text-stone-500 font-semibold mb-1">Best seller</div>
+                        <div id="bestSellerGrid" class="grid grid-cols-2 gap-1.5"></div>
                     </div>
 
                     <div class="p-2 bg-espresso-950 rounded-lg border border-tys-900 space-y-1.5">
                         <div class="text-[10px] text-stone-500 font-semibold flex justify-between">
-                            <span>Ghi chú món tự do</span>
+                            <span>Món tự ghi (không có trong menu)</span>
                         </div>
                         <div>
                             <input type="text" id="customItemName" placeholder="Tên món (VD: Bạc xỉu ít đường)..." class="w-full bg-espresso-900 border border-tys-900 rounded-lg px-2.5 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
@@ -921,8 +947,6 @@
                             </button>
                         </div>
                     </div>
-
-                    <div id="modalOrderList" class="min-h-[45px] max-h-[100px] overflow-y-auto space-y-1 text-xs bg-espresso-950 p-1.5 rounded-lg border border-tys-900"></div>
                 </div>
 
                 <div class="grid grid-cols-1 gap-2 text-xs">
@@ -1053,6 +1077,61 @@
         let tablesData = {};
         let activeTableId = null;
         let currentFilter = 'all';
+
+        // ================== DỮ LIỆU THỰC ĐƠN (TOÀN BỘ MENU) ==================
+        // Toàn bộ menu được đưa vào đây. Chỉ những món có bestSeller:true mới hiện
+        // sẵn ở ngoài (mục "Best seller"); các món còn lại tìm qua ô tìm kiếm.
+        // Muốn thêm/sửa/xoá món, chỉ cần chỉnh mảng này — giao diện tự cập nhật.
+        const MENU_DATA = [
+            // Cà phê
+            { name: 'Cà phê đen đá', price: 22, category: 'Cà phê', bestSeller: true },
+            { name: 'Cà phê sữa đá', price: 25, category: 'Cà phê', bestSeller: true },
+            { name: 'Bạc xỉu', price: 25, category: 'Cà phê', bestSeller: true },
+            { name: 'Cà phê đen nóng', price: 20, category: 'Cà phê' },
+            { name: 'Cà phê sữa nóng', price: 23, category: 'Cà phê' },
+            { name: 'Cappuccino', price: 35, category: 'Cà phê', bestSeller: true },
+            { name: 'Latte', price: 35, category: 'Cà phê' },
+            { name: 'Americano', price: 30, category: 'Cà phê' },
+            { name: 'Espresso', price: 28, category: 'Cà phê' },
+            { name: 'Mocha', price: 38, category: 'Cà phê' },
+            // Trà
+            { name: 'Trà đào cam sả', price: 35, category: 'Trà', bestSeller: true },
+            { name: 'Trà tắc', price: 20, category: 'Trà', bestSeller: true },
+            { name: 'Trà vải', price: 32, category: 'Trà' },
+            { name: 'Trà atiso', price: 25, category: 'Trà' },
+            { name: 'Hồng trà sữa', price: 30, category: 'Trà' },
+            { name: 'Trà xanh sữa', price: 30, category: 'Trà' },
+            // Nước ép & Sinh tố
+            { name: 'Sinh tố bơ', price: 35, category: 'Sinh tố' },
+            { name: 'Sinh tố xoài', price: 32, category: 'Sinh tố' },
+            { name: 'Sinh tố dâu', price: 35, category: 'Sinh tố' },
+            { name: 'Nước ép cam', price: 30, category: 'Nước ép' },
+            { name: 'Nước ép dưa hấu', price: 28, category: 'Nước ép' },
+            // Đá xay
+            { name: 'Cà phê đá xay', price: 39, category: 'Đá xay' },
+            { name: 'Chocolate đá xay', price: 39, category: 'Đá xay' },
+            { name: 'Matcha đá xay', price: 42, category: 'Đá xay' },
+            // Bánh & Ăn nhẹ
+            { name: 'Bánh mì que', price: 15, category: 'Ăn nhẹ' },
+            { name: 'Bánh croissant', price: 25, category: 'Ăn nhẹ' },
+            { name: 'Bánh flan', price: 18, category: 'Ăn nhẹ' },
+            { name: 'Bánh tiramisu', price: 35, category: 'Ăn nhẹ' },
+            { name: 'Khoai tây chiên', price: 25, category: 'Ăn nhẹ' },
+            // Nước ngọt / khác
+            { name: 'Coca Cola', price: 15, category: 'Nước ngọt' },
+            { name: 'Pepsi', price: 15, category: 'Nước ngọt' },
+            { name: 'Sting dâu', price: 15, category: 'Nước ngọt' },
+            { name: '7Up', price: 15, category: 'Nước ngọt' },
+            { name: 'Nước suối', price: 10, category: 'Nước ngọt' },
+        ];
+
+        // Bỏ dấu tiếng Việt để tìm kiếm không cần gõ dấu (vd: "ca phe" vẫn ra "Cà phê")
+        function normalizeVN(str) {
+            return (str || '')
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd');
+        }
 
         // Cập nhật Base Width và Height mới (scale 1.5x)
         const MAP_BASE_WIDTH = 2100;
@@ -1690,6 +1769,9 @@
 
         let selectedStatusInModal = 'empty';
         let modalItems = [];
+        // true = đang hiện khu vực "Gọi món" (best seller + tìm kiếm); false = đang thu gọn,
+        // chỉ hiện nút "Gọi thêm món". Mặc định: bàn trống -> mở sẵn; bàn đã có món -> thu gọn.
+        let orderPanelExpanded = true;
 
         function openModal(tableId) {
             const prevActiveId = activeTableId;
@@ -1702,13 +1784,21 @@
             document.getElementById('tableNoteInput').value = data.note || '';
             document.getElementById('customItemName').value = '';
             document.getElementById('customItemPrice').value = '';
+            document.getElementById('menuSearchInput').value = '';
+            hideMenuSearchResults();
             syncPaymentMethodButtons();
 
             selectedStatusInModal = data.status || 'empty';
             modalItems = [...(data.items || [])];
 
+            renderBestSellerGrid();
             updateModalStatusButtons();
             renderModalOrderList();
+
+            // Bàn còn trống, chưa có món nào -> mở sẵn khu "Gọi món".
+            // Bàn đã có món (đang ngồi/đã trả) -> thu gọn lại, tập trung hiển thị thông tin bàn,
+            // chỉ cần bấm "Khách kêu thêm món" khi cần gọi thêm.
+            toggleOrderPanel(modalItems.length === 0);
 
             const quickPaymentActions = document.getElementById('quickPaymentActions');
             if (data.status === 'unpaid') quickPaymentActions.classList.remove('hidden');
@@ -1724,6 +1814,93 @@
             const prevActiveId = activeTableId;
             activeTableId = null;
             if (prevActiveId) renderTableNode(prevActiveId);
+        }
+
+        // ================== GỌI MÓN: BEST SELLER + TÌM KIẾM TOÀN BỘ MENU ==================
+
+        function renderBestSellerGrid() {
+            const grid = document.getElementById('bestSellerGrid');
+            if (!grid) return;
+            const bestSellers = MENU_DATA.filter(item => item.bestSeller);
+            grid.innerHTML = bestSellers.map(item => `
+                <button type="button" onclick="addPresetItem('${item.name.replace(/'/g, "\\'")}', ${item.price})" class="py-1.5 px-2.5 rounded-lg bg-tys-900/50 border border-tys-800 hover:bg-tys-500 hover:text-ink text-tys-200 font-semibold transition text-xs flex items-center justify-between group text-left">
+                    <span class="truncate mr-1"><i class="fa-solid fa-circle-plus mr-1 text-tys-500 group-hover:text-ink"></i>${item.name}</span>
+                    <span class="font-bold text-tys-400 group-hover:text-ink shrink-0">${item.price}k</span>
+                </button>
+            `).join('');
+        }
+
+        function hideMenuSearchResults() {
+            const box = document.getElementById('menuSearchResults');
+            if (box) { box.classList.add('hidden'); box.innerHTML = ''; }
+        }
+
+        // Tìm trong toàn bộ MENU_DATA (không dấu vẫn tìm được) — dùng khi khách kêu món
+        // không nằm trong danh sách best seller hiện sẵn.
+        function handleMenuSearch() {
+            const input = document.getElementById('menuSearchInput');
+            const box = document.getElementById('menuSearchResults');
+            const query = normalizeVN(input.value.trim());
+
+            if (!query) { hideMenuSearchResults(); return; }
+
+            const matches = MENU_DATA.filter(item => normalizeVN(item.name).includes(query)).slice(0, 8);
+
+            if (matches.length === 0) {
+                box.innerHTML = `<div class="px-3 py-2 text-[11px] text-stone-500 italic">Không tìm thấy món phù hợp</div>`;
+                box.classList.remove('hidden');
+                return;
+            }
+
+            box.innerHTML = matches.map(item => `
+                <button type="button" onclick="selectMenuItem('${item.name.replace(/'/g, "\\'")}', ${item.price})" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-espresso-800 transition">
+                    <span class="text-stone-200 font-medium truncate mr-2">${item.name}</span>
+                    <span class="text-tys-400 font-bold text-[11px] shrink-0">${item.price}k</span>
+                </button>
+            `).join('');
+            box.classList.remove('hidden');
+        }
+
+        function handleMenuSearchKeydown(event) {
+            if (event.key !== 'Enter') return;
+            event.preventDefault();
+            const query = normalizeVN(document.getElementById('menuSearchInput').value.trim());
+            if (!query) return;
+            const match = MENU_DATA.find(item => normalizeVN(item.name).includes(query));
+            if (match) selectMenuItem(match.name, match.price);
+        }
+
+        // Thêm món tìm được từ ô tìm kiếm, rồi dọn ô tìm kiếm để gõ tiếp món khác
+        function selectMenuItem(name, price) {
+            addPresetItem(name, price);
+            const input = document.getElementById('menuSearchInput');
+            input.value = '';
+            hideMenuSearchResults();
+            input.focus();
+        }
+
+        // Mở/thu gọn khu vực "Gọi món" (best seller + tìm kiếm + món tự ghi).
+        // expand=true: mở ra (khách kêu thêm món / bàn còn trống). expand=false: thu gọn,
+        // chỉ tập trung hiển thị thông tin bàn (món đã gọi + tổng tiền).
+        function toggleOrderPanel(expand) {
+            orderPanelExpanded = expand;
+            const panel = document.getElementById('orderPanel');
+            const collapseBtn = document.getElementById('btnCollapseOrder');
+            const addMoreBtn = document.getElementById('btnAddMoreOrder');
+            if (!panel) return;
+
+            if (expand) {
+                panel.classList.remove('hidden');
+                collapseBtn.classList.remove('hidden');
+                addMoreBtn.classList.add('hidden');
+            } else {
+                panel.classList.add('hidden');
+                collapseBtn.classList.add('hidden');
+                // Chỉ hiện nút "Khách kêu thêm món" khi bàn đã có ít nhất 1 món
+                if (modalItems.length > 0) addMoreBtn.classList.remove('hidden');
+                else addMoreBtn.classList.add('hidden');
+                hideMenuSearchResults();
+            }
         }
 
         // 2 nút chọn phương thức thanh toán trên mobile (thay cho dropdown) —
