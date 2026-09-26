@@ -273,10 +273,73 @@
             opacity: 0.08;
         }
 
-        /* ---------- Hiệu ứng ánh sáng cho bàn ---------- */
-        /* Nhiều lớp box-shadow chồng nhau: CORE sát viền → INNER GLOW → SOFT HALO
-           → AMBIENT SPILL loang rộng, mềm dần vào bóng tối xung quanh. */
-        @keyframes breathe-warm {
+        /* ---------- Hiệu ứng trạng thái bàn — GIAO DIỆN SÁNG ----------
+           Bỏ hẳn quầng sáng neon nhiều lớp. Thay bằng ngôn ngữ thiết kế
+           "thẻ giấy cao cấp": viền kim loại mảnh, đổ bóng tự nhiên có
+           hướng (như ánh sáng thật rơi từ trên xuống), và một dải màu
+           trạng thái rất mảnh ở cạnh trên — tinh tế, không phát sáng. */
+        @keyframes breathe-paper {
+            0%, 100% {
+                box-shadow: 0 1px 2px rgba(26,21,16,0.05),
+                            0 10px 20px -14px rgba(107,79,53,0.35),
+                            inset 0 0 0 1px rgba(185,128,61,0.22);
+            }
+            50% {
+                box-shadow: 0 1px 2px rgba(26,21,16,0.06),
+                            0 14px 26px -14px rgba(107,79,53,0.48),
+                            inset 0 0 0 1px rgba(185,128,61,0.42);
+            }
+        }
+        .table-active-breathe {
+            animation: breathe-paper 3.6s ease-in-out infinite;
+            position: relative;
+        }
+        .table-active-breathe::after {
+            content: '';
+            position: absolute;
+            top: -1px; left: 14%; right: 14%;
+            height: 2px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, transparent, #b9803d, transparent);
+            opacity: 0.85;
+        }
+
+        .table-paid-halo {
+            box-shadow: 0 1px 2px rgba(26,21,16,0.05),
+                        0 10px 20px -14px rgba(63,101,48,0.30),
+                        inset 0 0 0 1px rgba(63,101,48,0.16);
+            position: relative;
+        }
+        .table-paid-halo::after {
+            content: '';
+            position: absolute;
+            top: -1px; left: 14%; right: 14%;
+            height: 2px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, transparent, #5c8a41, transparent);
+            opacity: 0.7;
+        }
+
+        /* ---------- FAB hổ phách (nút "toàn màn hình / hiện toàn bộ sơ đồ") —
+           bóng đổ có hướng, mềm mại như ánh sáng thật, viền kim loại mảnh — không quầng sáng ---------- */
+        .fab-glow {
+            box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset,
+                        0 10px 22px -8px rgba(26,21,16,0.35),
+                        0 2px 6px rgba(26,21,16,0.18);
+        }
+
+        .table-selected-glow {
+            border-color: #a9793a !important;
+            box-shadow: 0 0 0 2px rgba(169,121,58,0.85),
+                        0 12px 22px -12px rgba(107,79,53,0.45) !important;
+        }
+
+        /* ---------- Giao diện tối — khôi phục quầng sáng ấm áp "Warm Night Café" ----------
+           Chỉ áp dụng khi ở chế độ tối: quán cà phê ban đêm với ánh đèn bàn
+           khuếch tán thật sự cần độ phát sáng để tạo không khí. ---------- */
+        html[data-theme="dark"] .table-active-breathe { animation: breathe-warm-dark 4.8s ease-in-out infinite; }
+        html[data-theme="dark"] .table-active-breathe::after { display: none; }
+        @keyframes breathe-warm-dark {
             0%, 100% {
                 box-shadow: 0 0 0 1px rgba(225,182,110,0.35),
                             0 0 9px 1px var(--glow-gold),
@@ -290,18 +353,16 @@
                             0 0 84px 24px rgba(201,148,74,0.09);
             }
         }
-        .table-active-breathe { animation: breathe-warm 4.8s ease-in-out infinite; }
 
-        .table-paid-halo {
+        html[data-theme="dark"] .table-paid-halo {
             box-shadow: 0 0 0 1px rgba(143,190,110,0.28),
                         0 0 12px 2px var(--glow-sage),
                         0 0 30px 7px rgba(111,168,78,0.14),
                         0 0 60px 16px rgba(111,168,78,0.05);
         }
+        html[data-theme="dark"] .table-paid-halo::after { display: none; }
 
-        /* ---------- FAB hổ phách (nút "toàn màn hình / hiện toàn bộ sơ đồ") —
-           bóng đổ mềm phía dưới + vùng sáng lan toả nhiều lớp xung quanh nút ---------- */
-        .fab-glow {
+        html[data-theme="dark"] .fab-glow {
             box-shadow: 0 10px 26px -8px rgba(12,11,9,0.55),
                         0 0 0 1px rgba(230,196,140,0.18),
                         0 0 16px 2px var(--glow-gold),
@@ -309,7 +370,7 @@
                         0 0 84px 26px rgba(201,148,74,0.075);
         }
 
-        .table-selected-glow {
+        html[data-theme="dark"] .table-selected-glow {
             border-color: #E1B66E !important;
             box-shadow: 0 0 0 1.5px rgba(225,182,110,0.85),
                         0 0 20px 4px var(--glow-gold-strong),
