@@ -932,21 +932,6 @@
                         <div class="text-[10px] text-stone-500 font-semibold mb-1">Best seller</div>
                         <div id="bestSellerGrid" class="grid grid-cols-2 gap-1.5"></div>
                     </div>
-
-                    <div class="p-2 bg-espresso-950 rounded-lg border border-tys-900 space-y-1.5">
-                        <div class="text-[10px] text-stone-500 font-semibold flex justify-between">
-                            <span>Món tự ghi (không có trong menu)</span>
-                        </div>
-                        <div>
-                            <input type="text" id="customItemName" placeholder="Tên món (VD: Bạc xỉu ít đường)..." class="w-full bg-espresso-900 border border-tys-900 rounded-lg px-2.5 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <input type="number" id="customItemPrice" placeholder="Giá tiền (VD: 25)..." class="flex-1 bg-espresso-900 border border-tys-900 rounded-lg px-2.5 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
-                            <button type="button" onclick="addCustomNoteItem()" class="px-3 py-1.5 rounded-lg bg-espresso-800 hover:bg-tys-500 hover:text-ink font-semibold text-stone-300 transition text-xs shrink-0 flex items-center gap-1 border border-tys-800">
-                                <i class="fa-solid fa-plus text-[10px]"></i> Thêm
-                            </button>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 gap-2 text-xs">
@@ -1782,8 +1767,6 @@
             document.getElementById('modalTitle').innerText = `Quản Lý Bàn Số ${tableId}`;
             document.getElementById('paymentMethodSelect').value = data.paymentMethod || 'Tiền mặt';
             document.getElementById('tableNoteInput').value = data.note || '';
-            document.getElementById('customItemName').value = '';
-            document.getElementById('customItemPrice').value = '';
             document.getElementById('menuSearchInput').value = '';
             hideMenuSearchResults();
             syncPaymentMethodButtons();
@@ -1948,23 +1931,6 @@
             renderModalOrderList();
         }
 
-        function addCustomNoteItem() {
-            const nameInput = document.getElementById('customItemName');
-            const priceInput = document.getElementById('customItemPrice');
-            const name = nameInput.value.trim();
-            const priceVal = parseFloat(priceInput.value.trim());
-
-            if (name !== '' || !isNaN(priceVal)) {
-                const itemName = name !== '' ? name : 'Món tự ghi';
-                const itemPrice = !isNaN(priceVal) ? priceVal : 0;
-                modalItems.push({ name: itemName, price: itemPrice });
-
-                if (selectedStatusInModal === 'empty') { selectedStatusInModal = 'unpaid'; updateModalStatusButtons(); }
-                nameInput.value = ''; priceInput.value = '';
-                renderModalOrderList();
-            }
-        }
-
         function removeModalItem(index) {
             modalItems.splice(index, 1);
             renderModalOrderList();
@@ -2002,17 +1968,6 @@
 
         function saveModalChanges() {
             if (!activeTableId) return;
-
-            const nameInput = document.getElementById('customItemName');
-            const priceInput = document.getElementById('customItemPrice');
-            const name = nameInput.value.trim();
-            const priceVal = parseFloat(priceInput.value.trim());
-
-            if (name !== '' || !isNaN(priceVal)) {
-                const itemName = name !== '' ? name : 'Món tự ghi';
-                const itemPrice = !isNaN(priceVal) ? priceVal : 0;
-                modalItems.push({ name: itemName, price: itemPrice });
-            }
 
             const table = tablesData[activeTableId];
             const prevStatus = table.status;
