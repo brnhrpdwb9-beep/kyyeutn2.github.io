@@ -366,7 +366,7 @@
                         <!-- Các mảng khối kiến trúc đã nhân 1.5 tọa độ & kích thước -->
                         <div class="absolute top-[45px] left-[450px] w-[285px] h-[360px] rounded-[20px] border border-stone-700/70 bg-espresso-900/40 flex flex-col items-center justify-start pt-3"></div>
                         <div class="absolute top-[45px] left-[750px] w-[960px] h-[390px] border border-stone-700/70 bg-espresso-900/30 rounded-[20px] flex items-center justify-center">
-                            <div class="text-center opacity-50">
+                            <div class="text-center opacity-50 rotate-180">
                                 <i class="fa-solid fa-snowflake text-4xl text-tys-600 mb-2"></i>
                                 <div class="text-sm font-semibold text-stone-400 tracking-[0.15em]">PHÒNG LẠNH</div>
                             </div>
@@ -725,7 +725,9 @@
             const wrapper = document.getElementById('mapWrapper');
             if (!wrapper) return;
             scale = Math.min(Math.max(0.1, scale), 2.5);
-            wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+            const cx = MAP_BASE_WIDTH / 2;
+            const cy = MAP_BASE_HEIGHT / 2;
+            wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${scale}) translate(${cx}px, ${cy}px) rotate(180deg) translate(${-cx}px, ${-cy}px)`;
         }
 
         function resetZoomAndFit() {
@@ -1077,6 +1079,9 @@
         function renderTableNode(i) {
             const container = document.getElementById(`table-node-${i}`);
             if (!container) return;
+            // Sơ đồ (mapWrapper) đã được xoay 180 độ để đổi góc nhìn,
+            // nên xoay ngược lại 180 độ tại từng nút bàn để số bàn/nội dung hiện đúng chiều, không bị lộn ngược.
+            container.style.transform = 'rotate(180deg)';
 
             const data = tablesData[i];
             let bgStyle = "bg-espresso-900 border-tys-700 text-stone-500 shadow-[0_3px_10px_-2px_rgba(74,54,35,0.20),0_1px_2px_rgba(26,21,16,0.08)]";
