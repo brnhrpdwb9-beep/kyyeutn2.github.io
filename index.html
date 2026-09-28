@@ -728,6 +728,11 @@
                 <i class="fa-solid fa-list-ul text-[13px]"></i>
                 <span class="text-[8px] font-bold uppercase tracking-wide leading-none">List</span>
             </button>
+            <button onclick="openHistoryModal()" id="btnHistory" class="relative shrink-0 w-12 h-12 rounded-xl bg-espresso-950/70 border border-tys-900 text-tys-300 flex flex-col items-center justify-center gap-0.5 active:scale-90 transition" title="Lịch sử thu tiền & chốt ca" aria-label="Lịch sử thu tiền và chốt ca">
+                <i class="fa-solid fa-clock-rotate-left text-[13px]"></i>
+                <span class="text-[8px] font-bold uppercase tracking-wide leading-none">Lịch sử</span>
+                <span id="historyBadge" class="hidden absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-tys-500 text-ink text-[10px] font-extrabold items-center justify-center tabular-nums border border-espresso-900">0</span>
+            </button>
             <button onclick="openResetModal()" class="shrink-0 w-12 h-12 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-500 flex flex-col items-center justify-center gap-0.5 active:scale-90 transition" title="Đặt lại dữ liệu" aria-label="Đặt lại dữ liệu">
                 <i class="fa-solid fa-rotate-right text-[13px]"></i>
                 <span class="text-[8px] font-bold uppercase tracking-wide leading-none">Refresh</span>
@@ -1103,6 +1108,86 @@
         </div>
     </div>
 
+    <!-- Lịch sử thu tiền / Chốt ca -->
+    <div id="historyModal" onclick="if(event.target===this)closeHistoryModal()" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-espresso-900 border border-tys-800 w-full max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl flex flex-col max-h-[92vh] text-stone-200 modal-fade-in overflow-hidden">
+            <div class="flex items-center justify-between px-4 pt-3.5 pb-2.5 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-tys-500 text-ink flex items-center justify-center">
+                        <i class="fa-solid fa-clock-rotate-left text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-tys-100 leading-tight">Lịch sử ca</h3>
+                        <p class="text-[10px] text-stone-400 font-medium" id="historySubtitle"></p>
+                    </div>
+                </div>
+                <button onclick="closeHistoryModal()" class="w-8 h-8 rounded-lg bg-espresso-950/70 border border-tys-900 text-stone-400 flex items-center justify-center active:scale-90 transition" aria-label="Đóng">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="px-4 pb-2.5 shrink-0">
+                <div class="grid grid-cols-2 gap-1 bg-espresso-950/70 border border-tys-900 rounded-xl p-1 text-xs">
+                    <button id="histTabCurrent" onclick="switchHistoryTab('current')" class="py-1.5 rounded-lg font-bold transition">Ca hiện tại</button>
+                    <button id="histTabClosed" onclick="switchHistoryTab('closed')" class="py-1.5 rounded-lg font-bold transition">Ca đã chốt</button>
+                </div>
+            </div>
+            <div id="historyBody" class="flex-1 overflow-y-auto overscroll-contain px-4 pb-3 space-y-3"></div>
+            <div id="historyFooter" class="shrink-0 px-4 pt-2.5 pb-[calc(0.75rem+env(safe-area-inset-bottom))] border-t border-tys-900">
+                <button onclick="openCloseShiftModal()" class="w-full py-2.5 rounded-xl bg-tys-500 hover:bg-tys-600 text-ink text-sm font-extrabold flex items-center justify-center gap-2 active:scale-[0.98] transition">
+                    <i class="fa-solid fa-flag-checkered"></i> Chốt ca
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chốt ca: nhận diện ca + hỏi tên -->
+    <div id="closeShiftModal" onclick="if(event.target===this)closeCloseShiftModal()" class="fixed inset-0 z-[60] bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-espresso-900 border border-tys-800 w-full max-w-md rounded-2xl shadow-xl modal-fade-in text-stone-200 flex flex-col max-h-[94vh] overflow-hidden">
+            <div class="flex items-center gap-2.5 px-4 pt-4 pb-2 shrink-0">
+                <div class="w-9 h-9 rounded-xl bg-tys-500 text-ink flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-flag-checkered text-sm"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-tys-100 leading-tight">Chốt ca</h3>
+                    <p class="text-[11px] text-stone-400 tabular-nums" id="closeShiftRange"></p>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto overscroll-contain px-4 pb-3 space-y-3">
+                <div id="closeShiftShiftBox"></div>
+                <div>
+                    <label for="shiftStaffInput" class="text-[12px] font-bold text-stone-200">Tên nhân viên chốt ca</label>
+                    <input id="shiftStaffInput" type="text" maxlength="40" autocomplete="off" placeholder="Nhập tên của bạn" oninput="document.getElementById('shiftStaffError').classList.add('hidden')" class="mt-1 w-full bg-espresso-950 border border-tys-900 rounded-lg px-3 py-2 text-sm text-stone-100 focus:outline-none focus:border-tys-600">
+                    <div id="shiftStaffError" class="hidden text-[11px] font-semibold text-brick-300 mt-1"><i class="fa-solid fa-circle-exclamation mr-1"></i>Vui lòng nhập tên nhân viên</div>
+                </div>
+                <div>
+                    <label for="shiftNoteInput" class="text-[11px] font-semibold text-stone-400">Ghi chú cho ca sau (không bắt buộc)</label>
+                    <input id="shiftNoteInput" type="text" maxlength="120" placeholder="VD: bàn 12 khách hẹn trả sau" class="mt-1 w-full bg-espresso-950 border border-tys-900 rounded-lg px-3 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600">
+                </div>
+                <div id="closeShiftContent" class="space-y-3"></div>
+            </div>
+            <div class="shrink-0 px-4 pt-2.5 pb-4 border-t border-tys-900 space-y-2">
+                <p class="text-[11px] text-stone-400 leading-snug">Sau khi chốt sẽ hiện khung báo cáo để bạn chụp màn hình gửi ca sau, đồng thời lưu vào mục "Ca đã chốt". Các bàn trên sơ đồ giữ nguyên.</p>
+                <div class="flex items-center justify-end gap-2">
+                    <button onclick="closeCloseShiftModal()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300">Hủy</button>
+                    <button id="btnConfirmCloseShift" onclick="confirmCloseShift()" class="px-4 py-2 rounded-lg text-xs font-bold bg-tys-500 hover:bg-tys-600 text-ink flex items-center gap-1.5 active:scale-95 transition disabled:opacity-40 disabled:pointer-events-none">
+                        <i class="fa-solid fa-camera"></i> Chốt ca &amp; tạo khung báo cáo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Khung báo cáo chốt ca (để chụp màn hình) -->
+    <div id="reportModal" class="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm hidden flex flex-col">
+        <div class="flex-1 overflow-y-auto overscroll-contain px-3 pt-[calc(0.75rem+env(safe-area-inset-top))] pb-3">
+            <div id="reportFrameWrap"></div>
+        </div>
+        <div class="shrink-0 bg-espresso-900 border-t border-tys-800 px-4 pt-2.5 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex items-center gap-3">
+            <p class="flex-1 text-[11px] text-stone-300 leading-snug"><i class="fa-solid fa-camera mr-1 text-tys-500"></i>Chụp màn hình khung trên rồi gửi cho ca sau. Nếu khung dài, cuộn và chụp thêm.</p>
+            <button onclick="closeReport()" class="shrink-0 px-5 py-2 rounded-xl bg-tys-500 hover:bg-tys-600 text-ink text-sm font-extrabold active:scale-95 transition">Xong</button>
+        </div>
+    </div>
+
     <!-- Reset Data Modal -->
     <div id="resetModal" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-espresso-900 border border-tys-800 w-full max-w-sm rounded-2xl p-4 space-y-3 text-center shadow-xl modal-fade-in">
@@ -1373,6 +1458,550 @@
             updateDashboardStats();
         }
 
+
+        // ================== LỊCH SỬ THU TIỀN & CHỐT CA ==================
+        // Mỗi lần một bàn chuyển sang "Đã trả" sẽ ghi 1 dòng vào ca hiện tại. Chốt ca = gom các dòng đó
+        // thành 1 ca đã chốt (lưu lại để xem), rồi bắt đầu ca mới. Trạng thái bàn trên sơ đồ không bị đụng tới.
+        const HISTORY_KEY = 'cafe_history_tys';
+        let historyData = { shiftStart: Date.now(), entries: [], closedShifts: [] };
+        let historyTab = 'current';
+        let closeShiftPick = 1;
+        const MAX_CLOSED_SHIFTS = 30;
+        const SHIFTS = {
+            1: { name: 'Ca 1', range: '05:30 – 12:00' },
+            2: { name: 'Ca 2', range: '12:00 – 18:00' },
+            3: { name: 'Ca 3', range: '18:00 – 22:30' }
+        };
+        let lastHistoryUndo = null;   // để "Hoàn tác" trả cả lịch sử về như cũ
+
+        function escapeHtml(str) {
+            return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+        function fmtMoney(k) { return ((k || 0) * 1000).toLocaleString('vi-VN') + 'đ'; }
+        function fmtTime(ts) { return new Date(ts).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }); }
+        function fmtDateTime(ts) {
+            const d = new Date(ts);
+            return fmtTime(ts) + ' ' + d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+        }
+        function newHistoryId() { return 'h' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+        function isCashMethod(m) { return !m || m === 'Tiền mặt'; }
+
+        function initHistory() {
+            let saved = null, hadSaved = false;
+            try { saved = localStorage.getItem(HISTORY_KEY); hadSaved = saved !== null; } catch (e) {}
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && Array.isArray(parsed.entries)) {
+                        const closed = Array.isArray(parsed.closedShifts) ? parsed.closedShifts : [];
+                        // Bản cũ chỉ giữ 1 bản bàn giao: chuyển thành 1 ca đã chốt
+                        if (parsed.handover && Array.isArray(parsed.handover.entries)) {
+                            closed.unshift(Object.assign({ id: newHistoryId(), shiftKey: null, staff: '' }, parsed.handover));
+                        }
+                        historyData = { shiftStart: parsed.shiftStart || Date.now(), entries: parsed.entries, closedShifts: closed };
+                    }
+                } catch (e) {}
+            }
+            // Lần đầu dùng tính năng này trên máy đã có dữ liệu bàn: đưa các bàn đang "Đã trả" vào ca hiện tại
+            // (giờ thu chưa biết chính xác nên lấy giờ hiện tại).
+            let hadTables = false;
+            try { hadTables = localStorage.getItem('cafe_tables_tys') !== null; } catch (e) {}
+            if (!hadSaved && hadTables) {
+                Object.values(tablesData).forEach(t => {
+                    if (t.status === 'paid' && (t.total || 0) > 0 && !t.histId) addHistoryEntry(t.id, t);
+                });
+                saveData();
+            }
+            saveHistory();
+        }
+
+        function saveHistory() {
+            try { localStorage.setItem(HISTORY_KEY, JSON.stringify(historyData)); }
+            catch (e) {
+                // Đầy bộ nhớ: bỏ bớt ca cũ nhất rồi thử lại
+                while (historyData.closedShifts.length > 1) {
+                    historyData.closedShifts.pop();
+                    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(historyData)); break; } catch (e2) {}
+                }
+            }
+            updateHistoryBadge();
+        }
+
+        function updateHistoryBadge() {
+            const el = document.getElementById('historyBadge');
+            if (!el) return;
+            const n = historyData.entries.length;
+            el.innerText = n > 99 ? '99+' : n;
+            if (n > 0) { el.classList.remove('hidden'); el.classList.add('flex'); }
+            else { el.classList.add('hidden'); el.classList.remove('flex'); }
+        }
+
+        // --- Hoàn tác: ghi lại trạng thái cũ của từng dòng lịch sử bị đổi trong 1 thao tác ---
+        function beginHistoryUndo() { lastHistoryUndo = { open: true, shiftStart: historyData.shiftStart, prev: {} }; }
+        function endHistoryUndo() { if (lastHistoryUndo) lastHistoryUndo.open = false; }
+        function trackHistory(id) {
+            if (!lastHistoryUndo || !lastHistoryUndo.open || id in lastHistoryUndo.prev) return;
+            const e = historyData.entries.find(x => x.id === id);
+            lastHistoryUndo.prev[id] = e ? JSON.parse(JSON.stringify(e)) : null;
+        }
+        function applyHistoryUndo() {
+            const u = lastHistoryUndo;
+            lastHistoryUndo = null;
+            if (!u || u.shiftStart !== historyData.shiftStart) return; // đã chốt ca thì không hoàn tác lịch sử nữa
+            Object.keys(u.prev).forEach(id => {
+                const prev = u.prev[id];
+                const idx = historyData.entries.findIndex(x => x.id === id);
+                if (prev === null) { if (idx >= 0) historyData.entries.splice(idx, 1); }
+                else if (idx >= 0) historyData.entries[idx] = prev;
+                else historyData.entries.push(prev);
+            });
+            saveHistory();
+            if (!document.getElementById('historyModal').classList.contains('hidden')) renderHistory();
+        }
+
+        function findHistoryEntry(id) { return id ? historyData.entries.find(e => e.id === id) : null; }
+
+        function addHistoryEntry(tableId, table) {
+            if (!table || (table.total || 0) <= 0) { if (table) table.histId = null; return null; }
+            const id = newHistoryId();
+            trackHistory(id);
+            historyData.entries.push({
+                id, tableId,
+                items: (table.items || []).map(i => ({ name: i.name, price: i.price })),
+                total: table.total || 0,
+                paymentMethod: table.paymentMethod || 'Tiền mặt',
+                note: table.note || '',
+                startTime: table.startTime || null,
+                paidAt: Date.now()
+            });
+            table.histId = id;
+            saveHistory();
+            return id;
+        }
+
+        function removeHistoryEntry(id) {
+            if (!findHistoryEntry(id)) return;
+            trackHistory(id);
+            historyData.entries = historyData.entries.filter(e => e.id !== id);
+            saveHistory();
+        }
+
+        // Sửa bàn trong modal: đổi sang Đã trả -> ghi; sửa món khi vẫn Đã trả -> cập nhật; quay lại Chưa trả -> gỡ dòng
+        function syncHistoryOnModalSave(table, prevStatus) {
+            if (table.status === 'paid') {
+                if (prevStatus !== 'paid') {
+                    addHistoryEntry(table.id, table);
+                } else {
+                    const e = findHistoryEntry(table.histId);
+                    if (e) {
+                        e.items = (table.items || []).map(i => ({ name: i.name, price: i.price }));
+                        e.total = table.total || 0;
+                        e.paymentMethod = table.paymentMethod || 'Tiền mặt';
+                        e.note = table.note || '';
+                        saveHistory();
+                    }
+                }
+            } else if (prevStatus === 'paid' && table.status === 'unpaid') {
+                removeHistoryEntry(table.histId);
+                table.histId = null;
+            } else if (table.status === 'empty') {
+                table.histId = null; // dòng lịch sử giữ nguyên, chỉ bàn được dọn
+            }
+        }
+
+        function historyOnTransfer(source, srcId, targetId) {
+            if (source.status !== 'paid') return;
+            const e = findHistoryEntry(source.histId);
+            if (e) { trackHistory(e.id); e.tableId = targetId; saveHistory(); }
+        }
+
+        function historyOnMerge(source, target, mergedStatus, earliest, combinedNote) {
+            const sE = source.status === 'paid' ? findHistoryEntry(source.histId) : null;
+            const tE = target.status === 'paid' ? findHistoryEntry(target.histId) : null;
+            if (mergedStatus === 'unpaid') {
+                // Gộp với bàn chưa trả -> cả bàn quay về "Chưa trả", sẽ được tính lại khi thu
+                [sE, tE].forEach(e => { if (e) removeHistoryEntry(e.id); });
+                return null;
+            }
+            if (mergedStatus === 'paid') {
+                if (tE && sE) {
+                    trackHistory(tE.id);
+                    tE.items = tE.items.concat(sE.items);
+                    tE.total = (tE.total || 0) + (sE.total || 0);
+                    tE.startTime = earliest || tE.startTime;
+                    tE.note = combinedNote || tE.note;
+                    removeHistoryEntry(sE.id);
+                    saveHistory();
+                    return tE.id;
+                }
+                const only = tE || sE;
+                return only ? only.id : null;
+            }
+            return null;
+        }
+
+        function groupedItemsText(items) {
+            const map = new Map();
+            (items || []).forEach(i => map.set(i.name, (map.get(i.name) || 0) + 1));
+            return [...map.entries()].map(([n, c]) => (c > 1 ? c + '× ' : '') + escapeHtml(n)).join(', ') || '—';
+        }
+
+        // Các bàn đang có khách nhưng chưa tính tiền — lấy trực tiếp từ sơ đồ, bàn ngồi lâu nhất xếp trước
+        function getUnpaidTables() {
+            return Object.values(tablesData)
+                .filter(t => t.status === 'unpaid')
+                .sort((a, b) => (a.startTime || Infinity) - (b.startTime || Infinity));
+        }
+        function snapshotUnpaid() {
+            const now = Date.now();
+            return getUnpaidTables().map(t => ({
+                tableId: t.id,
+                items: (t.items || []).map(i => ({ name: i.name, price: i.price })),
+                total: t.total || 0,
+                note: t.note || '',
+                startTime: t.startTime || null,
+                minutes: t.startTime ? Math.max(0, Math.floor((now - t.startTime) / 60000)) : null
+            }));
+        }
+        function fmtDuration(min) {
+            if (min == null) return '';
+            if (min < 60) return min + ' phút';
+            return Math.floor(min / 60) + 'g' + String(min % 60).padStart(2, '0');
+        }
+
+        function unpaidRowHtml(u) {
+            const long = u.minutes != null && u.minutes >= 45;
+            return `<div class="flex items-center gap-2.5 bg-espresso-900 border border-brick-accent/40 rounded-xl px-2.5 py-2">
+                <div class="w-10 h-10 rounded-lg bg-brick-500 text-ink font-extrabold text-xs flex items-center justify-center shrink-0 tabular-nums">B${u.tableId}</div>
+                <div class="min-w-0 flex-1">
+                    <div class="text-[12px] font-semibold text-stone-100 leading-snug line-clamp-2">${groupedItemsText(u.items)}</div>
+                    <div class="text-[10px] mt-0.5 flex items-center gap-1.5 ${long ? 'text-brick-300 font-bold' : 'text-stone-400'}">
+                        ${u.startTime ? `<i class="fa-regular fa-clock"></i><span class="tabular-nums">Vào ${fmtTime(u.startTime)} · ${fmtDuration(u.minutes)}</span>` : '<span>Chưa rõ giờ vào</span>'}
+                    </div>
+                    ${u.note ? `<div class="text-[10px] text-stone-500 mt-0.5 truncate">${escapeHtml(u.note)}</div>` : ''}
+                </div>
+                <div class="text-[13px] font-extrabold text-brick-300 tabular-nums shrink-0">${fmtMoney(u.total)}</div>
+            </div>`;
+        }
+
+        function unpaidBlockHtml(list, title) {
+            if (list.length === 0) {
+                return `<div class="rounded-xl border border-sage-600 bg-sage-950/30 text-sage-300 px-3 py-2 text-[12px] font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-circle-check"></i> Không còn bàn nào chưa tính tiền
+                </div>`;
+            }
+            return `<div class="rounded-2xl border-2 border-brick-accent bg-brick-950/40 p-2.5 space-y-2">
+                <div class="flex items-center gap-2 px-0.5">
+                    <div class="w-7 h-7 rounded-lg bg-brick-500 text-ink flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation text-xs"></i></div>
+                    <div class="text-[13px] font-extrabold text-brick-ink leading-tight">${title.replace('{n}', list.length)}</div>
+                </div>
+                <div class="space-y-1.5">${list.map(unpaidRowHtml).join('')}</div>
+            </div>`;
+        }
+
+        function historyEntryRowHtml(e) {
+            const cash = isCashMethod(e.paymentMethod);
+            return `<div class="flex items-center gap-2.5 bg-espresso-950/70 border border-tys-900 rounded-xl px-2.5 py-2">
+                <div class="w-10 h-10 rounded-lg bg-sage-500 text-ink font-extrabold text-xs flex items-center justify-center shrink-0 tabular-nums">B${e.tableId}</div>
+                <div class="min-w-0 flex-1">
+                    <div class="text-[12px] font-semibold text-stone-100 leading-snug line-clamp-2">${groupedItemsText(e.items)}</div>
+                    <div class="text-[10px] text-stone-400 mt-0.5 flex items-center gap-1.5">
+                        <span class="tabular-nums">${fmtTime(e.paidAt)}</span><span>·</span>
+                        <i class="fa-solid ${cash ? 'fa-money-bill-wave' : 'fa-qrcode'}"></i><span>${cash ? 'Tiền mặt' : 'Chuyển khoản'}</span>
+                    </div>
+                    ${e.note ? `<div class="text-[10px] text-stone-500 mt-0.5 truncate">${escapeHtml(e.note)}</div>` : ''}
+                </div>
+                <div class="text-[13px] font-extrabold text-stone-100 tabular-nums shrink-0">${fmtMoney(e.total)}</div>
+            </div>`;
+        }
+
+        function entriesListHtml(entries) {
+            const sorted = [...entries].sort((a, b) => b.paidAt - a.paidAt);
+            return `<div class="space-y-1.5">${sorted.map(historyEntryRowHtml).join('')}</div>`;
+        }
+
+        // ---------- Nhận diện ca theo giờ ----------
+        function detectShift(ts) {
+            const d = new Date(ts);
+            const m = d.getHours() * 60 + d.getMinutes();
+            if (m >= 330 && m < 720) return { key: 1, outside: false };    // 05:30 - 12:00
+            if (m >= 720 && m < 1080) return { key: 2, outside: false };   // 12:00 - 18:00
+            if (m >= 1080 && m <= 1350) return { key: 3, outside: false }; // 18:00 - 22:30
+            return { key: 3, outside: true };                              // ngoài giờ: tính vào ca cuối
+        }
+        function fmtDateFull(ts) {
+            return new Date(ts).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function closedShiftLabel(sh) {
+            const def = SHIFTS[sh.shiftKey];
+            return def ? def.name : 'Ca';
+        }
+
+        function closedShiftCardHtml(sh) {
+            const def = SHIFTS[sh.shiftKey];
+            const unpaidN = (sh.unpaid || []).length;
+            return `<button onclick="openReport('${sh.id}')" class="w-full text-left rounded-2xl border border-tys-800 bg-espresso-950/70 px-3 py-2.5 flex items-center gap-3 active:bg-espresso-800 transition">
+                <div class="w-11 h-11 rounded-xl bg-tys-500 text-ink flex flex-col items-center justify-center shrink-0 leading-none">
+                    <span class="text-[9px] font-bold">Ca</span>
+                    <span class="text-[17px] font-extrabold mt-0.5">${def ? sh.shiftKey : '–'}</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <div class="text-[13px] font-extrabold text-stone-100 truncate">${escapeHtml(sh.staff || 'Chưa ghi tên')}</div>
+                    <div class="text-[10px] text-stone-400 tabular-nums mt-0.5">${fmtDateFull(sh.endAt)} · ${fmtTime(sh.startAt)} → ${fmtTime(sh.endAt)}</div>
+                    <div class="text-[10px] mt-0.5 flex items-center gap-2">
+                        <span class="text-sage-300 font-semibold">${sh.entries.length} bàn đã thu</span>
+                        ${unpaidN ? `<span class="text-brick-300 font-extrabold">${unpaidN} bàn chưa tính tiền</span>` : ''}
+                    </div>
+                </div>
+                <div class="shrink-0 flex flex-col items-center gap-0.5 text-tys-300">
+                    <i class="fa-solid fa-image text-sm"></i>
+                    <span class="text-[9px] font-bold">Xem khung</span>
+                </div>
+            </button>`;
+        }
+
+        // ---------- KHUNG BÁO CÁO CHỐT CA (chụp màn hình gửi ca sau) ----------
+        // Màu cố định (không đổi theo giao diện sáng/tối) để ảnh chụp luôn giống nhau.
+        function reportFrameHtml(sh) {
+            const def = SHIFTS[sh.shiftKey];
+            const unpaid = sh.unpaid || [];
+            const entries = [...sh.entries].sort((a, b) => a.paidAt - b.paidAt);
+            const F = "font-family:'Plus Jakarta Sans',sans-serif;";
+
+            const infoRow = (label, value) => `<div style="display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:12px">
+                <span style="color:#6e685d">${label}</span><span style="font-weight:700;text-align:right">${value}</span></div>`;
+
+            const unpaidRows = unpaid.map(u => {
+                const long = u.minutes != null && u.minutes >= 45;
+                return `<div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e9b3a3;border-radius:10px;padding:6px 8px;margin-top:6px">
+                    <div style="width:34px;height:34px;border-radius:8px;background:#d2492c;color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">B${u.tableId}</div>
+                    <div style="min-width:0;flex:1">
+                        <div style="font-size:12px;font-weight:600;line-height:1.3">${groupedItemsText(u.items)}</div>
+                        <div style="font-size:10px;color:${long ? '#a83420' : '#6e685d'};font-weight:${long ? 800 : 500}">${u.startTime ? 'Vào ' + fmtTime(u.startTime) + ' · ngồi ' + fmtDuration(u.minutes) : 'Chưa rõ giờ vào'}${u.note ? ' · ' + escapeHtml(u.note) : ''}</div>
+                    </div>
+                    <div style="font-size:12px;font-weight:800;color:#a83420;flex-shrink:0">${fmtMoney(u.total)}</div>
+                </div>`;
+            }).join('');
+
+            const paidRows = entries.map(e => {
+                const cash = isCashMethod(e.paymentMethod);
+                return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-top:1px solid #ece6d8">
+                    <div style="width:30px;height:26px;border-radius:7px;background:#3f7a2e;color:#fff;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0">B${e.tableId}</div>
+                    <div style="min-width:0;flex:1">
+                        <div style="font-size:11px;font-weight:600;line-height:1.3">${groupedItemsText(e.items)}</div>
+                        <div style="font-size:10px;color:#6e685d">${fmtTime(e.paidAt)} · ${cash ? 'Tiền mặt' : 'Chuyển khoản'}${e.note ? ' · ' + escapeHtml(e.note) : ''}</div>
+                    </div>
+                    <div style="font-size:11px;font-weight:800;flex-shrink:0">${fmtMoney(e.total)}</div>
+                </div>`;
+            }).join('');
+
+            return `<div id="reportFrame" style="${F}background:#fffdf8;color:#1c1a17;border:2px solid #2e2013;border-radius:18px;overflow:hidden;width:100%;max-width:400px;margin:0 auto;letter-spacing:-0.01em">
+                <div style="background:#2e2013;color:#f5e6c8;padding:12px 14px;display:flex;justify-content:space-between;align-items:center">
+                    <div>
+                        <div style="font-weight:800;font-size:16px">TYS COFFEE</div>
+                        <div style="font-size:11px;opacity:.8;margin-top:1px">Báo cáo chốt ca</div>
+                    </div>
+                    <div style="text-align:right">
+                        <div style="font-weight:800;font-size:20px;color:#E1B66E;line-height:1">${def ? def.name : 'Ca'}</div>
+                        <div style="font-size:11px;opacity:.85;margin-top:3px">${def ? def.range : ''}</div>
+                    </div>
+                </div>
+                <div style="padding:8px 14px 2px">
+                    ${infoRow('Nhân viên', escapeHtml(sh.staff || '—'))}
+                    ${infoRow('Ngày', fmtDateFull(sh.endAt))}
+                    ${infoRow('Thời gian làm', fmtTime(sh.startAt) + ' → ' + fmtTime(sh.endAt))}
+                </div>
+                <div style="display:flex;gap:8px;padding:8px 14px">
+                    <div style="flex:1;background:#eaf3e1;border:1px solid #b9d6a6;border-radius:12px;padding:8px 10px">
+                        <div style="font-size:10px;color:#3f6530;font-weight:700">Đã thu</div>
+                        <div style="font-size:22px;font-weight:800;color:#3f6530;line-height:1.1">${entries.length}<span style="font-size:11px;font-weight:700"> bàn</span></div>
+                    </div>
+                    <div style="flex:1;background:${unpaid.length ? '#fbeae5' : '#f1eee7'};border:1px solid ${unpaid.length ? '#e2724c' : '#dad5ca'};border-radius:12px;padding:8px 10px">
+                        <div style="font-size:10px;color:${unpaid.length ? '#a83420' : '#6e685d'};font-weight:700">Chưa tính tiền</div>
+                        <div style="font-size:22px;font-weight:800;color:${unpaid.length ? '#a83420' : '#6e685d'};line-height:1.1">${unpaid.length}<span style="font-size:11px;font-weight:700"> bàn</span></div>
+                    </div>
+                </div>
+                ${unpaid.length ? `<div style="margin:2px 14px 8px;background:#fbeae5;border:2px solid #d2492c;border-radius:14px;padding:8px 10px 10px">
+                    <div style="font-size:13px;font-weight:800;color:#8f2a1a">⚠ ${unpaid.length} bàn chưa tính tiền — ca sau cần thu</div>
+                    ${unpaidRows}
+                </div>` : `<div style="margin:2px 14px 8px;background:#eaf3e1;border:1px solid #b9d6a6;border-radius:12px;padding:7px 10px;font-size:12px;font-weight:700;color:#3f6530">✓ Không còn bàn nào chưa tính tiền</div>`}
+                ${sh.note ? `<div style="margin:0 14px 8px;background:#f5efe0;border:1px solid #e3d2b8;border-radius:12px;padding:7px 10px">
+                    <div style="font-size:10px;color:#6b4f35;font-weight:700">Ghi chú cho ca sau</div>
+                    <div style="font-size:12px;font-weight:600;margin-top:2px;line-height:1.35">${escapeHtml(sh.note)}</div>
+                </div>` : ''}
+                <div style="padding:0 14px 10px">
+                    <div style="font-size:12px;font-weight:800;margin-bottom:2px">Bàn đã thu (${entries.length})</div>
+                    ${entries.length ? paidRows : `<div style="font-size:11px;color:#6e685d;padding:6px 0">Ca này chưa thu bàn nào</div>`}
+                </div>
+                <div style="background:#f1eee7;border-top:1px solid #dad5ca;padding:6px 14px;font-size:10px;color:#6e685d;text-align:center">Chốt lúc ${fmtTime(sh.endAt)} ${fmtDateFull(sh.endAt)} · TYS Coffee</div>
+            </div>`;
+        }
+
+        function openReport(id) {
+            const sh = historyData.closedShifts.find(x => x.id === id);
+            if (!sh) return;
+            document.getElementById('reportFrameWrap').innerHTML = reportFrameHtml(sh);
+            const modal = document.getElementById('reportModal');
+            modal.classList.remove('hidden');
+            const scroller = modal.firstElementChild;
+            if (scroller) scroller.scrollTop = 0;
+        }
+        function closeReport() { document.getElementById('reportModal').classList.add('hidden'); }
+
+        // ---------- Tab lịch sử ----------
+        function renderHistory() {
+            const tabCur = document.getElementById('histTabCurrent');
+            const tabClo = document.getElementById('histTabClosed');
+            const footer = document.getElementById('historyFooter');
+            const on = ['bg-tys-500', 'text-ink'], off = ['text-stone-400'];
+            [[tabCur, historyTab === 'current'], [tabClo, historyTab === 'closed']].forEach(([el, active]) => {
+                on.forEach(c => el.classList.toggle(c, active));
+                off.forEach(c => el.classList.toggle(c, !active));
+            });
+            const body = document.getElementById('historyBody');
+
+            if (historyTab === 'current') {
+                footer.classList.remove('hidden');
+                document.getElementById('historySubtitle').innerText = `Ca bắt đầu ${fmtDateTime(historyData.shiftStart)}`;
+                const entries = historyData.entries;
+                let html = unpaidBlockHtml(snapshotUnpaid(), '{n} bàn chưa tính tiền');
+                html += `<div>
+                    <div class="text-[12px] font-extrabold text-stone-100 mb-1.5 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-check text-sage-400"></i> Đã thu trong ca <span class="text-stone-400 font-semibold">(${entries.length} bàn)</span>
+                    </div>
+                    ${entries.length
+                        ? entriesListHtml(entries)
+                        : `<div class="text-center text-xs text-stone-500 py-6 rounded-xl border border-dashed border-tys-900"><i class="fa-regular fa-clock text-lg block mb-1.5"></i>Chưa có bàn nào được thu trong ca này</div>`}
+                </div>`;
+                body.innerHTML = html;
+            } else {
+                footer.classList.add('hidden');
+                document.getElementById('historySubtitle').innerText = 'Bấm vào ca để xem lại khung báo cáo';
+                const shifts = historyData.closedShifts;
+                body.innerHTML = shifts.length
+                    ? shifts.map(closedShiftCardHtml).join('')
+                    : `<div class="text-center text-xs text-stone-500 py-10"><i class="fa-solid fa-flag-checkered text-xl block mb-2"></i>Chưa có ca nào được chốt</div>`;
+            }
+        }
+
+        function switchHistoryTab(tab) {
+            historyTab = tab;
+            renderHistory();
+            const body = document.getElementById('historyBody');
+            if (body) body.scrollTop = 0;
+        }
+        function openHistoryModal() {
+            historyTab = 'current';
+            renderHistory();
+            const body = document.getElementById('historyBody');
+            if (body) body.scrollTop = 0;
+            document.getElementById('historyModal').classList.remove('hidden');
+        }
+        function closeHistoryModal() { document.getElementById('historyModal').classList.add('hidden'); }
+
+        // ---------- Chốt ca ----------
+        function renderShiftPicker(detected, nowTs) {
+            const box = document.getElementById('closeShiftShiftBox');
+            const det = SHIFTS[detected.key];
+            const chips = [1, 2, 3].map(k => {
+                const active = k === closeShiftPick;
+                return `<button type="button" onclick="setCloseShiftPick(${k})" class="flex-1 py-1.5 rounded-lg border text-[11px] font-bold transition active:scale-95 ${active ? 'bg-tys-500 text-ink border-tys-600' : 'bg-espresso-950/70 text-stone-400 border-tys-900'}">
+                    ${SHIFTS[k].name}<span class="block text-[9px] font-medium tabular-nums opacity-80">${SHIFTS[k].range}</span></button>`;
+            }).join('');
+            box.innerHTML = `<div class="rounded-2xl border border-tys-800 bg-espresso-950/70 p-3 space-y-2">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-11 h-11 rounded-xl bg-tys-500 text-ink flex flex-col items-center justify-center shrink-0 leading-none">
+                        <span class="text-[9px] font-bold">Ca</span><span class="text-[18px] font-extrabold mt-0.5">${closeShiftPick}</span>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="text-[13px] font-extrabold text-tys-100">${SHIFTS[closeShiftPick].name} · ${SHIFTS[closeShiftPick].range}</div>
+                        <div class="text-[11px] text-stone-400 leading-snug">${detected.outside
+                            ? `Đang ngoài giờ ca (22:30 – 05:30), hệ thống tính vào ${det.name}`
+                            : `Hệ thống tự nhận diện theo giờ chốt (${fmtTime(nowTs)})`}</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-[10px] text-stone-500 mb-1">Chốt lệch giờ? Bấm chọn lại ca đúng:</div>
+                    <div class="flex gap-1.5">${chips}</div>
+                </div>
+            </div>`;
+        }
+        let closeShiftDetected = { key: 1, outside: false };
+        let closeShiftNowTs = Date.now();
+        function setCloseShiftPick(k) {
+            closeShiftPick = k;
+            renderShiftPicker(closeShiftDetected, closeShiftNowTs);
+        }
+
+        function openCloseShiftModal() {
+            const unpaid = snapshotUnpaid();
+            const entries = historyData.entries;
+            closeShiftNowTs = Date.now();
+            closeShiftDetected = detectShift(closeShiftNowTs);
+            closeShiftPick = closeShiftDetected.key;
+            document.getElementById('closeShiftRange').innerText = `${fmtDateTime(historyData.shiftStart)} → ${fmtDateTime(closeShiftNowTs)}`;
+            renderShiftPicker(closeShiftDetected, closeShiftNowTs);
+
+            document.getElementById('closeShiftContent').innerHTML = `<div class="grid grid-cols-2 gap-2">
+                    <div class="rounded-xl border border-sage-600 bg-sage-950/30 px-3 py-2">
+                        <div class="text-[10px] text-sage-300 font-bold">Đã thu</div>
+                        <div class="text-xl font-extrabold text-sage-300 tabular-nums leading-tight">${entries.length}<span class="text-[11px] font-bold"> bàn</span></div>
+                    </div>
+                    <div class="rounded-xl border ${unpaid.length ? 'border-brick-accent bg-brick-950/40' : 'border-tys-900 bg-espresso-950/70'} px-3 py-2">
+                        <div class="text-[10px] font-bold ${unpaid.length ? 'text-brick-300' : 'text-stone-400'}">Chưa tính tiền</div>
+                        <div class="text-xl font-extrabold tabular-nums leading-tight ${unpaid.length ? 'text-brick-300' : 'text-stone-400'}">${unpaid.length}<span class="text-[11px] font-bold"> bàn</span></div>
+                    </div>
+                </div>
+                ${unpaid.length ? unpaidBlockHtml(unpaid, '{n} bàn chưa tính tiền — sẽ ghi vào khung báo cáo') : ''}`;
+
+            document.getElementById('btnConfirmCloseShift').disabled = (entries.length === 0 && unpaid.length === 0);
+            document.getElementById('shiftStaffInput').value = '';
+            document.getElementById('shiftStaffError').classList.add('hidden');
+            document.getElementById('shiftNoteInput').value = '';
+            document.getElementById('closeShiftModal').classList.remove('hidden');
+        }
+        function closeCloseShiftModal() { document.getElementById('closeShiftModal').classList.add('hidden'); }
+
+        function confirmCloseShift() {
+            const staff = document.getElementById('shiftStaffInput').value.trim();
+            if (!staff) {
+                document.getElementById('shiftStaffError').classList.remove('hidden');
+                const inp = document.getElementById('shiftStaffInput');
+                if (inp.focus) inp.focus();
+                return;
+            }
+            const unpaid = snapshotUnpaid();
+            if (historyData.entries.length === 0 && unpaid.length === 0) return;
+            const now = Date.now();
+            const record = {
+                id: newHistoryId(),
+                shiftKey: closeShiftPick,
+                staff,
+                startAt: historyData.shiftStart,
+                endAt: now,
+                note: document.getElementById('shiftNoteInput').value.trim(),
+                entries: historyData.entries.slice(),
+                unpaid
+            };
+            historyData.closedShifts.unshift(record);
+            if (historyData.closedShifts.length > MAX_CLOSED_SHIFTS) historyData.closedShifts.length = MAX_CLOSED_SHIFTS;
+            historyData.entries = [];
+            historyData.shiftStart = now;
+            saveHistory();
+
+            // Sau khi chốt không hoàn tác thao tác cũ nữa (tránh lệch số liệu giữa bàn và lịch sử)
+            lastHistoryUndo = null;
+            lastQuickPayState = null;
+            document.getElementById('quickPayToast').classList.add('hidden');
+
+            closeCloseShiftModal();
+            historyTab = 'closed';
+            renderHistory();
+            openReport(record.id);
+            playQuickPaySound();
+        }
+
         let touchStartTimer = null;
         let lastTapTimestamp = 0;
         let lastTapTableId = null;
@@ -1467,8 +2096,10 @@
                 total: table.total,
                 startTime: table.startTime,
                 paymentMethod: table.paymentMethod,
-                note: table.note
+                note: table.note,
+                histId: table.histId || null
             };
+            beginHistoryUndo();
 
             let messageHtml = '';
             let flashClass = 'quick-pay-success-flash';
@@ -1477,6 +2108,7 @@
             if (table.status === 'unpaid') {
                 table.status = 'paid';
                 if (!table.paymentMethod) table.paymentMethod = 'Tiền mặt';
+                addHistoryEntry(tableId, table);
                 messageHtml = `Bàn ${tableId}: <strong>${table.total}k</strong> -> Đã trả (${gestureType})`;
                 flashClass = 'quick-pay-success-flash';
                 toastConfig = {
@@ -1492,6 +2124,7 @@
                 table.total = 0;
                 table.startTime = null;
                 table.note = '';
+                table.histId = null;
                 messageHtml = `Bàn ${tableId} -> Đã dọn xong (<strong>Trống</strong>) (${gestureType})`;
                 flashClass = 'quick-empty-success-flash';
                 toastConfig = {
@@ -1502,9 +2135,11 @@
                     titleColor: 'text-tys-400'
                 };
             } else {
+                endHistoryUndo();
                 return;
             }
 
+            endHistoryUndo();
             saveData();
 
             if (navigator.vibrate) {
@@ -1555,6 +2190,7 @@
 
         function undoQuickPay() {
             if (!lastQuickPayState) return;
+            applyHistoryUndo();
 
             if (lastQuickPayState.sourceBackup) {
                 const src = lastQuickPayState.sourceBackup;
@@ -1567,7 +2203,8 @@
                     total: lastQuickPayState.total,
                     startTime: lastQuickPayState.startTime,
                     paymentMethod: lastQuickPayState.paymentMethod,
-                    note: lastQuickPayState.note
+                    note: lastQuickPayState.note,
+                    histId: lastQuickPayState.histId || null
                 };
                 renderTableNode(src.id);
                 renderTableNode(tgt);
@@ -2092,6 +2729,8 @@
             if (prevStatus === 'empty' && selectedStatusInModal !== 'empty') table.startTime = Date.now();
             else if (selectedStatusInModal === 'empty') table.startTime = null;
 
+            syncHistoryOnModalSave(table, prevStatus);
+
             saveData(); 
             renderTableNode(activeTableId);
             const listView = document.getElementById('listView');
@@ -2251,6 +2890,7 @@
             const target = tablesData[targetId];
 
             const srcId = transferSourceId;
+            beginHistoryUndo();
 
             lastQuickPayState = {
                 tableId: targetId,
@@ -2260,6 +2900,7 @@
                 startTime: target.startTime,
                 paymentMethod: target.paymentMethod,
                 note: target.note,
+                histId: target.histId || null,
                 sourceBackup: {
                     id: srcId,
                     status: source.status,
@@ -2267,13 +2908,16 @@
                     total: source.total,
                     startTime: source.startTime,
                     paymentMethod: source.paymentMethod,
-                    note: source.note
+                    note: source.note,
+                    histId: source.histId || null
                 }
             };
 
             if (transferMode === 'transfer') {
+                historyOnTransfer(source, srcId, targetId);
                 tablesData[targetId] = {
                     id: targetId,
+                    histId: source.status === 'paid' ? (source.histId || null) : null,
                     status: source.status === 'empty' ? 'unpaid' : source.status,
                     items: [...source.items],
                     total: source.total,
@@ -2319,8 +2963,10 @@
                 let combinedNote = [target.note, source.note ? `(Gộp B${srcId}: ${source.note})` : '']
                                     .filter(Boolean).join(' | ');
 
+                const mergedHistId = historyOnMerge(source, target, mergedStatus, earliestTime, combinedNote);
                 tablesData[targetId] = {
                     id: targetId,
+                    histId: mergedHistId,
                     status: mergedStatus,
                     items: mergedItems,
                     total: mergedTotal,
@@ -2348,6 +2994,7 @@
                 });
             }
 
+            endHistoryUndo();
             saveData();
             closeTransferModal();
 
@@ -2401,6 +3048,7 @@
 
         window.onload = function() {
             initData();
+            initHistory();
             renderMap();
             updateDashboardStats();
             updateClock();
