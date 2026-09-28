@@ -2162,6 +2162,7 @@
         let singleTapTimeout = null;
         let longPressFired = false;
         let startTouchPos = { x: 0, y: 0 };
+        let lastTouchEndAt = 0;
 
         function attachTableGestureEvents(btnElement, tableId) {
             btnElement.addEventListener('touchstart', (e) => {
@@ -2196,6 +2197,7 @@
             }, { passive: true });
 
             btnElement.addEventListener('touchend', (e) => {
+                lastTouchEndAt = Date.now();
                 btnElement.classList.remove('holding-quick-pay', 'holding-quick-empty');
                 if (touchStartTimer) {
                     clearTimeout(touchStartTimer);
@@ -2226,6 +2228,15 @@
                 singleTapTimeout = setTimeout(() => {
                     openModal(tableId);
                 }, 220);
+            });
+
+            // PC: nhấn chuột trái để mở bàn (bỏ qua click giả sinh ra sau thao tác chạm trên điện thoại)
+            btnElement.addEventListener('click', (e) => {
+                if (Date.now() - lastTouchEndAt < 800) return;
+                if (singleTapTimeout) clearTimeout(singleTapTimeout);
+                singleTapTimeout = setTimeout(() => {
+                    openModal(tableId);
+                }, 250);
             });
 
             btnElement.addEventListener('dblclick', (e) => {
