@@ -728,11 +728,6 @@
                 <i class="fa-solid fa-list-ul text-[13px]"></i>
                 <span class="text-[8px] font-bold uppercase tracking-wide leading-none">List</span>
             </button>
-            <button onclick="openHistoryModal()" id="btnHistory" class="relative shrink-0 w-12 h-12 rounded-xl bg-espresso-950/70 border border-tys-900 text-tys-300 flex flex-col items-center justify-center gap-0.5 active:scale-90 transition" title="Lịch sử thu tiền & chốt ca" aria-label="Lịch sử thu tiền và chốt ca">
-                <i class="fa-solid fa-clock-rotate-left text-[13px]"></i>
-                <span class="text-[8px] font-bold uppercase tracking-wide leading-none">Lịch sử</span>
-                <span id="historyBadge" class="hidden absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-tys-500 text-ink text-[10px] font-extrabold items-center justify-center tabular-nums border border-espresso-900">0</span>
-            </button>
             <button onclick="openResetModal()" class="shrink-0 w-12 h-12 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-500 flex flex-col items-center justify-center gap-0.5 active:scale-90 transition" title="Đặt lại dữ liệu" aria-label="Đặt lại dữ liệu">
                 <i class="fa-solid fa-rotate-right text-[13px]"></i>
                 <span class="text-[8px] font-bold uppercase tracking-wide leading-none">Refresh</span>
@@ -741,9 +736,15 @@
     </nav>
 
     <!-- FAB "Về giữa / Hiện toàn bộ sơ đồ" — control nổi màu hổ phách ấm, đổ bóng dịu -->
-    <button onclick="resetZoomAndFit()" id="fabRecenter" class="fab-glow fixed right-3 sm:right-6 bottom-[94px] sm:bottom-[104px] z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-tys-500 text-ink border border-tys-600 flex items-center justify-center active:scale-90 transition" title="Về giữa - Hiện toàn bộ sơ đồ" aria-label="Về giữa">
+    <div id="fabCluster" class="fixed right-3 sm:right-6 bottom-[94px] sm:bottom-[104px] z-40 flex flex-col items-center gap-2.5">
+        <button onclick="openHistoryModal()" id="btnHistory" class="fab-glow relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-espresso-900 text-tys-300 border border-tys-800 flex items-center justify-center active:scale-90 transition" title="Lịch sử thu tiền &amp; chốt ca" aria-label="Lịch sử thu tiền và chốt ca">
+            <i class="fa-solid fa-clock-rotate-left text-base"></i>
+            <span id="historyBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-tys-500 text-ink text-[10px] font-extrabold items-center justify-center tabular-nums border border-espresso-900">0</span>
+        </button>
+        <button onclick="resetZoomAndFit()" id="fabRecenter" class="fab-glow w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-tys-500 text-ink border border-tys-600 flex items-center justify-center active:scale-90 transition" title="Về giữa - Hiện toàn bộ sơ đồ" aria-label="Về giữa">
         <i class="fa-solid fa-expand text-base"></i>
     </button>
+    </div>
 
     <main class="flex-1 p-1.5 sm:p-2 md:p-3 pb-24 overflow-hidden flex flex-col justify-center items-center relative">
         <div class="w-full h-full max-w-[1800px] flex items-center justify-center relative">
@@ -1144,9 +1145,6 @@
     <div id="closeShiftModal" onclick="if(event.target===this)closeCloseShiftModal()" class="fixed inset-0 z-[60] bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
         <div class="bg-espresso-900 border border-tys-800 w-full max-w-md rounded-2xl shadow-xl modal-fade-in text-stone-200 flex flex-col max-h-[94vh] overflow-hidden">
             <div class="flex items-center gap-2.5 px-4 pt-4 pb-2 shrink-0">
-                <div class="w-9 h-9 rounded-xl bg-tys-500 text-ink flex items-center justify-center shrink-0">
-                    <i class="fa-solid fa-flag-checkered text-sm"></i>
-                </div>
                 <div>
                     <h3 class="text-sm font-extrabold text-tys-100 leading-tight">Chốt ca</h3>
                     <p class="text-[11px] text-stone-400 tabular-nums" id="closeShiftRange"></p>
@@ -1166,7 +1164,6 @@
                 <div id="closeShiftContent" class="space-y-3"></div>
             </div>
             <div class="shrink-0 px-4 pt-2.5 pb-4 border-t border-tys-900 space-y-2">
-                <p class="text-[11px] text-stone-400 leading-snug">Sau khi chốt sẽ hiện khung báo cáo để bạn chụp màn hình gửi ca sau, đồng thời lưu vào mục "Ca đã chốt". Các bàn trên sơ đồ giữ nguyên.</p>
                 <div class="flex items-center justify-end gap-2">
                     <button onclick="closeCloseShiftModal()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300">Hủy</button>
                     <button id="btnConfirmCloseShift" onclick="confirmCloseShift()" class="px-4 py-2 rounded-lg text-xs font-bold bg-tys-500 hover:bg-tys-600 text-ink flex items-center gap-1.5 active:scale-95 transition disabled:opacity-40 disabled:pointer-events-none">
@@ -1182,8 +1179,8 @@
         <div class="flex-1 overflow-y-auto overscroll-contain px-3 pt-[calc(0.75rem+env(safe-area-inset-top))] pb-3">
             <div id="reportFrameWrap"></div>
         </div>
-        <div class="shrink-0 bg-espresso-900 border-t border-tys-800 px-4 pt-2.5 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex items-center gap-3">
-            <p class="flex-1 text-[11px] text-stone-300 leading-snug"><i class="fa-solid fa-camera mr-1 text-tys-500"></i>Chụp màn hình khung trên rồi gửi cho ca sau. Nếu khung dài, cuộn và chụp thêm.</p>
+        <div class="shrink-0 bg-espresso-900 border-t border-tys-800 px-4 pt-2.5 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex items-center justify-end gap-3">
+            <button id="btnExportReport" onclick="exportReportImage()" class="shrink-0 px-4 py-2 rounded-xl bg-espresso-800 hover:bg-espresso-700 border border-tys-800 text-tys-100 text-sm font-extrabold flex items-center gap-1.5 active:scale-95 transition disabled:opacity-50 disabled:pointer-events-none"><i class="fa-solid fa-download"></i><span>Lưu ảnh</span></button>
             <button onclick="closeReport()" class="shrink-0 px-5 py-2 rounded-xl bg-tys-500 hover:bg-tys-600 text-ink text-sm font-extrabold active:scale-95 transition">Xong</button>
         </div>
     </div>
@@ -1748,7 +1745,7 @@
                 </div>
                 <div class="min-w-0 flex-1">
                     <div class="text-[13px] font-extrabold text-stone-100 truncate">${escapeHtml(sh.staff || 'Chưa ghi tên')}</div>
-                    <div class="text-[10px] text-stone-400 tabular-nums mt-0.5">${fmtDateFull(sh.endAt)} · ${fmtTime(sh.startAt)} → ${fmtTime(sh.endAt)}</div>
+                    <div class="text-[10px] text-stone-400 tabular-nums mt-0.5">Chốt ${fmtTime(sh.endAt)} - ${fmtDateFull(sh.endAt)}</div>
                     <div class="text-[10px] mt-0.5 flex items-center gap-2">
                         <span class="text-sage-300 font-semibold">${sh.entries.length} bàn đã thu</span>
                         ${unpaidN ? `<span class="text-brick-300 font-extrabold">${unpaidN} bàn chưa tính tiền</span>` : ''}
@@ -1804,13 +1801,11 @@
                     </div>
                     <div style="text-align:right">
                         <div style="font-weight:800;font-size:20px;color:#E1B66E;line-height:1">${def ? def.name : 'Ca'}</div>
-                        <div style="font-size:11px;opacity:.85;margin-top:3px">${def ? def.range : ''}</div>
                     </div>
                 </div>
                 <div style="padding:8px 14px 2px">
                     ${infoRow('Nhân viên', escapeHtml(sh.staff || '—'))}
-                    ${infoRow('Ngày', fmtDateFull(sh.endAt))}
-                    ${infoRow('Thời gian làm', fmtTime(sh.startAt) + ' → ' + fmtTime(sh.endAt))}
+                    ${infoRow('Thời gian chốt', fmtTime(sh.endAt) + ' - ' + fmtDateFull(sh.endAt))}
                 </div>
                 <div style="display:flex;gap:8px;padding:8px 14px">
                     <div style="flex:1;background:#eaf3e1;border:1px solid #b9d6a6;border-radius:12px;padding:8px 10px">
@@ -1834,20 +1829,111 @@
                     <div style="font-size:12px;font-weight:800;margin-bottom:2px">Bàn đã thu (${entries.length})</div>
                     ${entries.length ? paidRows : `<div style="font-size:11px;color:#6e685d;padding:6px 0">Ca này chưa thu bàn nào</div>`}
                 </div>
-                <div style="background:#f1eee7;border-top:1px solid #dad5ca;padding:6px 14px;font-size:10px;color:#6e685d;text-align:center">Chốt lúc ${fmtTime(sh.endAt)} ${fmtDateFull(sh.endAt)} · TYS Coffee</div>
+                <div style="background:#f1eee7;border-top:1px solid #dad5ca;padding:6px 14px;font-size:10px;color:#6e685d;text-align:center">TYS Coffee</div>
             </div>`;
         }
 
+        let currentReportId = null;
         function openReport(id) {
             const sh = historyData.closedShifts.find(x => x.id === id);
             if (!sh) return;
+            currentReportId = id;
             document.getElementById('reportFrameWrap').innerHTML = reportFrameHtml(sh);
             const modal = document.getElementById('reportModal');
             modal.classList.remove('hidden');
             const scroller = modal.firstElementChild;
             if (scroller) scroller.scrollTop = 0;
+            fitReportFrame();
+            requestAnimationFrame(fitReportFrame);
+            if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitReportFrame);
         }
         function closeReport() { document.getElementById('reportModal').classList.add('hidden'); }
+
+        // ---------- Xuất ảnh trực tiếp (không cần chụp màn hình) ----------
+        function loadHtml2Canvas() {
+            return new Promise((resolve, reject) => {
+                if (window.html2canvas) return resolve(window.html2canvas);
+                const sc = document.createElement('script');
+                sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                sc.onload = () => window.html2canvas ? resolve(window.html2canvas) : reject(new Error('html2canvas'));
+                sc.onerror = () => reject(new Error('load'));
+                document.head.appendChild(sc);
+            });
+        }
+        async function exportReportImage() {
+            const sh = historyData.closedShifts.find(x => x.id === currentReportId);
+            if (!sh) return;
+            const btn = document.getElementById('btnExportReport');
+            const label = btn.querySelector('span');
+            btn.disabled = true; label.textContent = 'Đang tạo…';
+            // Vẽ khung ở kích thước thật (không bị thu nhỏ) ngoài màn hình để ảnh luôn nét và đủ toàn bộ nội dung
+            const holder = document.createElement('div');
+            holder.style.cssText = 'position:fixed;left:-10000px;top:0;width:424px;padding:12px;background:#ffffff;box-sizing:border-box';
+            holder.innerHTML = reportFrameHtml(sh);
+            document.body.appendChild(holder);
+            try {
+                if (document.fonts && document.fonts.ready) await document.fonts.ready;
+                const h2c = await loadHtml2Canvas();
+                const canvas = await h2c(holder, { scale: 3, backgroundColor: '#ffffff', useCORS: true, logging: false });
+                const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+                if (!blob) throw new Error('blob');
+                const d = new Date(sh.endAt), p2 = n => String(n).padStart(2, '0');
+                const name = `TYS-chot-ca-${d.getFullYear()}${p2(d.getMonth() + 1)}${p2(d.getDate())}-${p2(d.getHours())}${p2(d.getMinutes())}.png`;
+                const file = new File([blob], name, { type: 'image/png' });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try { await navigator.share({ files: [file], title: 'Báo cáo chốt ca' }); return; }
+                    catch (e) { if (e && e.name === 'AbortError') return; }
+                }
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = name;
+                document.body.appendChild(a); a.click(); a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 5000);
+            } catch (err) {
+                alert('Không tạo được ảnh. Vui lòng kiểm tra kết nối mạng rồi thử lại, hoặc chụp màn hình.');
+            } finally {
+                holder.remove();
+                btn.disabled = false; label.textContent = 'Lưu ảnh';
+            }
+        }
+
+        // Tự thu nhỏ khung báo cáo để vừa trọn 1 màn hình (chụp 1 lần là đủ).
+        // Nếu khung quá dài, dừng ở mức thu nhỏ tối thiểu để chữ vẫn đọc được, phần còn lại cuộn xem.
+        const REPORT_MIN_SCALE = 0.4;
+        function fitReportFrame() {
+            const modal = document.getElementById('reportModal');
+            if (modal.classList.contains('hidden')) return;
+            const scroller = modal.firstElementChild;
+            const wrap = document.getElementById('reportFrameWrap');
+            const frame = document.getElementById('reportFrame');
+            const hint = document.getElementById('reportHint');
+            if (!scroller || !wrap || !frame) return;
+
+            frame.style.transform = '';
+            frame.style.transformOrigin = 'top center';
+            wrap.style.height = '';
+
+            const cs = getComputedStyle(scroller);
+            const availW = scroller.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+            const availH = scroller.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+            const w = frame.offsetWidth, h = frame.offsetHeight;
+            if (!w || !h) return;
+
+            const fit = Math.min(1, availW / w, availH / h);
+            const scale = Math.max(fit, REPORT_MIN_SCALE);
+            if (scale < 1) {
+                frame.style.transform = `scale(${scale})`;
+                wrap.style.height = (h * scale) + 'px';
+            }
+            const ico = '<i class="fa-solid fa-camera mr-1 text-tys-500"></i>';
+            if (hint) {
+                if (fit >= 1) hint.innerHTML = ico + 'Chụp màn hình khung trên rồi gửi cho ca sau.';
+                else if (fit >= REPORT_MIN_SCALE) hint.innerHTML = ico + `Khung đã tự thu nhỏ (${Math.round(scale * 100)}%) để vừa một màn hình — chụp một lần là đủ.`;
+                else hint.innerHTML = ico + 'Khung rất dài nên chỉ thu nhỏ tối đa. Cuộn xuống và chụp thêm phần còn lại.';
+            }
+        }
+        window.addEventListener('resize', fitReportFrame);
+        window.addEventListener('orientationchange', () => setTimeout(fitReportFrame, 200));
 
         // ---------- Tab lịch sử ----------
         function renderHistory() {
@@ -1940,7 +2026,7 @@
             closeShiftNowTs = Date.now();
             closeShiftDetected = detectShift(closeShiftNowTs);
             closeShiftPick = closeShiftDetected.key;
-            document.getElementById('closeShiftRange').innerText = `${fmtDateTime(historyData.shiftStart)} → ${fmtDateTime(closeShiftNowTs)}`;
+            document.getElementById('closeShiftRange').innerText = `Thời gian chốt: ${fmtTime(closeShiftNowTs)} - ${fmtDateFull(closeShiftNowTs)}`;
             renderShiftPicker(closeShiftDetected, closeShiftNowTs);
 
             document.getElementById('closeShiftContent').innerHTML = `<div class="grid grid-cols-2 gap-2">
