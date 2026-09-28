@@ -728,19 +728,29 @@
                 <i class="fa-solid fa-list-ul text-[13px]"></i>
                 <span class="text-[8px] font-bold uppercase tracking-wide leading-none">List</span>
             </button>
-            <button onclick="openResetModal()" class="shrink-0 w-12 h-12 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-500 flex flex-col items-center justify-center gap-0.5 active:scale-90 transition" title="Đặt lại dữ liệu" aria-label="Đặt lại dữ liệu">
-                <i class="fa-solid fa-rotate-right text-[13px]"></i>
-                <span class="text-[8px] font-bold uppercase tracking-wide leading-none">Refresh</span>
-            </button>
-        </div>
-    </nav>
+            <div class="relative shrink-0">
+                <!-- Menu 3 chấm: mở thẳng đứng lên trên -->
+                <div id="moreMenu" role="menu" class="hidden absolute bottom-full right-0 mb-2 w-44 flex-col gap-1 p-1.5 rounded-2xl bg-espresso-900 border border-tys-800 shadow-[0_12px_28px_-8px_rgba(26,21,16,0.45)] modal-fade-in">
+                    <button onclick="closeMoreMenu(); openHistoryModal()" id="btnHistory" role="menuitem" class="relative flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Lịch sử ca">
+                        <i class="fa-solid fa-flag-checkered w-4 text-center text-sm"></i>
+                        <span class="text-xs font-bold">Lịch sử ca</span>
+                        <span id="historyBadge" class="hidden ml-auto min-w-[18px] h-[18px] px-1 rounded-full bg-tys-500 text-ink text-[10px] font-extrabold items-center justify-center tabular-nums">0</span>
+                    </button>
+                    <button onclick="closeMoreMenu(); openResetModal()" role="menuitem" class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-stone-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Đặt lại dữ liệu">
+                        <i class="fa-solid fa-rotate-right w-4 text-center text-sm"></i>
+                        <span class="text-xs font-bold">Refresh</span>
+                    </button>
+                </div>
+                <button onclick="toggleMoreMenu(event)" id="btnMore" class="relative w-12 h-12 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-400 flex flex-col items-center justify-center gap-0.5 active:scale-90 transition" title="Thêm" aria-label="Thêm chức năng" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa-solid fa-ellipsis-vertical text-[15px]"></i>
+                    <span class="text-[8px] font-bold uppercase tracking-wide leading-none">Thêm</span>
+                    <span id="historyDot" class="hidden absolute top-1 right-1 w-2 h-2 rounded-full bg-tys-500 border border-espresso-900"></span>
+                </button>
+            </div>
+        </nav>
 
     <!-- FAB "Về giữa / Hiện toàn bộ sơ đồ" — control nổi màu hổ phách ấm, đổ bóng dịu -->
-    <div id="fabCluster" class="fixed right-3 sm:right-6 bottom-[94px] sm:bottom-[104px] z-40 flex flex-col items-center gap-2.5">
-        <button onclick="openHistoryModal()" id="btnHistory" class="fab-glow relative w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-espresso-900 text-tys-300 border border-tys-800 flex items-center justify-center active:scale-90 transition" title="Lịch sử thu tiền &amp; chốt ca" aria-label="Lịch sử thu tiền và chốt ca">
-            <i class="fa-solid fa-clock-rotate-left text-base"></i>
-            <span id="historyBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-tys-500 text-ink text-[10px] font-extrabold items-center justify-center tabular-nums border border-espresso-900">0</span>
-        </button>
+    <div id="fabCluster" class="fixed right-3 sm:right-6 bottom-[94px] sm:bottom-[104px] z-40 flex flex-col items-center gap-2.5 transition-transform duration-200 ease-out">
         <button onclick="resetZoomAndFit()" id="fabRecenter" class="fab-glow w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-tys-500 text-ink border border-tys-600 flex items-center justify-center active:scale-90 transition" title="Về giữa - Hiện toàn bộ sơ đồ" aria-label="Về giữa">
         <i class="fa-solid fa-expand text-base"></i>
     </button>
@@ -928,7 +938,7 @@
                     <div id="modalTableBadge" class="w-9 h-9 rounded-lg bg-tys-500 font-bold text-lg flex items-center justify-center text-ink">0</div>
                     <div>
                         <h3 class="font-bold text-tys-100 text-sm leading-tight" id="modalTitle">Quản Lý Bàn Số 0</h3>
-                        <p class="text-[10px] text-stone-500" id="modalSubtitle">Cập nhật nhanh món & thanh toán</p>
+                        <p class="text-[10px] text-stone-500 hidden" id="modalSubtitle"></p>
                     </div>
                 </div>
                 <button onclick="closeModal()" class="w-7 h-7 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-400 hover:text-stone-100 flex items-center justify-center transition">
@@ -991,7 +1001,7 @@
                     <!-- Tìm món trong toàn bộ menu (dùng khi khách kêu món không phải best seller) -->
                     <div class="relative">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 text-[11px] z-10"></i>
-                        <input type="text" id="menuSearchInput" oninput="handleMenuSearch()" onkeydown="handleMenuSearchKeydown(event)" placeholder="Tìm món trong thực đơn (VD: trà đào, latte...)..." class="w-full bg-espresso-900 border border-tys-900 rounded-lg pl-8 pr-3 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
+                        <input type="text" id="menuSearchInput" oninput="handleMenuSearch()" onkeydown="handleMenuSearchKeydown(event)" placeholder="Tìm món..." class="w-full bg-espresso-900 border border-tys-900 rounded-lg pl-8 pr-3 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
                         <div id="menuSearchResults" class="hidden absolute z-20 left-0 right-0 mt-1 max-h-[180px] overflow-y-auto bg-espresso-900 border border-tys-800 rounded-lg shadow-xl divide-y divide-tys-950/80"></div>
                     </div>
 
@@ -1021,7 +1031,7 @@
                     </div>
                     <div>
                         <label class="block font-semibold text-stone-500 text-[10px] uppercase mb-1">Ghi chú bàn</label>
-                        <input type="text" id="tableNoteInput" placeholder="VD: 2 khách..." class="w-full bg-espresso-950 border border-tys-900 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
+                        <input type="text" id="tableNoteInput" placeholder="Ghi chú" class="w-full bg-espresso-950 border border-tys-900 rounded-lg px-2 py-1.5 text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
                     </div>
                 </div>
 
@@ -1064,7 +1074,7 @@
                     </div>
                     <div>
                         <h3 class="text-sm font-bold text-tys-100" id="transferModalTitle">Chuyển / Gộp Bàn</h3>
-                        <p class="text-[10px] text-stone-500">Di chuyển dữ liệu hoặc kết hợp đơn hàng giữa 2 bàn</p>
+                        
                     </div>
                 </div>
                 <button onclick="closeTransferModal()" class="w-7 h-7 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-400 hover:text-stone-100 flex items-center justify-center transition">
@@ -1115,7 +1125,7 @@
             <div class="flex items-center justify-between px-4 pt-3.5 pb-2.5 shrink-0">
                 <div class="flex items-center gap-2.5">
                     <div class="w-9 h-9 rounded-xl bg-tys-500 text-ink flex items-center justify-center">
-                        <i class="fa-solid fa-clock-rotate-left text-sm"></i>
+                        <i class="fa-solid fa-flag-checkered text-sm"></i>
                     </div>
                     <div>
                         <h3 class="text-sm font-extrabold text-tys-100 leading-tight">Lịch sử ca</h3>
@@ -1144,22 +1154,16 @@
     <!-- Chốt ca: nhận diện ca + hỏi tên -->
     <div id="closeShiftModal" onclick="if(event.target===this)closeCloseShiftModal()" class="fixed inset-0 z-[60] bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
         <div class="bg-espresso-900 border border-tys-800 w-full max-w-md rounded-2xl shadow-xl modal-fade-in text-stone-200 flex flex-col max-h-[94vh] overflow-hidden">
-            <div class="flex items-center gap-2.5 px-4 pt-4 pb-2 shrink-0">
-                <div>
-                    <h3 class="text-sm font-extrabold text-tys-100 leading-tight">Chốt ca</h3>
-                    <p class="text-[11px] text-stone-400 tabular-nums" id="closeShiftRange"></p>
-                </div>
-            </div>
-            <div class="flex-1 overflow-y-auto overscroll-contain px-4 pb-3 space-y-3">
+            <div class="flex-1 overflow-y-auto overscroll-contain px-4 pt-4 pb-3 space-y-3">
                 <div id="closeShiftShiftBox"></div>
                 <div>
                     <label for="shiftStaffInput" class="text-[12px] font-bold text-stone-200">Tên nhân viên chốt ca</label>
-                    <input id="shiftStaffInput" type="text" maxlength="40" autocomplete="off" placeholder="Nhập tên của bạn" oninput="document.getElementById('shiftStaffError').classList.add('hidden')" class="mt-1 w-full bg-espresso-950 border border-tys-900 rounded-lg px-3 py-2 text-sm text-stone-100 focus:outline-none focus:border-tys-600">
-                    <div id="shiftStaffError" class="hidden text-[11px] font-semibold text-brick-300 mt-1"><i class="fa-solid fa-circle-exclamation mr-1"></i>Vui lòng nhập tên nhân viên</div>
+                    <input id="shiftStaffInput" type="text" maxlength="40" autocomplete="off" placeholder="Tên nhân viên" oninput="document.getElementById('shiftStaffError').classList.add('hidden')" class="mt-1 w-full bg-espresso-950 border border-tys-900 rounded-lg px-3 py-2 text-sm text-stone-100 focus:outline-none focus:border-tys-600">
+                    <div id="shiftStaffError" class="hidden text-[11px] font-semibold text-brick-300 mt-1"><i class="fa-solid fa-circle-exclamation mr-1"></i>Nhập tên nhân viên</div>
                 </div>
                 <div>
-                    <label for="shiftNoteInput" class="text-[11px] font-semibold text-stone-400">Ghi chú cho ca sau (không bắt buộc)</label>
-                    <input id="shiftNoteInput" type="text" maxlength="120" placeholder="VD: bàn 12 khách hẹn trả sau" class="mt-1 w-full bg-espresso-950 border border-tys-900 rounded-lg px-3 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600">
+                    <label for="shiftNoteInput" class="text-[11px] font-semibold text-stone-400">Ghi chú cho ca sau</label>
+                    <input id="shiftNoteInput" type="text" maxlength="120" placeholder="Ghi chú" class="mt-1 w-full bg-espresso-950 border border-tys-900 rounded-lg px-3 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600">
                 </div>
                 <div id="closeShiftContent" class="space-y-3"></div>
             </div>
@@ -1192,7 +1196,7 @@
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <h3 class="text-sm font-bold text-tys-100">Đặt lại toàn bộ dữ liệu bàn?</h3>
-            <p class="text-xs text-stone-400">Tất cả 29 bàn sẽ được chuyển về trạng thái TRỐNG. Bạn có chắc chắn không?</p>
+            <p class="text-xs text-stone-400">Tất cả bàn sẽ được chuyển về trạng thái Trống.</p>
             <div class="flex items-center justify-center gap-2 pt-1">
                 <button onclick="closeResetModal()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300">Hủy</button>
                 <button onclick="confirmResetAllData()" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-brick-700 hover:bg-brick-600 text-tys-50">Đặt lại ngay</button>
@@ -1531,6 +1535,8 @@
             el.innerText = n > 99 ? '99+' : n;
             if (n > 0) { el.classList.remove('hidden'); el.classList.add('flex'); }
             else { el.classList.add('hidden'); el.classList.remove('flex'); }
+            const dot = document.getElementById('historyDot');
+            if (dot) dot.classList.toggle('hidden', n === 0);
         }
 
         // --- Hoàn tác: ghi lại trạng thái cũ của từng dòng lịch sử bị đổi trong 1 thao tác ---
@@ -1660,6 +1666,23 @@
                 minutes: t.startTime ? Math.max(0, Math.floor((now - t.startTime) / 60000)) : null
             }));
         }
+        // Mọi bàn còn khách tại quán lúc chốt ca: chưa tính tiền + đã thanh toán (bàn Trống thì không ghi)
+        function snapshotOpenTables() {
+            const now = Date.now();
+            return Object.values(tablesData)
+                .filter(t => t.status === 'unpaid' || t.status === 'paid')
+                .sort((a, b) => (a.startTime || Infinity) - (b.startTime || Infinity))
+                .map(t => ({
+                    tableId: t.id,
+                    status: t.status,
+                    items: (t.items || []).map(i => ({ name: i.name, price: i.price })),
+                    total: t.total || 0,
+                    paymentMethod: t.paymentMethod || 'Tiền mặt',
+                    note: t.note || '',
+                    startTime: t.startTime || null,
+                    minutes: t.startTime ? Math.max(0, Math.floor((now - t.startTime) / 60000)) : null
+                }));
+        }
         function fmtDuration(min) {
             if (min == null) return '';
             if (min < 60) return min + ' phút';
@@ -1763,73 +1786,79 @@
         function reportFrameHtml(sh) {
             const def = SHIFTS[sh.shiftKey];
             const unpaid = sh.unpaid || [];
-            const entries = [...sh.entries].sort((a, b) => a.paidAt - b.paidAt);
             const F = "font-family:'Plus Jakarta Sans',sans-serif;";
+            const C = { ink: '#1c1a17', esp: '#2e2013', gold: '#E1B66E', goldD: '#a9793a', muted: '#7a7466', line: '#ece5d6',
+                        card: '#ffffff', bg: '#faf7f0', red: '#c8402a', redD: '#8f2a1a', redBg: '#fdeee9', redLine: '#f0b8a8',
+                        green: '#3f7a2e', greenBg: '#edf5e6', greenLine: '#bfdaae', amberBg: '#fbf3e0', amberLine: '#ead3a0' };
 
-            const infoRow = (label, value) => `<div style="display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:12px">
-                <span style="color:#6e685d">${label}</span><span style="font-weight:700;text-align:right">${value}</span></div>`;
+            const d = new Date(sh.endAt);
+            const weekday = d.toLocaleDateString('vi-VN', { weekday: 'long' });
 
-            const unpaidRows = unpaid.map(u => {
-                const long = u.minutes != null && u.minutes >= 45;
-                return `<div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e9b3a3;border-radius:10px;padding:6px 8px;margin-top:6px">
-                    <div style="width:34px;height:34px;border-radius:8px;background:#d2492c;color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">B${u.tableId}</div>
-                    <div style="min-width:0;flex:1">
-                        <div style="font-size:12px;font-weight:600;line-height:1.3">${groupedItemsText(u.items)}</div>
-                        <div style="font-size:10px;color:${long ? '#a83420' : '#6e685d'};font-weight:${long ? 800 : 500}">${u.startTime ? 'Vào ' + fmtTime(u.startTime) + ' · ngồi ' + fmtDuration(u.minutes) : 'Chưa rõ giờ vào'}${u.note ? ' · ' + escapeHtml(u.note) : ''}</div>
-                    </div>
-                    <div style="font-size:12px;font-weight:800;color:#a83420;flex-shrink:0">${fmtMoney(u.total)}</div>
-                </div>`;
-            }).join('');
-
-            const paidRows = entries.map(e => {
-                const cash = isCashMethod(e.paymentMethod);
-                return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-top:1px solid #ece6d8">
-                    <div style="width:30px;height:26px;border-radius:7px;background:#3f7a2e;color:#fff;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0">B${e.tableId}</div>
-                    <div style="min-width:0;flex:1">
-                        <div style="font-size:11px;font-weight:600;line-height:1.3">${groupedItemsText(e.items)}</div>
-                        <div style="font-size:10px;color:#6e685d">${fmtTime(e.paidAt)} · ${cash ? 'Tiền mặt' : 'Chuyển khoản'}${e.note ? ' · ' + escapeHtml(e.note) : ''}</div>
-                    </div>
-                    <div style="font-size:11px;font-weight:800;flex-shrink:0">${fmtMoney(e.total)}</div>
-                </div>`;
-            }).join('');
-
-            return `<div id="reportFrame" style="${F}background:#fffdf8;color:#1c1a17;border:2px solid #2e2013;border-radius:18px;overflow:hidden;width:100%;max-width:400px;margin:0 auto;letter-spacing:-0.01em">
-                <div style="background:#2e2013;color:#f5e6c8;padding:12px 14px;display:flex;justify-content:space-between;align-items:center">
-                    <div>
-                        <div style="font-weight:800;font-size:16px">TYS COFFEE</div>
-                        <div style="font-size:11px;opacity:.8;margin-top:1px">Báo cáo chốt ca</div>
+            // Đầu báo cáo: ca, ngày, người chốt, giờ chốt
+            const header = `<div style="background:${C.esp};color:#f5e6c8;padding:14px 16px">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                    <div style="display:flex;align-items:baseline;gap:10px">
+                        <span style="font-size:28px;font-weight:800;line-height:1;color:${C.gold};letter-spacing:-0.02em">${def ? def.name.toUpperCase() : 'CA'}</span>
+                        <span style="font-size:11px;opacity:.75;font-weight:600">${def ? def.range : ''}</span>
                     </div>
                     <div style="text-align:right">
-                        <div style="font-weight:800;font-size:20px;color:#E1B66E;line-height:1">${def ? def.name : 'Ca'}</div>
+                        <div style="font-size:10px;opacity:.75;font-weight:600;text-transform:capitalize">${weekday}</div>
+                        <div style="font-size:14px;font-weight:800">${fmtDateFull(sh.endAt)}</div>
                     </div>
                 </div>
-                <div style="padding:8px 14px 2px">
-                    ${infoRow('Nhân viên', escapeHtml(sh.staff || '—'))}
-                    ${infoRow('Thời gian chốt', fmtTime(sh.endAt) + ' - ' + fmtDateFull(sh.endAt))}
+                <div style="display:flex;justify-content:space-between;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.14);font-size:12px;font-weight:700">
+                    <span>${escapeHtml(sh.staff || '—')}</span>
+                    <span style="opacity:.8">Chốt lúc ${fmtTime(sh.endAt)}</span>
                 </div>
-                <div style="display:flex;gap:8px;padding:8px 14px">
-                    <div style="flex:1;background:#eaf3e1;border:1px solid #b9d6a6;border-radius:12px;padding:8px 10px">
-                        <div style="font-size:10px;color:#3f6530;font-weight:700">Đã thu</div>
-                        <div style="font-size:22px;font-weight:800;color:#3f6530;line-height:1.1">${entries.length}<span style="font-size:11px;font-weight:700"> bàn</span></div>
+            </div>`;
+
+            // Các bàn còn khách tại quán: chưa tính tiền + đã thanh toán (bản ghi cũ chỉ có bàn chưa tính tiền)
+            const open = sh.open || unpaid.map(u => Object.assign({ status: 'unpaid' }, u));
+            const listU = open.filter(t => t.status === 'unpaid');
+            const listP = open.filter(t => t.status === 'paid');
+
+            const rowHtml = (u, isPaid) => {
+                const long = !isPaid && u.minutes != null && u.minutes >= 45;
+                const badge = isPaid ? C.green : C.red;
+                const border = isPaid ? C.greenLine : C.redLine;
+                const cash = isCashMethod(u.paymentMethod);
+                return `<div style="display:flex;align-items:center;gap:10px;background:${C.card};border:1px solid ${border};border-radius:12px;padding:8px 10px;margin-top:7px">
+                    <div style="width:38px;height:38px;border-radius:10px;background:${badge};color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0">B${u.tableId}</div>
+                    <div style="min-width:0;flex:1">
+                        <div style="font-size:12px;font-weight:700;line-height:1.35">${groupedItemsText(u.items)}</div>
+                        <div style="font-size:10px;margin-top:2px;color:${long ? C.redD : C.muted};font-weight:${long ? 800 : 600}">${u.startTime ? 'Vào ' + fmtTime(u.startTime) + ' · ngồi ' + fmtDuration(u.minutes) : 'Chưa rõ giờ vào'}${u.note ? ' · ' + escapeHtml(u.note) : ''}</div>
                     </div>
-                    <div style="flex:1;background:${unpaid.length ? '#fbeae5' : '#f1eee7'};border:1px solid ${unpaid.length ? '#e2724c' : '#dad5ca'};border-radius:12px;padding:8px 10px">
-                        <div style="font-size:10px;color:${unpaid.length ? '#a83420' : '#6e685d'};font-weight:700">Chưa tính tiền</div>
-                        <div style="font-size:22px;font-weight:800;color:${unpaid.length ? '#a83420' : '#6e685d'};line-height:1.1">${unpaid.length}<span style="font-size:11px;font-weight:700"> bàn</span></div>
-                    </div>
-                </div>
-                ${unpaid.length ? `<div style="margin:2px 14px 8px;background:#fbeae5;border:2px solid #d2492c;border-radius:14px;padding:8px 10px 10px">
-                    <div style="font-size:13px;font-weight:800;color:#8f2a1a">⚠ ${unpaid.length} bàn chưa tính tiền — ca sau cần thu</div>
-                    ${unpaidRows}
-                </div>` : `<div style="margin:2px 14px 8px;background:#eaf3e1;border:1px solid #b9d6a6;border-radius:12px;padding:7px 10px;font-size:12px;font-weight:700;color:#3f6530">✓ Không còn bàn nào chưa tính tiền</div>`}
-                ${sh.note ? `<div style="margin:0 14px 8px;background:#f5efe0;border:1px solid #e3d2b8;border-radius:12px;padding:7px 10px">
-                    <div style="font-size:10px;color:#6b4f35;font-weight:700">Ghi chú cho ca sau</div>
-                    <div style="font-size:12px;font-weight:600;margin-top:2px;line-height:1.35">${escapeHtml(sh.note)}</div>
-                </div>` : ''}
-                <div style="padding:0 14px 10px">
-                    <div style="font-size:12px;font-weight:800;margin-bottom:2px">Bàn đã thu (${entries.length})</div>
-                    ${entries.length ? paidRows : `<div style="font-size:11px;color:#6e685d;padding:6px 0">Ca này chưa thu bàn nào</div>`}
-                </div>
-                <div style="background:#f1eee7;border-top:1px solid #dad5ca;padding:6px 14px;font-size:10px;color:#6e685d;text-align:center">TYS Coffee</div>
+                    ${isPaid
+                        ? `<div style="font-size:10px;font-weight:800;color:${C.green};flex-shrink:0;text-align:right">Đã trả<div style="font-size:9px;font-weight:600;color:${C.muted}">${cash ? 'Tiền mặt' : 'Chuyển khoản'}</div></div>`
+                        : `<div style="font-size:13px;font-weight:800;color:${C.redD};flex-shrink:0">${fmtMoney(u.total)}</div>`}
+                </div>`;
+            };
+
+            const blockU = listU.length
+                ? `<div style="background:${C.redBg};border:2px solid ${C.red};border-radius:16px;padding:11px 11px 12px">
+                    <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:14px;font-weight:800;color:${C.redD}">Chưa thanh toán</span><span style="font-size:12px;font-weight:700;color:${C.redD};opacity:.8">${listU.length} bàn</span></div>
+                    ${listU.map(u => rowHtml(u, false)).join('')}
+                </div>` : '';
+            const blockP = listP.length
+                ? `<div style="background:${C.greenBg};border:1px solid ${C.greenLine};border-radius:16px;padding:11px 11px 12px;${listU.length ? 'margin-top:9px' : ''}">
+                    <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:14px;font-weight:800;color:${C.green}">Đã thanh toán</span><span style="font-size:12px;font-weight:700;color:${C.green};opacity:.8">${listP.length} bàn</span></div>
+                    ${listP.map(u => rowHtml(u, true)).join('')}
+                </div>` : '';
+            const tables = (blockU || blockP)
+                ? blockU + blockP
+                : `<div style="display:flex;align-items:center;gap:10px;background:${C.greenBg};border:1px solid ${C.greenLine};border-radius:14px;padding:11px 12px">
+                    <div style="font-size:13px;font-weight:800;color:${C.green}">Không còn bàn nào tại quán</div>
+                </div>`;
+
+            const note = sh.note
+                ? `<div style="background:${C.amberBg};border:1px solid ${C.amberLine};border-left:4px solid ${C.goldD};border-radius:12px;padding:9px 12px;margin-top:9px">
+                    <div style="font-size:9px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:${C.goldD}">Ghi chú</div>
+                    <div style="font-size:13px;font-weight:700;margin-top:3px;line-height:1.4">${escapeHtml(sh.note)}</div>
+                </div>` : '';
+
+            return `<div id="reportFrame" style="${F}background:${C.bg};color:${C.ink};border:1px solid ${C.esp};border-radius:20px;overflow:hidden;width:100%;max-width:400px;margin:0 auto;letter-spacing:-0.01em">
+                ${header}
+                <div style="padding:14px">${tables}${note}</div>
             </div>`;
         }
 
@@ -1963,7 +1992,7 @@
                 body.innerHTML = html;
             } else {
                 footer.classList.add('hidden');
-                document.getElementById('historySubtitle').innerText = 'Bấm vào ca để xem lại khung báo cáo';
+                document.getElementById('historySubtitle').innerText = '';
                 const shifts = historyData.closedShifts;
                 body.innerHTML = shifts.length
                     ? shifts.map(closedShiftCardHtml).join('')
@@ -1977,6 +2006,51 @@
             const body = document.getElementById('historyBody');
             if (body) body.scrollTop = 0;
         }
+
+        // ---------- Menu 3 chấm (Lịch sử ca + Refresh) ----------
+        function toggleMoreMenu(e) {
+            if (e) e.stopPropagation();
+            const menu = document.getElementById('moreMenu');
+            if (menu.classList.contains('hidden')) openMoreMenu(); else closeMoreMenu();
+        }
+        function openMoreMenu() {
+            const menu = document.getElementById('moreMenu');
+            menu.classList.remove('hidden'); menu.classList.add('flex');
+            document.getElementById('btnMore').setAttribute('aria-expanded', 'true');
+            avoidMenuOverlap();
+        }
+        function closeMoreMenu() {
+            const menu = document.getElementById('moreMenu');
+            if (!menu) return;
+            menu.classList.add('hidden'); menu.classList.remove('flex');
+            document.getElementById('btnMore').setAttribute('aria-expanded', 'false');
+            const cluster = document.getElementById('fabCluster');
+            if (cluster) cluster.style.transform = '';
+        }
+        // Nếu menu chạm nút thu phóng thì đẩy nút đó lên vừa đủ
+        function avoidMenuOverlap() {
+            const cluster = document.getElementById('fabCluster');
+            const menu = document.getElementById('moreMenu');
+            if (!cluster || !menu) return;
+            cluster.style.transform = '';
+            const m = menu.getBoundingClientRect();
+            const c = cluster.getBoundingClientRect();
+            const overlapX = c.left < m.right && c.right > m.left;
+            const gap = 10;
+            if (overlapX && c.bottom > m.top - gap && c.top < m.bottom) {
+                cluster.style.transform = `translateY(${-(c.bottom - (m.top - gap))}px)`;
+            }
+        }
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('moreMenu');
+            if (menu && !menu.classList.contains('hidden') && !menu.contains(e.target) && !e.target.closest('#btnMore')) closeMoreMenu();
+        });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMoreMenu(); });
+        window.addEventListener('resize', () => {
+            const menu = document.getElementById('moreMenu');
+            if (menu && !menu.classList.contains('hidden')) avoidMenuOverlap();
+        });
+
         function openHistoryModal() {
             historyTab = 'current';
             renderHistory();
@@ -2002,15 +2076,9 @@
                     </div>
                     <div class="min-w-0">
                         <div class="text-[13px] font-extrabold text-tys-100">${SHIFTS[closeShiftPick].name} · ${SHIFTS[closeShiftPick].range}</div>
-                        <div class="text-[11px] text-stone-400 leading-snug">${detected.outside
-                            ? `Đang ngoài giờ ca (22:30 – 05:30), hệ thống tính vào ${det.name}`
-                            : `Hệ thống tự nhận diện theo giờ chốt (${fmtTime(nowTs)})`}</div>
                     </div>
                 </div>
-                <div>
-                    <div class="text-[10px] text-stone-500 mb-1">Chốt lệch giờ? Bấm chọn lại ca đúng:</div>
-                    <div class="flex gap-1.5">${chips}</div>
-                </div>
+                <div class="flex gap-1.5">${chips}</div>
             </div>`;
         }
         let closeShiftDetected = { key: 1, outside: false };
@@ -2026,7 +2094,6 @@
             closeShiftNowTs = Date.now();
             closeShiftDetected = detectShift(closeShiftNowTs);
             closeShiftPick = closeShiftDetected.key;
-            document.getElementById('closeShiftRange').innerText = `Thời gian chốt: ${fmtTime(closeShiftNowTs)} - ${fmtDateFull(closeShiftNowTs)}`;
             renderShiftPicker(closeShiftDetected, closeShiftNowTs);
 
             document.getElementById('closeShiftContent').innerHTML = `<div class="grid grid-cols-2 gap-2">
@@ -2039,7 +2106,7 @@
                         <div class="text-xl font-extrabold tabular-nums leading-tight ${unpaid.length ? 'text-brick-300' : 'text-stone-400'}">${unpaid.length}<span class="text-[11px] font-bold"> bàn</span></div>
                     </div>
                 </div>
-                ${unpaid.length ? unpaidBlockHtml(unpaid, '{n} bàn chưa tính tiền — sẽ ghi vào khung báo cáo') : ''}`;
+                ${unpaid.length ? unpaidBlockHtml(unpaid, '{n} bàn chưa tính tiền') : ''}`;
 
             document.getElementById('btnConfirmCloseShift').disabled = (entries.length === 0 && unpaid.length === 0);
             document.getElementById('shiftStaffInput').value = '';
@@ -2068,7 +2135,8 @@
                 endAt: now,
                 note: document.getElementById('shiftNoteInput').value.trim(),
                 entries: historyData.entries.slice(),
-                unpaid
+                unpaid,
+                open: snapshotOpenTables()
             };
             historyData.closedShifts.unshift(record);
             if (historyData.closedShifts.length > MAX_CLOSED_SHIFTS) historyData.closedShifts.length = MAX_CLOSED_SHIFTS;
@@ -2332,7 +2400,7 @@
             let elapsedMins = 0;
             if (data.startTime && data.status !== 'empty') {
                 elapsedMins = Math.floor((Date.now() - data.startTime) / (1000 * 60));
-                timerText = `<div class="text-xs sm:text-[10px] opacity-75 mt-1 font-semibold tabular-nums"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</div>`;
+                timerText = `<span class="text-[11px] opacity-75 font-semibold tabular-nums"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</span>`;
             }
 
             // Đã scale các kích thước UI con bên trong nút bấm cho hợp lý.
@@ -2365,14 +2433,21 @@
             const opacityClass = isFiltered ? "opacity-100 scale-100" : "opacity-20 scale-90 pointer-events-none";
             const selectedClass = (activeTableId === i) ? "table-selected-glow" : "";
 
+            // Mô tả ngắn trên sơ đồ: ưu tiên ghi chú của bàn, nếu chưa có thì hiện các món đã gọi
+            const mapDesc = data.note ? escapeHtml(data.note)
+                : ((data.items && data.items.length) ? groupedItemsText(data.items) : '');
+
             // Nút bấm từ 68px tăng thành 102px
             container.innerHTML = `
                 <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} ${selectedClass} flex flex-col items-center justify-center p-1.5 transition-all">
                     ${badgeHTML}
                     <span class="text-[10px] font-bold uppercase tracking-[0.18em] leading-none opacity-60 ${numColor}">Bàn</span>
-                    <span class="text-[42px] font-extrabold leading-none tracking-tight tabular-nums ${numColor} mt-0.5">${i}</span>
-                    ${data.total > 0 ? `<span class="text-base sm:text-sm font-bold text-tys-400 leading-none mt-2">${data.total}k</span>` : ''}
-                    ${timerText}
+                    <span class="text-[36px] font-extrabold leading-none tracking-tight tabular-nums ${numColor} mt-0.5">${i}</span>
+                    ${(data.total > 0 || timerText) ? `<div class="flex items-center justify-center gap-1.5 mt-1.5 leading-none">
+                        ${data.total > 0 ? `<span class="text-[13px] font-bold text-tys-400">${data.total}k</span>` : ''}
+                        ${timerText}
+                    </div>` : ''}
+                    ${mapDesc ? `<div class="mt-1 w-full px-0.5 text-center text-[9px] leading-[1.15] font-semibold opacity-80 line-clamp-2 break-words">${mapDesc}</div>` : ''}
                 </button>
             `;
 
@@ -2444,16 +2519,17 @@
                         <div class="text-xs text-stone-400 space-y-1">
                             <div class="text-sm sm:text-xs"><i class="fa-solid fa-coins text-tys-500 mr-1"></i> Tổng: <b class="text-tys-200 font-extrabold">${data.total * 1000}đ</b></div>
                             ${data.startTime ? `<div class="text-sm sm:text-xs font-medium"><i class="fa-regular fa-clock mr-1"></i> Thời gian ngồi: ${elapsedMins} phút</div>` : ''}
-                            ${data.note ? `<div class="italic text-stone-500"><i class="fa-regular fa-note-sticky mr-1"></i> ${data.note}</div>` : ''}
+                            ${(data.items && data.items.length) ? `<div class="text-stone-300 font-medium leading-snug break-words"><i class="fa-solid fa-mug-hot text-tys-500 mr-1"></i>${groupedItemsText(data.items)}</div>` : ''}
+                            ${data.note ? `<div class="text-stone-400 leading-snug break-words"><i class="fa-regular fa-note-sticky mr-1"></i>${escapeHtml(data.note)}</div>` : ''}
                         </div>
                     </div>
                     <div class="mt-3 pt-2 border-t border-tys-900 flex items-center justify-between">
                         ${data.status === 'unpaid' ? `
-                            <button onclick="event.stopPropagation(); triggerQuickStateTransition(${i}, '1-Chạm');" class="px-2.5 py-1 rounded-lg bg-sage-600 hover:bg-sage-500 text-ink font-bold text-[11px] flex items-center gap-1 transition active:scale-95">
+                            <button ontouchstart="event.stopPropagation()" ontouchend="event.stopPropagation()" onclick="event.stopPropagation(); triggerQuickStateTransition(${i}, '1-Chạm');" class="px-2.5 py-1 rounded-lg bg-sage-600 hover:bg-sage-500 text-ink font-bold text-[11px] flex items-center gap-1 transition active:scale-95">
                                 <i class="fa-solid fa-bolt"></i> Quick Pay
                             </button>
                         ` : data.status === 'paid' ? `
-                            <button onclick="event.stopPropagation(); triggerQuickStateTransition(${i}, '1-Chạm');" class="px-2.5 py-1 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-200 font-bold text-[11px] flex items-center gap-1 transition active:scale-95">
+                            <button ontouchstart="event.stopPropagation()" ontouchend="event.stopPropagation()" onclick="event.stopPropagation(); triggerQuickStateTransition(${i}, '1-Chạm');" class="px-2.5 py-1 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-200 font-bold text-[11px] flex items-center gap-1 transition active:scale-95">
                                 <i class="fa-solid fa-check"></i> Dọn Xong
                             </button>
                         ` : `<span></span>`}
@@ -2528,7 +2604,7 @@
                 btnViewMap.className = "p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink";
                 btnViewList.className = "p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors";
                 // Icon nút mobile hiển thị lối "chuyển sang Danh sách"; FAB Về giữa chỉ có ý nghĩa khi đang xem Sơ đồ
-                if (btnToggleMobile) btnToggleMobile.innerHTML = '<i class="fa-solid fa-list-ul text-sm"></i>';
+                if (btnToggleMobile) btnToggleMobile.innerHTML = '<i class="fa-solid fa-list-ul text-[13px]"></i><span class="text-[8px] font-bold uppercase tracking-wide leading-none">List</span>';
                 if (fab) fab.classList.remove('hidden');
                 setTimeout(resetZoomAndFit, 20);
             } else {
@@ -2536,7 +2612,7 @@
                 btnViewList.className = "p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink";
                 btnViewMap.className = "p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-espresso-950/70 text-stone-400 border border-tys-900 hover:bg-espresso-800 transition-colors";
                 // Icon nút mobile hiển thị lối "chuyển sang Sơ đồ"; ẩn FAB vì không còn map để căn giữa
-                if (btnToggleMobile) btnToggleMobile.innerHTML = '<i class="fa-solid fa-diagram-project text-sm"></i>';
+                if (btnToggleMobile) btnToggleMobile.innerHTML = '<i class="fa-solid fa-diagram-project text-[13px]"></i><span class="text-[8px] font-bold uppercase tracking-wide leading-none">Map</span>';
                 if (fab) fab.classList.add('hidden');
                 renderListView();
             }
