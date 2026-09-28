@@ -1211,17 +1211,17 @@
         let currentFilter = 'all';
 
         // ================== DỮ LIỆU THỰC ĐƠN (TOÀN BỘ MENU TYS COFFEE) ==================
-        // Toàn bộ menu được đưa vào đây. Chỉ những món có bestSeller:true mới hiện
-        // sẵn ở ngoài (mục "Best seller"); các món còn lại tìm qua ô tìm kiếm.
+        // Toàn bộ menu được đưa vào đây. Chỉ những món có bestSeller (số thứ tự 1, 2, 3...) mới hiện
+        // sẵn ở ngoài theo đúng thứ tự đó (mục "Best seller"); các món còn lại tìm qua ô tìm kiếm.
         // Món có "sizes: {M, L}" sẽ hiện 2 nút chọn size (M/L) thay vì 1 giá duy nhất.
         // Muốn thêm/sửa/xoá món hay đổi món best seller, chỉ cần chỉnh mảng này —
         // giao diện tự cập nhật, không cần sửa chỗ khác.
         const MENU_DATA = [
             // PHÊ PHIN
-            { name: 'Cà Phê Đen Đá', price: 22, category: 'Phê phin', bestSeller: true },
-            { name: 'Cà Phê Sữa Đá', price: 25, category: 'Phê phin', bestSeller: true },
+            { name: 'Cà Phê Đen Đá', price: 22, category: 'Phê phin', bestSeller: 1 },
+            { name: 'Cà Phê Sữa Đá', price: 25, category: 'Phê phin', bestSeller: 2 },
             { name: 'Cà Phê Kem Muối', price: 28, category: 'Phê phin' },
-            { name: 'Bạc Xỉu', price: 28, category: 'Phê phin', bestSeller: true },
+            { name: 'Bạc Xỉu', price: 28, category: 'Phê phin' },
             { name: 'Cà Phê Đá Xay', price: 35, category: 'Phê phin' },
             { name: 'Cookie & Cream', price: 45, category: 'Phê phin' },
             { name: 'Hạnh Nhân Đá Xay', price: 45, category: 'Phê phin' },
@@ -1235,23 +1235,23 @@
             { name: 'Latte Đá', price: 45, category: 'Pha máy' },
             { name: 'Mocha Đá Xay', price: 45, category: 'Pha máy' },
             // CACAO - MATCHA
-            { name: 'Cacao Sữa Nóng', price: 28, category: 'Cacao - Matcha' },
-            { name: 'Cacao Sữa Đá', price: 28, category: 'Cacao - Matcha', bestSeller: true },
+            { name: 'Cacao Sữa Nóng', price: 28, category: 'Cacao - Matcha', bestSeller: 3 },
+            { name: 'Cacao Sữa Đá', price: 28, category: 'Cacao - Matcha', bestSeller: 4 },
             { name: 'Cacao Kem Phô Mai', price: 35, category: 'Cacao - Matcha' },
             { name: 'Cacao Đá Xay', price: 35, category: 'Cacao - Matcha' },
-            { name: 'Matcha Latte', price: 35, category: 'Cacao - Matcha', bestSeller: true },
+            { name: 'Matcha Latte', price: 35, category: 'Cacao - Matcha' },
             { name: 'Matcha Kem Phô Mai', price: 35, category: 'Cacao - Matcha' },
             { name: 'Matcha Đá Xay', price: 45, category: 'Cacao - Matcha' },
             { name: 'Matcha Cookie Đá Xay', price: 45, category: 'Cacao - Matcha' },
             { name: 'Matcha Tàu Phớ', price: 38, category: 'Cacao - Matcha' },
             // TRÀ TRÁI CÂY (Size M / L)
-            { name: 'Trà Đào', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
-            { name: 'Trà Đào Cam Sả', sizes: { M: 28, L: 32 }, category: 'Trà trái cây', bestSeller: true },
+            { name: 'Trà Đào', sizes: { M: 28, L: 32 }, category: 'Trà trái cây', bestSeller: 6 },
+            { name: 'Trà Đào Cam Sả', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
             { name: 'Trà Vải', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
-            { name: 'Trà Dâu', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Trà Dâu', sizes: { M: 28, L: 32 }, category: 'Trà trái cây', bestSeller: 7 },
             { name: 'Trà Việt Quất', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
             { name: 'Trà Tắc Thái Xí Muội', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
-            { name: 'Trà Nhiệt Đới', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
+            { name: 'Trà Nhiệt Đới', sizes: { M: 28, L: 32 }, category: 'Trà trái cây', bestSeller: 5 },
             { name: 'Trà Dâu Tằm', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
             { name: 'Trà Quế Hoa', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
             { name: 'Trà Xoài Chanh Dây', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
@@ -1259,14 +1259,14 @@
             { name: 'Trà Bạc Hà', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
             { name: 'Trà Sen Vàng', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
             { name: 'Lục Trà Macchiato', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
-            { name: 'Trà Tắc', sizes: { M: 28, L: 32 }, category: 'Trà trái cây', bestSeller: true },
+            { name: 'Trà Tắc', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
             // TRÀ SỮA (Size M / L)
             { name: 'Trà Sữa Khoai Môn', sizes: { M: 25, L: 29 }, category: 'Trà sữa' },
             { name: 'Trà Sữa Gạo Rang', sizes: { M: 25, L: 29 }, category: 'Trà sữa' },
             { name: 'Sữa Tươi Trân Châu Đường Đen', sizes: { M: 25, L: 29 }, category: 'Trà sữa' },
             { name: 'Trà Sữa Bạch Lan', sizes: { M: 28, L: 32 }, category: 'Trà sữa' },
             { name: 'Trà Sữa Thái Xanh', sizes: { M: 25, L: 29 }, category: 'Trà sữa' },
-            { name: 'Trà Sữa Truyền Thống', sizes: { M: 25, L: 29 }, category: 'Trà sữa', bestSeller: true },
+            { name: 'Trà Sữa Truyền Thống', sizes: { M: 25, L: 29 }, category: 'Trà sữa', bestSeller: 8 },
         ];
 
         // Bỏ dấu tiếng Việt để tìm kiếm không cần gõ dấu (vd: "ca phe" vẫn ra "Cà phê")
@@ -2687,7 +2687,7 @@
         function renderBestSellerGrid() {
             const grid = document.getElementById('bestSellerGrid');
             if (!grid) return;
-            const bestSellers = MENU_DATA.filter(item => item.bestSeller);
+            const bestSellers = MENU_DATA.filter(item => item.bestSeller).sort((a, b) => a.bestSeller - b.bestSeller);
             grid.innerHTML = bestSellers.map(item => {
                 const safeName = item.name.replace(/'/g, "\\'");
                 if (item.sizes) {
