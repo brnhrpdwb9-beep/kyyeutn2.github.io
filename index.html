@@ -736,6 +736,11 @@
                         <span class="text-xs font-bold">Lịch sử ca</span>
                         <span id="historyBadge" class="hidden ml-auto min-w-[18px] h-[18px] px-1 rounded-full bg-tys-500 text-ink text-[10px] font-extrabold items-center justify-center tabular-nums">0</span>
                     </button>
+                    <button onclick="closeMoreMenu(); openChecklistModal()" id="btnChecklist" role="menuitem" class="relative flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Checklist ca">
+                        <i class="fa-solid fa-list-check w-4 text-center text-sm"></i>
+                        <span class="text-xs font-bold">Checklist ca</span>
+                        <span id="checklistBadge" class="hidden ml-auto min-w-[18px] h-[18px] px-1 rounded-full bg-tys-500 text-ink text-[10px] font-extrabold items-center justify-center tabular-nums">0</span>
+                    </button>
                     <button onclick="closeMoreMenu(); openResetModal()" role="menuitem" class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-stone-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Đặt lại dữ liệu">
                         <i class="fa-solid fa-rotate-right w-4 text-center text-sm"></i>
                         <span class="text-xs font-bold">Refresh</span>
@@ -1186,6 +1191,26 @@
         <div class="shrink-0 bg-espresso-900 border-t border-tys-800 px-4 pt-2.5 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex items-center justify-end gap-3">
             <button id="btnExportReport" onclick="exportReportImage()" class="shrink-0 px-4 py-2 rounded-xl bg-espresso-800 hover:bg-espresso-700 border border-tys-800 text-tys-100 text-sm font-extrabold flex items-center gap-1.5 active:scale-95 transition disabled:opacity-50 disabled:pointer-events-none"><i class="fa-solid fa-download"></i><span>Lưu ảnh</span></button>
             <button onclick="closeReport()" class="shrink-0 px-5 py-2 rounded-xl bg-tys-500 hover:bg-tys-600 text-ink text-sm font-extrabold active:scale-95 transition">Xong</button>
+        </div>
+    </div>
+
+    <!-- Checklist công việc theo ca -->
+    <div id="checklistModal" onclick="if(event.target===this)closeChecklistModal()" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-espresso-900 border border-tys-800 w-full max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl flex flex-col max-h-[92vh] text-stone-200 modal-fade-in overflow-hidden">
+            <div class="flex items-center justify-between px-4 pt-3.5 pb-2.5 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-tys-500 text-ink flex items-center justify-center"><i class="fa-solid fa-list-check text-sm"></i></div>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-tys-100 leading-tight" id="clTitle">Checklist ca</h3>
+                        <p class="text-[10px] text-stone-400 font-medium" id="clSubtitle"></p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <button id="clEditBtn" onclick="clToggleEdit()" class="w-8 h-8 rounded-lg bg-espresso-950/70 border border-tys-900 text-stone-400 flex items-center justify-center active:scale-90 transition" aria-label="Chỉnh danh sách (quản lý)"><i class="fa-solid fa-lock text-xs"></i></button>
+                    <button onclick="closeChecklistModal()" class="w-8 h-8 rounded-lg bg-espresso-950/70 border border-tys-900 text-stone-400 flex items-center justify-center active:scale-90 transition" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div id="clBody" class="flex-1 overflow-y-auto overscroll-contain px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] space-y-3"></div>
         </div>
     </div>
 
@@ -1772,6 +1797,7 @@
                     <div class="text-[10px] mt-0.5 flex items-center gap-2">
                         <span class="text-sage-300 font-semibold">${sh.entries.length} bàn đã thu</span>
                         ${unpaidN ? `<span class="text-brick-300 font-extrabold">${unpaidN} bàn chưa tính tiền</span>` : ''}
+                        ${clCardInfoHtml(sh)}
                     </div>
                 </div>
                 <div class="shrink-0 flex flex-col items-center gap-0.5 text-tys-300">
@@ -1858,7 +1884,7 @@
 
             return `<div id="reportFrame" style="${F}background:${C.bg};color:${C.ink};border:1px solid ${C.esp};border-radius:20px;overflow:hidden;width:100%;max-width:400px;margin:0 auto;letter-spacing:-0.01em">
                 ${header}
-                <div style="padding:14px">${tables}${note}</div>
+                <div style="padding:14px">${tables}${clReportBlock(sh, C)}${note}</div>
             </div>`;
         }
 
@@ -2108,6 +2134,7 @@
                 </div>
                 ${unpaid.length ? unpaidBlockHtml(unpaid, '{n} bàn chưa tính tiền') : ''}`;
 
+            document.getElementById('closeShiftContent').insertAdjacentHTML('beforeend', clCloseNoticeHtml(closeShiftPick));
             document.getElementById('btnConfirmCloseShift').disabled = (entries.length === 0 && unpaid.length === 0);
             document.getElementById('shiftStaffInput').value = '';
             document.getElementById('shiftStaffError').classList.add('hidden');
@@ -2136,7 +2163,8 @@
                 note: document.getElementById('shiftNoteInput').value.trim(),
                 entries: historyData.entries.slice(),
                 unpaid,
-                open: snapshotOpenTables()
+                open: snapshotOpenTables(),
+                checklist: clFinishShift(closeShiftPick, now)
             };
             historyData.closedShifts.unshift(record);
             if (historyData.closedShifts.length > MAX_CLOSED_SHIFTS) historyData.closedShifts.length = MAX_CLOSED_SHIFTS;
@@ -2155,6 +2183,161 @@
             openReport(record.id);
             playQuickPaySound();
         }
+
+        // ---------- Checklist công việc theo ca ----------
+        // Danh sách do quản lý thiết lập (khóa bằng mã). Kết quả lưu cùng ca đã chốt (record.checklist).
+        const CL_KEY = 'cafe_checklist_tys';
+        const CL_WHEN = { start: 'Đầu ca', mid: 'Trong ca', end: 'Cuối ca' };
+        const CL_DAYS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+        let cl = { tasks: [], pin: '', carried: [], items: {}, shiftStart: null };
+        let clEditing = false;
+        function clNewId() { return 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
+        function clInit() {
+            try { const s = localStorage.getItem(CL_KEY); if (s) cl = Object.assign(cl, JSON.parse(s)); } catch (e) {}
+            if (!cl.tasks.length && !localStorage.getItem(CL_KEY)) {
+                // Việc mẫu - quản lý sửa lại trong phần chỉnh danh sách
+                [[1,'start','Mở cửa, bật đèn và máy lạnh'],[1,'start','Kiểm tra máy pha và bật máy'],[1,'end','Bàn giao quầy cho Ca 2'],
+                 [2,'start','Kiểm tra nguyên liệu còn lại'],[2,'mid','Lau bàn và sàn khu khách'],[2,'end','Ghi chú hàng sắp hết'],
+                 [3,'start','Kiểm tra bàn còn khách'],[3,'end','Vệ sinh máy pha và quầy'],[3,'end','Tắt máy, đèn, khóa cửa']]
+                .forEach(r => cl.tasks.push({ id: clNewId(), shift: r[0], when: r[1], text: r[2], days: [] }));
+            }
+            if (cl.shiftStart && cl.shiftStart !== historyData.shiftStart) { cl.items = {}; cl.carried = []; }
+            cl.shiftStart = historyData.shiftStart;
+            clSave();
+        }
+        function clSave() {
+            try { localStorage.setItem(CL_KEY, JSON.stringify(cl)); } catch (e) {}
+            clBadge();
+        }
+        function clList(key) {
+            const dow = new Date().getDay();
+            const t = cl.tasks.filter(x => x.shift === key && (!x.days || !x.days.length || x.days.includes(dow)))
+                .map(x => ({ id: x.id, text: x.text, when: x.when }));
+            return cl.carried.map(x => ({ id: x.id, text: x.text, when: x.when, carried: true })).concat(t);
+        }
+        function clPending(key) { return clList(key).filter(x => !cl.items[x.id]); }
+        function clBadge() {
+            const el = document.getElementById('checklistBadge'); if (!el) return;
+            const n = clPending(detectShift(Date.now()).key).length;
+            el.innerText = n; el.classList.toggle('hidden', n === 0); el.classList.toggle('flex', n > 0);
+        }
+        function clTap(id) {
+            if (cl.items[id] && cl.items[id].s === 'done') delete cl.items[id];
+            else cl.items[id] = { s: 'done', at: Date.now() };
+            clSave(); clRender();
+            if (navigator.vibrate) { try { navigator.vibrate(15); } catch (e) {} }
+        }
+        function clSkip(id) {
+            if (cl.items[id] && cl.items[id].s === 'skip') { delete cl.items[id]; }
+            else {
+                const r = prompt('Lý do bỏ qua (ngắn gọn):', '');
+                if (r === null) return;
+                cl.items[id] = { s: 'skip', at: Date.now(), reason: r.trim() || 'Không ghi lý do' };
+            }
+            clSave(); clRender();
+        }
+        // Gọi khi chốt ca: lưu kết quả, việc chưa xong chuyển sang ca sau
+        function clFinishShift(key, now) {
+            const list = clList(key);
+            if (!list.length) return null;
+            const res = list.map(x => { const s = cl.items[x.id];
+                return { text: x.text, when: x.when, carried: !!x.carried, s: s ? s.s : 'todo', at: s ? s.at : null, reason: s && s.reason || '' }; });
+            cl.carried = list.filter(x => !cl.items[x.id]).map(x => ({ id: 'c' + clNewId(), text: x.text, when: x.when }));
+            cl.items = {}; cl.shiftStart = now;
+            clSave();
+            return res;
+        }
+        function clSummary(r) {
+            return { total: r.length, done: r.filter(x => x.s === 'done').length, skip: r.filter(x => x.s === 'skip').length, todo: r.filter(x => x.s === 'todo').length };
+        }
+        function clCloseNoticeHtml(key) {
+            const list = clList(key); if (!list.length) return '';
+            const n = clPending(key).length;
+            return n
+                ? `<div class="rounded-xl border border-tys-600 bg-tys-50/40 px-3 py-2 text-[11px] font-semibold text-stone-200"><i class="fa-solid fa-list-check mr-1.5 text-tys-400"></i>Còn ${n} việc checklist chưa đánh dấu. Vẫn chốt được, các việc này sẽ chuyển sang ca sau.</div>`
+                : `<div class="rounded-xl border border-sage-600 bg-sage-950/30 px-3 py-2 text-[11px] font-semibold text-sage-300"><i class="fa-solid fa-circle-check mr-1.5"></i>Checklist đã đánh dấu hết.</div>`;
+        }
+        function clReportBlock(sh, C) {
+            const r = sh.checklist; if (!r || !r.length) return '';
+            const s = clSummary(r), todo = r.filter(x => x.s === 'todo'), skip = r.filter(x => x.s === 'skip');
+            const row = (t, c) => `<div style="font-size:12px;font-weight:700;margin-top:5px;line-height:1.35;color:${c}">${t}</div>`;
+            const head = `<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:14px;font-weight:800">${todo.length ? 'Việc chưa xong' : 'Checklist'}</span><span style="font-size:11px;font-weight:700;color:${C.muted}">Xong ${s.done}/${s.total}${s.skip ? ' · Bỏ qua ' + s.skip : ''}</span></div>`;
+            const lines = todo.map(x => row('□ ' + escapeHtml(x.text) + ' <span style="font-weight:600;color:' + C.muted + '">(' + CL_WHEN[x.when] + (x.carried ? ', tồn từ ca trước' : '') + ')</span>', C.redD)).join('')
+                + skip.map(x => row('– ' + escapeHtml(x.text) + ' <span style="font-weight:600;color:' + C.muted + '">bỏ qua: ' + escapeHtml(x.reason) + '</span>', C.ink)).join('');
+            const bad = todo.length > 0;
+            return `<div style="background:${bad ? C.amberBg : C.greenBg};border:1px solid ${bad ? C.amberLine : C.greenLine};border-radius:16px;padding:11px 11px 12px;margin-top:10px">${head}${lines}</div>`;
+        }
+        function clCardInfoHtml(sh) {
+            if (!sh.checklist || !sh.checklist.length) return '';
+            const s = clSummary(sh.checklist);
+            return s.todo ? `<span class="text-brick-300 font-extrabold">${s.todo} việc chưa xong</span>` : `<span class="text-stone-400 font-semibold">Checklist ${s.done}/${s.total}</span>`;
+        }
+        function openChecklistModal() { clEditing = false; clRender(); document.getElementById('checklistModal').classList.remove('hidden'); }
+        function closeChecklistModal() { document.getElementById('checklistModal').classList.add('hidden'); clEditing = false; }
+        function clToggleEdit() {
+            if (clEditing) { clEditing = false; clRender(); return; }
+            if (!cl.pin) {
+                const p = prompt('Tạo mã quản lý (ít nhất 4 số) để khóa phần chỉnh danh sách:');
+                if (p === null) return;
+                if (!/^\d{4,}$/.test(p.trim())) { alert('Mã cần ít nhất 4 chữ số.'); return; }
+                cl.pin = p.trim(); clSave();
+            } else {
+                const p = prompt('Nhập mã quản lý:');
+                if (p === null) return;
+                if (p.trim() !== cl.pin) { alert('Mã không đúng.'); return; }
+            }
+            clEditing = true; clRender();
+        }
+        function clRender() {
+            const body = document.getElementById('clBody');
+            document.getElementById('clEditBtn').innerHTML = `<i class="fa-solid ${clEditing ? 'fa-lock-open' : 'fa-lock'} text-xs"></i>`;
+            if (clEditing) { document.getElementById('clTitle').innerText = 'Chỉnh danh sách'; document.getElementById('clSubtitle').innerText = 'Chỉ quản lý'; body.innerHTML = clEditorHtml(); return; }
+            const key = detectShift(Date.now()).key;
+            document.getElementById('clTitle').innerText = 'Checklist ' + SHIFTS[key].name;
+            document.getElementById('clSubtitle').innerText = SHIFTS[key].range;
+            const list = clList(key);
+            if (!list.length) { body.innerHTML = '<div class="text-center text-xs text-stone-500 py-10">Ca này chưa có việc nào. Quản lý bấm ổ khóa để thêm.</div>'; return; }
+            const row = x => { const s = cl.items[x.id], st = s ? s.s : 'todo';
+                const time = s ? (st === 'done' ? 'Xong lúc ' + fmtTime(s.at) : 'Bỏ qua: ' + escapeHtml(s.reason)) : '';
+                return `<div class="flex items-center gap-2.5 rounded-xl border ${st === 'done' ? 'border-sage-600 bg-sage-950/30' : 'border-tys-900 bg-espresso-950/70'} px-2.5 py-2">
+                    <button onclick="clTap('${x.id}')" class="w-9 h-9 rounded-lg shrink-0 flex items-center justify-center border ${st === 'done' ? 'bg-sage-500 border-sage-500 text-ink' : 'bg-espresso-900 border-tys-800 text-transparent'} active:scale-90 transition" aria-label="Đánh dấu xong"><i class="fa-solid fa-check"></i></button>
+                    <div class="min-w-0 flex-1" ><div class="text-[12px] font-semibold leading-snug ${st === 'todo' ? 'text-stone-100' : 'text-stone-400'} ${st === 'done' ? 'line-through' : ''}">${escapeHtml(x.text)}</div>
+                    ${time ? `<div class="text-[10px] text-stone-400 tabular-nums">${time}</div>` : ''}</div>
+                    <button onclick="clSkip('${x.id}')" class="shrink-0 px-2 py-1 rounded-lg text-[10px] font-bold border ${st === 'skip' ? 'bg-tys-500 text-ink border-tys-500' : 'border-tys-800 text-stone-400'} active:scale-95 transition">Bỏ qua</button>
+                </div>`; };
+            const sec = (t, arr, ic) => arr.length ? `<div><div class="text-[12px] font-extrabold text-stone-100 mb-1.5">${ic || ''}${t}</div><div class="space-y-1.5">${arr.map(row).join('')}</div></div>` : '';
+            let h = sec('Từ ca trước', list.filter(x => x.carried), '<i class="fa-solid fa-arrow-turn-down text-brick-400 mr-1.5"></i>');
+            ['start', 'mid', 'end'].forEach(w => { h += sec(CL_WHEN[w], list.filter(x => !x.carried && x.when === w)); });
+            body.innerHTML = h;
+        }
+        function clEditorHtml() {
+            const sel = (opts, cur, fn) => `<select onchange="${fn}" class="bg-espresso-950 border border-tys-900 rounded-lg px-1.5 py-1 text-[11px] text-stone-200">${opts.map(o => `<option value="${o[0]}" ${String(o[0]) === String(cur) ? 'selected' : ''}>${o[1]}</option>`).join('')}</select>`;
+            const rows = cl.tasks.map((t, i) => `<div class="rounded-xl border border-tys-900 bg-espresso-950/70 p-2 space-y-1.5">
+                <input value="${escapeHtml(t.text)}" maxlength="80" onchange="clEd(${i},'text',this.value)" class="w-full bg-espresso-900 border border-tys-900 rounded-lg px-2.5 py-1.5 text-xs text-stone-100 focus:outline-none focus:border-tys-600">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                    ${sel([[1,'Ca 1'],[2,'Ca 2'],[3,'Ca 3']], t.shift, `clEd(${i},'shift',+this.value)`)}
+                    ${sel([['start','Đầu ca'],['mid','Trong ca'],['end','Cuối ca']], t.when, `clEd(${i},'when',this.value)`)}
+                    <span class="ml-auto flex gap-1">
+                        <button onclick="clMove(${i},-1)" class="w-7 h-7 rounded-lg border border-tys-900 text-stone-400 text-xs" aria-label="Lên"><i class="fa-solid fa-arrow-up"></i></button>
+                        <button onclick="clMove(${i},1)" class="w-7 h-7 rounded-lg border border-tys-900 text-stone-400 text-xs" aria-label="Xuống"><i class="fa-solid fa-arrow-down"></i></button>
+                        <button onclick="clDel(${i})" class="w-7 h-7 rounded-lg border border-brick-accent/50 text-brick-300 text-xs" aria-label="Xóa"><i class="fa-solid fa-trash"></i></button>
+                    </span>
+                </div>
+                <div class="flex items-center gap-1">${CL_DAYS.map((d, k) => `<button onclick="clDay(${i},${k})" class="px-1.5 py-0.5 rounded-md text-[10px] font-bold border ${(!t.days || !t.days.length || t.days.includes(k)) ? 'bg-tys-500 text-ink border-tys-500' : 'border-tys-900 text-stone-500'}">${d}</button>`).join('')}<span class="text-[10px] text-stone-500 ml-1">${(!t.days || !t.days.length) ? 'Hằng ngày' : ''}</span></div>
+            </div>`).join('');
+            return rows + `<button onclick="clAdd()" class="w-full py-2 rounded-xl border border-dashed border-tys-700 text-tys-300 text-xs font-bold active:scale-95 transition"><i class="fa-solid fa-plus mr-1"></i>Thêm việc</button>
+                <button onclick="clToggleEdit()" class="w-full py-2.5 rounded-xl bg-tys-500 text-ink text-sm font-extrabold active:scale-[0.98] transition">Xong</button>`;
+        }
+        function clEd(i, k, v) { cl.tasks[i][k] = v; clSave(); clRender(); }
+        function clDay(i, k) {
+            const t = cl.tasks[i]; let d = (t.days && t.days.length) ? t.days.slice() : [0,1,2,3,4,5,6];
+            d = d.includes(k) ? d.filter(x => x !== k) : d.concat(k);
+            if (!d.length) d = [k];
+            t.days = d.length === 7 ? [] : d.sort(); clSave(); clRender();
+        }
+        function clMove(i, dir) { const j = i + dir; if (j < 0 || j >= cl.tasks.length) return; [cl.tasks[i], cl.tasks[j]] = [cl.tasks[j], cl.tasks[i]]; clSave(); clRender(); }
+        function clDel(i) { if (!confirm('Xóa việc này?')) return; cl.tasks.splice(i, 1); clSave(); clRender(); }
+        function clAdd() { cl.tasks.push({ id: clNewId(), shift: detectShift(Date.now()).key, when: 'start', text: 'Việc mới', days: [] }); clSave(); clRender(); }
 
         let touchStartTimer = null;
         let lastTapTimestamp = 0;
@@ -3222,6 +3405,8 @@
         window.onload = function() {
             initData();
             initHistory();
+            clInit();
+            setInterval(clBadge, 30000);
             renderMap();
             updateDashboardStats();
             updateClock();
