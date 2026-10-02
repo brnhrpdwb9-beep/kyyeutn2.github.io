@@ -1214,6 +1214,9 @@
         </div>
     </div>
 
+    <input id="clFile" type="file" accept="image/*" capture="environment" class="hidden" onchange="clPhotoPicked(this)">
+    <div id="clLight" onclick="this.classList.add('hidden')" class="fixed inset-0 z-[80] bg-black/80 hidden flex items-center justify-center p-4"><img id="clLightImg" alt="Ảnh" class="max-w-full max-h-full rounded-xl"></div>
+
     <!-- Reset Data Modal -->
     <div id="resetModal" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-espresso-900 border border-tys-800 w-full max-w-sm rounded-2xl p-4 space-y-3 text-center shadow-xl modal-fade-in">
@@ -2192,15 +2195,44 @@
         let cl = { tasks: [], pin: '', carried: [], items: {}, shiftStart: null };
         let clEditing = false;
         function clNewId() { return 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
+        const CL_SEED_V = 2;
+        function clSeed() {
+            const out = [];
+            const add = (sh, when, tm, arr) => arr.forEach(t => out.push({ id: clNewId(), shift: sh, when, tm, text: t, days: [] }));
+            const MID = ['Quan sát, chào và hướng dẫn khách', 'Hỗ trợ khách order hoặc chọn vị trí ngồi', 'Phục vụ tại bàn; luôn có người phụ trách khu vực trong và ngoài',
+                'Châm trà, thu dọn ly và rác khi cần', 'Lau và sắp xếp lại bàn ngay sau khi khách rời đi'];
+            const QUIET = ['Kiểm tra và bổ sung vật dụng phục vụ', 'Lau đế lót ly, kiểm tra các khu vực cần vệ sinh', 'Sắp xếp lại bàn ghế',
+                'Luân phiên học pha cà phê cơ bản và tập latte art theo kế hoạch'];
+            const PHOTO = 'Chụp toàn cảnh các tầng và đèn khi bàn giao';
+            // Ca 1
+            add(1, 'start', '5:30 – 6:00', ['Chấm công và nhận ca', 'Kiểm tra công cụ, dụng cụ phục vụ', 'Sắp xếp và lau sơ bàn ghế',
+                'Kiểm tra khăn giấy, gạt tàn, xô đá, trà đá, ống hút, muỗng', 'Kiểm tra túi mang đi, ly, tách, đế lót ly, menu, khăn lau bàn',
+                'Chụp tổng thể khu vực phục vụ sau khi chuẩn bị xong']);
+            add(1, 'mid', '6:00 – 11:30', MID); add(1, 'mid', 'Khi vắng khách', QUIET);
+            add(1, 'end', '11:30 – 12:00', ['Kiểm tra lại khu vực phụ trách', 'Bổ sung khăn giấy, ống hút, muỗng và vật dụng cần thiết',
+                'Thu gom ly, tách bẩn về khu vực rửa', 'Báo vấn đề phát sinh cho Ca 2', 'Bàn giao khu vực sạch sẽ, bàn ghế ngay ngắn', PHOTO, 'Bàn giao Ca 1 và chấm công']);
+            // Ca 2
+            add(2, 'start', '12:00 – 12:15', ['Chấm công và nhận bàn giao từ Ca 1', 'Kiểm tra khu vực phục vụ, bàn ghế và dụng cụ',
+                'Bổ sung các vật dụng còn thiếu', 'Kiểm tra và chụp hình theo nội dung bàn giao']);
+            add(2, 'mid', '12:15 – 17:30', MID); add(2, 'mid', 'Khi vắng khách', QUIET);
+            add(2, 'end', '17:30 – 18:00', ['Dọn lại khu vực phụ trách', 'Bổ sung vật dụng cho Ca 3', 'Thu gom ly, tách bẩn',
+                'Báo vấn đề phát sinh và bàn giao cho Ca 3', 'Bật đèn bồn cây, vườn, ban công tầng 1', PHOTO, 'Bàn giao Ca 2 và chấm công']);
+            // Ca 3
+            add(3, 'start', '18:00 – 18:15', ['Chấm công và nhận bàn giao từ Ca 2', 'Kiểm tra bàn ghế, khu vực phục vụ và dụng cụ',
+                'Bổ sung khăn giấy, ống hút, muỗng, ly, tách và vật dụng cần thiết', 'Kiểm tra theo nội dung bàn giao']);
+            add(3, 'mid', '18:15 – 22:00', MID); add(3, 'mid', 'Khi vắng khách', QUIET);
+            add(3, 'end', '22:00 – 22:20', ['Bắt đầu dọn khu vực phục vụ', 'Thu gom ly, tách bẩn về khu vực rửa', 'Sắp xếp bàn ghế đúng vị trí', 'Chụp khu vực sau khi dọn xong']);
+            add(3, 'end', '22:20 – 22:30', ['Kiểm tra lại toàn bộ khu vực phục vụ', 'Đảm bảo bàn ghế ngay ngắn', 'Báo vấn đề phát sinh hoặc vật dụng cần bổ sung cho ngày hôm sau',
+                'Chụp tổng thể khu vực phục vụ cuối ngày', 'Tắt đèn các vị trí', 'Kết ca và chấm công']);
+            return out;
+        }
         function clInit() {
             try { const s = localStorage.getItem(CL_KEY); if (s) cl = Object.assign(cl, JSON.parse(s)); } catch (e) {}
-            if (!cl.tasks.length && !localStorage.getItem(CL_KEY)) {
-                // Việc mẫu - quản lý sửa lại trong phần chỉnh danh sách
-                [[1,'start','Mở cửa, bật đèn và máy lạnh'],[1,'start','Kiểm tra máy pha và bật máy'],[1,'end','Bàn giao quầy cho Ca 2'],
-                 [2,'start','Kiểm tra nguyên liệu còn lại'],[2,'mid','Lau bàn và sàn khu khách'],[2,'end','Ghi chú hàng sắp hết'],
-                 [3,'start','Kiểm tra bàn còn khách'],[3,'end','Vệ sinh máy pha và quầy'],[3,'end','Tắt máy, đèn, khóa cửa']]
-                .forEach(r => cl.tasks.push({ id: clNewId(), shift: r[0], when: r[1], text: r[2], days: [] }));
+            if (cl.seedV !== CL_SEED_V) {
+                // Nạp danh sách chuẩn của quán (bản mẫu cũ được thay thế)
+                cl.tasks = clSeed(); cl.seedV = CL_SEED_V;
             }
+            cl.tasks.forEach(t => { if (t.photo === undefined) t.photo = /chụp/i.test(t.text); });
             if (cl.shiftStart && cl.shiftStart !== historyData.shiftStart) { cl.items = {}; cl.carried = []; }
             cl.shiftStart = historyData.shiftStart;
             clSave();
@@ -2212,8 +2244,8 @@
         function clList(key) {
             const dow = new Date().getDay();
             const t = cl.tasks.filter(x => x.shift === key && (!x.days || !x.days.length || x.days.includes(dow)))
-                .map(x => ({ id: x.id, text: x.text, when: x.when }));
-            return cl.carried.map(x => ({ id: x.id, text: x.text, when: x.when, carried: true })).concat(t);
+                .map(x => ({ id: x.id, text: x.text, when: x.when, tm: x.tm, photo: x.photo }));
+            return cl.carried.map(x => ({ id: x.id, text: x.text, when: x.when, tm: x.tm, photo: x.photo, carried: true })).concat(t);
         }
         function clPending(key) { return clList(key).filter(x => !cl.items[x.id]); }
         function clBadge() {
@@ -2221,6 +2253,23 @@
             const n = clPending(detectShift(Date.now()).key).length;
             el.innerText = n; el.classList.toggle('hidden', n === 0); el.classList.toggle('flex', n > 0);
         }
+        let clPhotoId = null;
+        function clPhoto(id) { clPhotoId = id; const f = document.getElementById('clFile'); f.value = ''; f.click(); }
+        function clPhotoPicked(input) {
+            const file = input.files && input.files[0]; if (!file || !clPhotoId) return;
+            const id = clPhotoId, img = new Image(), url = URL.createObjectURL(file);
+            img.onload = () => {
+                // Thu nhỏ để không đầy bộ nhớ máy (ảnh lưu cùng ca đã chốt)
+                const k = Math.min(1, 640 / Math.max(img.width, img.height));
+                const c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+                c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+                cl.items[id] = { s: 'done', at: Date.now(), photo: c.toDataURL('image/jpeg', 0.6) };
+                clSave(); clRender();
+            };
+            img.onerror = () => { URL.revokeObjectURL(url); alert('Không đọc được ảnh, hãy thử chụp lại.'); };
+            img.src = url;
+        }
+        function clView(id) { const s = cl.items[id]; if (!s || !s.photo) return; document.getElementById('clLightImg').src = s.photo; document.getElementById('clLight').classList.remove('hidden'); }
         function clTap(id) {
             if (cl.items[id] && cl.items[id].s === 'done') delete cl.items[id];
             else cl.items[id] = { s: 'done', at: Date.now() };
@@ -2241,8 +2290,8 @@
             const list = clList(key);
             if (!list.length) return null;
             const res = list.map(x => { const s = cl.items[x.id];
-                return { text: x.text, when: x.when, carried: !!x.carried, s: s ? s.s : 'todo', at: s ? s.at : null, reason: s && s.reason || '' }; });
-            cl.carried = list.filter(x => !cl.items[x.id]).map(x => ({ id: 'c' + clNewId(), text: x.text, when: x.when }));
+                return { text: x.text, when: x.when, carried: !!x.carried, s: s ? s.s : 'todo', at: s ? s.at : null, reason: s && s.reason || '', photo: s && s.photo || null }; });
+            cl.carried = list.filter(x => !cl.items[x.id]).map(x => ({ id: 'c' + clNewId(), text: x.text, when: x.when, tm: x.tm, photo: x.photo }));
             cl.items = {}; cl.shiftStart = now;
             clSave();
             return res;
@@ -2265,7 +2314,9 @@
             const lines = todo.map(x => row('□ ' + escapeHtml(x.text) + ' <span style="font-weight:600;color:' + C.muted + '">(' + CL_WHEN[x.when] + (x.carried ? ', tồn từ ca trước' : '') + ')</span>', C.redD)).join('')
                 + skip.map(x => row('– ' + escapeHtml(x.text) + ' <span style="font-weight:600;color:' + C.muted + '">bỏ qua: ' + escapeHtml(x.reason) + '</span>', C.ink)).join('');
             const bad = todo.length > 0;
-            return `<div style="background:${bad ? C.amberBg : C.greenBg};border:1px solid ${bad ? C.amberLine : C.greenLine};border-radius:16px;padding:11px 11px 12px;margin-top:10px">${head}${lines}</div>`;
+            const ph = r.filter(x => x.photo);
+            const photos = ph.length ? `<div style="margin-top:10px;background:${C.card};border:1px solid ${C.line};border-radius:16px;padding:11px"><div style="font-size:14px;font-weight:800">Ảnh bàn giao</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">${ph.map(x => `<div style="width:calc(50% - 4px)"><img src="${x.photo}" style="width:100%;height:120px;object-fit:cover;border-radius:10px;display:block"><div style="font-size:10px;font-weight:700;color:${C.muted};margin-top:3px;line-height:1.3">${escapeHtml(x.text)}${x.at ? ' · ' + fmtTime(x.at) : ''}</div></div>`).join('')}</div></div>` : '';
+            return `<div style="background:${bad ? C.amberBg : C.greenBg};border:1px solid ${bad ? C.amberLine : C.greenLine};border-radius:16px;padding:11px 11px 12px;margin-top:10px">${head}${lines}</div>` + photos;
         }
         function clCardInfoHtml(sh) {
             if (!sh.checklist || !sh.checklist.length) return '';
@@ -2300,9 +2351,10 @@
             const row = x => { const s = cl.items[x.id], st = s ? s.s : 'todo';
                 const time = s ? (st === 'done' ? 'Xong lúc ' + fmtTime(s.at) : 'Bỏ qua: ' + escapeHtml(s.reason)) : '';
                 return `<div class="flex items-center gap-2.5 rounded-xl border ${st === 'done' ? 'border-sage-600 bg-sage-950/30' : 'border-tys-900 bg-espresso-950/70'} px-2.5 py-2">
-                    <button onclick="clTap('${x.id}')" class="w-9 h-9 rounded-lg shrink-0 flex items-center justify-center border ${st === 'done' ? 'bg-sage-500 border-sage-500 text-ink' : 'bg-espresso-900 border-tys-800 text-transparent'} active:scale-90 transition" aria-label="Đánh dấu xong"><i class="fa-solid fa-check"></i></button>
+                    <button onclick="${(x.photo && st !== 'done') ? 'clPhoto' : 'clTap'}('${x.id}')" class="w-9 h-9 rounded-lg shrink-0 flex items-center justify-center border ${st === 'done' ? 'bg-sage-500 border-sage-500 text-ink' : 'bg-espresso-900 border-tys-800 text-transparent'} active:scale-90 transition" aria-label="${(x.photo && st !== 'done') ? 'Chụp ảnh' : 'Đánh dấu xong'}"><i class="fa-solid ${(x.photo && st !== 'done') ? 'fa-camera text-tys-400' : 'fa-check'}"></i></button>
                     <div class="min-w-0 flex-1" ><div class="text-[12px] font-semibold leading-snug ${st === 'todo' ? 'text-stone-100' : 'text-stone-400'} ${st === 'done' ? 'line-through' : ''}">${escapeHtml(x.text)}</div>
-                    ${time ? `<div class="text-[10px] text-stone-400 tabular-nums">${time}</div>` : ''}</div>
+                    ${(x.photo && st === 'todo') ? '<div class="text-[10px] text-tys-400 font-bold">Chạm máy ảnh để chụp</div>' : ''}${(x.tm || time) ? `<div class="text-[10px] text-stone-400 tabular-nums">${[x.tm, time].filter(Boolean).join(' · ')}</div>` : ''}</div>
+                    ${s && s.photo ? `<img src="${s.photo}" onclick="clView('${x.id}')" alt="Ảnh" class="w-9 h-9 rounded-lg object-cover shrink-0 border border-tys-800">` : ''}
                     <button onclick="clSkip('${x.id}')" class="shrink-0 px-2 py-1 rounded-lg text-[10px] font-bold border ${st === 'skip' ? 'bg-tys-500 text-ink border-tys-500' : 'border-tys-800 text-stone-400'} active:scale-95 transition">Bỏ qua</button>
                 </div>`; };
             const sec = (t, arr, ic) => arr.length ? `<div><div class="text-[12px] font-extrabold text-stone-100 mb-1.5">${ic || ''}${t}</div><div class="space-y-1.5">${arr.map(row).join('')}</div></div>` : '';
@@ -2320,6 +2372,7 @@
                     <span class="ml-auto flex gap-1">
                         <button onclick="clMove(${i},-1)" class="w-7 h-7 rounded-lg border border-tys-900 text-stone-400 text-xs" aria-label="Lên"><i class="fa-solid fa-arrow-up"></i></button>
                         <button onclick="clMove(${i},1)" class="w-7 h-7 rounded-lg border border-tys-900 text-stone-400 text-xs" aria-label="Xuống"><i class="fa-solid fa-arrow-down"></i></button>
+                        <button onclick="clEd(${i},'photo',${!t.photo})" class="w-7 h-7 rounded-lg border ${t.photo ? 'border-tys-500 text-tys-400' : 'border-tys-900 text-stone-500'} text-xs" aria-label="Yêu cầu chụp ảnh"><i class="fa-solid fa-camera"></i></button>
                         <button onclick="clDel(${i})" class="w-7 h-7 rounded-lg border border-brick-accent/50 text-brick-300 text-xs" aria-label="Xóa"><i class="fa-solid fa-trash"></i></button>
                     </span>
                 </div>
