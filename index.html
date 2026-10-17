@@ -985,6 +985,18 @@
 
                     <div id="modalOrderList" class="min-h-[45px] max-h-[130px] overflow-y-auto space-y-1 text-xs bg-espresso-950 p-1.5 rounded-lg border border-tys-900"></div>
 
+                    <!-- Ghi nhanh tiền: nhập thẳng số tiền, không cần bấm món -->
+                    <div class="flex items-center gap-1.5">
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-pen text-tys-500 absolute left-3 top-1/2 -translate-y-1/2 text-[10px] pointer-events-none"></i>
+                            <input type="number" inputmode="decimal" min="0" step="any" id="quickAmountInput" onkeydown="handleQuickAmountKeydown(event)" placeholder="Ghi nhanh tiền" class="w-full bg-espresso-900 border border-tys-900 rounded-lg pl-8 pr-7 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-bold text-stone-500 pointer-events-none">k</span>
+                        </div>
+                        <button type="button" onclick="addQuickAmount()" class="shrink-0 px-3 py-1.5 rounded-lg bg-tys-500 hover:bg-tys-600 text-ink font-bold text-xs flex items-center gap-1 active:scale-95 transition">
+                            <i class="fa-solid fa-plus text-[10px]"></i> Thêm
+                        </button>
+                    </div>
+
                     <button type="button" id="btnAddMoreOrder" onclick="toggleOrderPanel(true)" class="hidden w-full py-1.5 px-3 rounded-lg bg-espresso-800 hover:bg-tys-500 hover:text-ink text-tys-300 font-bold transition text-xs flex items-center justify-center gap-1.5 border border-tys-800">
                         <i class="fa-solid fa-plus"></i> Khách kêu thêm món
                     </button>
@@ -1669,6 +1681,11 @@
                 return only ? only.id : null;
             }
             return null;
+        }
+
+        // Bỏ các dòng "Tiền ghi nhanh" khỏi phần mô tả ngắn (số tiền đã hiện sẵn ở tổng tiền)
+        function descItems(items) {
+            return (items || []).filter(i => !/^Tiền ghi nhanh/.test(i.name));
         }
 
         function groupedItemsText(items) {
@@ -2682,7 +2699,7 @@
 
             // Mô tả ngắn trên sơ đồ: ưu tiên ghi chú của bàn, nếu chưa có thì hiện các món đã gọi
             const mapDesc = data.note ? escapeHtml(data.note)
-                : ((data.items && data.items.length) ? groupedItemsText(data.items) : '');
+                : (descItems(data.items).length ? groupedItemsText(descItems(data.items)) : '');
 
             // Nút bấm từ 68px tăng thành 102px
             container.innerHTML = `
@@ -2766,7 +2783,7 @@
                         <div class="text-xs text-stone-400 space-y-1">
                             <div class="text-sm sm:text-xs"><i class="fa-solid fa-coins text-tys-500 mr-1"></i> Tổng: <b class="text-tys-200 font-extrabold">${data.total * 1000}đ</b></div>
                             ${data.startTime ? `<div class="text-sm sm:text-xs font-medium"><i class="fa-regular fa-clock mr-1"></i> Thời gian ngồi: ${elapsedMins} phút</div>` : ''}
-                            ${(data.items && data.items.length) ? `<div class="text-stone-300 font-medium leading-snug break-words"><i class="fa-solid fa-mug-hot text-tys-500 mr-1"></i>${groupedItemsText(data.items)}</div>` : ''}
+                            ${descItems(data.items).length ? `<div class="text-stone-300 font-medium leading-snug break-words"><i class="fa-solid fa-mug-hot text-tys-500 mr-1"></i>${groupedItemsText(descItems(data.items))}</div>` : ''}
                             ${data.note ? `<div class="text-stone-400 leading-snug break-words"><i class="fa-regular fa-note-sticky mr-1"></i>${escapeHtml(data.note)}</div>` : ''}
                         </div>
                     </div>
@@ -3086,6 +3103,26 @@
             modalItems.push({ name, price });
             if (selectedStatusInModal === 'empty') { selectedStatusInModal = 'unpaid'; updateModalStatusButtons(); }
             renderModalOrderList();
+        }
+
+        // Ghi nhanh tiền: nhập số (đơn vị nghìn đồng, vd 50 = 50.000đ). Nhập từ 1000 trở lên
+        // thì hiểu là đồng (vd 50000 = 50k). Thêm thành 1 dòng trong "Món đã gọi".
+        function addQuickAmount() {
+            const input = document.getElementById('quickAmountInput');
+            if (!input) return;
+            let v = parseFloat(String(input.value).replace(',', '.'));
+            if (!isFinite(v) || v <= 0) { input.focus(); return; }
+            if (v >= 1000) v = v / 1000;
+            v = Math.round(v * 1000) / 1000;
+            addPresetItem(`Tiền ghi nhanh ${v}k`, v);
+            input.value = '';
+            input.focus();
+        }
+
+        function handleQuickAmountKeydown(event) {
+            if (event.key !== 'Enter') return;
+            event.preventDefault();
+            addQuickAmount();
         }
 
         function removeModalItem(index) {
