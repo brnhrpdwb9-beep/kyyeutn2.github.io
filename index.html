@@ -741,6 +741,10 @@
                         <span class="text-xs font-bold">Checklist ca</span>
                         <span id="checklistBadge" class="hidden ml-auto min-w-[18px] h-[18px] px-1 rounded-full bg-tys-500 text-ink text-[10px] font-extrabold items-center justify-center tabular-nums">0</span>
                     </button>
+                    <button onclick="closeMoreMenu(); openHandoverModal()" id="btnHandover" role="menuitem" class="relative flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Dữ liệu bàn">
+                        <i class="fa-solid fa-right-left w-4 text-center text-sm"></i>
+                        <span class="text-xs font-bold">Dữ liệu bàn</span>
+                    </button>
                     <button onclick="closeMoreMenu(); openResetModal()" role="menuitem" class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-stone-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Đặt lại dữ liệu">
                         <i class="fa-solid fa-rotate-right w-4 text-center text-sm"></i>
                         <span class="text-xs font-bold">Refresh</span>
@@ -1228,6 +1232,66 @@
 
     <input id="clFile" type="file" accept="image/*" capture="environment" class="hidden" onchange="clPhotoPicked(this)">
     <div id="clLight" onclick="this.classList.add('hidden')" class="fixed inset-0 z-[80] bg-black/80 hidden flex items-center justify-center p-4"><img id="clLightImg" alt="Ảnh" class="max-w-full max-h-full rounded-xl"></div>
+
+    <!-- Dữ liệu bàn: xuất / nhập -->
+    <div id="handoverModal" onclick="if(event.target===this)closeHandoverModal()" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-espresso-900 border border-tys-800 w-full max-w-md rounded-t-2xl sm:rounded-2xl max-h-[90vh] flex flex-col shadow-xl modal-fade-in">
+            <div class="flex items-center justify-between gap-2 px-4 pt-3 pb-2">
+                <div class="flex items-center gap-2 min-w-0">
+                    <div class="w-8 h-8 rounded-lg bg-tys-500 text-ink flex items-center justify-center shrink-0"><i class="fa-solid fa-right-left text-sm"></i></div>
+                    <div class="min-w-0">
+                        <h3 class="text-sm font-bold text-tys-100 leading-tight">Dữ liệu bàn</h3>
+                    </div>
+                </div>
+                <button onclick="closeHandoverModal()" class="w-8 h-8 rounded-lg text-stone-400 hover:bg-espresso-800 flex items-center justify-center" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="px-4 pb-2">
+                <div class="flex p-1 rounded-xl bg-espresso-950/70 border border-tys-900">
+                    <button id="hoTabExport" onclick="switchHandoverTab('export')" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-arrow-up-from-bracket mr-1"></i>Xuất</button>
+                    <button id="hoTabImport" onclick="switchHandoverTab('import')" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-arrow-down-to-bracket mr-1"></i>Nhập</button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-4 pb-4 space-y-3">
+                <!-- Tab XUẤT -->
+                <div id="hoPaneExport" class="space-y-3">
+                    <div id="hoExportSummary" class="rounded-xl border border-tys-900 bg-espresso-950 p-2.5 text-xs space-y-1"></div>
+                    <textarea id="hoExportCode" readonly rows="3" onclick="this.select()" style="user-select:text;-webkit-user-select:text" class="w-full text-[10px] font-mono rounded-lg bg-espresso-950 border border-tys-900 p-2 text-stone-300 resize-none break-all"></textarea>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="hoBtnCopy" onclick="hoCopyCode()" class="py-2.5 rounded-xl bg-tys-500 text-ink text-xs font-bold active:scale-95 transition"><i class="fa-regular fa-copy mr-1"></i>Sao chép mã</button>
+                        <button id="hoBtnShare" onclick="hoShareCode()" class="py-2.5 rounded-xl bg-espresso-950/70 border border-tys-800 text-tys-300 text-xs font-bold active:scale-95 transition"><i class="fa-solid fa-share-nodes mr-1"></i>Chia sẻ</button>
+                    </div>
+                    <button onclick="hoDownloadFile()" class="w-full py-2 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-300 text-xs font-semibold active:scale-95 transition"><i class="fa-solid fa-file-arrow-down mr-1"></i>Tải về thành file (.json)</button>
+                    <p id="hoExportMsg" class="hidden text-[11px] text-sage-400 text-center font-semibold"></p>
+                </div>
+
+                <!-- Tab NHẬP -->
+                <div id="hoPaneImport" class="space-y-3 hidden">
+                    <textarea id="hoImportCode" rows="4" oninput="hoPreviewImport()" placeholder="Dán mã dữ liệu bàn" style="user-select:text;-webkit-user-select:text" class="w-full text-[10px] font-mono rounded-lg bg-espresso-950 border border-tys-900 p-2 text-stone-200 resize-none break-all"></textarea>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="hoPasteClipboard()" class="py-2 rounded-xl bg-espresso-950/70 border border-tys-800 text-tys-300 text-xs font-bold active:scale-95 transition"><i class="fa-regular fa-paste mr-1"></i>Dán từ clipboard</button>
+                        <button onclick="document.getElementById('hoFile').click()" class="py-2 rounded-xl bg-espresso-950/70 border border-tys-800 text-tys-300 text-xs font-bold active:scale-95 transition"><i class="fa-regular fa-file mr-1"></i>Chọn file</button>
+                    </div>
+                    <input id="hoFile" type="file" accept=".json,.txt,application/json,text/plain" class="hidden" onchange="hoFilePicked(this)">
+
+                    <div id="hoPreview" class="hidden rounded-xl border border-tys-900 bg-espresso-950 p-2.5 text-xs space-y-2"></div>
+
+                    <div id="hoModeBox" class="hidden space-y-1.5">
+                        <button id="hoModeMerge" onclick="setHandoverMode('merge')" class="w-full text-left px-3 py-2 rounded-xl border transition">
+                            <span class="block text-xs font-bold">Gộp vào sơ đồ</span>
+                        </button>
+                        <button id="hoModeReplace" onclick="setHandoverMode('replace')" class="w-full text-left px-3 py-2 rounded-xl border transition">
+                            <span class="block text-xs font-bold">Thay toàn bộ</span>
+                        </button>
+                    </div>
+
+                    <button id="hoBtnApply" onclick="hoApplyImport()" disabled class="w-full py-2.5 rounded-xl bg-tys-500 text-ink text-xs font-bold active:scale-95 transition disabled:opacity-40 disabled:active:scale-100"><i class="fa-solid fa-check mr-1"></i>Nhập vào máy</button>
+                    <div id="hoImportResult" class="hidden rounded-xl border border-sage-600 bg-sage-950 p-2.5 text-xs text-sage-300 space-y-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Reset Data Modal -->
     <div id="resetModal" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
@@ -2091,7 +2155,7 @@
             const menu = document.getElementById('moreMenu');
             if (menu && !menu.classList.contains('hidden') && !menu.contains(e.target) && !e.target.closest('#btnMore')) closeMoreMenu();
         });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMoreMenu(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeMoreMenu(); closeHandoverModal(); } });
         window.addEventListener('resize', () => {
             const menu = document.getElementById('moreMenu');
             if (menu && !menu.classList.contains('hidden')) avoidMenuOverlap();
@@ -2798,7 +2862,7 @@
                             </button>
                         ` : `<span></span>`}
                         <span class="text-[11px] font-bold text-tys-400 hover:underline">Chi tiết <i class="fa-solid fa-arrow-right text-[10px] ml-0.5"></i></span>
-                    </div>
+                    </diver
                 `;
                 
                 attachTableGestureEvents(card, i);
@@ -3194,6 +3258,291 @@
             if (listView && !listView.classList.contains('hidden')) renderListView(); 
             closeModal();
         }
+
+        // ================== DỮ LIỆU BÀN: XUẤT / NHẬP ==================
+        const HANDOVER_PREFIX = 'TYS1:';
+        const HANDOVER_BACKUP_KEY = 'cafe_tables_tys_backup';
+        let handoverTab = 'export';
+        let handoverMode = 'merge';
+        let handoverParsed = null;
+        let hoMsgTimer = null;
+
+        function hoEncode(obj) {
+            return HANDOVER_PREFIX + btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+        }
+
+        function hoCleanTable(id, t) {
+            if (!t || !['unpaid', 'paid'].includes(t.status)) return null;
+            const items = (Array.isArray(t.items) ? t.items : [])
+                .filter(i => i && typeof i.name === 'string' && isFinite(Number(i.price)))
+                .map(i => ({ name: i.name.slice(0, 80), price: Number(i.price) }));
+            let total = Number(t.total);
+            if (!isFinite(total)) total = items.reduce((a, i) => a + i.price, 0);
+            const st = Number(t.startTime);
+            return {
+                id, status: t.status, items, total,
+                startTime: isFinite(st) && st > 0 ? st : null,
+                paymentMethod: typeof t.paymentMethod === 'string' && t.paymentMethod ? t.paymentMethod.slice(0, 40) : 'Tiền mặt',
+                note: typeof t.note === 'string' ? t.note.slice(0, 200) : ''
+            };
+        }
+
+        function hoDecode(text) {
+            let s = String(text || '').trim();
+            if (!s) throw new Error('Chưa có mã để nhập.');
+            let json;
+            try {
+                const idx = s.indexOf(HANDOVER_PREFIX);
+                if (idx >= 0) {
+                    const m = s.slice(idx + HANDOVER_PREFIX.length).match(/^[A-Za-z0-9+\/=\s]+/);
+                    if (!m) throw new Error('x');
+                    json = decodeURIComponent(escape(atob(m[0].replace(/\s+/g, ''))));
+                } else if (s[0] === '{') {
+                    json = s;
+                } else {
+                    throw new Error('x');
+                }
+                var obj = JSON.parse(json);
+            } catch (e) {
+                throw new Error('Mã không đọc được.');
+            }
+            if (!obj || obj.app !== 'tys-coffee' || typeof obj.tables !== 'object' || !obj.tables) {
+                throw new Error('Mã không phải dữ liệu bàn của TYS Coffee.');
+            }
+            const tables = {};
+            Object.keys(obj.tables).forEach(k => {
+                const id = parseInt(k, 10);
+                if (!(id >= 1 && id <= TOTAL_TABLES)) return;
+                const c = hoCleanTable(id, obj.tables[k]);
+                if (c) tables[id] = c;
+            });
+            return { exportedAt: Number(obj.exportedAt) || null, tables };
+        }
+
+        function hoCollectTables() {
+            const out = {};
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                const t = tablesData[i];
+                if (t && t.status !== 'empty') { const c = Object.assign({}, t); delete c.histId; out[i] = c; }
+            }
+            return out;
+        }
+
+        function hoCount(tables) {
+            let unpaid = 0, paid = 0, sum = 0;
+            Object.values(tables).forEach(t => { if (t.status === 'unpaid') { unpaid++; sum += t.total || 0; } else if (t.status === 'paid') paid++; });
+            return { unpaid, paid, sum, n: unpaid + paid };
+        }
+
+        function hoRowHtml(t) {
+            const isUnpaid = t.status === 'unpaid';
+            const badge = isUnpaid
+                ? '<span class="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-brick-200 text-brick-ink">Chưa trả</span>'
+                : '<span class="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-sage-200 text-sage-300">Đã trả</span>';
+            const mins = t.startTime ? Math.max(0, Math.round((Date.now() - t.startTime) / 60000)) : null;
+            return `<div class="flex items-center gap-2 py-1 border-t border-tys-900 first:border-0">
+                <span class="w-6 h-6 rounded-md bg-tys-500 text-ink text-[11px] font-extrabold flex items-center justify-center shrink-0">${t.id}</span>
+                <div class="min-w-0 flex-1">
+                    <div class="text-[11px] text-stone-300 truncate">${groupedItemsText(t.items)}</div>
+                    <div class="text-[10px] text-stone-500 truncate">${mins !== null ? 'ngồi ' + mins + ' phút' : ''}${t.note ? (mins !== null ? ' · ' : '') + escapeHtml(t.note) : ''}</div>
+                </div>
+                <div class="text-right shrink-0">${badge}<div class="text-[11px] font-bold text-tys-300 tabular-nums mt-0.5">${fmtMoney(t.total)}</div></div>
+            </div>`;
+        }
+
+        function renderHandoverExport() {
+            const tables = hoCollectTables();
+            const c = hoCount(tables);
+            const box = document.getElementById('hoExportSummary');
+            const code = document.getElementById('hoExportCode');
+            const btnCopy = document.getElementById('hoBtnCopy');
+            const btnShare = document.getElementById('hoBtnShare');
+            if (c.n === 0) {
+                box.innerHTML = '<div class="text-stone-500 text-center py-1">Hiện không có bàn nào đang có khách để bàn giao.</div>';
+            } else {
+                const rows = Object.values(tables).sort((a, b) => a.id - b.id).map(hoRowHtml).join('');
+                box.innerHTML = `<div class="flex items-center justify-between pb-1">
+                        <span class="font-bold text-tys-300">${c.n} bàn (${c.unpaid} chưa trả · ${c.paid} đã trả)</span>
+                        <span class="text-[10px] text-stone-500">Cần thu: <b class="text-brick-300">${fmtMoney(c.sum)}</b></span>
+                    </div>` + rows;
+            }
+            code.value = hoEncode({ app: 'tys-coffee', v: 1, exportedAt: Date.now(), tables });
+            btnCopy.disabled = btnShare.disabled = c.n === 0;
+            [btnCopy, btnShare].forEach(b => b.classList.toggle('opacity-40', c.n === 0));
+            btnShare.classList.toggle('hidden', !navigator.share);
+            btnCopy.parentElement.classList.toggle('grid-cols-2', !!navigator.share);
+            btnCopy.parentElement.classList.toggle('grid-cols-1', !navigator.share);
+        }
+
+        function hoFlash(msg) {
+            const el = document.getElementById('hoExportMsg');
+            el.textContent = msg; el.classList.remove('hidden');
+            clearTimeout(hoMsgTimer);
+            hoMsgTimer = setTimeout(() => el.classList.add('hidden'), 3000);
+        }
+
+        function hoCopyCode() {
+            const ta = document.getElementById('hoExportCode');
+            const done = () => hoFlash('Đã sao chép mã.');
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(ta.value).then(done).catch(() => { ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} });
+            } else {
+                ta.select(); try { document.execCommand('copy'); done(); } catch (e) {}
+            }
+        }
+
+        function hoShareCode() {
+            const text = document.getElementById('hoExportCode').value;
+            if (navigator.share) navigator.share({ title: 'Dữ liệu bàn TYS Coffee', text }).catch(() => {});
+        }
+
+        function hoDownloadFile() {
+            const d = new Date();
+            const p = n => String(n).padStart(2, '0');
+            const name = `tys-ban-giao-${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}.json`;
+            const json = JSON.stringify({ app: 'tys-coffee', v: 1, exportedAt: Date.now(), tables: hoCollectTables() }, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob); a.download = name;
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+            hoFlash('Đã tải file về máy.');
+        }
+
+        function hoPasteClipboard() {
+            if (!navigator.clipboard || !navigator.clipboard.readText) {
+                alert('Không đọc được clipboard.');
+                return;
+            }
+            navigator.clipboard.readText().then(t => { document.getElementById('hoImportCode').value = t; hoPreviewImport(); })
+                .catch(() => alert('Không đọc được clipboard.'));
+        }
+
+        function hoFilePicked(input) {
+            const f = input.files && input.files[0];
+            if (!f) return;
+            const r = new FileReader();
+            r.onload = () => { document.getElementById('hoImportCode').value = String(r.result || ''); hoPreviewImport(); };
+            r.readAsText(f);
+            input.value = '';
+        }
+
+        function setHandoverMode(m) {
+            handoverMode = m;
+            const on = ['bg-tys-500', 'text-ink', 'border-tys-600'];
+            const off = ['bg-espresso-950/70', 'text-stone-300', 'border-tys-900'];
+            [['hoModeMerge', 'merge'], ['hoModeReplace', 'replace']].forEach(([id, key]) => {
+                const el = document.getElementById(id);
+                on.forEach(c => el.classList.toggle(c, key === m));
+                off.forEach(c => el.classList.toggle(c, key !== m));
+            });
+            hoPreviewImport(true);
+        }
+
+        function hoPreviewImport(keepMode) {
+            const preview = document.getElementById('hoPreview');
+            const modeBox = document.getElementById('hoModeBox');
+            const btn = document.getElementById('hoBtnApply');
+            const raw = document.getElementById('hoImportCode').value;
+            document.getElementById('hoImportResult').classList.add('hidden');
+            handoverParsed = null;
+            btn.disabled = true;
+            if (!raw.trim()) { preview.classList.add('hidden'); modeBox.classList.add('hidden'); return; }
+            preview.classList.remove('hidden');
+            let parsed;
+            try { parsed = hoDecode(raw); }
+            catch (e) {
+                preview.innerHTML = `<div class="text-brick-300 font-semibold"><i class="fa-solid fa-circle-exclamation mr-1"></i>${escapeHtml(e.message)}</div>`;
+                modeBox.classList.add('hidden');
+                return;
+            }
+            handoverParsed = parsed;
+            const c = hoCount(parsed.tables);
+            const ids = Object.keys(parsed.tables).map(Number);
+            const overwritten = [];
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                const local = tablesData[i];
+                if (!local || local.status === 'empty') continue;
+                if (handoverMode === 'replace' || ids.includes(i)) overwritten.push(i);
+            }
+            const when = parsed.exportedAt ? `Xuất lúc ${fmtDateTime(parsed.exportedAt)}` : 'Không rõ thời điểm xuất';
+            let html = `<div class="flex items-center justify-between"><span class="font-bold text-tys-300">${c.n} bàn (${c.unpaid} chưa trả · ${c.paid} đã trả)</span><span class="text-[10px] text-stone-500">${when}</span></div>`;
+            html += c.n ? Object.values(parsed.tables).sort((a, b) => a.id - b.id).map(hoRowHtml).join('') : '<div class="text-stone-500 text-center py-1">Mã này không có bàn nào đang có khách.</div>';
+            if (overwritten.length) {
+                html += `<div class="text-[11px] text-brick-300 font-semibold pt-1 border-t border-tys-900"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Sẽ ghi đè ${overwritten.length} bàn đang có dữ liệu trên máy này: ${overwritten.join(', ')}.</div>`;
+            }
+            preview.innerHTML = html;
+            modeBox.classList.remove('hidden');
+            if (!keepMode) { handoverMode = 'merge'; }
+            const on = ['bg-tys-500', 'text-ink', 'border-tys-600'], off = ['bg-espresso-950/70', 'text-stone-300', 'border-tys-900'];
+            [['hoModeMerge', 'merge'], ['hoModeReplace', 'replace']].forEach(([id, key]) => {
+                const el = document.getElementById(id);
+                on.forEach(x => el.classList.toggle(x, key === handoverMode));
+                off.forEach(x => el.classList.toggle(x, key !== handoverMode));
+            });
+            btn.disabled = false;
+        }
+
+        function hoApplyImport() {
+            if (!handoverParsed) return;
+            try { localStorage.setItem(HANDOVER_BACKUP_KEY, JSON.stringify({ at: Date.now(), tables: tablesData })); } catch (e) {}
+            if (handoverMode === 'replace') {
+                for (let i = 1; i <= TOTAL_TABLES; i++) {
+                    tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '' };
+                }
+            }
+            Object.values(handoverParsed.tables).forEach(t => { tablesData[t.id] = Object.assign({}, t, { histId: null }); });
+            lastQuickPayState = null;
+            lastHistoryUndo = null;
+            const toast = document.getElementById('quickPayToast');
+            if (toast) toast.classList.add('hidden');
+            saveData(); renderMap(); renderListView();
+            const n = Object.keys(handoverParsed.tables).length;
+            handoverParsed = null;
+            document.getElementById('hoBtnApply').disabled = true;
+            document.getElementById('hoImportCode').value = '';
+            document.getElementById('hoPreview').classList.add('hidden');
+            document.getElementById('hoModeBox').classList.add('hidden');
+            const res = document.getElementById('hoImportResult');
+            res.innerHTML = `<div class="font-bold"><i class="fa-solid fa-circle-check mr-1"></i>Đã nhập ${n} bàn vào sơ đồ.</div>
+                <button onclick="hoUndoImport()" class="px-3 py-1.5 rounded-lg bg-espresso-900 border border-sage-600 text-sage-300 text-[11px] font-bold active:scale-95 transition"><i class="fa-solid fa-rotate-left mr-1"></i>Hoàn tác lần nhập này</button>`;
+            res.classList.remove('hidden');
+        }
+
+        function hoUndoImport() {
+            let b = null;
+            try { b = JSON.parse(localStorage.getItem(HANDOVER_BACKUP_KEY)); } catch (e) {}
+            const res = document.getElementById('hoImportResult');
+            if (!b || !b.tables) { res.innerHTML = '<div class="text-brick-300 font-semibold">Không còn bản sao lưu.</div>'; return; }
+            tablesData = b.tables;
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                if (!tablesData[i]) tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '' };
+            }
+            try { localStorage.removeItem(HANDOVER_BACKUP_KEY); } catch (e) {}
+            lastQuickPayState = null;
+            saveData(); renderMap(); renderListView();
+            res.innerHTML = '<div class="font-bold"><i class="fa-solid fa-circle-check mr-1"></i>Đã hoàn tác.</div>';
+        }
+
+        function switchHandoverTab(tab) {
+            handoverTab = tab;
+            const on = ['bg-tys-500', 'text-ink'], off = ['text-stone-400'];
+            [['hoTabExport', 'export'], ['hoTabImport', 'import']].forEach(([id, key]) => {
+                const el = document.getElementById(id);
+                on.forEach(c => el.classList.toggle(c, key === tab));
+                off.forEach(c => el.classList.toggle(c, key !== tab));
+            });
+            document.getElementById('hoPaneExport').classList.toggle('hidden', tab !== 'export');
+            document.getElementById('hoPaneImport').classList.toggle('hidden', tab !== 'import');
+            if (tab === 'export') renderHandoverExport();
+        }
+
+        function openHandoverModal(tab) {
+            document.getElementById('hoImportResult').classList.add('hidden');
+            switchHandoverTab(tab || 'export');
+            document.getElementById('handoverModal').classList.remove('hidden');
+        }
+        function closeHandoverModal() { document.getElementById('handoverModal').classList.add('hidden'); }
 
         function openResetModal() { document.getElementById('resetModal').classList.remove('hidden'); }
         function closeResetModal() { document.getElementById('resetModal').classList.add('hidden'); }
