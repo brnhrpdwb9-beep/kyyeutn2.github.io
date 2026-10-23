@@ -2623,6 +2623,7 @@
 
             endHistoryUndo();
             saveData();
+            notifyPayment(tableId, lastQuickPayState.status, table);
 
             if (navigator.vibrate) {
                 try { navigator.vibrate([40, 60, 40]); } catch(e){}
@@ -2672,6 +2673,7 @@
 
         function undoQuickPay() {
             if (!lastQuickPayState) return;
+            notifyUndo(lastQuickPayState);
             applyHistoryUndo();
 
             if (lastQuickPayState.sourceBackup) {
@@ -3254,17 +3256,39 @@
             return [...map.values()].map(g => g.qty + ' × ' + g.name);
         }
 
-        // Thông báo gọn, ưu tiên thông tin thu ngân cần nhất lên đầu:
+        // Gửi 1 thông báo. Lỗi mạng: thử lại 1 lần sau 3 giây, không bao giờ làm hỏng thao tác đang làm.
+        function ntfySend(title, parts, priority) {
+            try {
+                const body = JSON.stringify({
+                    topic: NTFY_TOPIC,
+                    title: title,
+                    message: parts.join('\n'),
+                    priority: priority || 4
+                });
+                const send = () => fetch(NTFY_URL, { method: 'POST', body: body });
+                send().catch(() => setTimeout(() => send().catch(e => console.warn('ntfy lỗi:', e)), 3000));
+            } catch (e) {
+                console.warn('ntfySend lỗi:', e);
+            }
+        }
+
+        // Dòng "cách thanh toán · đã trả hay chưa" dùng chung cho mọi thông báo.
+        function ntfyPayLine(table) {
+            const isCK = table.paymentMethod === 'Chuyển khoản QR';
+            return (isCK ? '📱 CK VietQR' : '💵 Tiền mặt') + ' · ' + (table.status === 'paid' ? '🟢 ĐÃ TRẢ' : '🔴 CHƯA TRẢ');
+        }
+
+        // ORDER MỚI / GỌI THÊM / HỦY MÓN / SỬA ORDER. Trả về true nếu đã gửi thông báo.
         //   Tiêu đề (hiện đậm, đọc được cả khi thông báo thu gọn): biểu tượng + BÀN + loại + số món
         //   Nội dung: món cần bấm → ghi chú → tổng bàn → cách thanh toán / đã trả hay chưa → giờ
         function notifyCashier(tableId, prevItems, nextItems, table) {
             try {
                 // Bàn vừa được dọn/đóng (về trạng thái trống) thì không cần báo thu ngân.
-                if (!table || table.status === 'empty') return;
+                if (!table || table.status === 'empty') return false;
 
                 const added = diffAddedItems(prevItems, nextItems);
                 const removed = diffAddedItems(nextItems, prevItems);
-                if (!added.length && !removed.length) return;
+                if (!added.length && !removed.length) return false;
 
                 const isFirst = !(prevItems && prevItems.length);
                 let icon, kind, count;
@@ -3272,7 +3296,8 @@
                 else if (removed.length)            { icon = '❌'; kind = 'HỦY MÓN';   count = removed.length + ' món'; }
                 else if (isFirst)                   { icon = '🆕'; kind = 'ORDER MỚI'; count = added.length + ' món'; }
                 else                                { icon = '➕'; kind = 'GỌI THÊM';  count = added.length + ' món'; }
-                const title = icon + ' BÀN ' + tableId + ' · ' + kind + ' · ' + count;
+                // Order và thanh toán xảy ra cùng lúc: gộp làm 1 thông báo, ghi rõ ĐÃ TRẢ ngay tiêu đề.
+                const title = icon + ' BÀN ' + tableId + ' · ' + kind + ' · ' + count + (table.status === 'paid' ? ' · ĐÃ TRẢ' : '');
 
                 const both = added.length && removed.length;
                 const parts = [];
@@ -3287,26 +3312,90 @@
                 }
                 parts.push('━━━━━━━━━━━━');
                 if (table.note) parts.push('📝 ' + table.note);
-
-                const isCK = table.paymentMethod === 'Chuyển khoản QR';
-                const paid = table.status === 'paid';
                 parts.push('🧾 Cả bàn: ' + nextItems.length + ' món · ' + fmtMoney(table.total));
-                parts.push((isCK ? '📱 CK VietQR' : '💵 Tiền mặt') + ' · ' + (paid ? '🟢 ĐÃ TRẢ' : '🔴 CHƯA TRẢ'));
+                parts.push(ntfyPayLine(table));
                 parts.push('🕒 ' + fmtTime(Date.now()));
 
-                const body = JSON.stringify({
-                    topic: NTFY_TOPIC,
-                    title: title,
-                    message: parts.join('\n'),
-                    priority: removed.length ? 5 : 4   // hủy/sửa món = khẩn, để thu ngân chỉnh bill ngay
-                });
-
-                const send = () => fetch(NTFY_URL, { method: 'POST', body: body });
-
-                // Lỗi mạng: thử lại 1 lần sau 3 giây, không làm ảnh hưởng việc lưu order.
-                send().catch(() => setTimeout(() => send().catch(e => console.warn('ntfy lỗi:', e)), 3000));
+                ntfySend(title, parts, removed.length ? 5 : 4);   // hủy/sửa món = khẩn, để thu ngân chỉnh bill ngay
+                return true;
             } catch (e) {
                 console.warn('notifyCashier lỗi:', e);
+                return false;
+            }
+        }
+
+        // THANH TOÁN: bàn vừa chuyển sang "Đã trả" (hoặc bị mở lại thành "Chưa trả").
+        function notifyPayment(tableId, prevStatus, table) {
+            try {
+                if (!table) return;
+                const n = (table.items || []).length;
+                if (table.status === 'paid' && prevStatus !== 'paid') {
+                    ntfySend('🟢 BÀN ' + tableId + ' · ĐÃ TRẢ · ' + fmtMoney(table.total), [
+                        (table.paymentMethod === 'Chuyển khoản QR' ? '📱 CK VietQR' : '💵 Tiền mặt'),
+                        '🧾 ' + n + ' món',
+                        '🕒 ' + fmtTime(Date.now())
+                    ], 4);
+                } else if (prevStatus === 'paid' && table.status === 'unpaid') {
+                    ntfySend('↩️ BÀN ' + tableId + ' · MỞ LẠI · CHƯA TRẢ', [
+                        'Bàn được mở lại, chưa thanh toán.',
+                        '🧾 ' + n + ' món · ' + fmtMoney(table.total),
+                        '🕒 ' + fmtTime(Date.now())
+                    ], 5);
+                }
+            } catch (e) {
+                console.warn('notifyPayment lỗi:', e);
+            }
+        }
+
+        // CHUYỂN BÀN / GỘP BÀN. `source` là dữ liệu bàn nguồn TRƯỚC khi chuyển, `target` là bàn đích SAU khi chuyển.
+        function notifyTransfer(mode, srcId, targetId, source, target) {
+            try {
+                if (!source || !target || !(source.items || []).length) return;
+                const parts = [];
+                let title;
+                if (mode === 'transfer') {
+                    title = '🔀 CHUYỂN BÀN ' + srcId + ' → ' + targetId;
+                    parts.push('👉 Bill bàn ' + srcId + ' nay là bàn ' + targetId);
+                    parts.push(ntfyGroupLines(source.items).join('\n'));
+                    parts.push('━━━━━━━━━━━━');
+                    if (source.note) parts.push('📝 ' + source.note);
+                    parts.push('🧾 ' + source.items.length + ' món · ' + fmtMoney(target.total));
+                } else {
+                    title = '🔗 GỘP BÀN ' + srcId + ' → ' + targetId;
+                    parts.push('👉 Gộp bill bàn ' + srcId + ' vào bàn ' + targetId);
+                    parts.push('Món của bàn ' + srcId + ':');
+                    parts.push(ntfyGroupLines(source.items).join('\n'));
+                    parts.push('━━━━━━━━━━━━');
+                    parts.push('🧾 Bàn ' + targetId + ' sau gộp: ' + (target.items || []).length + ' món · ' + fmtMoney(target.total));
+                }
+                parts.push(ntfyPayLine(target));
+                parts.push('🕒 ' + fmtTime(Date.now()));
+                ntfySend(title, parts, 5);   // đổi bàn = bill đang nằm sai số bàn, cần sửa ngay
+            } catch (e) {
+                console.warn('notifyTransfer lỗi:', e);
+            }
+        }
+
+        // HOÀN TÁC (nút Hoàn tác sau khi thanh toán nhanh / chuyển / gộp bàn) để thu ngân không bị lệch so với thao tác đã báo trước đó.
+        function notifyUndo(undo) {
+            try {
+                if (!undo) return;
+                if (undo.sourceBackup) {
+                    const src = undo.sourceBackup.id, tgt = undo.tableId;
+                    ntfySend('↩️ HOÀN TÁC · BÀN ' + src + ' ⇄ BÀN ' + tgt, [
+                        'Vừa hoàn tác chuyển/gộp bàn.',
+                        'Bàn ' + src + ' và bàn ' + tgt + ' trở lại như trước đó.',
+                        '🕒 ' + fmtTime(Date.now())
+                    ], 5);
+                } else if (undo.status === 'unpaid') {
+                    ntfySend('↩️ BÀN ' + undo.tableId + ' · HỦY THANH TOÁN', [
+                        'Vừa hoàn tác: bàn trở lại CHƯA TRẢ.',
+                        '🧾 ' + (undo.items || []).length + ' món · ' + fmtMoney(undo.total),
+                        '🕒 ' + fmtTime(Date.now())
+                    ], 5);
+                }
+            } catch (e) {
+                console.warn('notifyUndo lỗi:', e);
             }
         }
 
@@ -3329,7 +3418,7 @@
             syncHistoryOnModalSave(table, prevStatus);
 
             saveData(); 
-            notifyCashier(activeTableId, prevItems, modalItems, table);
+            if (!notifyCashier(activeTableId, prevItems, modalItems, table)) notifyPayment(activeTableId, prevStatus, table);
             renderTableNode(activeTableId);
             const listView = document.getElementById('listView');
             if (listView && !listView.classList.contains('hidden')) renderListView(); 
@@ -3879,6 +3968,7 @@
 
             endHistoryUndo();
             saveData();
+            notifyTransfer(transferMode, srcId, targetId, source, tablesData[targetId]);
             closeTransferModal();
 
             requestAnimationFrame(() => {
