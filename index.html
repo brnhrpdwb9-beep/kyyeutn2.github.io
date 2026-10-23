@@ -3224,12 +3224,99 @@
             saveModalChanges();
         }
 
+        // ================== THÔNG BÁO ORDER MỚI TỚI MÁY POS (ntfy) ==================
+        // Trên máy POS: cài app "ntfy" (Google Play) và đăng ký ĐÚNG tên topic bên dưới.
+        // Tên topic đóng vai trò như mật khẩu: giữ kín, đừng chia sẻ cho người ngoài.
+        const NTFY_URL = 'https://ntfy.sh';
+        const NTFY_TOPIC = 'tys-order-ad394398934dc009';
+
+        // So sánh 2 danh sách món, trả về những món có ở `next` mà không có ở `prev`.
+        // Dùng 2 chiều: (prev → next) = món thêm; (next → prev) = món bị hủy.
+        function diffAddedItems(prev, next) {
+            const cnt = {};
+            (prev || []).forEach(i => cnt[i.name] = (cnt[i.name] || 0) + 1);
+            const added = [];
+            (next || []).forEach(i => {
+                if (cnt[i.name] > 0) cnt[i.name]--;
+                else added.push(i);
+            });
+            return added;
+        }
+
+        // Gom món trùng tên thành "SL × Tên" (ngắn gọn để liếc là đọc được ngay).
+        function ntfyGroupLines(items) {
+            const map = new Map();
+            items.forEach(i => {
+                const g = map.get(i.name) || { name: i.name, qty: 0 };
+                g.qty++;
+                map.set(i.name, g);
+            });
+            return [...map.values()].map(g => g.qty + ' × ' + g.name);
+        }
+
+        // Thông báo gọn, ưu tiên thông tin thu ngân cần nhất lên đầu:
+        //   Tiêu đề (hiện đậm, đọc được cả khi thông báo thu gọn): biểu tượng + BÀN + loại + số món
+        //   Nội dung: món cần bấm → ghi chú → tổng bàn → cách thanh toán / đã trả hay chưa → giờ
+        function notifyCashier(tableId, prevItems, nextItems, table) {
+            try {
+                // Bàn vừa được dọn/đóng (về trạng thái trống) thì không cần báo thu ngân.
+                if (!table || table.status === 'empty') return;
+
+                const added = diffAddedItems(prevItems, nextItems);
+                const removed = diffAddedItems(nextItems, prevItems);
+                if (!added.length && !removed.length) return;
+
+                const isFirst = !(prevItems && prevItems.length);
+                let icon, kind, count;
+                if (added.length && removed.length) { icon = '✏️'; kind = 'SỬA ORDER'; count = '+' + added.length + ' / -' + removed.length + ' món'; }
+                else if (removed.length)            { icon = '❌'; kind = 'HỦY MÓN';   count = removed.length + ' món'; }
+                else if (isFirst)                   { icon = '🆕'; kind = 'ORDER MỚI'; count = added.length + ' món'; }
+                else                                { icon = '➕'; kind = 'GỌI THÊM';  count = added.length + ' món'; }
+                const title = icon + ' BÀN ' + tableId + ' · ' + kind + ' · ' + count;
+
+                const both = added.length && removed.length;
+                const parts = [];
+
+                if (added.length) {
+                    if (both) parts.push('➕ THÊM:');
+                    parts.push(ntfyGroupLines(added).join('\n'));
+                }
+                if (removed.length) {
+                    parts.push('❌ HỦY — xóa khỏi bill:');
+                    parts.push(ntfyGroupLines(removed).join('\n'));
+                }
+                parts.push('━━━━━━━━━━━━');
+                if (table.note) parts.push('📝 ' + table.note);
+
+                const isCK = table.paymentMethod === 'Chuyển khoản QR';
+                const paid = table.status === 'paid';
+                parts.push('🧾 Cả bàn: ' + nextItems.length + ' món · ' + fmtMoney(table.total));
+                parts.push((isCK ? '📱 CK VietQR' : '💵 Tiền mặt') + ' · ' + (paid ? '🟢 ĐÃ TRẢ' : '🔴 CHƯA TRẢ'));
+                parts.push('🕒 ' + fmtTime(Date.now()));
+
+                const body = JSON.stringify({
+                    topic: NTFY_TOPIC,
+                    title: title,
+                    message: parts.join('\n'),
+                    priority: removed.length ? 5 : 4   // hủy/sửa món = khẩn, để thu ngân chỉnh bill ngay
+                });
+
+                const send = () => fetch(NTFY_URL, { method: 'POST', body: body });
+
+                // Lỗi mạng: thử lại 1 lần sau 3 giây, không làm ảnh hưởng việc lưu order.
+                send().catch(() => setTimeout(() => send().catch(e => console.warn('ntfy lỗi:', e)), 3000));
+            } catch (e) {
+                console.warn('notifyCashier lỗi:', e);
+            }
+        }
+
         function saveModalChanges() {
             if (!activeTableId) return;
 
             const table = tablesData[activeTableId];
             const prevStatus = table.status;
 
+            const prevItems = [...(table.items || [])];
             table.status = selectedStatusInModal;
             table.items = [...modalItems];
             table.total = modalItems.reduce((acc, curr) => acc + curr.price, 0);
@@ -3242,6 +3329,7 @@
             syncHistoryOnModalSave(table, prevStatus);
 
             saveData(); 
+            notifyCashier(activeTableId, prevItems, modalItems, table);
             renderTableNode(activeTableId);
             const listView = document.getElementById('listView');
             if (listView && !listView.classList.contains('hidden')) renderListView(); 
