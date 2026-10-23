@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>THU NGÂN</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#f7f5f0;color:#1c1a17;display:flex;flex-direction:column;
+  padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0);user-select:none}
+button{font:inherit;cursor:pointer;border:0}
+#hdr{display:flex;align-items:center;gap:6px;padding:6px 8px;background:#1c1a17;color:#fff}
+#hdr b{font-size:15px;letter-spacing:.04em;flex:1;white-space:nowrap}
+.dot{width:11px;height:11px;border-radius:50%;background:#999;flex:none}
+.dot.ok{background:#4cc24a}.dot.bad{background:#e2492c}.dot.wait{background:#e1b66e}
+.ib{background:#3a352d;color:#fff;border-radius:8px;min-width:40px;height:36px;font-size:16px}
+#offline{display:none;background:#e2492c;color:#fff;font-weight:700;text-align:center;padding:6px;font-size:14px}
+body.bad #offline{display:block}
+#tabs{display:flex;gap:6px;padding:6px 8px}
+#tabs button{flex:1;height:40px;border-radius:10px;background:#e7e2d8;font-weight:700;font-size:15px;color:#4f4a41}
+#tabs button.on{background:#C9944A;color:#1a1510}
+#list{flex:1;overflow-y:auto;padding:4px 8px 12px;-webkit-overflow-scrolling:touch}
+.empty{text-align:center;color:#8c8579;padding:40px 8px;font-size:16px}
+.card{background:#fff;border-radius:12px;border-left:7px solid #C9944A;padding:10px 12px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.card.danger{border-color:#c0432b}.card.move{border-color:#6a4fa0}.card.paid{border-color:#3f7a2e}
+.card.warn{background:#fff6df}.card.late{background:#fde4dc}.card.done{opacity:.6}
+.card h2{margin:0 0 4px;font-size:18px;line-height:1.25}
+.card pre{margin:0;font:inherit;font-size:16px;line-height:1.4;white-space:pre-wrap;word-break:break-word}
+.foot{display:flex;align-items:center;gap:8px;margin-top:8px}
+.age{font-size:13px;font-weight:600;color:#6e685d;flex:none}
+.card.late .age{color:#a83420}
+.okbtn{flex:1;height:48px;border-radius:10px;background:#3f7a2e;color:#fff;font-weight:800;font-size:16px}
+.card.done .okbtn{background:#8c8579}
+#strip{display:none;align-items:center;gap:8px;padding:8px;background:#fff;flex:1}
+#stripCnt{background:#c0432b;color:#fff;border-radius:999px;min-width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-weight:800;flex:none}
+body:not(.has-pending) #stripCnt{background:#8c8579}
+#stripTxt{flex:1;font-weight:700;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#stripOk{height:44px;padding:0 14px;border-radius:10px;background:#3f7a2e;color:#fff;font-weight:800;flex:none}
+#stripOk:disabled{background:#c9c4b8}
+#stripX{height:44px;width:44px;border-radius:10px;background:#e7e2d8;font-size:18px;flex:none}
+body.strip #hdr,body.strip #tabs,body.strip #list,body.strip #offline{display:none}
+body.strip #strip{display:flex}
+body.strip.bad #strip{background:#fde4dc}
+#start{position:fixed;inset:0;background:#1c1a17;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:9;padding:20px;text-align:center}
+#start button{background:#C9944A;color:#1a1510;font-weight:800;font-size:20px;padding:18px 26px;border-radius:14px}
+#start p{margin:0;color:#b9afa0;font-size:14px;max-width:300px}
+@keyframes flash{0%,100%{background:#1c1a17}50%{background:#c0432b}}
+body.flash #hdr{animation:flash .5s 4}
+</style>
+</head>
+<body>
+<div id="start">
+  <div style="font-size:42px">☕</div>
+  <button id="startBtn">▶ BẮT ĐẦU NHẬN ORDER</button>
+  <p>Chạm 1 lần để bật âm thanh báo và giữ màn hình luôn sáng.</p>
+</div>
+
+<div id="hdr">
+  <span class="dot wait" id="st"></span>
+  <b>THU NGÂN</b>
+  <button class="ib" id="btnSound" title="Âm thanh">🔔</button>
+  <button class="ib" id="btnStrip" title="Thu nhỏ thành dải">▁</button>
+</div>
+<div id="offline">MẤT KẾT NỐI — có thể bỏ lỡ order, đang thử lại...</div>
+<div id="tabs">
+  <button id="tabP" class="on" data-tab="pending">CHỜ NHẬP (<span id="cnt">0</span>)</button>
+  <button id="tabD" data-tab="done">ĐÃ NHẬP (<span id="cntDone">0</span>)</button>
+</div>
+<div id="list"></div>
+
+<div id="strip">
+  <span id="stripCnt">0</span>
+  <span id="stripTxt">Không có order chờ</span>
+  <button id="stripOk" data-act="done" disabled>✔</button>
+  <button id="stripX" title="Mở rộng">⤢</button>
+</div>
+
+<script>
+(function () {
+  // Dùng đúng topic ntfy của trang order (index.html). Giữ kín tên topic.
+  var BASE = 'https://ntfy.sh';
+  var TOPIC = 'tys-order-ad394398934dc009';
+
+  function $(id) { return document.getElementById(id); }
+  function lsGet(k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+  var done = lsGet('tys_cashier_done', {});          // id -> thời điểm bấm "đã nhập"
+  var sound = lsGet('tys_cashier_sound', true);
+  var strip = lsGet('tys_cashier_strip', false);
+  var tab = 'pending';
+  var items = {};                                     // id -> order
+  var initial = true, started = false, audio = null;
+
+  var cutoff = Date.now() - 36 * 3600 * 1000;
+  Object.keys(done).forEach(function (k) { if (done[k] < cutoff) delete done[k]; });
+
+  // ---------- âm thanh / rung ----------
+  function beep(urgent) {
+    try { if (navigator.vibrate) navigator.vibrate(urgent ? [200, 100, 200, 100, 200] : [200, 100, 200]); } catch (e) {}
+    document.body.classList.remove('flash'); void document.body.offsetWidth; document.body.classList.add('flash');
+    if (!sound || !audio) return;
+    var n = urgent ? 3 : 2;
+    for (var i = 0; i < n; i++) {
+      var o = audio.createOscillator(), g = audio.createGain();
+      o.type = 'sine'; o.frequency.value = urgent ? 988 : 784; g.gain.value = 0.3;
+      o.connect(g); g.connect(audio.destination);
+      var t = audio.currentTime + i * 0.28;
+      o.start(t); o.stop(t + 0.18);
+    }
+  }
+
+  // ---------- hiển thị ----------
+  function kindOf(t) {
+    if (/^(❌|✏|↩)/.test(t)) return 'danger';
+    if (/^(🔀|🔗)/.test(t)) return 'move';
+    if (/^🟢/.test(t)) return 'paid';
+    return '';
+  }
+  function ageMin(t) { return (Date.now() - t) / 60000; }
+  function agoText(t) { var m = Math.floor(ageMin(t)); return m < 1 ? 'vừa xong' : m + ' phút trước'; }
+  function level(t) { var m = ageMin(t); return m >= 5 ? 'late' : (m >= 2 ? 'warn' : ''); }
+
+  function render() {
+    var all = Object.keys(items).map(function (k) { return items[k]; });
+    var pend = all.filter(function (x) { return !done[x.id]; }).sort(function (a, b) { return a.t - b.t; });
+    var fin = all.filter(function (x) { return done[x.id]; }).sort(function (a, b) { return done[b.id] - done[a.id]; });
+
+    $('cnt').textContent = pend.length;
+    $('cntDone').textContent = fin.length;
+    document.title = (pend.length ? '(' + pend.length + ') ' : '') + 'THU NGÂN';
+    document.body.classList.toggle('has-pending', pend.length > 0);
+
+    var first = pend[0];
+    $('stripCnt').textContent = pend.length;
+    $('stripTxt').textContent = first ? first.title : 'Không có order chờ';
+    $('stripOk').disabled = !first;
+    $('stripOk').setAttribute('data-id', first ? first.id : '');
+
+    var list = $('list'), st = list.scrollTop;
+    list.textContent = '';
+    var src = tab === 'pending' ? pend : fin;
+    if (!src.length) {
+      var e = document.createElement('div');
+      e.className = 'empty';
+      e.textContent = tab === 'pending' ? 'Không có order nào đang chờ ✔' : 'Chưa có order nào đã nhập';
+      list.appendChild(e);
+      return;
+    }
+    src.forEach(function (x) {
+      var c = document.createElement('article');
+      c.className = 'card ' + kindOf(x.title) + ' ' + (tab === 'pending' ? level(x.t) : 'done');
+      var h = document.createElement('h2'); h.textContent = x.title;
+      var b = document.createElement('pre'); b.textContent = x.text;
+      var f = document.createElement('div'); f.className = 'foot';
+      var a = document.createElement('span'); a.className = 'age'; a.textContent = agoText(x.t);
+      var btn = document.createElement('button');
+      btn.className = 'okbtn';
+      btn.setAttribute('data-act', tab === 'pending' ? 'done' : 'undo');
+      btn.setAttribute('data-id', x.id);
+      btn.textContent = tab === 'pending' ? '✔ ĐÃ NHẬP' : '↩ Hoàn lại';
+      f.appendChild(a); f.appendChild(btn);
+      c.appendChild(h); c.appendChild(b); c.appendChild(f);
+      list.appendChild(c);
+    });
+    list.scrollTop = st;
+  }
+
+  // ---------- nhận thông báo từ ntfy ----------
+  function onMsg(m) {
+    if (!m || m.event !== 'message' || items[m.id]) return;
+    items[m.id] = {
+      id: m.id,
+      t: (m.time ? m.time * 1000 : Date.now()),
+      title: m.title || 'Thông báo',
+      text: m.message || '',
+      p: m.priority || 3
+    };
+    if (!initial && !done[m.id]) beep((m.priority || 3) >= 5);
+    render();
+  }
+
+  function setStatus(s) {
+    $('st').className = 'dot ' + s;
+    document.body.classList.toggle('bad', s === 'bad');
+  }
+
+  function connect() {
+    setStatus('wait');
+    // since=12h: lấy lại order trong 12 giờ qua (khi mở trang / mất mạng rồi có lại), trùng id thì bỏ qua.
+    var es = new EventSource(BASE + '/' + TOPIC + '/sse?since=12h');
+    es.onopen = function () {
+      setStatus('ok');
+      if (initial) setTimeout(function () { initial = false; }, 2500);
+    };
+    es.onmessage = function (ev) { try { onMsg(JSON.parse(ev.data)); } catch (e) {} };
+    es.onerror = function () { setStatus('bad'); };
+  }
+
+  // ---------- giữ màn hình sáng ----------
+  function keepAwake() {
+    try { if ('wakeLock' in navigator) navigator.wakeLock.request('screen').catch(function () {}); } catch (e) {}
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible' && started) keepAwake();
+  });
+
+  // ---------- thao tác ----------
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('button');
+    if (!t) return;
+    var act = t.getAttribute('data-act'), id = t.getAttribute('data-id');
+    if (act === 'done' && id) { done[id] = Date.now(); lsSet('tys_cashier_done', done); render(); }
+    else if (act === 'undo' && id) { delete done[id]; lsSet('tys_cashier_done', done); render(); }
+    else if (t.hasAttribute('data-tab')) {
+      tab = t.getAttribute('data-tab');
+      $('tabP').classList.toggle('on', tab === 'pending');
+      $('tabD').classList.toggle('on', tab === 'done');
+      render();
+    }
+  });
+
+  function applyStrip() { document.body.classList.toggle('strip', strip); }
+  $('btnStrip').onclick = function () { strip = true; lsSet('tys_cashier_strip', strip); applyStrip(); };
+  $('stripX').onclick = function () { strip = false; lsSet('tys_cashier_strip', strip); applyStrip(); };
+
+  function applySound() { $('btnSound').textContent = sound ? '🔔' : '🔕'; }
+  $('btnSound').onclick = function () { sound = !sound; lsSet('tys_cashier_sound', sound); applySound(); };
+
+  $('startBtn').onclick = function () {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) { audio = new AC(); if (audio.resume) audio.resume(); }
+    } catch (e) {}
+    started = true;
+    keepAwake();
+    $('start').style.display = 'none';
+    connect();
+  };
+
+  applySound(); applyStrip(); render();
+  setInterval(render, 15000);   // cập nhật "x phút trước" và màu cảnh báo order chờ lâu
+})();
+</script>
+</body>
+</html>
