@@ -2770,7 +2770,7 @@
             // Nút bấm từ 68px tăng thành 102px
             container.innerHTML = `
                 <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} ${selectedClass} flex flex-col items-center justify-center p-1.5 transition-all">
-                    ${badgeHTML}
+                    ${badgeHTML}${billChip(i, data)}
                     <span class="text-[10px] font-bold uppercase tracking-[0.18em] leading-none opacity-60 ${numColor}">Bàn</span>
                     <span class="text-[36px] font-extrabold leading-none tracking-tight tabular-nums ${numColor} mt-0.5">${i}</span>
                     ${(data.total > 0 || timerText) ? `<div class="flex items-center justify-center gap-1.5 mt-1.5 leading-none">
@@ -3339,6 +3339,7 @@
                 parts.push(ntfyPayLine(table));
                 parts.push('🕒 ' + fmtTime(Date.now()));
 
+                markBill(tableId, 'wait');
                 ntfySend(title, parts, removed.length ? 5 : 4);   // hủy/sửa món = khẩn, để thu ngân chỉnh bill ngay
                 return true;
             } catch (e) {
@@ -3421,6 +3422,117 @@
                 console.warn('notifyUndo lỗi:', e);
             }
         }
+
+        // ================== NHẬN BÁO NGƯỢC TỪ THU NGÂN (qua ntfy) ==================
+        // Khi thu ngân bấm nút trong Telegram, Worker gửi một tin vào kênh này; trang nào đang mở cũng nhận được.
+        const NTFY_ACK_TOPIC = 'tys-ack-c8ccf061d65dc036';   // phải trùng ACK_TOPIC trong Worker
+        var billState = (function () { try { return JSON.parse(localStorage.getItem('tys_bill_state') || '{}'); } catch (e) { return {}; } })();
+        const ackSeen = new Set();
+
+        function saveBill() { try { localStorage.setItem('tys_bill_state', JSON.stringify(billState)); } catch (e) {} }
+
+        function markBill(tableId, s, who, at) {
+            billState[tableId] = { s: s, who: who || '', at: at || Date.now() };
+            saveBill();
+            try { renderTableNode(parseInt(tableId, 10)); } catch (e) {}
+        }
+
+        // Nhãn nhỏ dưới ô bàn: ⏳ chờ thu ngân → 🟡 đang nhập → ✔ đã vào bill.
+        function billChip(i, data) {
+            const b = billState && billState[i];
+            if (!b || !data || data.status === 'empty') return '';
+            if (b.at + 5000 < (data.startTime || 0)) return '';                  // nhãn của lượt khách trước
+            if (b.s === 'done' && Date.now() - b.at > 20 * 60000) return '';     // xong lâu rồi thì ẩn
+            const m = { wait: ['⏳ Chờ thu ngân', '#d97706'], claimed: ['🟡 Đang nhập', '#ca8a04'], done: ['✔ Đã vào bill', '#15803d'] }[b.s];
+            if (!m) return '';
+            return '<span style="position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);padding:1px 7px;border-radius:999px;font-size:9px;font-weight:700;white-space:nowrap;color:#fff;background:' + m[1] + '">' + m[0] + '</span>';
+        }
+
+        function ackToast(text, tone, ms) {
+            try {
+                let box = document.getElementById('ackBox');
+                if (!box) {
+                    box = document.createElement('div');
+                    box.id = 'ackBox';
+                    box.style.cssText = 'position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:6px;width:min(92vw,380px);pointer-events:none';
+                    document.body.appendChild(box);
+                }
+                const c = document.createElement('div');
+                const bg = { ok: '#15803d', info: '#ca8a04', alert: '#b91c1c' }[tone] || '#334155';
+                c.style.cssText = 'pointer-events:auto;padding:10px 12px;border-radius:12px;color:#fff;font:600 14px/1.3 system-ui,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.35);background:' + bg;
+                c.textContent = text;
+                c.onclick = function () { c.remove(); };
+                box.appendChild(c);
+                while (box.children.length > 4) box.firstChild.remove();
+                setTimeout(function () { c.remove(); }, ms || 6000);
+            } catch (e) {}
+        }
+
+        function ackAlert() {
+            try { if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 200]); } catch (e) {}
+            try {
+                const AC = window.AudioContext || window.webkitAudioContext;
+                const a = new AC();
+                [0, 0.3].forEach(function (d) {
+                    const o = a.createOscillator(), g = a.createGain();
+                    o.frequency.value = 880; g.gain.value = 0.25;
+                    o.connect(g); g.connect(a.destination);
+                    o.start(a.currentTime + d); o.stop(a.currentTime + d + 0.2);
+                });
+            } catch (e) {}
+        }
+
+        function ackWaitText(sec) {
+            sec = Math.max(0, sec | 0);
+            const m = Math.floor(sec / 60);
+            return m ? m + 'p' + (sec % 60) + 's' : sec + 's';
+        }
+
+        function handleAck(m) {
+            if (!m || m.event !== 'message' || ackSeen.has(m.id)) return;
+            ackSeen.add(m.id);
+            let o;
+            try { o = JSON.parse(m.message); } catch (e) { return; }
+            if (!o || !o.table) return;
+
+            const at = o.at || (m.time * 1000);
+            const fresh = Date.now() - at < 90000;      // chỉ hiện popup cho sự kiện mới, không báo lại tin cũ khi tải lại trang
+            const label = 'BÀN ' + o.table;
+            const who = o.who || 'thu ngân';
+            const cur = billState[o.table];
+
+            if (o.t === 'done' || o.t === 'claim' || o.t === 'undo' || o.t === 'unclaim') {
+                if (cur && cur.at > at) return;          // đã có thông tin mới hơn
+                if (o.t === 'done') {
+                    markBill(o.table, 'done', who, at);
+                    if (fresh) ackToast('✅ ' + label + ' đã vào bill — ' + who + ' (sau ' + ackWaitText(o.sec) + ')', 'ok', 7000);
+                } else if (o.t === 'claim') {
+                    markBill(o.table, 'claimed', who, at);
+                    if (fresh) ackToast('🟡 ' + label + ': ' + who + ' đang nhập bill', 'info', 5000);
+                } else {
+                    markBill(o.table, 'wait', who, at);
+                    if (fresh) ackToast('↩ ' + label + ': thu ngân hoàn lại, bill chưa xong', 'info', 6000);
+                }
+            } else if (fresh && o.t === 'out') {
+                ackToast('🚫 ' + label + ': HẾT MÓN — ' + (o.item || '') + '. Báo khách chọn món khác.', 'alert', 15000);
+                ackAlert();
+            } else if (fresh && o.t === 'ask') {
+                ackToast('❓ ' + label + ': thu ngân hỏi lại order, kiểm tra với khách.', 'alert', 12000);
+                ackAlert();
+            } else if (fresh && o.t === 'nock') {
+                ackToast('⚠️ ' + label + ': thu ngân chưa thấy tiền CK, kiểm tra với khách.', 'alert', 15000);
+                ackAlert();
+            }
+        }
+
+        function connectAck() {
+            try {
+                // since=10m: lấy lại sự kiện vừa bỏ lỡ (mất mạng, tải lại trang); trùng id thì bỏ qua.
+                const es = new EventSource(NTFY_URL + '/' + NTFY_ACK_TOPIC + '/sse?since=10m');
+                es.onmessage = function (ev) { try { handleAck(JSON.parse(ev.data)); } catch (e) {} };
+            } catch (e) { console.warn('ack lỗi:', e); }
+        }
+        window.addEventListener('load', connectAck);
 
         function saveModalChanges() {
             if (!activeTableId) return;
