@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+it<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -3431,8 +3431,8 @@
 
         function saveBill() { try { localStorage.setItem('tys_bill_state', JSON.stringify(billState)); } catch (e) {} }
 
-        function markBill(tableId, s, who, at) {
-            billState[tableId] = { s: s, who: who || '', at: at || Date.now() };
+        function markBill(tableId, s, who, extra) {
+            billState[tableId] = Object.assign({ s: s, who: who || '', at: Date.now() }, extra || {});
             saveBill();
             try { renderTableNode(parseInt(tableId, 10)); } catch (e) {}
         }
@@ -3488,6 +3488,9 @@
             return m ? m + 'p' + (sec % 60) + 's' : sec + 's';
         }
 
+        var ackInitial = true;   // true trong vài giây đầu sau khi kết nối: tin đến lúc này là tin cũ được phát lại
+        var ackTimer = null;
+
         function handleAck(m) {
             if (!m || m.event !== 'message' || ackSeen.has(m.id)) return;
             ackSeen.add(m.id);
@@ -3495,31 +3498,36 @@
             try { o = JSON.parse(m.message); } catch (e) { return; }
             if (!o || !o.table) return;
 
-            const at = o.at || (m.time * 1000);
-            const fresh = Date.now() - at < 90000;      // chỉ hiện popup cho sự kiện mới, không báo lại tin cũ khi tải lại trang
+            // Không so đồng hồ điện thoại với đồng hồ server (chỉ lệch vài giây là tin "đã nhập" bị bỏ sót).
+            // Tin đến sau khi đã kết nối xong là tin mới (live), luôn được áp dụng.
+            const live = !ackInitial;
             const label = 'BÀN ' + o.table;
             const who = o.who || 'thu ngân';
             const cur = billState[o.table];
+            const extra = { src: 'ack', st: m.time || 0 };
 
             if (o.t === 'done' || o.t === 'claim' || o.t === 'undo' || o.t === 'unclaim') {
-                if (cur && cur.at > at) return;          // đã có thông tin mới hơn
-                if (o.t === 'done') {
-                    markBill(o.table, 'done', who, at);
-                    if (fresh) ackToast('✅ ' + label + ' đã vào bill — ' + who + ' (sau ' + ackWaitText(o.sec) + ')', 'ok', 7000);
-                } else if (o.t === 'claim') {
-                    markBill(o.table, 'claimed', who, at);
-                    if (fresh) ackToast('🟡 ' + label + ': ' + who + ' đang nhập bill', 'info', 5000);
-                } else {
-                    markBill(o.table, 'wait', who, at);
-                    if (fresh) ackToast('↩ ' + label + ': thu ngân hoàn lại, bill chưa xong', 'info', 6000);
+                if (!live && cur) {
+                    if (cur.src !== 'ack') return;            // máy này vừa gửi order, không để tin cũ đè lên
+                    if ((cur.st || 0) > (m.time || 0)) return; // chỉ nhận tin mới hơn tin đã có (cùng đồng hồ server)
                 }
-            } else if (fresh && o.t === 'out') {
+                if (o.t === 'done') {
+                    markBill(o.table, 'done', who, extra);
+                    if (live) ackToast('✅ ' + label + ' đã vào bill — ' + who + ' (sau ' + ackWaitText(o.sec) + ')', 'ok', 7000);
+                } else if (o.t === 'claim') {
+                    markBill(o.table, 'claimed', who, extra);
+                    if (live) ackToast('🟡 ' + label + ': ' + who + ' đang nhập bill', 'info', 5000);
+                } else {
+                    markBill(o.table, 'wait', who, extra);
+                    if (live) ackToast('↩ ' + label + ': thu ngân hoàn lại, bill chưa xong', 'info', 6000);
+                }
+            } else if (live && o.t === 'out') {
                 ackToast('🚫 ' + label + ': HẾT MÓN — ' + (o.item || '') + '. Báo khách chọn món khác.', 'alert', 15000);
                 ackAlert();
-            } else if (fresh && o.t === 'ask') {
+            } else if (live && o.t === 'ask') {
                 ackToast('❓ ' + label + ': thu ngân hỏi lại order, kiểm tra với khách.', 'alert', 12000);
                 ackAlert();
-            } else if (fresh && o.t === 'nock') {
+            } else if (live && o.t === 'nock') {
                 ackToast('⚠️ ' + label + ': thu ngân chưa thấy tiền CK, kiểm tra với khách.', 'alert', 15000);
                 ackAlert();
             }
@@ -3529,6 +3537,9 @@
             try {
                 // since=10m: lấy lại sự kiện vừa bỏ lỡ (mất mạng, tải lại trang); trùng id thì bỏ qua.
                 const es = new EventSource(NTFY_URL + '/' + NTFY_ACK_TOPIC + '/sse?since=10m');
+                es.onopen = function () {
+                    if (ackInitial && !ackTimer) ackTimer = setTimeout(function () { ackInitial = false; }, 3000);
+                };
                 es.onmessage = function (ev) { try { handleAck(JSON.parse(ev.data)); } catch (e) {} };
             } catch (e) { console.warn('ack lỗi:', e); }
         }
