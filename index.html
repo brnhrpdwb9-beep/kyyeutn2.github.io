@@ -1,4 +1,4 @@
-it<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -3488,61 +3488,97 @@ it<!DOCTYPE html>
             return m ? m + 'p' + (sec % 60) + 's' : sec + 's';
         }
 
-        var ackInitial = true;   // true trong vài giây đầu sau khi kết nối: tin đến lúc này là tin cũ được phát lại
-        var ackTimer = null;
+        var ackEs = null, ackRetry = null, ackDown = false, ackShownOnce = false, ackLastBeat = 0;
+        const ACK_SEEN_KEY = 'tys_ack_seen', ACK_ALIVE_KEY = 'tys_ack_alive';
+
+        // Nhớ các tin đã xử lý (kể cả sau khi tải lại trang) để nối lại có thể phát lại tin bị lỡ mà không báo trùng.
+        (function () { try { JSON.parse(localStorage.getItem(ACK_SEEN_KEY) || '[]').forEach(function (id) { ackSeen.add(id); }); } catch (e) {} })();
+        function ackRememberSeen(id) {
+            try {
+                const arr = JSON.parse(localStorage.getItem(ACK_SEEN_KEY) || '[]');
+                arr.push(id);
+                localStorage.setItem(ACK_SEEN_KEY, JSON.stringify(arr.slice(-80)));
+            } catch (e) {}
+        }
+
+        // Lần cuối kết nối còn sống (giây). Nối lại thì xin ntfy phát lại mọi tin từ mốc này, nên không lỡ tin khi điện thoại khóa màn hình.
+        function ackBeat() {
+            ackLastBeat = Date.now();
+            try { localStorage.setItem(ACK_ALIVE_KEY, String(Math.floor(ackLastBeat / 1000))); } catch (e) {}
+        }
+        function ackSince() {
+            let t = 0;
+            try { t = parseInt(localStorage.getItem(ACK_ALIVE_KEY) || '0', 10) || 0; } catch (e) {}
+            const now = Math.floor(Date.now() / 1000);
+            if (!t || now - t > 15 * 60) return '5m';
+            return String(Math.max(0, t - 15));   // lùi 15s cho chắc, tin trùng đã có ackSeen chặn
+        }
 
         function handleAck(m) {
             if (!m || m.event !== 'message' || ackSeen.has(m.id)) return;
             ackSeen.add(m.id);
+            ackRememberSeen(m.id);
+            if (m.time && Date.now() - m.time * 1000 > 15 * 60000) return;   // tin quá cũ thì bỏ
             let o;
             try { o = JSON.parse(m.message); } catch (e) { return; }
             if (!o || !o.table) return;
 
-            // Không so đồng hồ điện thoại với đồng hồ server (chỉ lệch vài giây là tin "đã nhập" bị bỏ sót).
-            // Tin đến sau khi đã kết nối xong là tin mới (live), luôn được áp dụng.
-            const live = !ackInitial;
             const label = 'BÀN ' + o.table;
             const who = o.who || 'thu ngân';
-            const cur = billState[o.table];
             const extra = { src: 'ack', st: m.time || 0 };
 
-            if (o.t === 'done' || o.t === 'claim' || o.t === 'undo' || o.t === 'unclaim') {
-                if (!live && cur) {
-                    if (cur.src !== 'ack') return;            // máy này vừa gửi order, không để tin cũ đè lên
-                    if ((cur.st || 0) > (m.time || 0)) return; // chỉ nhận tin mới hơn tin đã có (cùng đồng hồ server)
-                }
-                if (o.t === 'done') {
-                    markBill(o.table, 'done', who, extra);
-                    if (live) ackToast('✅ ' + label + ' đã vào bill — ' + who + ' (sau ' + ackWaitText(o.sec) + ')', 'ok', 7000);
-                } else if (o.t === 'claim') {
-                    markBill(o.table, 'claimed', who, extra);
-                    if (live) ackToast('🟡 ' + label + ': ' + who + ' đang nhập bill', 'info', 5000);
-                } else {
-                    markBill(o.table, 'wait', who, extra);
-                    if (live) ackToast('↩ ' + label + ': thu ngân hoàn lại, bill chưa xong', 'info', 6000);
-                }
-            } else if (live && o.t === 'out') {
+            if (o.t === 'done') {
+                markBill(o.table, 'done', who, extra);
+                ackToast('✅ ' + label + ' đã vào bill — ' + who + ' (sau ' + ackWaitText(o.sec) + ')', 'ok', 7000);
+            } else if (o.t === 'claim') {
+                markBill(o.table, 'claimed', who, extra);
+                ackToast('🟡 ' + label + ': ' + who + ' đang nhập bill', 'info', 5000);
+            } else if (o.t === 'undo' || o.t === 'unclaim') {
+                markBill(o.table, 'wait', who, extra);
+                ackToast('↩ ' + label + ': thu ngân hoàn lại, bill chưa xong', 'info', 6000);
+            } else if (o.t === 'out') {
                 ackToast('🚫 ' + label + ': HẾT MÓN — ' + (o.item || '') + '. Báo khách chọn món khác.', 'alert', 15000);
                 ackAlert();
-            } else if (live && o.t === 'ask') {
+            } else if (o.t === 'ask') {
                 ackToast('❓ ' + label + ': thu ngân hỏi lại order, kiểm tra với khách.', 'alert', 12000);
                 ackAlert();
-            } else if (live && o.t === 'nock') {
+            } else if (o.t === 'nock') {
                 ackToast('⚠️ ' + label + ': thu ngân chưa thấy tiền CK, kiểm tra với khách.', 'alert', 15000);
                 ackAlert();
             }
         }
 
         function connectAck() {
+            try { if (ackEs) ackEs.close(); } catch (e) {}
+            clearTimeout(ackRetry);
             try {
-                // since=10m: lấy lại sự kiện vừa bỏ lỡ (mất mạng, tải lại trang); trùng id thì bỏ qua.
-                const es = new EventSource(NTFY_URL + '/' + NTFY_ACK_TOPIC + '/sse?since=10m');
-                es.onopen = function () {
-                    if (ackInitial && !ackTimer) ackTimer = setTimeout(function () { ackInitial = false; }, 3000);
+                ackEs = new EventSource(NTFY_URL + '/' + NTFY_ACK_TOPIC + '/sse?since=' + encodeURIComponent(ackSince()));
+                ackEs.onopen = function () {
+                    ackBeat();
+                    if (!ackShownOnce || ackDown) ackToast('🔔 Đã kết nối nhận báo từ thu ngân', 'info', 2500);
+                    ackShownOnce = true; ackDown = false;
                 };
-                es.onmessage = function (ev) { try { handleAck(JSON.parse(ev.data)); } catch (e) {} };
-            } catch (e) { console.warn('ack lỗi:', e); }
+                // ntfy gửi 'keepalive' mỗi ~45s: dùng làm nhịp tim để biết kết nối còn sống.
+                ackEs.addEventListener('keepalive', ackBeat);
+                ackEs.addEventListener('open', ackBeat);
+                ackEs.onmessage = function (ev) { ackBeat(); try { handleAck(JSON.parse(ev.data)); } catch (e) {} };
+                ackEs.onerror = function () {
+                    try { ackEs.close(); } catch (e) {}
+                    if (!ackDown) { ackDown = true; ackToast('⚠️ Mất kết nối nhận báo từ thu ngân, đang thử lại...', 'info', 3000); }
+                    ackRetry = setTimeout(connectAck, 3000);
+                };
+            } catch (e) { ackRetry = setTimeout(connectAck, 5000); }
         }
+        // Điện thoại khóa màn hình / chuyển app (vd Telegram) có thể làm đứt kết nối mà KHÔNG báo lỗi → nối lại khi quay về trang.
+        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') connectAck(); });
+        window.addEventListener('pageshow', function () { connectAck(); });
+        window.addEventListener('focus', function () { if (Date.now() - ackLastBeat > 60000) connectAck(); });
+        window.addEventListener('online', function () { connectAck(); });
+        // Giám sát: quá ~100s không có nhịp tim nào thì coi là đã đứt ngầm, nối lại.
+        setInterval(function () {
+            if (document.visibilityState !== 'visible') return;
+            if (ackLastBeat && Date.now() - ackLastBeat > 100000) connectAck();
+        }, 20000);
         window.addEventListener('load', connectAck);
 
         function saveModalChanges() {
