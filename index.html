@@ -3232,6 +3232,11 @@
         const NTFY_URL = 'https://ntfy.sh';
         const NTFY_TOPIC = 'tys-order-ad394398934dc009';
 
+        // ---- Telegram (chạy SONG SONG với ntfy: thu ngân bấm "ĐÃ NHẬP" ngay trong tin nhắn) ----
+        // Để trống '' nếu muốn tắt Telegram và chỉ dùng ntfy.
+        const NOTIFY_WORKER_URL = 'https://falling-tooth-d67e.brnhrpdwb9.workers.dev';
+        const NOTIFY_KEY = '6dd81ad0b4ba8b3d5fc58d37';   // phải trùng với biến NOTIFY_KEY trong Worker
+
         // So sánh 2 danh sách món, trả về những món có ở `next` mà không có ở `prev`.
         // Dùng 2 chiều: (prev → next) = món thêm; (next → prev) = món bị hủy.
         function diffAddedItems(prev, next) {
@@ -3256,19 +3261,37 @@
             return [...map.values()].map(g => g.qty + ' × ' + g.name);
         }
 
-        // Gửi 1 thông báo. Lỗi mạng: thử lại 1 lần sau 3 giây, không bao giờ làm hỏng thao tác đang làm.
+        // Gửi 1 thông báo tới cả ntfy và Telegram (song song, độc lập nhau: một bên lỗi không ảnh hưởng bên kia).
+        // Lỗi mạng: thử lại 1 lần sau 3 giây, không bao giờ làm hỏng thao tác đang làm.
         function ntfySend(title, parts, priority) {
+            const message = parts.join('\n');
+
+            // 1) ntfy
             try {
                 const body = JSON.stringify({
                     topic: NTFY_TOPIC,
                     title: title,
-                    message: parts.join('\n'),
+                    message: message,
                     priority: priority || 4
                 });
                 const send = () => fetch(NTFY_URL, { method: 'POST', body: body });
                 send().catch(() => setTimeout(() => send().catch(e => console.warn('ntfy lỗi:', e)), 3000));
             } catch (e) {
                 console.warn('ntfySend lỗi:', e);
+            }
+
+            // 2) Telegram (qua Worker)
+            if (NOTIFY_WORKER_URL) {
+                try {
+                    const tgBody = JSON.stringify({ key: NOTIFY_KEY, title: title, message: message, priority: priority || 4 });
+                    // text/plain để trình duyệt không cần hỏi trước (preflight) khi gọi sang Worker.
+                    const tgSend = () => fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/notify', {
+                        method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: tgBody
+                    }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); });
+                    tgSend().catch(() => setTimeout(() => tgSend().catch(e => console.warn('telegram lỗi:', e)), 3000));
+                } catch (e) {
+                    console.warn('telegram lỗi:', e);
+                }
             }
         }
 
