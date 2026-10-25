@@ -1384,6 +1384,8 @@
         // Cập nhật Base Width và Height mới (scale 1.5x)
         const MAP_BASE_WIDTH = 2100;
         const MAP_BASE_HEIGHT = 1350;
+        const MAP_MIN_SCALE = 0.1;
+        const MAP_MAX_SCALE = 2.5;
         let scale = 1.0;
         let panX = 0;
         let panY = 0;
@@ -1430,7 +1432,7 @@
         function updateMapTransform() {
             const wrapper = document.getElementById('mapWrapper');
             if (!wrapper) return;
-            scale = Math.min(Math.max(0.1, scale), 2.5);
+            scale = Math.min(Math.max(MAP_MIN_SCALE, scale), MAP_MAX_SCALE);
             const cx = MAP_BASE_WIDTH / 2;
             const cy = MAP_BASE_HEIGHT / 2;
             wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${scale}) translate(${cx}px, ${cy}px) rotate(180deg) translate(${-cx}px, ${-cy}px)`;
@@ -1459,13 +1461,14 @@
 
             container.addEventListener('wheel', (e) => {
                 e.preventDefault();
-                const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
                 const rect = container.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left;
                 const mouseY = e.clientY - rect.top;
+                const newScale = Math.min(Math.max(MAP_MIN_SCALE, scale * (e.deltaY < 0 ? 1.1 : 0.9)), MAP_MAX_SCALE);
+                const zoomFactor = newScale / scale;
                 panX = mouseX - (mouseX - panX) * zoomFactor;
                 panY = mouseY - (mouseY - panY) * zoomFactor;
-                scale *= zoomFactor;
+                scale = newScale;
                 updateMapTransform();
             }, { passive: false });
 
@@ -1485,9 +1488,14 @@
 
             window.addEventListener('mouseup', () => { isDragging = false; });
 
+            // Trạng thái pinch: điểm giữa 2 ngón (theo tọa độ container) + pan lúc bắt đầu
+            let pinchMid0 = { x: 0, y: 0 };
+            let pinchPan0 = { x: 0, y: 0 };
+
             container.addEventListener('touchstart', (e) => {
                 if (e.touches.length === 1) {
-                    if (e.target.closest('.table-btn') || e.target.closest('button')) return;
+                    // Bàn (.table-btn) vẫn cho kéo map; chỉ bỏ qua các nút khác (VD: nút thu tiền nhanh)
+                    if (e.target.closest('button:not(.table-btn)')) return;
                     isDragging = true;
                     startX = e.touches[0].clientX - panX;
                     startY = e.touches[0].clientY - panY;
@@ -1498,6 +1506,12 @@
                         e.touches[0].clientY - e.touches[1].clientY
                     );
                     initialScale = scale;
+                    const rect = container.getBoundingClientRect();
+                    pinchMid0 = {
+                        x: (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left,
+                        y: (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top
+                    };
+                    pinchPan0 = { x: panX, y: panY };
                 }
             }, { passive: true });
 
@@ -1511,15 +1525,30 @@
                         e.touches[0].clientX - e.touches[1].clientX,
                         e.touches[0].clientY - e.touches[1].clientY
                     );
-                    const zoomRatio = currentDist / initialPinchDistance;
-                    scale = initialScale * zoomRatio;
+                    const rect = container.getBoundingClientRect();
+                    const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+                    const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+                    // Kẹp scale trước khi bù pan để không bị trôi khi chạm giới hạn zoom
+                    const newScale = Math.min(Math.max(MAP_MIN_SCALE, initialScale * (currentDist / initialPinchDistance)), MAP_MAX_SCALE);
+                    const ratio = newScale / initialScale;
+                    // Điểm map nằm dưới trung điểm lúc bắt đầu phải luôn nằm dưới trung điểm hiện tại
+                    panX = midX - (pinchMid0.x - pinchPan0.x) * ratio;
+                    panY = midY - (pinchMid0.y - pinchPan0.y) * ratio;
+                    scale = newScale;
                     updateMapTransform();
                 }
             }, { passive: true });
 
             container.addEventListener('touchend', (e) => {
                 if (e.touches.length < 2) initialPinchDistance = null;
-                if (e.touches.length === 0) isDragging = false;
+                if (e.touches.length === 0) {
+                    isDragging = false;
+                } else if (e.touches.length === 1) {
+                    // Còn 1 ngón sau khi zoom: tiếp tục kéo từ vị trí hiện tại, không bị giật
+                    isDragging = true;
+                    startX = e.touches[0].clientX - panX;
+                    startY = e.touches[0].clientY - panY;
+                }
             });
         }
 
@@ -1579,6 +1608,12 @@
         };
         let lastHistoryUndo = null;   // để "Hoàn tác" trả cả lịch sử về như cũ
 
+        // Bản sao gọn của 1 món (giữ ghi chú nếu có) dùng khi lưu lịch sử / chốt ca.
+        function keepItem(i) {
+            const o = { name: i.name, price: i.price };
+            if (i.note) o.note = i.note;
+            return o;
+        }
         function escapeHtml(str) {
             return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         }
@@ -1674,7 +1709,7 @@
             trackHistory(id);
             historyData.entries.push({
                 id, tableId,
-                items: (table.items || []).map(i => ({ name: i.name, price: i.price })),
+                items: (table.items || []).map(keepItem),
                 total: table.total || 0,
                 paymentMethod: table.paymentMethod || 'Tiền mặt',
                 note: table.note || '',
@@ -1701,7 +1736,7 @@
                 } else {
                     const e = findHistoryEntry(table.histId);
                     if (e) {
-                        e.items = (table.items || []).map(i => ({ name: i.name, price: i.price }));
+                        e.items = (table.items || []).map(keepItem);
                         e.total = table.total || 0;
                         e.paymentMethod = table.paymentMethod || 'Tiền mặt';
                         e.note = table.note || '';
@@ -1768,7 +1803,7 @@
             const now = Date.now();
             return getUnpaidTables().map(t => ({
                 tableId: t.id,
-                items: (t.items || []).map(i => ({ name: i.name, price: i.price })),
+                items: (t.items || []).map(keepItem),
                 total: t.total || 0,
                 note: t.note || '',
                 startTime: t.startTime || null,
@@ -1784,7 +1819,7 @@
                 .map(t => ({
                     tableId: t.id,
                     status: t.status,
-                    items: (t.items || []).map(i => ({ name: i.name, price: i.price })),
+                    items: (t.items || []).map(keepItem),
                     total: t.total || 0,
                     paymentMethod: t.paymentMethod || 'Tiền mặt',
                     note: t.note || '',
@@ -2480,11 +2515,19 @@
         let longPressFired = false;
         let startTouchPos = { x: 0, y: 0 };
         let lastTouchEndAt = 0;
+        let tapMoved = false;               // true nếu lần chạm này là vuốt/kéo/zoom → KHÔNG được mở bàn
+        const TAP_MOVE_THRESHOLD = 10;      // px: di chuyển quá mức này thì coi là vuốt, không phải chạm
 
         function attachTableGestureEvents(btnElement, tableId) {
             btnElement.addEventListener('touchstart', (e) => {
                 const data = tablesData[tableId];
                 longPressFired = false;
+                tapMoved = e.touches.length > 1;   // 2 ngón (zoom) → không phải chạm
+                if (tapMoved && touchStartTimer) {
+                    clearTimeout(touchStartTimer);
+                    touchStartTimer = null;
+                    btnElement.classList.remove('holding-quick-pay', 'holding-quick-empty');
+                }
                 const touch = e.touches[0];
                 startTouchPos = { x: touch.clientX, y: touch.clientY };
 
@@ -2501,16 +2544,27 @@
             }, { passive: true });
 
             btnElement.addEventListener('touchmove', (e) => {
-                if (!touchStartTimer) return;
                 const touch = e.touches[0];
                 const dx = Math.abs(touch.clientX - startTouchPos.x);
                 const dy = Math.abs(touch.clientY - startTouchPos.y);
 
-                if (dx > 8 || dy > 8) {
-                    clearTimeout(touchStartTimer);
-                    touchStartTimer = null;
+                if (e.touches.length > 1 || dx > TAP_MOVE_THRESHOLD || dy > TAP_MOVE_THRESHOLD) {
+                    tapMoved = true;   // đã vuốt → hủy mọi khả năng mở bàn / thu tiền nhanh
+                    if (touchStartTimer) {
+                        clearTimeout(touchStartTimer);
+                        touchStartTimer = null;
+                    }
                     btnElement.classList.remove('holding-quick-pay', 'holding-quick-empty');
                 }
+            }, { passive: true });
+
+            btnElement.addEventListener('touchcancel', () => {
+                tapMoved = true;
+                if (touchStartTimer) {
+                    clearTimeout(touchStartTimer);
+                    touchStartTimer = null;
+                }
+                btnElement.classList.remove('holding-quick-pay', 'holding-quick-empty');
             }, { passive: true });
 
             btnElement.addEventListener('touchend', (e) => {
@@ -2523,6 +2577,13 @@
 
                 if (longPressFired) {
                     e.preventDefault();
+                    return;
+                }
+
+                // Vuốt/kéo map hoặc zoom 2 ngón: không mở chi tiết bàn, không tính là đúp
+                if (tapMoved) {
+                    lastTapTimestamp = 0;
+                    lastTapTableId = null;
                     return;
                 }
 
@@ -2974,7 +3035,8 @@
             syncPaymentMethodButtons();
 
             selectedStatusInModal = data.status || 'empty';
-            modalItems = [...(data.items || [])];
+            modalItems = (data.items || []).map(i => ({ ...i }));   // clone: sửa note chưa lưu thì không ảnh hưởng dữ liệu gốc
+            editingNoteIdx = null;
 
             renderBestSellerGrid();
             updateModalStatusButtons();
@@ -3192,8 +3254,39 @@
         }
 
         function removeModalItem(index) {
+            editingNoteIdx = null;
             modalItems.splice(index, 1);
             renderModalOrderList();
+        }
+
+        // ---- Ghi chú riêng cho từng món (VD: "ít đường", "không đá") ----
+        // Mặc định chỉ hiện 1 icon nhỏ cạnh giá; chỉ khi món CÓ note mới hiện thêm 1 dòng chữ nhỏ bên dưới.
+        let editingNoteIdx = null;
+        const ITEM_NOTE_MAX = 60;
+
+        function editItemNote(idx) {
+            editingNoteIdx = idx;
+            renderModalOrderList();
+            const inp = document.getElementById('itemNoteInput');
+            if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+        }
+        function onItemNoteInput(idx, v) {
+            const it = modalItems[idx];
+            if (!it) return;
+            const t = String(v || '').trim().slice(0, ITEM_NOTE_MAX);
+            if (t) it.note = t; else delete it.note;
+        }
+        function finishItemNote(idx) {
+            if (editingNoteIdx !== idx) return;
+            editingNoteIdx = null;
+            renderModalOrderList();
+        }
+        function onItemNoteKeydown(e, idx) {
+            if (e.key === 'Enter' || e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+                finishItemNote(idx);
+            }
         }
 
         function renderModalOrderList() {
@@ -3205,15 +3298,24 @@
             } else {
                 modalItems.forEach((item, idx) => {
                     sum += item.price;
+                    const editing = editingNoteIdx === idx;
+                    const hasNote = !!item.note;
                     const row = document.createElement('div');
-                    row.className = "flex items-center justify-between bg-stone-900 px-2.5 py-1 rounded border border-stone-800";
+                    row.className = "bg-stone-900 px-2.5 py-1 rounded border border-stone-800";
                     row.innerHTML = `
-                        <span class="text-stone-200 font-medium truncate max-w-[200px]">${item.name}</span>
-                        <div class="flex items-center gap-2 shrink-0">
-                            <span class="font-bold text-tys-500">${item.price}k</span>
-                            <button type="button" onclick="removeModalItem(${idx})" class="text-stone-500 hover:text-brick-400 transition px-1"><i class="fa-solid fa-xmark"></i></button>
+                        <div class="flex items-center justify-between">
+                            <span class="text-stone-200 font-medium truncate max-w-[200px]">${item.name}</span>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <button type="button" onclick="editItemNote(${idx})" aria-label="Ghi chú món" title="Ghi chú món" class="px-1 text-[11px] transition ${hasNote ? 'text-tys-400' : 'text-stone-600 hover:text-stone-300'}"><i class="${hasNote ? 'fa-solid' : 'fa-regular'} fa-comment-dots"></i></button>
+                                <span class="font-bold text-tys-500">${item.price}k</span>
+                                <button type="button" onclick="removeModalItem(${idx})" class="text-stone-500 hover:text-brick-400 transition px-1"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
                         </div>
+                        ${editing
+                            ? `<input type="text" id="itemNoteInput" maxlength="${ITEM_NOTE_MAX}" placeholder="Ghi chú món (VD: ít đường, không đá)" oninput="onItemNoteInput(${idx}, this.value)" onkeydown="onItemNoteKeydown(event, ${idx})" onblur="setTimeout(() => finishItemNote(${idx}), 200)" class="w-full mt-1 mb-0.5 bg-espresso-950 border border-tys-900 rounded px-2 py-1 text-[11px] text-stone-100 focus:outline-none focus:border-tys-600 placeholder-stone-600">`
+                            : (hasNote ? `<div onclick="editItemNote(${idx})" class="text-[10px] leading-tight text-tys-400 italic truncate cursor-pointer">↳ ${escapeHtml(item.note)}</div>` : '')}
                     `;
+                    if (editing) row.querySelector('input').value = item.note || '';
                     container.appendChild(row);
                 });
             }
@@ -3239,13 +3341,19 @@
 
         // So sánh 2 danh sách món, trả về những món có ở `next` mà không có ở `prev`.
         // Dùng 2 chiều: (prev → next) = món thêm; (next → prev) = món bị hủy.
+        // Ghép theo tên; ưu tiên ghép món trùng cả ghi chú trước, để món MỚI thêm (kèm note) được nhận đúng.
+        // Món chỉ đổi ghi chú (cùng tên, cùng số lượng) không tính là món mới / món hủy.
         function diffAddedItems(prev, next) {
-            const cnt = {};
-            (prev || []).forEach(i => cnt[i.name] = (cnt[i.name] || 0) + 1);
+            const pool = (prev || []).map(i => ({ i, used: false }));
+            const rest = [];
+            (next || []).forEach(n => {
+                const m = pool.find(p => !p.used && p.i.name === n.name && (p.i.note || '') === (n.note || ''));
+                if (m) m.used = true; else rest.push(n);
+            });
             const added = [];
-            (next || []).forEach(i => {
-                if (cnt[i.name] > 0) cnt[i.name]--;
-                else added.push(i);
+            rest.forEach(n => {
+                const m = pool.find(p => !p.used && p.i.name === n.name);
+                if (m) m.used = true; else added.push(n);
             });
             return added;
         }
@@ -3254,11 +3362,12 @@
         function ntfyGroupLines(items) {
             const map = new Map();
             items.forEach(i => {
-                const g = map.get(i.name) || { name: i.name, qty: 0 };
+                const key = i.name + '|' + (i.note || '');
+                const g = map.get(key) || { name: i.name, note: i.note || '', qty: 0 };
                 g.qty++;
-                map.set(i.name, g);
+                map.set(key, g);
             });
-            return [...map.values()].map(g => g.qty + ' × ' + g.name);
+            return [...map.values()].map(g => g.qty + ' × ' + g.name + (g.note ? '  📝 ' + g.note : ''));
         }
 
         // Gửi 1 thông báo tới cả ntfy và Telegram (song song, độc lập nhau: một bên lỗi không ảnh hưởng bên kia).
@@ -3634,7 +3743,7 @@
             if (!t || !['unpaid', 'paid'].includes(t.status)) return null;
             const items = (Array.isArray(t.items) ? t.items : [])
                 .filter(i => i && typeof i.name === 'string' && isFinite(Number(i.price)))
-                .map(i => ({ name: i.name.slice(0, 80), price: Number(i.price) }));
+                .map(i => { const o = { name: i.name.slice(0, 80), price: Number(i.price) }; if (typeof i.note === 'string' && i.note.trim()) o.note = i.note.trim().slice(0, 60); return o; });
             let total = Number(t.total);
             if (!isFinite(total)) total = items.reduce((a, i) => a + i.price, 0);
             const st = Number(t.startTime);
