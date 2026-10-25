@@ -3598,6 +3598,9 @@
         }
 
         var ackEs = null, ackRetry = null, ackDown = false, ackShownOnce = false, ackLastBeat = 0;
+        // Tạm ẩn 2 thông báo trạng thái "Đã kết nối / Mất kết nối nhận báo từ thu ngân".
+        // Kết nối vẫn chạy bình thường; muốn hiện lại thì đổi thành true.
+        const ACK_SHOW_CONN_STATUS = false;
         const ACK_SEEN_KEY = 'tys_ack_seen', ACK_ALIVE_KEY = 'tys_ack_alive';
 
         // Nhớ các tin đã xử lý (kể cả sau khi tải lại trang) để nối lại có thể phát lại tin bị lỡ mà không báo trùng.
@@ -3664,7 +3667,7 @@
                 ackEs = new EventSource(NTFY_URL + '/' + NTFY_ACK_TOPIC + '/sse?since=' + encodeURIComponent(ackSince()));
                 ackEs.onopen = function () {
                     ackBeat();
-                    if (!ackShownOnce || ackDown) ackToast('🔔 Đã kết nối nhận báo từ thu ngân', 'info', 2500);
+                    if (ACK_SHOW_CONN_STATUS && (!ackShownOnce || ackDown)) ackToast('🔔 Đã kết nối nhận báo từ thu ngân', 'info', 2500);
                     ackShownOnce = true; ackDown = false;
                 };
                 // ntfy gửi 'keepalive' mỗi ~45s: dùng làm nhịp tim để biết kết nối còn sống.
@@ -3673,7 +3676,7 @@
                 ackEs.onmessage = function (ev) { ackBeat(); try { handleAck(JSON.parse(ev.data)); } catch (e) {} };
                 ackEs.onerror = function () {
                     try { ackEs.close(); } catch (e) {}
-                    if (!ackDown) { ackDown = true; ackToast('⚠️ Mất kết nối nhận báo từ thu ngân, đang thử lại...', 'info', 3000); }
+                    if (!ackDown) { ackDown = true; if (ACK_SHOW_CONN_STATUS) ackToast('⚠️ Mất kết nối nhận báo từ thu ngân, đang thử lại...', 'info', 3000); }
                     ackRetry = setTimeout(connectAck, 3000);
                 };
             } catch (e) { ackRetry = setTimeout(connectAck, 5000); }
