@@ -3656,8 +3656,7 @@
         }
 
         // ---- Các tình huống trước đây app KHÔNG gửi gì cho thu ngân ----
-        function itemsSig(items) { return (items || []).map(function (i) { return i.name + '|' + (i.note || ''); }).sort().join('
-'); }
+        function itemsSig(items) { return (items || []).map(function (i) { return i.name + '|' + (i.note || ''); }).sort().join('\n'); }
 
         // Hủy cả bàn khi khách chưa trả (bill đã nhập bên thu ngân cần xóa). Trả về true nếu đã gửi.
         function notifyTableCancelled(tableId, prevStatus, prevItems, prevTotal) {
@@ -3665,8 +3664,7 @@
                 if (prevStatus !== 'unpaid' || !(prevItems && prevItems.length)) return false;
                 ntfySend('🗑️ BÀN ' + tableId + ' · HỦY BÀN · ' + prevItems.length + ' món', [
                     '❌ Hủy CẢ BÀN — xóa bill:',
-                    ntfyGroupLines(prevItems).join('
-'),
+                    ntfyGroupLines(prevItems).join('\n'),
                     '━━━━━━━━━━━━',
                     '🧾 ' + prevItems.length + ' món · ' + fmtMoney(prevTotal),
                     '🕒 ' + fmtTime(Date.now())
@@ -3684,9 +3682,7 @@
                 if ((prev.note || '') !== (table.note || '')) lines.push('📝 Ghi chú bàn: ' + (table.note ? table.note : '(đã xóa)'));
                 if (itemsSig(prev.items) !== itemsSig(table.items)) {
                     const withNote = (table.items || []).filter(function (i) { return i.note; });
-                    lines.push('📝 Ghi chú món:' + (withNote.length ? '
-' + ntfyGroupLines(withNote).join('
-') : ' (đã xóa)'));
+                    lines.push('📝 Ghi chú món:' + (withNote.length ? '\n' + ntfyGroupLines(withNote).join('\n') : ' (đã xóa)'));
                 }
                 if (!lines.length) return false;
                 ntfySend('✏️ BÀN ' + tableId + ' · CẬP NHẬT', lines.concat([
@@ -3872,28 +3868,9 @@
             }
         }
 
-        // THANH TOÁN: bàn vừa chuyển sang "Đã trả" (hoặc bị mở lại thành "Chưa trả").
-        function notifyPayment(tableId, prevStatus, table) {
-            try {
-                if (!table) return;
-                const n = (table.items || []).length;
-                if (table.status === 'paid' && prevStatus !== 'paid') {
-                    ntfySend('🟢 BÀN ' + tableId + ' · ĐÃ TRẢ · ' + fmtMoney(table.total), [
-                        (table.paymentMethod === 'Chuyển khoản QR' ? '📱 CK VietQR' : '💵 Tiền mặt'),
-                        '🧾 ' + n + ' món',
-                        '🕒 ' + fmtTime(Date.now())
-                    ], 4);
-                } else if (prevStatus === 'paid' && table.status === 'unpaid') {
-                    ntfySend('↩️ BÀN ' + tableId + ' · MỞ LẠI · CHƯA TRẢ', [
-                        'Bàn được mở lại, chưa thanh toán.',
-                        '🧾 ' + n + ' món · ' + fmtMoney(table.total),
-                        '🕒 ' + fmtTime(Date.now())
-                    ], 5);
-                }
-            } catch (e) {
-                console.warn('notifyPayment lỗi:', e);
-            }
-        }
+        // THANH TOÁN: đã TẮT — không còn gửi thông báo "ĐÃ TRẢ" / "MỞ LẠI · CHƯA TRẢ" tới thu ngân (ntfy và Telegram).
+        // Giữ lại hàm rỗng để các nơi đang gọi notifyPayment(...) không bị lỗi.
+        function notifyPayment(tableId, prevStatus, table) { /* không gửi thông báo thanh toán */ }
 
         // CHUYỂN BÀN / GỘP BÀN. `source` là dữ liệu bàn nguồn TRƯỚC khi chuyển, `target` là bàn đích SAU khi chuyển.
         function notifyTransfer(mode, srcId, targetId, source, target) {
@@ -3935,13 +3912,7 @@
                         'Bàn ' + src + ' và bàn ' + tgt + ' trở lại như trước đó.',
                         '🕒 ' + fmtTime(Date.now())
                     ], 5);
-                } else if (undo.status === 'unpaid') {
-                    ntfySend('↩️ BÀN ' + undo.tableId + ' · HỦY THANH TOÁN', [
-                        'Vừa hoàn tác: bàn trở lại CHƯA TRẢ.',
-                        '🧾 ' + (undo.items || []).length + ' món · ' + fmtMoney(undo.total),
-                        '🕒 ' + fmtTime(Date.now())
-                    ], 5);
-                }
+                }   // hoàn tác thanh toán: không còn gửi "HỦY THANH TOÁN" (vì không còn báo "ĐÃ TRẢ")
             } catch (e) {
                 console.warn('notifyUndo lỗi:', e);
             }
