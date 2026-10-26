@@ -4068,6 +4068,34 @@
                 .catch(function (e) { console.warn('ack poll lỗi:', e && e.message); })
                 .then(function () { clearTimeout(timer); ackPollBusy = false; });
         }
+        // ---- ĐƯỜNG DỰ PHÒNG 2: hỏi thẳng Worker (Worker lưu tin của Telegram vào D1) — không đi qua ntfy nên không bị 429 ----
+        var wAckBusy = false, wAckLast = 0, wAckId = 0;
+        try { wAckId = parseInt(localStorage.getItem('tys_ack_wid') || '0', 10) || 0; } catch (e) {}
+        function ackPollWorker() {
+            if (!NOTIFY_WORKER_URL || wAckBusy) return;
+            wAckBusy = true;
+            const ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+            const timer = setTimeout(function () { try { if (ctl) ctl.abort(); } catch (e) {} }, 6000);
+            fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/acks?key=' + encodeURIComponent(NOTIFY_KEY) + '&since=' + wAckId, { signal: ctl ? ctl.signal : undefined, cache: 'no-store' })
+                .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+                .then(function (d) {
+                    if (!d || !d.ok) return;
+                    ackPollOkAt = Date.now();
+                    (d.rows || []).forEach(function (row) {
+                        if (row.id > wAckId) wAckId = row.id;
+                        if (!row.ack) return;
+                        try { handleAck({ event: 'message', id: 'w' + row.id, time: Math.floor(row.ts / 1000), message: JSON.stringify(row.ack) }); } catch (e) {}
+                    });
+                    try { localStorage.setItem('tys_ack_wid', String(wAckId)); } catch (e) {}
+                })
+                .catch(function (e) { console.warn('ack worker poll lỗi:', e && e.message); })
+                .then(function () { clearTimeout(timer); wAckBusy = false; });
+        }
+        setInterval(function () {
+            if (document.visibilityState !== 'visible') return;
+            const gap = ackHasPending() ? 2500 : 15000;   // Worker không bị giới hạn như ntfy nên hỏi dày hơn được
+            if (Date.now() - wAckLast >= gap) { wAckLast = Date.now(); ackPollWorker(); }
+        }, 1000);
         function ackHasPending() {
             return Object.keys(billState || {}).some(function (t) { const b = billState[t]; return b && (b.s === 'wait' || b.s === 'claimed') && tablesData[t] && tablesData[t].status !== 'empty'; });
         }
@@ -4133,6 +4161,13 @@
                 return;
             }
             if (a.t === 'ping') { guardOnPong(a.o || a); return; }
+            // Cùng 1 lần bấm của thu ngân có thể tới bằng 2 đường (ntfy + Worker): chỉ xử lý 1 lần
+            const aidRaw = a.o && a.o.aid;
+            if (aidRaw) {
+                const ak = 'aid:' + aidRaw;
+                if (ackSeen.has(ak)) return;
+                ackSeen.add(ak); ackRememberSeen(ak);
+            }
             // "đã nhập / đang nhập" giữ hiệu lực lâu (thu ngân có thể nhập trễ); các tin hỏi/hết món chỉ có ý nghĩa khi còn mới
             const keep = (a.t === 'done' || a.t === 'claim' || a.t === 'undo' || a.t === 'unclaim') ? 3 * 3600000 : 15 * 60000;
             if (ageMs > keep) return;
@@ -4218,7 +4253,7 @@
             } catch (e) { ackRetry = setTimeout(connectAck, 5000); }
         }
         // Điện thoại khóa màn hình / chuyển app (vd Telegram) có thể làm đứt kết nối mà KHÔNG báo lỗi → nối lại khi quay về trang.
-        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { connectAck(); ackPoll(); } });
+        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { connectAck(); ackPoll(); ackPollWorker(); } });
         window.addEventListener('pageshow', function () { connectAck(); ackPoll(); });
         window.addEventListener('focus', function () { if (Date.now() - ackLastBeat > 60000) connectAck(); });
         window.addEventListener('online', function () { connectAck(); ackPoll(); });
@@ -4227,7 +4262,7 @@
             if (document.visibilityState !== 'visible') return;
             if (ackLastBeat && Date.now() - ackLastBeat > 100000) connectAck();
         }, 20000);
-        window.addEventListener('load', function () { connectAck(); ackPoll(); });
+        window.addEventListener('load', function () { connectAck(); ackPoll(); ackPollWorker(); });
 
         function saveModalChanges() {
             if (!activeTableId) return;
