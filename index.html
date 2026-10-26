@@ -3460,18 +3460,8 @@
 
         // 2 nút bấm hiện ngay trên thông báo ntfy của thu ngân. Bấm = ntfy gửi 1 tin vào kênh "ack" mà app đang lắng nghe,
         // nên app biết ngay (không cần Telegram). "clear": true = bấm xong thông báo tự biến mất.
-        function guardActions(job) {
-            const ack = NTFY_URL + '/' + NTFY_ACK_TOPIC;
-            if (job.ping) {
-                return [{ action: 'http', label: '✅ NHẬN ĐƯỢC', url: ack, method: 'POST', body: JSON.stringify({ t: 'ping', id: job.ping, who: 'Thu ngân' }), clear: true }];
-            }
-            if (!job.ackTable) return undefined;
-            const at = job.ackAt || job.at;
-            return [
-                { action: 'http', label: '🟡 ĐANG NHẬP', url: ack, method: 'POST', body: JSON.stringify({ t: 'claim', table: job.ackTable, who: 'Thu ngân', at: at }), clear: false },
-                { action: 'http', label: '✅ ĐÃ NHẬP', url: ack, method: 'POST', body: JSON.stringify({ t: 'done', table: job.ackTable, who: 'Thu ngân', at: at }), clear: true }
-            ];
-        }
+        // Thông báo ntfy trên máy POS KHÔNG có nút bấm (thu ngân bấm nút ở Telegram). Giữ hàm để chỗ gọi không phải đổi.
+        function guardActions(job) { return undefined; }
 
         function outboxAttempt(job, ch) {
             const key = job.id + ch;
@@ -3650,13 +3640,12 @@
         // ---- Tin thử: kiểm tra đường truyền ntfy tới điện thoại thu ngân ----
         function guardTestPing() {
             const id = 'p' + Date.now().toString(36);
-            guardPing = { id: id, at: Date.now(), warned: false };
-            ntfySend('🔔 THỬ THÔNG BÁO · bấm nút để xác nhận', [
+            ntfySend('🔔 THỬ THÔNG BÁO', [
                 'Đây là tin thử từ máy phục vụ.',
-                'Thu ngân thấy tin này thì bấm ✅ NHẬN ĐƯỢC.',
+                'Thu ngân thấy tin này trên màn hình POS là đường truyền ổn.',
                 '🕒 ' + fmtTime(Date.now())
             ], 4, { label: 'Tin thử', ping: id, tg: false });
-            ackToast('📤 Đã gửi tin thử. Chờ thu ngân bấm "NHẬN ĐƯỢC" (tối đa ' + Math.round(GUARD.pingWait / 1000) + 's)...', 'info', 6000);
+            ackToast('📤 Đã gửi tin thử lên màn hình POS. Hỏi thu ngân có thấy không (không có nút xác nhận).', 'info', 7000);
         }
         // Nhận xác nhận tin thử (gọi từ handleAck)
         function guardOnPong(o) {
