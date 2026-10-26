@@ -3407,12 +3407,21 @@
                 const a = JSON.parse(localStorage.getItem(OUTBOX_KEY) || '[]');
                 const now = Date.now();
                 return (Array.isArray(a) ? a : []).filter(function (j) { return j && j.id && j.use && j.ok && j.gu && j.nx && j.tries && now - j.at < GUARD.pruneAge; })
-                    .map(function (j) { j.use.t = false; return j; });   // Telegram không còn nằm trong hộp thư đi
+                    .map(function (j) { if (j.sync === undefined) j.sync = false; return j; });
             } catch (e) { return []; }
         })();
 
         function outboxSave() { try { localStorage.setItem(OUTBOX_KEY, JSON.stringify(outbox.slice(-30))); } catch (e) {} }
         function jobAnyOk(j) { return !!((j.use.n && j.ok.n) || (j.use.t && j.ok.t)); }
+        // Đủ cả 2 kênh (ntfy + Telegram) đã tới? Kênh không dùng thì bỏ qua.
+        function jobAllOk(j) { return ['n', 't'].every(function (c) { return !j.use[c] || j.ok[c]; }); }
+        // Tên các kênh CHƯA tới (để cảnh báo "chỉ tới 1 kênh")
+        function jobMissing(j) {
+            const out = [];
+            if (j.use.n && !j.ok.n) out.push('ntfy (màn hình POS)');
+            if (j.use.t && !j.ok.t) out.push('Telegram');
+            return out;
+        }
 
         // 'sent' = đã tới ít nhất 1 kênh · 'sending' = vừa gửi, đang chờ · 'unsent' = chưa kênh nào nhận được
         function jobState(id) {
@@ -3477,22 +3486,32 @@
             const timer = setTimeout(function () { try { if (ctl) ctl.abort(); } catch (e) {} }, GUARD.timeout);
             let p;
             try {
-                const payload = { topic: NTFY_TOPIC, title: job.title, message: message, priority: job.pr };
-                const acts = guardActions(job);
-                if (acts) payload.actions = acts;
-                p = fetch(NTFY_URL, { method: 'POST', keepalive: true, signal: ctl ? ctl.signal : undefined, body: JSON.stringify(payload) });
+                if (ch === 'n') {
+                    const payload = { topic: NTFY_TOPIC, title: job.title, message: message, priority: job.pr };
+                    const acts = guardActions(job);
+                    if (acts) payload.actions = acts;
+                    p = fetch(NTFY_URL, { method: 'POST', keepalive: true, signal: ctl ? ctl.signal : undefined, body: JSON.stringify(payload) });
+                } else {
+                    // Telegram qua Worker. Kèm id để Worker (nếu hỗ trợ) bỏ qua tin trùng khi ta gửi lại do mất phản hồi.
+                    const tgBody = JSON.stringify({ key: NOTIFY_KEY, title: job.title, message: message, priority: job.pr, id: job.id, at: job.at, table: job.ackTable || null, sync: !!job.sync });
+                    // text/plain để trình duyệt không cần hỏi trước (preflight) khi gọi sang Worker.
+                    p = fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/notify', {
+                        method: 'POST', keepalive: true, signal: ctl ? ctl.signal : undefined,
+                        headers: { 'Content-Type': 'text/plain' }, body: tgBody
+                    });
+                }
             } catch (e) { p = Promise.reject(e); }
             p.then(function (r) {
                 if (!r.ok) { const err = new Error('HTTP ' + r.status); err.status = r.status; throw err; }
                 job.ok[ch] = true;
-                guardCountSent();
+                if (ch === 'n') guardCountSent();
                 guardOnSent(job);
             }).catch(function (e) {
                 job.fails++;
                 let wait = GUARD.retry[Math.min(job.tries[ch] - 1, GUARD.retry.length - 1)];
-                if (e && e.status === 429) { guardLimitedAt = Date.now(); wait = Math.max(wait, 15000); }   // ntfy: vượt hạn mức → đừng dồn dập
+                if (ch === 'n' && e && e.status === 429) { guardLimitedAt = Date.now(); wait = Math.max(wait, 15000); }   // ntfy: vượt hạn mức → đừng dồn dập
                 job.nx[ch] = Date.now() + wait;
-                console.warn('ntfy lỗi (lần ' + job.tries[ch] + '):', e && e.message);
+                console.warn((ch === 'n' ? 'ntfy' : 'telegram') + ' lỗi (lần ' + job.tries[ch] + '):', e && e.message);
             }).then(function () {
                 clearTimeout(timer);
                 delete outboxFlying[key];
@@ -3516,8 +3535,9 @@
             outbox = outbox.filter(function (job) {
                 const chans = ['n', 't'].filter(function (c) { return job.use[c]; });
                 if (!chans.every(function (c) { return job.ok[c] || job.gu[c]; })) return true;
-                if (jobAnyOk(job)) return false;
+                if (jobAllOk(job)) return false;
                 job.dead = true;
+                if (jobAnyOk(job)) return now - job.at < GUARD.pruneAge;   // chỉ tới 1 kênh: giữ để cảnh báo, hết hạn mới bỏ
                 return !job.silenced;
             });
             outboxSave();
@@ -3528,39 +3548,27 @@
             outboxPump();
         }
 
-        // Gửi 1 thông báo tới ntfy (qua hộp thư đi, có theo dõi) và Telegram (NGUYÊN BẢN như trước). Trả về mã job.
+        // Gửi 1 thông báo tới CẢ HAI kênh: ntfy (màn hình POS) và Telegram — cùng đi qua hộp thư đi, cùng tự thử lại.
         // opts.table: gắn với bàn (nhãn trạng thái + theo dõi "chưa ai nhận") · opts.label: tên trên thanh cảnh báo
         // opts.ackTable / opts.ackAt: hiện nút ĐANG NHẬP / ĐÃ NHẬP cho bàn này · opts.ping: mã tin thử
-        // opts.tg === false: KHÔNG gửi bản Telegram (dùng cho tin nhắc, tin thử, gửi lại)
+        // opts.tg === false: KHÔNG gửi bản Telegram (tin thử) · opts.sync: tin đồng bộ trạng thái (không cần thu ngân bấm)
         function ntfySend(title, parts, priority, opts) {
             opts = opts || {};
+            const useTg = !!NOTIFY_WORKER_URL && opts.tg !== false;
             const job = {
                 id: 'j' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
                 title: title, msg: parts.join('\n'), pr: priority || 4, at: Date.now(),
                 table: opts.table || null,
                 ackTable: opts.ackTable || opts.table || null, ackAt: opts.ackAt || null, ping: opts.ping || null,
+                sync: !!opts.sync,
                 label: opts.label || (opts.table ? 'Bàn ' + opts.table : String(title).slice(0, 28)),
-                use: { n: true, t: false },
+                use: { n: true, t: useTg },
                 ok: { n: false, t: false }, gu: { n: false, t: false },
                 tries: { n: 0, t: 0 }, nx: { n: 0, t: 0 }, fails: 0
             };
             outbox.push(job);
             outboxSave();
             outboxPump();
-
-            // 2) Telegram (qua Worker) — giữ nguyên hành vi cũ, không đụng tới.
-            if (NOTIFY_WORKER_URL && opts.tg !== false) {
-                try {
-                    const tgBody = JSON.stringify({ key: NOTIFY_KEY, title: title, message: job.msg, priority: priority || 4 });
-                    // text/plain để trình duyệt không cần hỏi trước (preflight) khi gọi sang Worker.
-                    const tgSend = () => fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/notify', {
-                        method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: tgBody
-                    }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); });
-                    tgSend().catch(() => setTimeout(() => tgSend().catch(e => console.warn('telegram lỗi:', e)), 3000));
-                } catch (e) {
-                    console.warn('telegram lỗi:', e);
-                }
-            }
             return job.id;
         }
 
@@ -3570,13 +3578,13 @@
                 '⏳ Order gửi lúc ' + fmtTime(b.sentAt) + ' mà chưa ai bấm nhận.',
                 '━━━━━━━━━━━━',
                 (b.title ? b.title + '\n' : '') + (b.msg || '')
-            ], 5, { label: 'Nhắc bàn ' + t, ackTable: t, ackAt: b.sentAt, tg: false });
+            ], 5, { label: 'Nhắc bàn ' + t, ackTable: t, ackAt: b.sentAt });
         }
 
         // Job đã bỏ cuộc (quá 30 phút): tạo job mới gửi lại, ghi rõ là order cũ.
         function guardRevive(job) {
             const nid = ntfySend(job.title, ['⏱ Order cũ lúc ' + fmtTime(job.at) + ' (gửi lại)', job.msg], job.pr,
-                { table: job.table, label: job.label, ackTable: job.ackTable, ackAt: job.ackAt || job.at, tg: false });
+                { table: job.table, label: job.label, ackTable: job.ackTable, ackAt: job.ackAt || job.at, sync: job.sync });
             outbox = outbox.filter(function (x) { return x !== job; });
             try {
                 if (job.table && billState && billState[job.table] && billState[job.table].job === job.id) {
@@ -3589,8 +3597,9 @@
             const now = Date.now();
             let n = 0;
             outbox.slice().forEach(function (j) {
-                if (j.silenced || jobAnyOk(j)) return;
-                if (j.dead) guardRevive(j); else { j.nx.n = 0; j.nx.t = 0; }
+                if (j.silenced || jobAllOk(j)) return;
+                if (j.dead) { if (!jobAnyOk(j)) guardRevive(j); }
+                else { j.nx.n = 0; j.nx.t = 0; j.gu.n = false; j.gu.t = false; }
                 n++;
             });
             Object.keys(billState || {}).forEach(function (t) {
@@ -3629,6 +3638,8 @@
             const st = jobState(b.job);
             if (st === 'sending') return ['📤 Đang gửi...', '#475569', false];
             if (st === 'unsent') return ['📤 CHƯA GỬI ĐƯỢC', '#b91c1c', true];
+            const jj = (outbox || []).find(function (x) { return x.id === b.job; });
+            if (jj && !jj.silenced && jobAnyOk(jj) && !jobAllOk(jj) && (jj.fails > 0 || jj.dead)) return ['⚠️ Chỉ tới ' + (jj.ok.n ? 'POS' : 'Telegram'), '#b45309', true];
             if (GUARD.escalate && b.sentAt) {
                 const sec = (Date.now() - b.sentAt) / 1000;
                 if (sec >= GUARD.alarm[0] && sec <= GUARD.stale) return ['⚠️ Chưa nhận ' + Math.floor(sec / 60) + 'p', '#b91c1c', true];
@@ -3668,7 +3679,7 @@
                     '━━━━━━━━━━━━',
                     '🧾 ' + prevItems.length + ' món · ' + fmtMoney(prevTotal),
                     '🕒 ' + fmtTime(Date.now())
-                ], 5, { label: 'Hủy bàn ' + tableId, tg: false });
+                ], 5, { label: 'Hủy bàn ' + tableId });
                 return true;
             } catch (e) { console.warn('notifyTableCancelled lỗi:', e); return false; }
         }
@@ -3690,12 +3701,12 @@
                     '🧾 Cả bàn: ' + (table.items || []).length + ' món · ' + fmtMoney(table.total),
                     ntfyPayLine(table),
                     '🕒 ' + fmtTime(Date.now())
-                ]), 4, { label: 'Cập nhật bàn ' + tableId, tg: false });
+                ]), 4, { label: 'Cập nhật bàn ' + tableId });
                 return true;
             } catch (e) { console.warn('notifyTableUpdate lỗi:', e); return false; }
         }
 
-        function guardRenderBar(unsent, escalated, ackDead) {
+        function guardRenderBar(unsent, escalated, ackDead, partial) {
             let bar = document.getElementById('guardBar');
             const lines = [];
             if (unsent.length) {
@@ -3703,10 +3714,16 @@
                 unsent.forEach(function (j) { if (labels.indexOf(j.label) < 0) labels.push(j.label); });
                 lines.push('📤 CHƯA GỬI ĐƯỢC cho thu ngân: ' + labels.slice(0, 3).join(', ') + (labels.length > 3 ? ' +' + (labels.length - 3) : '') + ' — đang thử lại. Hãy báo miệng!');
             }
+            if (partial && partial.length) {
+                lines.push('⚠️ Chỉ tới 1 kênh: ' + partial.slice(0, 3).map(function (j) { return j.label + ' (thiếu ' + jobMissing(j).join(', ') + ')'; }).join('; ') + ' — đang thử lại.');
+            }
+            if (ackDead) {
+                lines.push('📡 Máy KHÔNG nhận được báo từ thu ngân (mất mạng/kênh ack lỗi). Có thể thu ngân đã nhập nhưng web chưa biết.');
+            }
             if (escalated.length) {
                 lines.push('⏰ Thu ngân CHƯA nhận: ' + escalated.slice(0, 3).map(function (e) { return 'Bàn ' + e.t + ' (' + Math.floor(e.sec / 60) + 'p)'; }).join(', ')
                     + (escalated.length > 3 ? ' +' + (escalated.length - 3) : '')
-                    + (ackDead ? ' · máy đang mất kênh nhận báo, có thể thu ngân đã nhận' : ''));
+                    );
             }
             if (guardLimitedAt && Date.now() - guardLimitedAt < 10 * 60000) {
                 lines.unshift('⛔ ntfy từ chối vì gửi quá nhiều (HTTP 429): thông báo có thể KHÔNG tới thu ngân. Hãy báo miệng!');
@@ -3739,7 +3756,7 @@
                 outboxPump();
                 const now = Date.now();
                 const visible = document.visibilityState === 'visible';
-                const ackDead = !!(ackLastBeat && now - ackLastBeat > 120000);
+                const ackDead = !!(ackLastBeat && now - ackLastBeat > 120000 && now - ackPollOkAt > 60000);
 
                 // (a) Tin chưa gửi được: báo động 1 lần trên máy phục vụ
                 outbox.forEach(function (job) {
@@ -3747,6 +3764,19 @@
                     if (jobState(job.id) === 'unsent' && (job.fails > 0 || job.dead) && now - job.at >= 6000) {
                         job.warned = true; outboxSave();
                         if (visible) { ackToast('⚠️ CHƯA GỬI ĐƯỢC ' + job.label + ' cho thu ngân — đang thử lại. Hãy báo miệng!', 'alert', 15000); ackAlert(); }
+                    }
+                });
+
+                // (a1) Chỉ tới 1 kênh (vd ntfy tới mà Telegram chưa, hoặc ngược lại): cảnh báo 1 lần
+                const partial = [];
+                outbox.forEach(function (job) {
+                    if (job.silenced || !jobAnyOk(job) || jobAllOk(job)) return;
+                    if (job.sync || job.ping) return;
+                    if (!(job.fails > 0 || job.dead) || now - job.at < 10000) return;
+                    partial.push(job);
+                    if (!job.warnedP) {
+                        job.warnedP = true; outboxSave();
+                        if (visible) { ackToast('⚠️ ' + job.label + ' mới tới ' + (job.ok.n ? 'màn hình POS (ntfy)' : 'Telegram') + ', ' + jobMissing(job).join(' + ') + ' CHƯA gửi được — đang thử lại.', 'alert', 12000); ackAlert(); }
                     }
                 });
 
@@ -3795,7 +3825,7 @@
                 }
 
                 // (d) Thanh cảnh báo
-                guardRenderBar(outbox.filter(function (j) { return !j.silenced && jobState(j.id) === 'unsent'; }), escalated, ackDead);
+                guardRenderBar(outbox.filter(function (j) { return !j.silenced && jobState(j.id) === 'unsent'; }), escalated, ackDead, partial);
             } catch (e) { console.warn('guardTick lỗi:', e); }
         }
 
@@ -3860,7 +3890,7 @@
                 // hủy/sửa món = khẩn, để thu ngân chỉnh bill ngay
                 const jobId = ntfySend(title, parts, removed.length ? 5 : 4, { table: tableId });
                 // Lưu mã job + nội dung để theo dõi "đã tới thu ngân chưa / đã ai nhận chưa" và để nhắc lại nếu cần.
-                markBill(tableId, 'wait', '', { job: jobId, title: title, msg: parts.join('\n').slice(0, 700) });
+                markBill(tableId, 'wait', '', { job: jobId, title: title, msg: parts.join('\n').slice(0, 700), ord: Date.now() });
                 return true;
             } catch (e) {
                 console.warn('notifyCashier lỗi:', e);
@@ -4006,37 +4036,145 @@
             ackLastBeat = Date.now();
             try { localStorage.setItem(ACK_ALIVE_KEY, String(Math.floor(ackLastBeat / 1000))); } catch (e) {}
         }
+        // Mốc để xin ntfy phát lại tin: lấy thời điểm gần nhất mà SSE HOẶC polling còn sống (lùi 20s cho chắc; tin trùng đã có ackSeen chặn).
+        var ackPollOkAt = 0, ackPollBusy = false;
+        const ACK_POLL_KEY = 'tys_ack_poll';
+        try { ackPollOkAt = (parseInt(localStorage.getItem(ACK_POLL_KEY) || '0', 10) || 0) * 1000; } catch (e) {}
         function ackSince() {
             let t = 0;
             try { t = parseInt(localStorage.getItem(ACK_ALIVE_KEY) || '0', 10) || 0; } catch (e) {}
+            t = Math.max(t, Math.floor(ackPollOkAt / 1000));
             const now = Math.floor(Date.now() / 1000);
-            if (!t || now - t > 15 * 60) return '5m';
-            return String(Math.max(0, t - 15));   // lùi 15s cho chắc, tin trùng đã có ackSeen chặn
+            if (!t || now - t > 15 * 60) return '15m';
+            return String(Math.max(0, t - 20));
         }
 
+        // ---- Lớp dự phòng cho kênh nhận: hỏi thẳng ntfy định kỳ (poll) — không phụ thuộc kết nối SSE dễ đứt ngầm trên điện thoại ----
+        function ackPoll() {
+            if (ackPollBusy) return;
+            ackPollBusy = true;
+            const ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+            const timer = setTimeout(function () { try { if (ctl) ctl.abort(); } catch (e) {} }, 8000);
+            fetch(NTFY_URL + '/' + NTFY_ACK_TOPIC + '/json?poll=1&since=' + encodeURIComponent(ackSince()), { signal: ctl ? ctl.signal : undefined, cache: 'no-store' })
+                .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+                .then(function (txt) {
+                    ackPollOkAt = Date.now();
+                    try { localStorage.setItem(ACK_POLL_KEY, String(Math.floor(ackPollOkAt / 1000))); } catch (e) {}
+                    String(txt || '').split('\n').forEach(function (line) {
+                        line = line.trim(); if (!line) return;
+                        try { handleAck(JSON.parse(line)); } catch (e) {}
+                    });
+                })
+                .catch(function (e) { console.warn('ack poll lỗi:', e && e.message); })
+                .then(function () { clearTimeout(timer); ackPollBusy = false; });
+        }
+        function ackHasPending() {
+            return Object.keys(billState || {}).some(function (t) { const b = billState[t]; return b && (b.s === 'wait' || b.s === 'claimed') && tablesData[t] && tablesData[t].status !== 'empty'; });
+        }
+        var ackPollLast = 0;
+        setInterval(function () {
+            if (document.visibilityState !== 'visible') return;
+            const gap = ackHasPending() ? 6000 : 20000;   // đang chờ thu ngân → hỏi dày hơn
+            if (Date.now() - ackPollLast >= gap) { ackPollLast = Date.now(); ackPoll(); }
+        }, 2000);
+
+        // ---- Đọc tin từ thu ngân: chịu được nhiều dạng (JSON từ nút ntfy, JSON/văn bản từ Worker Telegram) ----
+        const ACK_TYPE_ALIAS = {
+            done: 'done', ok: 'done', finished: 'done', complete: 'done', completed: 'done', entered: 'done', 'đã nhập': 'done', 'da nhap': 'done', 'xong': 'done',
+            claim: 'claim', claimed: 'claim', processing: 'claim', working: 'claim', 'đang nhập': 'claim', 'dang nhap': 'claim',
+            undo: 'undo', unclaim: 'unclaim', out: 'out', soldout: 'out', 'hết món': 'out', 'het mon': 'out',
+            ask: 'ask', question: 'ask', nock: 'nock', ping: 'ping', pong: 'ping'
+        };
+        function ackParse(m) {
+            const raw = String(m.message == null ? '' : m.message).trim();
+            let o = null;
+            try { o = JSON.parse(raw); } catch (e) {}
+            if (!o || typeof o !== 'object') {
+                // Văn bản thường, vd "✅ BÀN 5 ĐÃ NHẬP — Lan"
+                const txt = (String(m.title || '') + ' ' + raw);
+                const low = txt.toLowerCase();
+                let t = null;
+                if (/(đã nhập|da nhap|\bdone\b|✅)/i.test(low)) t = 'done';
+                else if (/(đang nhập|dang nhap|claim|🟡)/i.test(low)) t = 'claim';
+                else if (/(hết món|het mon|🚫)/i.test(low)) t = 'out';
+                else if (/(hỏi lại|hoi lai|❓)/i.test(low)) t = 'ask';
+                else if (/(chưa thấy tiền|chua thay tien|⚠️)/i.test(low)) t = 'nock';
+                const tm = txt.match(/(?:bàn|ban|table|#)\s*0?(\d{1,2})/i);
+                if (!t || !tm) return null;
+                o = { t: t, table: tm[1], who: 'Thu ngân' };
+            }
+            let t = String(o.t != null ? o.t : (o.type != null ? o.type : (o.action != null ? o.action : (o.a != null ? o.a : (o.status != null ? o.status : ''))))).toLowerCase().trim();
+            t = ACK_TYPE_ALIAS[t] || t;
+            if (t === 'ping') return { t: 'ping', id: o.id, o: o };
+            let tb = o.table != null ? o.table : (o.tb != null ? o.tb : (o.b != null ? o.b : o.tableId));
+            const mt = String(tb == null ? '' : tb).match(/\d+/);
+            if (!t || !mt) return null;
+            const table = parseInt(mt[0], 10);
+            if (!(table >= 1 && table <= TOTAL_TABLES)) return null;
+            let at = Number(o.at) || null;
+            if (!at && o.sec != null && m.time) at = m.time * 1000 - Number(o.sec) * 1000;   // Worker chỉ gửi số giây chờ → suy ra giờ order
+            return { t: t, table: table, who: o.who || o.by || o.name || 'thu ngân', at: at, item: o.item || '', sec: o.sec, o: o };
+        }
+
+        var ackUnknownAt = 0;
         function handleAck(m) {
             if (!m || m.event !== 'message' || ackSeen.has(m.id)) return;
             ackSeen.add(m.id);
             ackRememberSeen(m.id);
-            if (m.time && Date.now() - m.time * 1000 > 15 * 60000) return;   // tin quá cũ thì bỏ
-            let o;
-            try { o = JSON.parse(m.message); } catch (e) { return; }
-            if (o && o.t === 'ping') { guardOnPong(o); return; }   // xác nhận tin thử từ nút bấm ntfy
-            if (!o || !o.table) return;
-            if (o.sec == null && o.at) o.sec = Math.max(0, (Date.now() - o.at) / 1000);   // nút bấm ntfy gửi giờ order thay vì số giây
+            const ageMs = m.time ? Date.now() - m.time * 1000 : 0;
+            let a;
+            try { a = ackParse(m); } catch (e) { a = null; }
+            if (!a) {
+                if (ageMs < 15 * 60000 && Date.now() - ackUnknownAt > 20000) {
+                    ackUnknownAt = Date.now();
+                    ackToast('❓ Nhận được 1 tin lạ từ kênh thu ngân, web không đọc được: "' + String(m.message || '').slice(0, 60) + '"', 'alert', 10000);
+                }
+                console.warn('ack không đọc được:', m);
+                return;
+            }
+            if (a.t === 'ping') { guardOnPong(a.o || a); return; }
+            // "đã nhập / đang nhập" giữ hiệu lực lâu (thu ngân có thể nhập trễ); các tin hỏi/hết món chỉ có ý nghĩa khi còn mới
+            const keep = (a.t === 'done' || a.t === 'claim' || a.t === 'undo' || a.t === 'unclaim') ? 3 * 3600000 : 15 * 60000;
+            if (ageMs > keep) return;
 
+            const o = a;
+            const sec = o.at ? Math.max(0, (Date.now() - o.at) / 1000) : (o.sec != null ? Number(o.sec) : null);
             const label = 'BÀN ' + o.table;
-            const who = o.who || 'thu ngân';
+            const who = o.who;
+            const prev = billState[o.table] || null;
             const extra = { src: 'ack', st: m.time || 0 };
+            // Giữ lại thông tin của order đang theo dõi để các bước sau (đang nhập → đã nhập → hoàn lại) không mất dấu
+            if (prev) ['job', 'title', 'msg', 'sentAt', 'ord'].forEach(function (k) { if (prev[k] !== undefined) extra[k] = prev[k]; });
+
+            // Chống nhầm: thu ngân bấm "ĐÃ NHẬP" trên thông báo CŨ trong khi bàn đã có order MỚI chưa ai nhận
+            if ((o.t === 'done' || o.t === 'claim') && prev && prev.ord && o.at && o.at < prev.ord - 1500 && (prev.s === 'wait' || prev.s === 'claimed')) {
+                ackToast('⚠️ ' + label + ': ' + who + ' vừa ' + (o.t === 'done' ? 'nhập xong' : 'nhận') + ' order CŨ. Order MỚI/gọi thêm của bàn này CHƯA có ai nhận.', 'alert', 12000);
+                ackAlert();
+                return;
+            }
 
             if (o.t === 'done') {
+                const wasOpen = !!(prev && prev.s !== 'done');
                 markBill(o.table, 'done', who, extra);
-                ackToast('✅ ' + label + ' đã vào bill — ' + who + ' (sau ' + ackWaitText(o.sec) + ')', 'ok', 7000);
+                ackToast('✅ ' + label + ' đã vào bill — ' + who + (sec != null ? ' (sau ' + ackWaitText(sec) + ')' : ''), 'ok', 7000);
+                // ĐỒNG BỘ 2 KÊNH: thu ngân bấm ở ntfy hay Telegram thì kênh còn lại cũng nhận thông báo "đã xong".
+                // Chỉ máy đang theo dõi order này (có mã job) mới phát, để nhiều máy cùng mở không gửi trùng.
+                if (wasOpen && prev && prev.job) {
+                    try {
+                        ntfySend('🔄 ĐỒNG BỘ · #' + o.table + ' đã nhập bill', [
+                            '✅ Thu ngân ' + who + ' đã nhập bill #' + o.table + (sec != null ? ' (sau ' + ackWaitText(sec) + ')' : ''),
+                            'Bỏ qua các nhắc cũ của bàn này.',
+                            '🕒 ' + fmtTime(Date.now())
+                        ], 2, { sync: true, label: 'Đồng bộ #' + o.table });
+                    } catch (e) {}
+                }
             } else if (o.t === 'claim') {
                 markBill(o.table, 'claimed', who, extra);
                 ackToast('🟡 ' + label + ': ' + who + ' đang nhập bill', 'info', 5000);
             } else if (o.t === 'undo' || o.t === 'unclaim') {
-                markBill(o.table, 'wait', who, extra);
+                const ex = Object.assign({}, extra); delete ex.sentAt;   // tính lại thời gian chờ từ lúc hoàn lại
+                markBill(o.table, 'wait', who, ex);
+                if (billState[o.table] && billState[o.table].job) { billState[o.table].sentAt = Date.now(); billState[o.table].rem = 0; billState[o.table].alm = 0; saveBill(); }
                 ackToast('↩ ' + label + ': thu ngân hoàn lại, bill chưa xong', 'info', 6000);
             } else if (o.t === 'out') {
                 ackToast('🚫 ' + label + ': HẾT MÓN — ' + (o.item || '') + '. Báo khách chọn món khác.', 'alert', 15000);
@@ -4072,16 +4210,16 @@
             } catch (e) { ackRetry = setTimeout(connectAck, 5000); }
         }
         // Điện thoại khóa màn hình / chuyển app (vd Telegram) có thể làm đứt kết nối mà KHÔNG báo lỗi → nối lại khi quay về trang.
-        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') connectAck(); });
-        window.addEventListener('pageshow', function () { connectAck(); });
+        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { connectAck(); ackPoll(); } });
+        window.addEventListener('pageshow', function () { connectAck(); ackPoll(); });
         window.addEventListener('focus', function () { if (Date.now() - ackLastBeat > 60000) connectAck(); });
-        window.addEventListener('online', function () { connectAck(); });
+        window.addEventListener('online', function () { connectAck(); ackPoll(); });
         // Giám sát: quá ~100s không có nhịp tim nào thì coi là đã đứt ngầm, nối lại.
         setInterval(function () {
             if (document.visibilityState !== 'visible') return;
             if (ackLastBeat && Date.now() - ackLastBeat > 100000) connectAck();
         }, 20000);
-        window.addEventListener('load', connectAck);
+        window.addEventListener('load', function () { connectAck(); ackPoll(); });
 
         function saveModalChanges() {
             if (!activeTableId) return;
