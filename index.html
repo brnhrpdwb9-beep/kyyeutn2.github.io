@@ -745,10 +745,6 @@
                         <i class="fa-solid fa-right-left w-4 text-center text-sm"></i>
                         <span class="text-xs font-bold">Dữ liệu bàn</span>
                     </button>
-                    <button onclick="closeMoreMenu(); guardTestPing()" id="btnPing" role="menuitem" class="relative flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Thử báo thu ngân">
-                        <i class="fa-solid fa-bell w-4 text-center text-sm"></i>
-                        <span class="text-xs font-bold">Thử báo thu ngân</span>
-                    </button>
                     <button onclick="closeMoreMenu(); openResetModal()" role="menuitem" class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-stone-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Đặt lại dữ liệu">
                         <i class="fa-solid fa-rotate-right w-4 text-center text-sm"></i>
                         <span class="text-xs font-bold">Refresh</span>
@@ -3396,9 +3392,8 @@
             stale: 1800,                                // giây: quá mức này coi như cũ, không báo động nữa
             escalate: true,                             // false = tắt nhắc + báo động "chưa ai nhận" (thu ngân không bấm nút)
             dailyWarn: 200,                             // cảnh báo khi số tin ntfy gửi trong ngày (từ máy này) đạt mức này
-            pingWait: 60000                             // chờ thu ngân xác nhận tin thử (ms)
         };
-        var guardPing = null, guardLimitedAt = 0;
+        var guardLimitedAt = 0;
         var OUTBOX_KEY = 'tys_outbox';
         var outboxFlying = {};
         var guardGraceUntil = 0, guardLastSig = {}, guardBarSig = '';
@@ -3552,10 +3547,11 @@
                 ackTable: opts.ackTable || opts.table || null, ackAt: opts.ackAt || null, ping: opts.ping || null,
                 sync: !!opts.sync,
                 label: opts.label || (opts.table ? 'Bàn ' + opts.table : String(title).slice(0, 28)),
-                use: { n: true, t: useTg },
+                use: { n: opts.ntfy !== false, t: useTg },
                 ok: { n: false, t: false }, gu: { n: false, t: false },
                 tries: { n: 0, t: 0 }, nx: { n: 0, t: 0 }, fails: 0
             };
+            if (!job.use.n && !job.use.t) return job.id;   // không còn kênh nào để gửi
             outbox.push(job);
             outboxSave();
             outboxPump();
@@ -3635,24 +3631,6 @@
                 if (sec >= GUARD.alarm[0] && sec <= GUARD.stale) return ['⚠️ Chưa nhận ' + Math.floor(sec / 60) + 'p', '#b91c1c', true];
             }
             return null;
-        }
-
-        // ---- Tin thử: kiểm tra đường truyền ntfy tới điện thoại thu ngân ----
-        function guardTestPing() {
-            const id = 'p' + Date.now().toString(36);
-            ntfySend('🔔 THỬ THÔNG BÁO', [
-                'Đây là tin thử từ máy phục vụ.',
-                'Thu ngân thấy tin này trên màn hình POS là đường truyền ổn.',
-                '🕒 ' + fmtTime(Date.now())
-            ], 4, { label: 'Tin thử', ping: id, tg: false });
-            ackToast('📤 Đã gửi tin thử lên màn hình POS. Hỏi thu ngân có thấy không (không có nút xác nhận).', 'info', 7000);
-        }
-        // Nhận xác nhận tin thử (gọi từ handleAck)
-        function guardOnPong(o) {
-            if (!guardPing || o.id !== guardPing.id) return;
-            const sec = Math.max(0, Math.round((Date.now() - guardPing.at) / 1000));
-            guardPing = null;
-            ackToast('✅ Thu ngân ĐÃ NHẬN tin thử (sau ' + sec + 's). Đường truyền ntfy ổn.', 'ok', 8000);
         }
 
         // ---- Các tình huống trước đây app KHÔNG gửi gì cho thu ngân ----
@@ -3749,7 +3727,7 @@
 
                 // (a) Tin chưa gửi được: báo động 1 lần trên máy phục vụ
                 outbox.forEach(function (job) {
-                    if (job.silenced || job.warned) return;
+                    if (job.silenced || job.warned || job.sync) return;
                     if (jobState(job.id) === 'unsent' && (job.fails > 0 || job.dead) && now - job.at >= 6000) {
                         job.warned = true; outboxSave();
                         if (visible) { ackToast('⚠️ CHƯA GỬI ĐƯỢC ' + job.label + ' cho thu ngân — đang thử lại. Hãy báo miệng!', 'alert', 15000); ackAlert(); }
@@ -3768,13 +3746,6 @@
                         if (visible) { ackToast('⚠️ ' + job.label + ' mới tới ' + (job.ok.n ? 'màn hình POS (ntfy)' : 'Telegram') + ', ' + jobMissing(job).join(' + ') + ' CHƯA gửi được — đang thử lại.', 'alert', 12000); ackAlert(); }
                     }
                 });
-
-                // (a2) Tin thử: quá hạn mà thu ngân chưa bấm "NHẬN ĐƯỢC"
-                if (guardPing && !guardPing.warned && now - guardPing.at > GUARD.pingWait) {
-                    guardPing.warned = true;
-                    ackToast('⚠️ Thu ngân CHƯA xác nhận tin thử sau ' + Math.round((now - guardPing.at) / 1000) + 's. Kiểm tra điện thoại thu ngân: app ntfy, quyền thông báo, tiết kiệm pin.', 'alert', 20000);
-                    ackAlert();
-                }
 
                 // (b) Đã gửi mà chưa ai nhận: tự nhắc + báo động trên máy phục vụ
                 const escalated = [];
@@ -3814,7 +3785,7 @@
                 }
 
                 // (d) Thanh cảnh báo
-                guardRenderBar(outbox.filter(function (j) { return !j.silenced && jobState(j.id) === 'unsent'; }), escalated, ackDead, partial);
+                guardRenderBar(outbox.filter(function (j) { return !j.silenced && !j.sync && jobState(j.id) === 'unsent'; }), escalated, ackDead, partial);
             } catch (e) { console.warn('guardTick lỗi:', e); }
         }
 
@@ -4149,7 +4120,7 @@
                 console.warn('ack không đọc được:', m);
                 return;
             }
-            if (a.t === 'ping') { guardOnPong(a.o || a); return; }
+            if (a.t === 'ping') return;   // tin thử đã bỏ
             // Cùng 1 lần bấm của thu ngân có thể tới bằng 2 đường (ntfy + Worker): chỉ xử lý 1 lần
             const aidRaw = a.o && a.o.aid;
             if (aidRaw) {
@@ -4180,24 +4151,15 @@
             if (o.t === 'done') {
                 const wasOpen = !!(prev && prev.s !== 'done');
                 markBill(o.table, 'done', who, extra);
-                // Đo độ trễ để biết chậm ở đoạn nào: Worker→ntfy hay ntfy→web
-                let lagTxt = '';
-                try {
-                    const nowS = Date.now() / 1000;
-                    const toWeb = m.time ? Math.round(nowS - m.time) : 0;
-                    const toNtfy = (m.time && a.o && a.o.ts) ? Math.round(m.time - a.o.ts / 1000) : 0;
-                    if (toWeb >= 3 || toNtfy >= 3) lagTxt = ' · trễ: tới ntfy ' + Math.max(0, toNtfy) + 's, tới web ' + Math.max(0, toWeb) + 's';
-                } catch (e) {}
-                ackToast('✅ ' + label + ' đã vào bill — ' + who + (sec != null ? ' (sau ' + ackWaitText(sec) + ')' : '') + lagTxt, 'ok', 7000);
-                // ĐỒNG BỘ 2 KÊNH: thu ngân bấm ở ntfy hay Telegram thì kênh còn lại cũng nhận thông báo "đã xong".
-                // Chỉ máy đang theo dõi order này (có mã job) mới phát, để nhiều máy cùng mở không gửi trùng.
+                ackToast('✅ ' + label + ': thu ngân ' + (who && who !== 'thu ngân' ? '(' + who + ') ' : '') + 'ĐÃ BẤM NHẬP BILL', 'ok', 8000);
+                // Tin đồng bộ CHỈ gửi sang Telegram (không gửi ntfy lên màn hình POS).
+                // Chỉ máy đang theo dõi order này (có mã job) mới gửi, để nhiều máy cùng mở không gửi trùng.
                 if (wasOpen && prev && prev.job) {
                     try {
-                        ntfySend('🔄 ĐỒNG BỘ · #' + o.table + ' đã nhập bill', [
-                            '✅ Thu ngân ' + who + ' đã nhập bill #' + o.table + (sec != null ? ' (sau ' + ackWaitText(sec) + ')' : ''),
-                            'Bỏ qua các nhắc cũ của bàn này.',
+                        ntfySend('🔄 ĐÃ THÔNG BÁO VỚI PHỤC VỤ · BÀN ' + o.table, [
+                            '✅ Phục vụ đã nhận được báo "đã nhập bill" của bàn ' + o.table + '.',
                             '🕒 ' + fmtTime(Date.now())
-                        ], 2, { sync: true, label: 'Đồng bộ #' + o.table });
+                        ], 2, { sync: true, ntfy: false, label: 'Đồng bộ #' + o.table });
                     } catch (e) {}
                 }
             } else if (o.t === 'claim') {
