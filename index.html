@@ -4156,7 +4156,15 @@
             if (o.t === 'done') {
                 const wasOpen = !!(prev && prev.s !== 'done');
                 markBill(o.table, 'done', who, extra);
-                ackToast('✅ ' + label + ' đã vào bill — ' + who + (sec != null ? ' (sau ' + ackWaitText(sec) + ')' : ''), 'ok', 7000);
+                // Đo độ trễ để biết chậm ở đoạn nào: Worker→ntfy hay ntfy→web
+                let lagTxt = '';
+                try {
+                    const nowS = Date.now() / 1000;
+                    const toWeb = m.time ? Math.round(nowS - m.time) : 0;
+                    const toNtfy = (m.time && a.o && a.o.ts) ? Math.round(m.time - a.o.ts / 1000) : 0;
+                    if (toWeb >= 3 || toNtfy >= 3) lagTxt = ' · trễ: tới ntfy ' + Math.max(0, toNtfy) + 's, tới web ' + Math.max(0, toWeb) + 's';
+                } catch (e) {}
+                ackToast('✅ ' + label + ' đã vào bill — ' + who + (sec != null ? ' (sau ' + ackWaitText(sec) + ')' : '') + lagTxt, 'ok', 7000);
                 // ĐỒNG BỘ 2 KÊNH: thu ngân bấm ở ntfy hay Telegram thì kênh còn lại cũng nhận thông báo "đã xong".
                 // Chỉ máy đang theo dõi order này (có mã job) mới phát, để nhiều máy cùng mở không gửi trùng.
                 if (wasOpen && prev && prev.job) {
