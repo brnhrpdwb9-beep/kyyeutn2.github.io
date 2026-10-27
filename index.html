@@ -3377,7 +3377,7 @@
         // Lớp 3  Mỗi order có nhãn trạng thái dưới ô bàn: 📤 Đang gửi → ⏳ Chờ thu ngân → 🟡 Đang nhập → ✔ Đã vào bill.
         //        Không gửi được: nhãn ĐỎ "📤 CHƯA GỬI ĐƯỢC" + chuông + thanh cảnh báo.
         // Lớp 4  Tin ntfy có sẵn 2 NÚT BẤM cho thu ngân: "🟡 ĐANG NHẬP" / "✅ ĐÃ NHẬP" (bấm ngay trên thông báo, không cần mở app).
-        //        Quá 120s chưa ai bấm: tự NHẮC thu ngân 1 lần (ưu tiên 5). Quá 120s / 300s: chuông + cảnh báo trên máy phục vụ.
+        //        Quá 120s thu ngân chưa bấm nhận: tự gửi tin NHẮC sang Telegram + ntfy (POS), ưu tiên 5, kể cả khi màn hình máy phục vụ đang tắt. Chuông/toast trên máy phục vụ chỉ bật khi GUARD.waiterAlarm = true.
         // Lớp 5  Thanh cảnh báo đỏ trên cùng, 2 nút: "Gửi lại ngay" / "Đã báo miệng" (tắt báo động sau khi đã nói trực tiếp).
         // Lớp 6  Nút "Thử báo thu ngân" (menu Thêm): gửi tin thử, thu ngân bấm "NHẬN ĐƯỢC" thì phục vụ thấy ✅ ngay.
         // Lớp 7  Báo ngay khi ntfy từ chối (HTTP 429 = vượt hạn mức) và cảnh báo khi số tin trong ngày gần chạm trần.
@@ -3387,8 +3387,9 @@
             timeout: 8000,                              // mỗi lần gửi chờ tối đa (ms)
             maxAge: 30 * 60000,                         // quá 30 phút thì ngừng thử lại một kênh
             pruneAge: 3 * 3600000,                      // hộp thư đi: bỏ tin cũ hơn 3 giờ khi mở lại app
-            remind: [120],                              // giây: tự nhắc thu ngân (1 lần) nếu chưa ai bấm nhận
-            alarm: [120, 300],                          // giây: chuông + cảnh báo trên máy phục vụ
+            remind: [],                                 // NHẮC thu ngân do WORKER (cron mỗi phút) đảm nhiệm nên để rỗng để khỏi nhắc trùng. Worker chưa cài cron thì đổi lại thành [120] (web tự nhắc khi máy đang mở)
+            waiterAlarm: false,                         // true = máy phục vụ cũng bật chuông + toast + thanh đỏ "thu ngân chưa nhận". false = chỉ nhắc phía thu ngân
+            alarm: [120, 300],                          // giây: chuông + cảnh báo trên máy phục vụ (chỉ dùng khi waiterAlarm = true)
             stale: 1800,                                // giây: quá mức này coi như cũ, không báo động nữa
             escalate: true,                             // false = tắt nhắc + báo động "chưa ai nhận" (thu ngân không bấm nút)
             dailyWarn: 200,                             // cảnh báo khi số tin ntfy gửi trong ngày (từ máy này) đạt mức này
@@ -3560,8 +3561,10 @@
 
         // ---- Nhắc thu ngân / gửi lại ----
         function guardRemind(t, b, sec) {
-            ntfySend('🔔 NHẮC · BÀN ' + t + ' · CHƯA AI NHẬN · ' + Math.max(1, Math.round(sec / 60)) + 'p', [
-                '⏳ Order gửi lúc ' + fmtTime(b.sentAt) + ' mà chưa ai bấm nhận.',
+            // Gửi cùng lúc: Telegram (có nút ĐANG NHẬP / ĐÃ NHẬP) + ntfy (thông báo trên máy POS), ưu tiên cao nhất.
+            ntfySend('🔔 NHẮC · BÀN ' + t + ' · CHƯA BẤM BILL SAU ' + Math.max(1, Math.round(sec / 60)) + ' PHÚT', [
+                '⏳ Order gửi lúc ' + fmtTime(b.sentAt) + ' — đã ' + Math.floor(sec / 60) + 'p' + (Math.floor(sec) % 60 ? ' ' + (Math.floor(sec) % 60) + 's' : '') + ' mà thu ngân chưa bấm nhận.',
+                '👉 Vào nhập bill bàn ' + t + ' ngay.',
                 '━━━━━━━━━━━━',
                 (b.title ? b.title + '\n' : '') + (b.msg || '')
             ], 5, { label: 'Nhắc bàn ' + t, ackTable: t, ackAt: b.sentAt });
@@ -3756,11 +3759,13 @@
                     if (!data || data.status === 'empty' || b.at + 5000 < (data.startTime || 0)) return;
                     const sec = (now - b.sentAt) / 1000;
                     if (sec > GUARD.stale) return;
-                    if (sec >= GUARD.alarm[0]) escalated.push({ t: t, sec: sec });
-                    if (!visible || now < guardGraceUntil) return;   // vừa mở lại app: chờ vài giây để nhận bù tin "đã nhận" từ thu ngân
+                    if (GUARD.waiterAlarm && sec >= GUARD.alarm[0]) escalated.push({ t: t, sec: sec });
+                    if (now < guardGraceUntil) return;   // vừa mở lại app: chờ vài giây để nhận bù tin "đã nhận" từ thu ngân
+                    // Nhắc thu ngân (Telegram + ntfy): chạy cả khi màn hình máy phục vụ đang tắt/ẩn tab.
                     for (let k = GUARD.remind.length - 1; k >= 0; k--) {
                         if (sec >= GUARD.remind[k] && (b.rem || 0) <= k) { b.rem = k + 1; billDirty = true; guardRemind(t, b, sec); break; }
                     }
+                    if (!visible || !GUARD.waiterAlarm) return;   // chuông + toast trên máy phục vụ: chỉ khi bật waiterAlarm
                     for (let k = GUARD.alarm.length - 1; k >= 0; k--) {
                         if (sec >= GUARD.alarm[k] && (b.alm || 0) <= k) {
                             b.alm = k + 1; billDirty = true;
