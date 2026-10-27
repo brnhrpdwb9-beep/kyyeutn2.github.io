@@ -628,6 +628,7 @@
         <!-- MASTHEAD: logo + tên thương hiệu + badge + đồng hồ — thương hiệu độc lập, canh giữa,
              tách khỏi thanh công cụ bên dưới bằng viền mảnh cho sang trọng -->
         <div id="mastheadBar" class="relative border-b border-tys-800/60 px-2 sm:px-4 py-2 sm:py-2.5">
+            <button type="button" id="staffChip" onclick="openStaffLogin()" aria-label="Đổi tài khoản" class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 max-w-[38%] truncate px-2.5 py-1.5 rounded-lg bg-espresso-950/70 border border-tys-900 text-tys-300 text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition"></button>
             <div class="max-w-[1700px] mx-auto flex items-center justify-center">
                 <div class="flex items-center space-x-2.5 sm:space-x-3">
                     <div class="logo-glow w-12 h-12 rounded-xl bg-espresso-950 p-1.5 flex items-center justify-center border border-tys-700 shadow-sm shadow-tys-900/10 overflow-hidden shrink-0">
@@ -1190,6 +1191,21 @@
         <div class="shrink-0 bg-espresso-900 border-t border-tys-800 px-4 pt-2.5 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex items-center justify-end gap-3">
             <button id="btnExportReport" onclick="exportReportImage()" class="shrink-0 px-4 py-2 rounded-xl bg-espresso-800 hover:bg-espresso-700 border border-tys-800 text-tys-100 text-sm font-extrabold flex items-center gap-1.5 active:scale-95 transition disabled:opacity-50 disabled:pointer-events-none"><i class="fa-solid fa-download"></i><span>Lưu ảnh</span></button>
             <button onclick="closeReport()" class="shrink-0 px-5 py-2 rounded-xl bg-tys-500 hover:bg-tys-600 text-ink text-sm font-extrabold active:scale-95 transition">Xong</button>
+        </div>
+    </div>
+
+    <!-- Đăng nhập nhân viên: chọn sẵn tên, tên hiện trên tin báo thu ngân -->
+    <div id="staffLogin" class="fixed inset-0 z-[200] bg-espresso-950/95 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-espresso-900 border border-tys-800 w-full max-w-sm rounded-2xl shadow-xl p-4 modal-fade-in">
+            <div class="flex items-center gap-2.5 mb-3">
+                <div class="w-9 h-9 rounded-xl bg-tys-500 text-ink flex items-center justify-center shrink-0"><i class="fa-solid fa-user text-sm"></i></div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-tys-100 leading-tight">Đăng nhập</h3>
+                    <p class="text-[10px] text-stone-400 font-medium">Chọn tên của bạn. Tên sẽ hiện trên tin báo thu ngân.</p>
+                </div>
+            </div>
+            <div id="staffGrid" class="grid grid-cols-2 gap-2"></div>
+            <button type="button" id="staffCancel" onclick="closeStaffLogin()" class="hidden mt-3 w-full py-2 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-300 text-xs font-semibold active:scale-95 transition">Hủy</button>
         </div>
     </div>
 
@@ -3060,6 +3076,41 @@
             saveModalChanges();
         }
 
+        // ================== ĐĂNG NHẬP NHÂN VIÊN ==================
+        // Chọn sẵn 1 trong các tên dưới đây (nhớ trên từng máy). Tên được thêm vào mọi tin báo thu ngân (Telegram + ntfy).
+        const STAFF_LIST = ['Thành', 'Tú', 'Bảo', 'Mỹ', 'Sơn', 'Phương', 'Anh'];
+        const STAFF_KEY = 'tys_staff';
+        var currentStaff = '';
+        function staffRenderChip() {
+            const el = document.getElementById('staffChip');
+            if (el) el.innerHTML = '<i class="fa-solid fa-user"></i><span class="truncate">' + (currentStaff || 'Chưa đăng nhập') + '</span>';
+        }
+        function openStaffLogin() {
+            const g = document.getElementById('staffGrid');
+            const last = STAFF_LIST.length - 1, odd = STAFF_LIST.length % 2 === 1;
+            g.innerHTML = STAFF_LIST.map(function (n, i) {
+                const on = n === currentStaff;
+                return '<button type="button" onclick="pickStaff(' + i + ')" class="py-3 rounded-xl border text-sm font-extrabold active:scale-95 transition '
+                    + (odd && i === last ? 'col-span-2 ' : '')
+                    + (on ? 'bg-tys-500 text-ink border-tys-600' : 'bg-espresso-950/70 text-tys-300 border-tys-900') + '">' + n + '</button>';
+            }).join('');
+            document.getElementById('staffCancel').classList.toggle('hidden', !currentStaff);   // chưa đăng nhập thì không cho đóng
+            document.getElementById('staffLogin').classList.remove('hidden');
+        }
+        function closeStaffLogin() { if (currentStaff) document.getElementById('staffLogin').classList.add('hidden'); }
+        function pickStaff(i) {
+            const n = STAFF_LIST[i]; if (!n) return;
+            currentStaff = n;
+            try { localStorage.setItem(STAFF_KEY, n); } catch (e) {}
+            staffRenderChip();
+            document.getElementById('staffLogin').classList.add('hidden');
+        }
+        function staffInit() {
+            try { const v = localStorage.getItem(STAFF_KEY); if (v && STAFF_LIST.indexOf(v) >= 0) currentStaff = v; } catch (e) {}
+            staffRenderChip();
+            if (!currentStaff) openStaffLogin();
+        }
+
         // ================== THÔNG BÁO ORDER MỚI TỚI MÁY POS (ntfy) ==================
         // Trên máy POS: cài app "ntfy" (Google Play) và đăng ký ĐÚNG tên topic bên dưới.
         // Tên topic đóng vai trò như mật khẩu: giữ kín, đừng chia sẻ cho người ngoài.
@@ -3272,6 +3323,8 @@
         // opts.tg === false: KHÔNG gửi bản Telegram (tin thử) · opts.sync: tin đồng bộ trạng thái (không cần thu ngân bấm)
         function ntfySend(title, parts, priority, opts) {
             opts = opts || {};
+            // Thêm tên phục vụ đang đăng nhập vào dòng CUỐI nội dung (tin đồng bộ / tin gửi lại có sẵn tên thì bỏ qua)
+            if (currentStaff && !opts.sync && !opts.noStaff) parts = parts.concat(['👤 Phục vụ: ' + currentStaff]);
             const useTg = !!NOTIFY_WORKER_URL && opts.tg !== false;
             const job = {
                 id: 'j' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
@@ -3299,13 +3352,13 @@
                 '👉 Vào nhập bill bàn ' + t + ' ngay.',
                 '━━━━━━━━━━━━',
                 (b.title ? b.title + '\n' : '') + (b.msg || '')
-            ], 5, { label: 'Nhắc bàn ' + t, ackTable: t, ackAt: b.sentAt });
+            ], 5, { label: 'Nhắc bàn ' + t, ackTable: t, ackAt: b.sentAt, noStaff: true });
         }
 
         // Job đã bỏ cuộc (quá 30 phút): tạo job mới gửi lại, ghi rõ là order cũ.
         function guardRevive(job) {
             const nid = ntfySend(job.title, ['⏱ Order cũ lúc ' + fmtTime(job.at) + ' (gửi lại)', job.msg], job.pr,
-                { table: job.table, label: job.label, ackTable: job.ackTable, ackAt: job.ackAt || job.at, sync: job.sync });
+                { table: job.table, label: job.label, ackTable: job.ackTable, ackAt: job.ackAt || job.at, sync: job.sync, noStaff: true });
             outbox = outbox.filter(function (x) { return x !== job; });
             try {
                 if (job.table && billState && billState[job.table] && billState[job.table].job === job.id) {
@@ -3582,7 +3635,7 @@
                 // hủy/sửa món = khẩn, để thu ngân chỉnh bill ngay
                 const jobId = ntfySend(title, parts, removed.length ? 5 : 4, { table: tableId });
                 // Lưu mã job + nội dung để theo dõi "đã tới thu ngân chưa / đã ai nhận chưa" và để nhắc lại nếu cần.
-                markBill(tableId, 'wait', '', { job: jobId, title: title, msg: parts.join('\n').slice(0, 700), ord: Date.now() });
+                markBill(tableId, 'wait', '', { job: jobId, title: title, msg: (parts.join('\n').slice(0, 640) + (currentStaff ? '\n👤 Phục vụ: ' + currentStaff : '')), ord: Date.now() });
                 return true;
             } catch (e) {
                 console.warn('notifyCashier lỗi:', e);
@@ -4576,6 +4629,7 @@
         }
 
         window.onload = function() {
+            staffInit();
             initData();
             initHistory();
             renderMap();
