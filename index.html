@@ -3170,7 +3170,7 @@
             timeout: 8000,                              // mỗi lần gửi chờ tối đa (ms)
             maxAge: 30 * 60000,                         // quá 30 phút thì ngừng thử lại một kênh
             pruneAge: 3 * 3600000,                      // hộp thư đi: bỏ tin cũ hơn 3 giờ khi mở lại app
-            remind: [],                                 // NHẮC thu ngân do WORKER (cron mỗi phút) đảm nhiệm nên để rỗng để khỏi nhắc trùng. Worker chưa cài cron thì đổi lại thành [120] (web tự nhắc khi máy đang mở)
+            remind: [120],                                 // NHẮC thu ngân do WORKER (cron mỗi phút) đảm nhiệm nên để rỗng để khỏi nhắc trùng. Worker chưa cài cron thì đổi lại thành [120] (web tự nhắc khi máy đang mở)
             waiterAlarm: false,                         // true = máy phục vụ cũng bật chuông + toast + thanh đỏ "thu ngân chưa nhận". false = chỉ nhắc phía thu ngân
             alarm: [120, 300],                          // giây: chuông + cảnh báo trên máy phục vụ (chỉ dùng khi waiterAlarm = true)
             stale: 1800,                                // giây: quá mức này coi như cũ, không báo động nữa
