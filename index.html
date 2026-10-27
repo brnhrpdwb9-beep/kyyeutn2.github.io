@@ -3401,7 +3401,6 @@
                 ntfySend('✏️ BÀN ' + tableId + ' · CẬP NHẬT', lines.concat([
                     '━━━━━━━━━━━━',
                     '🧾 Cả bàn: ' + (table.items || []).length + ' món · ' + fmtMoney(table.total),
-                    ntfyPayLine(table),
                     '🕒 ' + fmtTime(Date.now())
                 ]), 4, { label: 'Cập nhật bàn ' + tableId });
                 return true;
@@ -3540,11 +3539,8 @@
             setInterval(guardTick, 3000);
         })();
 
-        // Dòng "cách thanh toán · đã trả hay chưa" dùng chung cho mọi thông báo.
-        function ntfyPayLine(table) {
-            const isCK = table.paymentMethod === 'Chuyển khoản QR';
-            return (isCK ? '📱 CK VietQR' : '💵 Tiền mặt') + ' · ' + (table.status === 'paid' ? '🟢 ĐÃ TRẢ' : '🔴 CHƯA TRẢ');
-        }
+        // (Đã bỏ dòng "cách thanh toán · đã trả hay chưa" khỏi mọi thông báo.)
+        function ntfyPayLine(table) { return ''; }
 
         // ORDER MỚI / GỌI THÊM / HỦY MÓN / SỬA ORDER. Trả về true nếu đã gửi thông báo.
         //   Tiêu đề (hiện đậm, đọc được cả khi thông báo thu gọn): biểu tượng + BÀN + loại + số món
@@ -3581,7 +3577,6 @@
                 parts.push('━━━━━━━━━━━━');
                 if (table.note) parts.push('📝 ' + table.note);
                 parts.push('🧾 Cả bàn: ' + nextItems.length + ' món · ' + fmtMoney(table.total));
-                parts.push(ntfyPayLine(table));
                 parts.push('🕒 ' + fmtTime(Date.now()));
 
                 // hủy/sửa món = khẩn, để thu ngân chỉnh bill ngay
@@ -3620,7 +3615,6 @@
                     parts.push('━━━━━━━━━━━━');
                     parts.push('🧾 Bàn ' + targetId + ' sau gộp: ' + (target.items || []).length + ' món · ' + fmtMoney(target.total));
                 }
-                parts.push(ntfyPayLine(target));
                 parts.push('🕒 ' + fmtTime(Date.now()));
                 ntfySend(title, parts, 5);   // đổi bàn = bill đang nằm sai số bàn, cần sửa ngay
             } catch (e) {
