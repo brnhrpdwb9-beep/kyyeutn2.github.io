@@ -1299,6 +1299,212 @@
         let activeTableId = null;
         let currentFilter = 'all';
 
+        // ==================================================================================
+        // BẢO MẬT MẠNG LAN — CHỈ MÁY TRONG WIFI CỦA QUÁN MỚI ĐƯỢC GỬI ORDER
+        //
+        // Giới hạn cần biết trước: TRÌNH DUYỆT KHÔNG ĐỌC ĐƯỢC IP CỦA CHÍNH NÓ.
+        // Từ 2019 các trình duyệt đã chặn WebRTC lộ IP nội bộ (mDNS), và fetch tới máy chủ
+        // ngoài không trả về IP của client. Vì vậy KHÔNG thể viết "nếu IP bắt đầu bằng
+        // 192.168.1. thì cho order" ngay trong trang này — mã như thế là kiểm tra giả,
+        // xoá một dòng JS là qua, và cũng không chạy được.
+        //
+        // Cách đúng: hỏi một bên THẬT SỰ NHÌN THẤY IP. Ở đây dùng 2 tầng:
+        //   Tầng 1 (chính)  : Worker /whoami trả về IP mà Cloudflare thấy.
+        //                     Nếu quán dùng wifi có IP công khai cố định -> so khớp dải cho phép.
+        //   Tầng 2 (tuỳ chọn): máy chủ nhỏ trong LAN (xem lan-guard.js) trả về IP nội bộ
+        //                     của máy đang gọi -> so khớp 192.168.1.x chính xác 100%.
+        // Nếu bật mà không cấu hình gì, chế độ mặc định là "off" để không chặn nhầm.
+        // ==================================================================================
+        const LAN_GUARD = {
+            mode: 'off',              // 'off' | 'cloudflare' | 'lan' | 'both'
+            allowCidrs: [             // dải IP công khai của wifi quán (dùng cho mode cloudflare)
+                // '203.0.113.0/24',      // <-- điền IP công khai của quán
+            ],
+            allowPrivate: true,       // cho phép mọi IP nội bộ (192.168.x, 10.x, 172.16–31.x)
+            lanServer: '',            // ví dụ 'http://192.168.1.10:8787' (dùng cho mode lan)
+            cacheMs: 5 * 60 * 1000,   // nhớ kết quả 5 phút, tránh hỏi lại mỗi lần order
+            timeoutMs: 4000,
+            // Khi KHÔNG hỏi được máy chủ (mất mạng, Worker sập): có chặn hay không?
+            //   true  = cho qua (không chặn nhầm, tránh quán không bán được khi mạng lỗi)
+            //   false = chặn (an toàn hơn, nhưng mất đơn khi máy chủ tạm lỗi)
+            // Mặc định true vì lý do vận hành: thà cho một đơn ngoài wifi lọt còn hơn
+            // dừng bán vì máy chủ kiểm tra chết. Đổi thành false nếu ưu tiên an toàn tuyệt đối.
+            failOpen: true,
+            blockMessage: 'Máy này không ở trong wifi của quán nên không gửi được order. '
+                        + 'Vui lòng kết nối wifi quán rồi tải lại trang.'
+        };
+
+        const NetGuard = (function () {
+            let state = { ok: null, ip: '', via: '', at: 0, checked: false, checking: null };
+
+            // ---- Tiện ích CIDR: so khớp IPv4 với dải a.b.c.d/n ----
+            function ipToInt(ip) {
+                const p = String(ip).trim().split('.');
+                if (p.length !== 4) return null;
+                let n = 0;
+                for (const s of p) {
+                    const v = Number(s);
+                    if (!Number.isInteger(v) || v < 0 || v > 255) return null;
+                    n = (n * 256) + v;
+                }
+                return n >>> 0;
+            }
+            function inCidr(ip, cidr) {
+                const [base, bitsRaw] = String(cidr).split('/');
+                const bits = bitsRaw === undefined ? 32 : Number(bitsRaw);
+                const a = ipToInt(ip), b = ipToInt(base);
+                if (a === null || b === null || !(bits >= 0 && bits <= 32)) return false;
+                if (bits === 0) return true;
+                const mask = (0xFFFFFFFF << (32 - bits)) >>> 0;
+                return (a & mask) === (b & mask);
+            }
+            function isPrivate(ip) {
+                return inCidr(ip, '10.0.0.0/8')
+                    || inCidr(ip, '172.16.0.0/12')
+                    || inCidr(ip, '192.168.0.0/16')
+                    || inCidr(ip, '127.0.0.0/8')
+                    || inCidr(ip, '169.254.0.0/16');
+            }
+            // IPv6 nội bộ (fe80::, fc00::/7) coi như trong LAN
+            function isPrivateV6(ip) {
+                const s = String(ip).toLowerCase();
+                return s.startsWith('fe80:') || s.startsWith('fc') || s.startsWith('fd') || s === '::1';
+            }
+
+            function decide(ip, via) {
+                if (!ip) return false;
+                const v6 = ip.includes(':');
+                if (LAN_GUARD.allowPrivate && (v6 ? isPrivateV6(ip) : isPrivate(ip))) return true;
+                if (!v6) {
+                    for (const c of LAN_GUARD.allowCidrs) if (inCidr(ip, c)) return true;
+                }
+                return false;
+            }
+
+            async function fetchJson(url) {
+                const ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+                const timer = setTimeout(() => { try { if (ctl) ctl.abort(); } catch (e) {} }, LAN_GUARD.timeoutMs);
+                try {
+                    const r = await fetch(url, { cache: 'no-store', signal: ctl ? ctl.signal : undefined });
+                    if (!r.ok) return null;
+                    return await r.json();
+                } catch (e) {
+                    return null;
+                } finally {
+                    clearTimeout(timer);
+                }
+            }
+
+            /**
+             * Hỏi máy chủ để biết IP của máy đang gọi.
+             * Trả về { ip, via, answered } — answered = false nghĩa là KHÔNG hỏi được máy chủ
+             * (khác với "hỏi được nhưng máy chủ không có IP"). Phân biệt này quyết định
+             * việc áp dụng failOpen: lỗi mạng thì theo chính sách, còn máy chủ trả lời
+             * rõ ràng "không biết IP" thì phải chặn.
+             */
+            async function probe() {
+                const mode = LAN_GUARD.mode;
+                let answered = false;
+
+                if (mode === 'lan' || mode === 'both') {
+                    if (LAN_GUARD.lanServer) {
+                        const d = await fetchJson(LAN_GUARD.lanServer.replace(/\/+$/, '') + '/whoami');
+                        if (d && d.ip) return { ip: String(d.ip), via: 'lan', answered: true };
+                        if (d) answered = true;
+                    }
+                    if (mode === 'lan') return { ip: '', via: 'lan', answered: answered };
+                }
+
+                // cloudflare (hoặc both khi máy chủ LAN không trả lời)
+                if (!NOTIFY_WORKER_URL) return { ip: '', via: 'cloudflare', answered: false };
+                const d = await fetchJson(
+                    NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/whoami?key=' + encodeURIComponent(NOTIFY_KEY)
+                );
+                if (d && d.ip) return { ip: String(d.ip), via: 'cloudflare', answered: true };
+                return { ip: '', via: 'cloudflare', answered: !!d };
+            }
+
+            /** Kiểm tra (có nhớ đệm). Trả về {ok, ip, via}. */
+            function check(force) {
+                if (LAN_GUARD.mode === 'off') {
+                    state = { ok: true, ip: '', via: 'off', at: Date.now(), checked: true, checking: null };
+                    return Promise.resolve(state);
+                }
+                const now = Date.now();
+                if (!force && state.checked && (now - state.at) < LAN_GUARD.cacheMs) return Promise.resolve(state);
+                if (state.checking) return state.checking;
+
+                state.checking = probe().then((res) => {
+                    // Không hỏi được máy chủ (answered = false) -> áp dụng failOpen.
+                    // Hỏi được mà không có IP -> chặn, vì đó là câu trả lời rõ ràng.
+                    const ok = res.answered === false ? (LAN_GUARD.failOpen === true) : decide(res.ip, res.via);
+                    state = {
+                        ok: ok,
+                        ip: res.ip,
+                        via: res.via,
+                        at: Date.now(),
+                        checked: true,
+                        checking: null
+                    };
+                    apply();
+                    return state;
+                }).catch(() => {
+                    // Lỗi bất ngờ trong chính quá trình kiểm tra: theo chính sách failOpen.
+                    state = { ok: LAN_GUARD.failOpen === true, ip: '', via: 'error', at: Date.now(), checked: true, checking: null };
+                    apply();
+                    return state;
+                });
+                return state.checking;
+            }
+
+            /** Trạng thái đã biết, không kích hoạt kiểm tra. */
+            function current() { return state; }
+            function allowed() { return LAN_GUARD.mode === 'off' ? true : state.ok === true; }
+
+            /** Chặn ngay tại chỗ khi người dùng bấm gửi order. */
+            async function require_(opts) {
+                if (LAN_GUARD.mode === 'off') return true;
+                const st = await check();
+                if (st.ok) return true;
+                notifyBlocked(opts);
+                return false;
+            }
+
+            function notifyBlocked(opts) {
+                const msg = (opts && opts.message) || LAN_GUARD.blockMessage;
+                try {
+                    if (typeof ackToast === 'function') { ackToast('🔒 ' + msg, 'alert', 9000); return; }
+                } catch (e) {}
+                try { alert(msg); } catch (e) {}
+            }
+
+            /** Hiện/ẩn dải cảnh báo cố định trên đầu trang. */
+            function apply() {
+                let bar = document.getElementById('netGuardBar');
+                if (LAN_GUARD.mode === 'off' || state.ok !== false) {
+                    if (bar) bar.remove();
+                    return;
+                }
+                if (!bar) {
+                    bar = document.createElement('div');
+                    bar.id = 'netGuardBar';
+                    bar.style.cssText = 'position:fixed;left:0;right:0;top:0;z-index:9995;padding:calc(6px + env(safe-area-inset-top,0px)) 10px 6px;'
+                        + 'background:#b91c1c;color:#fff;font:700 12px/1.35 system-ui,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.4);'
+                        + 'display:flex;align-items:center;gap:8px';
+                    bar.innerHTML = '<div style="flex:1">🔒 <span id="netGuardMsg"></span></div>'
+                        + '<button type="button" id="netGuardRetry" style="padding:5px 9px;border-radius:8px;background:#fff;color:#b91c1c;'
+                        + 'font:800 11px system-ui,sans-serif;border:0">Thử lại</button>';
+                    document.body.appendChild(bar);
+                    const btn = bar.querySelector('#netGuardRetry');
+                    if (btn) btn.onclick = function () { check(true); };
+                }
+                const m = bar.querySelector('#netGuardMsg');
+                if (m) m.textContent = LAN_GUARD.blockMessage;
+            }
+
+            return { check, current, allowed, require: require_, apply, _decide: decide, _inCidr: inCidr };
+        })();
+
         // ================== DỮ LIỆU THỰC ĐƠN (TOÀN BỘ MENU TYS COFFEE) ==================
         // Toàn bộ menu được đưa vào đây. Chỉ những món có bestSeller (số thứ tự 1, 2, 3...) mới hiện
         // sẵn ở ngoài theo đúng thứ tự đó (mục "Best seller"); các món còn lại tìm qua ô tìm kiếm.
@@ -3354,6 +3560,7 @@
                     p = fetch(NTFY_URL, { method: 'POST', keepalive: true, signal: ctl ? ctl.signal : undefined, body: JSON.stringify(payload) });
                 } else {
                     // Telegram qua Worker. Kèm id để Worker (nếu hỗ trợ) bỏ qua tin trùng khi ta gửi lại do mất phản hồi.
+                    // Chỉ dựng chuỗi JSON khi thật sự gửi qua Worker.
                     const tgBody = JSON.stringify({ key: NOTIFY_KEY, title: job.title, message: message, priority: job.pr, id: job.id, at: job.at, table: job.ackTable || null, sync: !!job.sync });
                     // text/plain để trình duyệt không cần hỏi trước (preflight) khi gọi sang Worker.
                     p = fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/notify', {
@@ -4094,6 +4301,24 @@
         function saveModalChanges() {
             if (!activeTableId) return;
 
+            // BẢO MẬT LAN: chặn ngay tại điểm dữ liệu rời máy. Đây là cửa duy nhất để
+            // một order mới đi ra ngoài (qua notifyCashier). Kiểm tra bất đồng bộ nên phải
+            // tách thành hàm trong; nếu không được phép thì dừng, không lưu, không gửi.
+            if (LAN_GUARD.mode !== 'off') {
+                const snapshot = { id: activeTableId };
+                NetGuard.require().then(function (ok) {
+                    if (!ok) return;                       // đã hiện cảnh báo, không làm gì thêm
+                    if (activeTableId !== snapshot.id) return;   // người dùng đã đóng/đổi bàn
+                    saveModalChangesInner();
+                });
+                return;
+            }
+            saveModalChangesInner();
+        }
+
+        function saveModalChangesInner() {
+            if (!activeTableId) return;
+
             const table = tablesData[activeTableId];
             const prevStatus = table.status;
 
@@ -4745,6 +4970,17 @@
             setTimeout(resetZoomAndFit, 100);
 
             setInterval(updateClock, 1000);
+
+            // BẢO MẬT LAN: kiểm tra ngay khi tải trang, khi mạng đổi (vào/ra wifi quán),
+            // và khi quay lại tab. Không chặn giao diện — chỉ hiện dải cảnh báo nếu sai mạng.
+            if (LAN_GUARD.mode !== 'off') {
+                NetGuard.check();
+                window.addEventListener('online', function () { NetGuard.check(true); });
+                window.addEventListener('offline', function () { NetGuard.check(true); });
+                document.addEventListener('visibilitychange', function () {
+                    if (document.visibilityState === 'visible') NetGuard.check();
+                });
+            }
             
             // TỐI ƯU 7 — vòng làm mới số phút đã ngồi: không vẽ lại trong lúc người dùng đang kéo sơ đồ
             // (vẽ lại giữa thao tác là nguyên nhân giật), và bỏ qua khi tab đang ẩn.
