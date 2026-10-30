@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>TYS COFFEE - THANH TOÁN</title>
     
+    <!-- TỐI ƯU: mở kết nối sớm tới 3 CDN để giảm thời gian chờ DNS/TLS khi tải lần đầu.
+         Không thay đổi nội dung hay giao diện — chỉ báo trước cho trình duyệt. -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://ntfy.sh">
+    <link rel="dns-prefetch" href="https://falling-tooth-d67e.brnhrpdwb9.workers.dev">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -903,7 +912,7 @@
                         <h2 class="text-xs sm:text-sm font-bold text-stone-200 tracking-wide"><i class="fa-solid fa-list-ul mr-1.5 text-tys-400"></i>Danh Sách Bàn</h2>
                         <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 text-[11px]"></i>
-                            <input type="text" id="searchInput" onkeyup="renderListView()" placeholder="Tìm bàn..." class="pl-8 pr-3 py-1.5 rounded-lg bg-espresso-950 border border-tys-900 text-xs text-stone-200 focus:outline-none focus:border-tys-600 w-44 sm:w-52 placeholder-stone-600">
+                            <input type="text" id="searchInput" onkeyup="scheduleListView()" placeholder="Tìm bàn..." class="pl-8 pr-3 py-1.5 rounded-lg bg-espresso-950 border border-tys-900 text-xs text-stone-200 focus:outline-none focus:border-tys-600 w-44 sm:w-52 placeholder-stone-600">
                         </div>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="listGrid"></div>
@@ -1405,8 +1414,43 @@
             } catch(e) {}
         }
 
+        // TỐI ƯU 1 — gộp ghi style vào 1 khung hình.
+        // Kéo/zoom bắn sự kiện dày hơn 60 lần/giây trên một số máy; mỗi lần ghi transform là một lần
+        // trình duyệt tính lại style. Gom các lần trong cùng một khung hình lại chỉ còn 1 lần ghi,
+        // trạng thái cuối cùng vẫn y hệt.
+        let mapWrapperEl = null;
+        let mapTransformRaf = 0;
+        function getMapWrapper() {
+            if (!mapWrapperEl || !mapWrapperEl.isConnected) mapWrapperEl = document.getElementById('mapWrapper');
+            return mapWrapperEl;
+        }
+        function scheduleMapTransform() {
+            if (mapTransformRaf) return;
+            mapTransformRaf = requestAnimationFrame(function () {
+                mapTransformRaf = 0;
+                updateMapTransform();
+            });
+        }
+
+        // TỐI ƯU 2 — nhớ kích thước khung sơ đồ trong lúc kéo/zoom.
+        // Trước đây mỗi sự kiện chạm đều gọi getBoundingClientRect() ngay sau khi vừa ghi transform,
+        // buộc trình duyệt tính lại layout đồng bộ (layout thrashing) — đây là nguyên nhân giật khi pinch.
+        // Khung sơ đồ không đổi kích thước trong một thao tác, nên đọc lại tối đa 2,5 lần/giây là đủ.
+        let mapRectCache = null;
+        let mapRectAt = 0;
+        function getMapRect(force) {
+            const now = Date.now();
+            if (force || !mapRectCache || now - mapRectAt > 400) {
+                const c = document.getElementById('mapContainer');
+                mapRectCache = c ? c.getBoundingClientRect() : { left: 0, top: 0, width: 0, height: 0 };
+                mapRectAt = now;
+            }
+            return mapRectCache;
+        }
+        function invalidateMapRect() { mapRectCache = null; mapRectAt = 0; }
+
         function updateMapTransform() {
-            const wrapper = document.getElementById('mapWrapper');
+            const wrapper = getMapWrapper();
             if (!wrapper) return;
             scale = Math.min(Math.max(MAP_MIN_SCALE, scale), MAP_MAX_SCALE);
             const cx = MAP_BASE_WIDTH / 2;
@@ -1415,6 +1459,7 @@
         }
 
         function resetZoomAndFit() {
+            invalidateMapRect();
             const container = document.getElementById('mapContainer');
             if (!container) return;
             const availW = container.clientWidth;
@@ -1437,7 +1482,7 @@
 
             container.addEventListener('wheel', (e) => {
                 e.preventDefault();
-                const rect = container.getBoundingClientRect();
+                const rect = getMapRect();
                 const mouseX = e.clientX - rect.left;
                 const mouseY = e.clientY - rect.top;
                 const newScale = Math.min(Math.max(MAP_MIN_SCALE, scale * (e.deltaY < 0 ? 1.1 : 0.9)), MAP_MAX_SCALE);
@@ -1445,7 +1490,7 @@
                 panX = mouseX - (mouseX - panX) * zoomFactor;
                 panY = mouseY - (mouseY - panY) * zoomFactor;
                 scale = newScale;
-                updateMapTransform();
+                scheduleMapTransform();
             }, { passive: false });
 
             container.addEventListener('mousedown', (e) => {
@@ -1459,7 +1504,7 @@
                 if (!isDragging) return;
                 panX = e.clientX - startX;
                 panY = e.clientY - startY;
-                updateMapTransform();
+                scheduleMapTransform();
             });
 
             window.addEventListener('mouseup', () => { isDragging = false; });
@@ -1482,7 +1527,7 @@
                         e.touches[0].clientY - e.touches[1].clientY
                     );
                     initialScale = scale;
-                    const rect = container.getBoundingClientRect();
+                    const rect = getMapRect(true);
                     pinchMid0 = {
                         x: (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left,
                         y: (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top
@@ -1495,13 +1540,13 @@
                 if (e.touches.length === 1 && isDragging) {
                     panX = e.touches[0].clientX - startX;
                     panY = e.touches[0].clientY - startY;
-                    updateMapTransform();
+                    scheduleMapTransform();
                 } else if (e.touches.length === 2 && initialPinchDistance) {
                     const currentDist = Math.hypot(
                         e.touches[0].clientX - e.touches[1].clientX,
                         e.touches[0].clientY - e.touches[1].clientY
                     );
-                    const rect = container.getBoundingClientRect();
+                    const rect = getMapRect();
                     const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
                     const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
                     // Kẹp scale trước khi bù pan để không bị trôi khi chạm giới hạn zoom
@@ -1511,7 +1556,7 @@
                     panX = midX - (pinchMid0.x - pinchPan0.x) * ratio;
                     panY = midY - (pinchMid0.y - pinchPan0.y) * ratio;
                     scale = newScale;
-                    updateMapTransform();
+                    scheduleMapTransform();
                 }
             }, { passive: true });
 
@@ -2543,6 +2588,13 @@
             }
         }
 
+        // TỐI ƯU 3 — chỉ vẽ lại ô bàn khi nội dung hiển thị thật sự thay đổi.
+        // Trước đây mỗi vòng 15 giây, mỗi lần lọc, mỗi lần lưu đều dựng lại toàn bộ 29 nút: phân tích
+        // lại chuỗi HTML, tạo lại 6 trình nghe sự kiện cho mỗi nút rồi để trình duyệt tính lại layout.
+        // Nay mỗi ô có một "dấu vân tay" nội dung; nếu không đổi thì bỏ qua hoàn toàn — phần tử và các
+        // trình nghe sự kiện cũ được giữ nguyên (đây cũng là lý do không cần gắn lại sự kiện).
+        const tableRenderSig = new Map();
+
         function renderTableNode(i) {
             const container = document.getElementById(`table-node-${i}`);
             if (!container) return;
@@ -2593,17 +2645,28 @@
             const selectedClass = (activeTableId === i) ? "table-selected-glow" : "";
 
             // Mô tả ngắn trên sơ đồ: ưu tiên ghi chú của bàn, nếu chưa có thì hiện các món đã gọi
+            const descList = descItems(data.items);
             const mapDesc = data.note ? escapeHtml(data.note)
-                : (descItems(data.items).length ? groupedItemsText(descItems(data.items)) : '');
+                : (descList.length ? groupedItemsText(descList) : '');
+
+            const chipHtml = billChip(i, data);
+            const totalHtml = data.total > 0 ? `<span class="text-[13px] font-bold text-tys-400">${data.total}k</span>` : '';
+
+            // Dấu vân tay: đủ mọi thứ ảnh hưởng tới những gì người dùng nhìn thấy trong ô bàn.
+            const sig = bgStyle + '\u0001' + numColor + '\u0001' + badgeHTML + '\u0001' + opacityClass
+                      + '\u0001' + selectedClass + '\u0001' + chipHtml + '\u0001' + totalHtml
+                      + '\u0001' + timerText + '\u0001' + mapDesc;
+            if (tableRenderSig.get(i) === sig && container.firstElementChild) return;
+            tableRenderSig.set(i, sig);
 
             // Nút bấm từ 68px tăng thành 102px
             container.innerHTML = `
                 <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} ${selectedClass} flex flex-col items-center justify-center p-1.5 transition-all">
-                    ${badgeHTML}${billChip(i, data)}
+                    ${badgeHTML}${chipHtml}
                     <span class="text-[10px] font-bold uppercase tracking-[0.18em] leading-none opacity-60 ${numColor}">Bàn</span>
                     <span class="text-[36px] font-extrabold leading-none tracking-tight tabular-nums ${numColor} mt-0.5">${i}</span>
                     ${(data.total > 0 || timerText) ? `<div class="flex items-center justify-center gap-1.5 mt-1.5 leading-none">
-                        ${data.total > 0 ? `<span class="text-[13px] font-bold text-tys-400">${data.total}k</span>` : ''}
+                        ${totalHtml}
                         ${timerText}
                     </div>` : ''}
                     ${mapDesc ? `<div class="mt-1 w-full px-0.5 text-center text-[9px] leading-[1.15] font-semibold opacity-80 line-clamp-2 break-words">${mapDesc}</div>` : ''}
@@ -2620,12 +2683,27 @@
             }
         }
 
-        function renderListView() {
+        // TỐI ƯU 4 — danh sách bàn: dựng HTML một lần rồi gán, thay vì tạo 29 phần tử rồi gán
+        // innerHTML riêng cho từng cái (mỗi lần gán là một lần phân tích HTML + tính lại layout).
+        // Kèm dấu vân tay để bỏ qua khi nội dung không đổi — vòng làm mới 15 giây trước đây luôn
+        // dựng lại toàn bộ danh sách dù không có gì thay đổi.
+        let listRenderSig = '';
+
+        // TỐI ƯU 5 — ô tìm bàn: gõ phím nhanh trước đây dựng lại cả danh sách ở từng ký tự.
+        // Gom lại 120ms sau lần gõ cuối; nội dung hiển thị cuối cùng không đổi.
+        let listViewTimer = 0;
+        function scheduleListView() {
+            if (listViewTimer) clearTimeout(listViewTimer);
+            listViewTimer = setTimeout(function () {
+                listViewTimer = 0;
+                renderListView();
+            }, 120);
+        }
+
+        function renderListView(force) {
             const listGrid = document.getElementById('listGrid');
             if(!listGrid) return;
             const query = (document.getElementById('searchInput')?.value || '').toLowerCase();
-            
-            const fragment = document.createDocumentFragment();
 
             // Gom các bàn thoả điều kiện lọc/tìm kiếm, rồi sắp xếp theo mức độ khẩn cấp:
             // 1) Chưa trả — bàn ngồi lâu nhất (dễ quên thu tiền nhất) lên đầu, bàn mới ngồi xuống dưới
@@ -2652,7 +2730,18 @@
                 return a.i - b.i;
             });
 
-            visibleTables.forEach(({ i, data, elapsedMins }) => {
+            // Dấu vân tay của cả danh sách (bộ lọc + từ khoá + nội dung từng bàn hiển thị)
+            const sig = currentFilter + '\u0002' + query + '\u0002' + visibleTables.map(v =>
+                v.i + ':' + v.data.status + ':' + (v.data.total | 0) + ':' + v.elapsedMins + ':' +
+                (v.data.startTime || 0) + ':' + (v.data.note || '') + ':' +
+                (v.data.items || []).map(x => x.name + (x.note || '')).join(',')
+            ).join('|');
+
+            if (!force && sig === listRenderSig && listGrid.children.length === visibleTables.length) return;
+            listRenderSig = sig;
+
+            const htmlParts = [];
+            for (const { i, data, elapsedMins } of visibleTables) {
                 let statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-espresso-800 text-stone-500">Trống</span>`;
 
                 if (data.status === 'unpaid') {
@@ -2666,10 +2755,10 @@
                 }
                 if (data.status === 'paid') statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-sage-950 text-sage-300 border border-sage-700">Đã thanh toán</span>`;
 
-                const card = document.createElement('div');
-                card.className = "bg-espresso-900 p-3.5 rounded-xl border border-tys-900 flex flex-col justify-between hover:border-tys-700 transition cursor-pointer select-none active:scale-[0.98]";
-                
-                card.innerHTML = `
+                const cardDesc = descItems(data.items);
+
+                htmlParts.push(`
+                    <div class="bg-espresso-900 p-3.5 rounded-xl border border-tys-900 flex flex-col justify-between hover:border-tys-700 transition cursor-pointer select-none active:scale-[0.98]">
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="font-bold text-tys-100 text-base">Bàn ${i}</span>
@@ -2678,7 +2767,7 @@
                         <div class="text-xs text-stone-400 space-y-1">
                             <div class="text-sm sm:text-xs"><i class="fa-solid fa-coins text-tys-500 mr-1"></i> Tổng: <b class="text-tys-200 font-extrabold">${data.total * 1000}đ</b></div>
                             ${data.startTime ? `<div class="text-sm sm:text-xs font-medium"><i class="fa-regular fa-clock mr-1"></i> Thời gian ngồi: ${elapsedMins} phút</div>` : ''}
-                            ${descItems(data.items).length ? `<div class="text-stone-300 font-medium leading-snug break-words"><i class="fa-solid fa-mug-hot text-tys-500 mr-1"></i>${groupedItemsText(descItems(data.items))}</div>` : ''}
+                            ${cardDesc.length ? `<div class="text-stone-300 font-medium leading-snug break-words"><i class="fa-solid fa-mug-hot text-tys-500 mr-1"></i>${groupedItemsText(cardDesc)}</div>` : ''}
                             ${data.note ? `<div class="text-stone-400 leading-snug break-words"><i class="fa-regular fa-note-sticky mr-1"></i>${escapeHtml(data.note)}</div>` : ''}
                         </div>
                     </div>
@@ -2693,15 +2782,18 @@
                             </button>
                         ` : `<span></span>`}
                         <span class="text-[11px] font-bold text-tys-400 hover:underline">Chi tiết <i class="fa-solid fa-arrow-right text-[10px] ml-0.5"></i></span>
-                    </diver
-                `;
-                
-                attachTableGestureEvents(card, i);
-                fragment.appendChild(card);
-            });
+                    </div>
+                    </div>
+                `);
+            }
 
-            listGrid.innerHTML = '';
-            listGrid.appendChild(fragment);
+            listGrid.innerHTML = htmlParts.join('');
+
+            // Gắn sự kiện theo đúng thứ tự đã dựng — không cần thêm thuộc tính vào HTML
+            const cards = listGrid.children;
+            for (let k = 0; k < visibleTables.length && k < cards.length; k++) {
+                attachTableGestureEvents(cards[k], visibleTables[k].i);
+            }
         }
 
         function updateDashboardStats() {
@@ -4623,9 +4715,20 @@
             if (btn) btn.setAttribute('aria-checked', document.documentElement.getAttribute('data-theme') === 'dark' ? 'true' : 'false');
         });
 
+        // TỐI ƯU 6 — đồng hồ: trước đây mỗi giây lại tạo mới bộ định dạng ngày/giờ (Intl) và ghi lại DOM.
+        // Nay tạo bộ định dạng một lần, và chỉ ghi DOM khi chuỗi thật sự khác. Kết quả hiển thị y nguyên.
+        let clockTimeFmt = null, clockDateFmt = null, clockLastText = '', clockEl = null;
         function updateClock() {
             const now = new Date();
-            document.getElementById('liveClock').innerText = now.toLocaleTimeString('vi-VN') + " - " + now.toLocaleDateString('vi-VN');
+            if (!clockTimeFmt) {
+                clockTimeFmt = new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+                clockDateFmt = new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            }
+            const txt = clockTimeFmt.format(now) + ' - ' + clockDateFmt.format(now);
+            if (txt === clockLastText) return;
+            clockLastText = txt;
+            if (!clockEl || !clockEl.isConnected) clockEl = document.getElementById('liveClock');
+            if (clockEl) clockEl.innerText = txt;
         }
 
         window.onload = function() {
@@ -4643,10 +4746,15 @@
 
             setInterval(updateClock, 1000);
             
+            // TỐI ƯU 7 — vòng làm mới số phút đã ngồi: không vẽ lại trong lúc người dùng đang kéo sơ đồ
+            // (vẽ lại giữa thao tác là nguyên nhân giật), và bỏ qua khi tab đang ẩn.
+            // Số phút vẫn được cập nhật ở vòng kế tiếp nên không sai lệch thông tin.
             setInterval(() => {
+                if (isDragging || document.visibilityState === 'hidden') return;
                 renderMap();
-                if(!document.getElementById('listView').classList.contains('hidden')) {
-                    renderListView(); 
+                const lv = document.getElementById('listView');
+                if (lv && !lv.classList.contains('hidden')) {
+                    renderListView();
                 }
             }, 15000); 
         };
