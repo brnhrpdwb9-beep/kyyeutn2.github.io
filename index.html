@@ -1156,10 +1156,21 @@
 
                     <!-- THANH CHỈNH SỬA SƠ ĐỒ — chỉ hiện khi đang kéo thả vị trí bàn -->
                     <div id="layoutEditBar" class="hidden absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 w-[calc(100%-1.5rem)] sm:w-auto sm:max-w-[92%]">
+                        <!-- BẢNG ẨN BÀN — chạm số bàn để ẩn / hiện bàn đó trên Sơ đồ 2 (dữ liệu bàn không bị xoá) -->
+                        <div id="layoutHidePanel" class="hidden mb-1.5 p-2.5 rounded-2xl bg-espresso-900/95 border border-tys-800 shadow-[0_12px_30px_-10px_rgba(26,21,16,0.55)] backdrop-blur-md">
+                            <div class="flex items-center justify-between mb-1.5 gap-2">
+                                <span class="text-[11px] font-bold text-tys-300"><i class="fa-solid fa-eye-slash mr-1"></i>Chạm số bàn để ẩn / hiện trên Sơ đồ 2</span>
+                                <span id="layoutHideCount" class="text-[10px] font-semibold text-stone-500 whitespace-nowrap"></span>
+                            </div>
+                            <div id="layoutHideGrid" class="grid grid-cols-8 sm:grid-cols-10 gap-1"></div>
+                        </div>
                         <div class="flex items-center gap-1.5 p-1.5 rounded-2xl bg-espresso-900/95 border border-tys-800 shadow-[0_12px_30px_-10px_rgba(26,21,16,0.55)] backdrop-blur-md">
                             <span class="hidden sm:flex items-center gap-1.5 pl-2 pr-1 text-[11px] font-bold text-tys-300 whitespace-nowrap">
                                 <i class="fa-solid fa-hand-pointer"></i>Kéo bàn để sắp xếp
                             </span>
+                            <button type="button" onclick="toggleLayoutHidePanel()" id="layoutHideBtn" class="flex-1 sm:flex-none px-2.5 py-2 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-300 text-[11px] font-bold whitespace-nowrap active:scale-95 transition" title="Ẩn / hiện từng bàn trên Sơ đồ 2" aria-pressed="false">
+                                <i class="fa-solid fa-eye-slash mr-1"></i>Ẩn bàn
+                            </button>
                             <button type="button" onclick="toggleLayoutDecor()" id="layoutDecorBtn" class="flex-1 sm:flex-none px-2.5 py-2 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-300 text-[11px] font-bold whitespace-nowrap active:scale-95 transition" title="Hiện/ẩn tường, phòng lạnh, lối đi, cây xanh">
                                 <i class="fa-solid fa-border-all mr-1"></i>Nền phòng
                             </button>
@@ -2309,14 +2320,75 @@
         }
 
         // Bàn chỉ ẩn trên SƠ ĐỒ GỐC (Sơ đồ 1). Dữ liệu bàn (tablesData), danh sách bàn, lịch sử, tổng kết ca
-        // vẫn giữ nguyên; Sơ đồ 2 vẫn hiện đủ bàn.
+        // vẫn giữ nguyên. Sơ đồ 2 có danh sách ẩn riêng (layout2.hidden), chỉnh trong chế độ "Sửa" > "Ẩn bàn":
+        //   - đang Sửa: bàn bị ẩn vẫn hiện MỜ để còn chạm vào bảng mà hiện lại;
+        //   - xem bình thường: bàn bị ẩn biến mất khỏi sơ đồ.
         const HIDDEN_ON_LAYOUT1 = [27, 28, 29];
 
+        function currentHiddenOnLayout2() {
+            const src = isLayoutEditing ? layout2Working : layout2Saved;
+            return (src && Array.isArray(src.hidden)) ? src.hidden : [];
+        }
+
         function syncHiddenTables() {
-            HIDDEN_ON_LAYOUT1.forEach(function (i) {
+            const hidden2 = (activeLayout === 2) ? currentHiddenOnLayout2() : [];
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
                 const node = document.getElementById(`table-node-${i}`);
-                if (node) node.style.display = (activeLayout === 1) ? 'none' : '';
-            });
+                if (!node) continue;
+                let display = '', opacity = '';
+                if (activeLayout === 1) {
+                    if (HIDDEN_ON_LAYOUT1.indexOf(i) !== -1) display = 'none';
+                } else if (hidden2.indexOf(i) !== -1) {
+                    if (isLayoutEditing) opacity = '0.25'; else display = 'none';
+                }
+                node.style.display = display;
+                node.style.opacity = opacity;
+            }
+        }
+
+        // ---- Bảng chọn bàn cần ẩn (trong thanh chỉnh sửa Sơ đồ 2) ----
+        function renderLayoutHidePanel() {
+            const grid = document.getElementById('layoutHideGrid');
+            const cnt = document.getElementById('layoutHideCount');
+            if (!grid) return;
+            const hidden = (layout2Working && layout2Working.hidden) || [];
+            let html = '';
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                const off = hidden.indexOf(i) !== -1;
+                html += `<button type="button" onclick="toggleTableHiddenOnLayout2(${i})" aria-pressed="${off ? 'true' : 'false'}" title="${off ? 'Đang ẩn — chạm để hiện lại' : 'Chạm để ẩn bàn này'}" `
+                      + `class="py-1.5 rounded-lg text-[11px] font-bold tabular-nums border transition active:scale-90 `
+                      + (off ? 'bg-espresso-950 border-tys-900 text-stone-600 line-through opacity-70' : 'bg-tys-900/50 border-tys-700 text-tys-200')
+                      + `">${i}</button>`;
+            }
+            grid.innerHTML = html;
+            if (cnt) cnt.textContent = hidden.length ? `Đang ẩn ${hidden.length} bàn` : 'Chưa ẩn bàn nào';
+        }
+
+        function toggleLayoutHidePanel() {
+            const panel = document.getElementById('layoutHidePanel');
+            const btn = document.getElementById('layoutHideBtn');
+            if (!panel || !isLayoutEditing) return;
+            const show = panel.classList.contains('hidden');
+            panel.classList.toggle('hidden', !show);
+            if (btn) btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+            if (show) renderLayoutHidePanel();
+        }
+
+        function toggleTableHiddenOnLayout2(id) {
+            if (!isLayoutEditing || !layout2Working) return;
+            if (!Array.isArray(layout2Working.hidden)) layout2Working.hidden = [];
+            const k = layout2Working.hidden.indexOf(id);
+            if (k === -1) {
+                layout2Working.hidden.push(id);
+                const t = tablesData[id];
+                if (t && t.status && t.status !== 'empty') {
+                    ackToast('Bàn ' + id + ' đang có khách — ẩn khỏi Sơ đồ 2 thì sẽ không thấy bàn này trên sơ đồ (vẫn còn trong Danh sách).', 'info', 5000);
+                }
+            } else {
+                layout2Working.hidden.splice(k, 1);
+            }
+            syncHiddenTables();
+            renderLayoutHidePanel();
         }
 
         function applyLayoutPositions(positions) {
@@ -2350,7 +2422,9 @@
                         tables[i] = { x: Number(p.x), y: Number(p.y) };
                     }
                 }
-                return { v: 1, tables: tables, decor: !!d.decor, savedAt: d.savedAt || 0 };
+                const hidden = (Array.isArray(d.hidden) ? d.hidden : [])
+                    .map(Number).filter(function (n, k, a) { return Number.isInteger(n) && n >= 1 && n <= TOTAL_TABLES && a.indexOf(n) === k; });
+                return { v: 1, tables: tables, decor: !!d.decor, hidden: hidden, savedAt: d.savedAt || 0 };
             } catch (e) { return null; }
         }
 
@@ -2391,6 +2465,12 @@
             }
             if (toggleText) toggleText.textContent = isLayoutEditing ? 'Xong' : 'Sửa';
             if (bar) bar.classList.toggle('hidden', !isLayoutEditing);
+            if (!isLayoutEditing) {
+                const hp = document.getElementById('layoutHidePanel');
+                if (hp) hp.classList.add('hidden');
+                const hb = document.getElementById('layoutHideBtn');
+                if (hb) hb.setAttribute('aria-pressed', 'false');
+            }
             if (mapContainer) mapContainer.classList.toggle('layout-editing', isLayoutEditing);
             // Nút "Về giữa" nằm đúng chỗ thanh Lưu/Hủy trên điện thoại -> tạm ẩn khi đang chỉnh sửa
             if (fab) fab.classList.toggle('hidden', isLayoutEditing);
@@ -2451,7 +2531,8 @@
                 tables: layout2Saved
                     ? JSON.parse(JSON.stringify(layout2Saved.tables))
                     : {},
-                decor: layout2Saved ? !!layout2Saved.decor : decorVisible
+                decor: layout2Saved ? !!layout2Saved.decor : decorVisible,
+                hidden: (layout2Saved && Array.isArray(layout2Saved.hidden)) ? layout2Saved.hidden.slice() : []
             };
             isLayoutEditing = true;
             applyLayoutWorking();
@@ -2466,6 +2547,7 @@
                 v: 1,
                 tables: JSON.parse(JSON.stringify(layout2Working.tables)),
                 decor: !!layout2Working.decor,
+                hidden: (layout2Working.hidden || []).slice(),
                 savedAt: Date.now()
             };
             let persisted = true;
@@ -2475,6 +2557,7 @@
             layout2Working = null;
             activeLayout = 2;
             try { localStorage.setItem(LAYOUT_ACTIVE_KEY, '2'); } catch (e) {}
+            syncHiddenTables();          // thoát chế độ Sửa: bàn bị ẩn biến mất hẳn (hết hiện mờ)
             updateLayoutControls();
             ackToast(persisted ? 'Đã lưu Sơ đồ 2.' : 'Không lưu được vào bộ nhớ trình duyệt.', persisted ? 'ok' : 'alert', 3000);
         }
