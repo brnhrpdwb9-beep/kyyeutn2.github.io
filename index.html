@@ -1277,26 +1277,8 @@
 
             <div class="p-3.5 overflow-y-auto space-y-3 flex-1 text-xs">
                 
-                <!-- THÔNG TIN BÀN — trọng tâm hiển thị: món đã gọi + tổng tiền. Luôn hiện,
-                     kể cả khi bàn còn trống (sẽ hiện "Chưa chọn món nào"). -->
-                <div class="bg-espresso-950/70 p-2.5 rounded-xl border border-tys-900 space-y-2">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wide flex items-center gap-1">
-                            <i class="fa-solid fa-receipt text-tys-500"></i> Món đã gọi
-                        </span>
-                        <span class="text-sm sm:text-xs font-bold text-tys-400" id="totalAmountDisplay">Tổng: 0đ</span>
-                    </div>
-
-                    <div id="modalOrderList" class="min-h-[45px] max-h-[130px] overflow-y-auto space-y-1 text-xs bg-espresso-950 p-1.5 rounded-lg border border-tys-900"></div>
-
-                    <button type="button" id="btnAddMoreOrder" onclick="toggleOrderPanel(true)" class="hidden w-full py-1.5 px-3 rounded-lg bg-espresso-800 hover:bg-tys-500 hover:text-ink text-tys-300 font-bold transition text-xs flex items-center justify-center gap-1.5 border border-tys-800">
-                        <i class="fa-solid fa-plus"></i> Khách kêu thêm món
-                    </button>
-                </div>
-
-                <!-- GỌI MÓN — best seller (từ MENU_DATA) + tìm toàn bộ thực đơn + món tự ghi.
-                     Mở sẵn khi bàn còn trống chưa order; thu gọn khi bàn đã có món (bấm nút
-                     "Khách kêu thêm món" ở trên để mở lại). -->
+                <!-- GỌI MÓN — nằm TRÊN CÙNG và luôn mở: tìm món + best seller (từ MENU_DATA).
+                     Kêu thêm món chỉ cần chạm thẳng vào đây, không phải mở thêm bước nào. -->
                 <div id="orderPanel" class="bg-espresso-950/70 p-2.5 rounded-xl border border-tys-900 space-y-2">
                     <div class="flex items-center justify-between">
                         <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wide flex items-center gap-1">
@@ -1318,6 +1300,24 @@
                         <div class="text-[10px] text-stone-500 font-semibold mb-1">Best seller</div>
                         <div id="bestSellerGrid" class="grid grid-cols-2 gap-1.5"></div>
                     </div>
+                </div>
+
+                <!-- THÔNG TIN BÀN — trọng tâm hiển thị: món đã gọi + tổng tiền. Luôn hiện,
+                     kể cả khi bàn còn trống (sẽ hiện "Chưa chọn món nào"). -->
+                <div class="bg-espresso-950/70 p-2.5 rounded-xl border border-tys-900 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wide flex items-center gap-1">
+                            <i class="fa-solid fa-receipt text-tys-500"></i> Món đã gọi
+                        </span>
+                        <span class="text-sm sm:text-xs font-bold text-tys-400" id="totalAmountDisplay">Tổng: 0đ</span>
+                    </div>
+
+                    <div id="modalOrderList" class="min-h-[45px] max-h-[150px] overflow-y-auto space-y-1 text-xs bg-espresso-950 p-1.5 rounded-lg border border-tys-900"></div>
+
+                    <!-- (Không còn dùng: khu "Gọi món" luôn mở nên không cần nút này) -->
+                    <button type="button" id="btnAddMoreOrder" onclick="toggleOrderPanel(true)" class="hidden w-full py-1.5 px-3 rounded-lg bg-espresso-800 hover:bg-tys-500 hover:text-ink text-tys-300 font-bold transition text-xs flex items-center justify-center gap-1.5 border border-tys-800">
+                        <i class="fa-solid fa-plus"></i> Khách kêu thêm món
+                    </button>
                 </div>
 
                 <div class="grid grid-cols-1 gap-2 text-xs">
@@ -1344,16 +1344,7 @@
                     </div>
                 </div>
 
-                <div id="quickPaymentActions" class="p-2 bg-brick-950/40 border border-brick-800 rounded-xl flex items-center justify-between sticky bottom-0 z-10 backdrop-blur-sm sm:static sm:backdrop-blur-none">
-                    <div>
-                        <div class="text-xs font-bold text-brick-300"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> Khách thanh toán?</div>
-                    </div>
-                    <button type="button" onclick="markAsPaidAndClose()" class="px-3 py-1 rounded-lg bg-sage-600 hover:bg-sage-500 text-ink font-bold text-xs flex items-center gap-1 transition">
-                        <i class="fa-solid fa-check"></i> Thu Tiền Ngay
-                    </button>
-                </div>
-
-                <!-- SỐ KHÁCH — tách 2 nhóm: đã trả tại quầy và chưa trả tại bàn.
+                <!-- SỐ KHÁCH — tách 2 nhóm: đã trả và chưa trả.
                      Chỉ để đếm & hiện ghi chú, không tách bill theo món. -->
                 <div class="bg-espresso-950/70 p-2.5 rounded-xl border border-tys-900">
                     <div class="flex items-center justify-between mb-2">
@@ -1365,28 +1356,28 @@
                     <div class="grid grid-cols-2 gap-2">
                         <div class="bg-espresso-900 rounded-lg border border-sage-900/40 p-2">
                             <div class="flex items-center gap-1 text-[10px] font-bold text-sage-400 mb-1">
-                                <i class="fa-solid fa-store text-[9px]"></i> Đã trả tại quầy
+                                <i class="fa-solid fa-circle-check text-[9px]"></i> Đã trả
                             </div>
                             <div class="flex items-center justify-between gap-1">
-                                <button type="button" onclick="changeGuestCount('paid', -1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-sage-300 active:scale-90 transition flex items-center justify-center" aria-label="Giảm số khách đã trả tại quầy">
+                                <button type="button" onclick="changeGuestCount('paid', -1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-sage-300 active:scale-90 transition flex items-center justify-center" aria-label="Giảm số khách đã trả">
                                     <i class="fa-solid fa-minus text-[10px]"></i>
                                 </button>
                                 <span id="guestPaidDisplay" class="text-lg font-extrabold text-sage-300 tabular-nums leading-none">0</span>
-                                <button type="button" onclick="changeGuestCount('paid', 1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-sage-300 active:scale-90 transition flex items-center justify-center" aria-label="Tăng số khách đã trả tại quầy">
+                                <button type="button" onclick="changeGuestCount('paid', 1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-sage-300 active:scale-90 transition flex items-center justify-center" aria-label="Tăng số khách đã trả">
                                     <i class="fa-solid fa-plus text-[10px]"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="bg-espresso-900 rounded-lg border border-brick-900/40 p-2">
                             <div class="flex items-center gap-1 text-[10px] font-bold text-brick-300 mb-1">
-                                <i class="fa-solid fa-chair text-[9px]"></i> Chưa trả tại bàn
+                                <i class="fa-solid fa-hourglass-half text-[9px]"></i> Chưa trả
                             </div>
                             <div class="flex items-center justify-between gap-1">
-                                <button type="button" onclick="changeGuestCount('unpaid', -1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-brick-300 active:scale-90 transition flex items-center justify-center" aria-label="Giảm số khách chưa trả tại bàn">
+                                <button type="button" onclick="changeGuestCount('unpaid', -1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-brick-300 active:scale-90 transition flex items-center justify-center" aria-label="Giảm số khách chưa trả">
                                     <i class="fa-solid fa-minus text-[10px]"></i>
                                 </button>
                                 <span id="guestUnpaidDisplay" class="text-lg font-extrabold text-brick-300 tabular-nums leading-none">0</span>
-                                <button type="button" onclick="changeGuestCount('unpaid', 1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-brick-300 active:scale-90 transition flex items-center justify-center" aria-label="Tăng số khách chưa trả tại bàn">
+                                <button type="button" onclick="changeGuestCount('unpaid', 1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-brick-300 active:scale-90 transition flex items-center justify-center" aria-label="Tăng số khách chưa trả">
                                     <i class="fa-solid fa-plus text-[10px]"></i>
                                 </button>
                             </div>
@@ -1396,18 +1387,25 @@
 
             </div>
 
-            <div class="bg-espresso-950 px-4 py-2.5 border-t border-tys-900 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="clearTableData()" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-brick-400 hover:bg-brick-500/10 transition">
-                        <i class="fa-solid fa-trash mr-1"></i> Xoá bàn
+            <!-- CHÂN MODAL — 2 hàng:
+                 Hàng 1: nút Order (chiếm cả chiều ngang).
+                 Hàng 2: Xoá bàn · Chuyển / Gộp · (Thu tiền, chỉ hiện khi bàn đang ngồi) · Hủy — cùng cỡ, chia đều. -->
+            <div class="bg-espresso-950 px-3.5 pt-2.5 pb-3 border-t border-tys-900 space-y-2">
+                <button type="button" onclick="saveModalChanges()" class="w-full py-2.5 rounded-xl text-sm font-bold bg-tys-500 hover:bg-tys-600 active:scale-[0.98] text-ink transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-xs"></i> Order
+                </button>
+                <div class="flex items-stretch gap-1.5">
+                    <button type="button" onclick="clearTableData()" class="flex-1 py-2 rounded-lg text-xs font-semibold text-brick-400 border border-brick-800/70 hover:bg-brick-500/10 active:scale-95 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
+                        <i class="fa-solid fa-trash"></i> Xoá bàn
                     </button>
-                    <button type="button" onclick="openTransferModal(activeTableId)" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-tys-400 hover:bg-tys-500/10 transition flex items-center gap-1">
+                    <button type="button" onclick="openTransferModal(activeTableId)" class="flex-1 py-2 rounded-lg text-xs font-semibold text-tys-400 border border-tys-800 hover:bg-tys-500/10 active:scale-95 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <i class="fa-solid fa-right-left"></i> Chuyển / Gộp
                     </button>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="closeModal()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300 transition">Hủy</button>
-                    <button type="button" onclick="saveModalChanges()" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-tys-500 hover:bg-tys-600 text-ink transition">Lưu thay đổi</button>
+                    <!-- Thu tiền: chỉ hiện khi bàn đang ngồi (JS bật/tắt theo id này) -->
+                    <button type="button" id="quickPaymentActions" onclick="markAsPaidAndClose()" class="flex-1 py-2 rounded-lg text-xs font-bold text-sage-400 border border-sage-700/60 hover:bg-sage-500/10 active:scale-95 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
+                        <i class="fa-solid fa-hand-holding-dollar"></i> Thu tiền
+                    </button>
+                    <button type="button" onclick="closeModal()" class="flex-1 py-2 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300 active:scale-95 transition">Hủy</button>
                 </div>
             </div>
 
@@ -4002,10 +4000,8 @@
             updateModalStatusButtons();
             renderModalOrderList();
 
-            // Bàn còn trống, chưa có món nào -> mở sẵn khu "Gọi món".
-            // Bàn đã có món (đang ngồi/đã trả) -> thu gọn lại, tập trung hiển thị thông tin bàn,
-            // chỉ cần bấm "Khách kêu thêm món" khi cần gọi thêm.
-            toggleOrderPanel(modalItems.length === 0);
+            // Khu "Gọi món" luôn mở sẵn ở trên cùng, kể cả khi bàn đã có món (kêu thêm món chạm là gọi được).
+            toggleOrderPanel(true);
 
             const quickPaymentActions = document.getElementById('quickPaymentActions');
             if (data.status === 'unpaid') quickPaymentActions.classList.remove('hidden');
@@ -4128,24 +4124,15 @@
         // expand=true: mở ra (khách kêu thêm món / bàn còn trống). expand=false: thu gọn,
         // chỉ tập trung hiển thị thông tin bàn (món đã gọi + tổng tiền).
         function toggleOrderPanel(expand) {
-            orderPanelExpanded = expand;
+            // Khu "Gọi món" nay LUÔN MỞ (nằm trên cùng modal) nên bỏ qua yêu cầu thu gọn.
+            orderPanelExpanded = true;
             const panel = document.getElementById('orderPanel');
+            if (!panel) return;
+            panel.classList.remove('hidden');
             const collapseBtn = document.getElementById('btnCollapseOrder');
             const addMoreBtn = document.getElementById('btnAddMoreOrder');
-            if (!panel) return;
-
-            if (expand) {
-                panel.classList.remove('hidden');
-                collapseBtn.classList.remove('hidden');
-                addMoreBtn.classList.add('hidden');
-            } else {
-                panel.classList.add('hidden');
-                collapseBtn.classList.add('hidden');
-                // Chỉ hiện nút "Khách kêu thêm món" khi bàn đã có ít nhất 1 món
-                if (modalItems.length > 0) addMoreBtn.classList.remove('hidden');
-                else addMoreBtn.classList.add('hidden');
-                hideMenuSearchResults();
-            }
+            if (collapseBtn) collapseBtn.classList.add('hidden');
+            if (addMoreBtn) addMoreBtn.classList.add('hidden');
         }
 
         // 2 nút chọn phương thức thanh toán trên mobile (thay cho dropdown) —
