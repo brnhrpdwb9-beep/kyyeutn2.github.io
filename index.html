@@ -1135,6 +1135,10 @@
                         <div class="absolute top-[1016px] left-[1969px]" id="table-node-28"></div>
                         
                         <div class="absolute top-[1016px] left-[1857px]" id="table-node-29"></div>
+                        <!-- Bàn 30: đặt ở vị trí cũ của bàn 27 (bàn 27, 28 đã ẩn hẳn) -->
+                        <div class="absolute top-[1151px] left-[1969px]" id="table-node-30"></div>
+                        <!-- Bàn 31: đặt ở vị trí cũ của bàn 28 -->
+                        <div class="absolute top-[1016px] left-[1969px]" id="table-node-31"></div>
                     </div>
 
                     <!-- BỘ CHỌN SƠ ĐỒ — góc trên trái khung sơ đồ. Sơ đồ 1 là mặt bằng gốc của quán;
@@ -1782,7 +1786,11 @@
     </div>
 
     <script>
-        const TOTAL_TABLES = 29;
+        const TOTAL_TABLES = 31;
+        // Bàn bị ẨN HẲN ở mọi sơ đồ (Sơ đồ 1, Sơ đồ 2, cả lúc đang Sửa), danh sách bàn và bộ đếm.
+        // Chỉ ẩn hiển thị — dữ liệu bàn vẫn nằm trong bộ nhớ, muốn hiện lại thì bỏ số bàn khỏi mảng này.
+        const PERMANENT_HIDDEN_TABLES = [27, 28];
+        const VISIBLE_TABLE_COUNT = TOTAL_TABLES - PERMANENT_HIDDEN_TABLES.length;
         let tablesData = {};
         let activeTableId = null;
         let currentFilter = 'all';
@@ -2323,7 +2331,7 @@
         // vẫn giữ nguyên. Sơ đồ 2 có danh sách ẩn riêng (layout2.hidden), chỉnh trong chế độ "Sửa" > "Ẩn bàn":
         //   - đang Sửa: bàn bị ẩn vẫn hiện MỜ để còn chạm vào bảng mà hiện lại;
         //   - xem bình thường: bàn bị ẩn biến mất khỏi sơ đồ.
-        const HIDDEN_ON_LAYOUT1 = [27, 28, 29];
+        const HIDDEN_ON_LAYOUT1 = [29];   // chỉ ẩn ở Sơ đồ 1 (27, 28 ẩn hẳn ở mọi sơ đồ: xem PERMANENT_HIDDEN_TABLES)
 
         function currentHiddenOnLayout2() {
             const src = isLayoutEditing ? layout2Working : layout2Saved;
@@ -2336,6 +2344,11 @@
                 const node = document.getElementById(`table-node-${i}`);
                 if (!node) continue;
                 let display = '', opacity = '';
+                if (PERMANENT_HIDDEN_TABLES.indexOf(i) !== -1) {
+                    node.style.display = 'none';
+                    node.style.opacity = '';
+                    continue;
+                }
                 if (activeLayout === 1) {
                     if (HIDDEN_ON_LAYOUT1.indexOf(i) !== -1) display = 'none';
                 } else if (hidden2.indexOf(i) !== -1) {
@@ -2354,6 +2367,7 @@
             const hidden = (layout2Working && layout2Working.hidden) || [];
             let html = '';
             for (let i = 1; i <= TOTAL_TABLES; i++) {
+                if (PERMANENT_HIDDEN_TABLES.indexOf(i) !== -1) continue;   // đã ẩn hẳn ở mọi sơ đồ
                 const off = hidden.indexOf(i) !== -1;
                 html += `<button type="button" onclick="toggleTableHiddenOnLayout2(${i})" aria-pressed="${off ? 'true' : 'false'}" title="${off ? 'Đang ẩn — chạm để hiện lại' : 'Chạm để ẩn bàn này'}" `
                       + `class="py-1.5 rounded-lg text-[11px] font-bold tabular-nums border transition active:scale-90 `
@@ -3879,6 +3893,7 @@
             // 3) Trống — xếp cuối theo số thứ tự
             let visibleTables = [];
             for (let i = 1; i <= TOTAL_TABLES; i++) {
+                if (PERMANENT_HIDDEN_TABLES.indexOf(i) !== -1) continue;   // bàn ẩn hẳn không hiện ở danh sách
                 const data = tablesData[i];
 
                 if (currentFilter !== 'all' && data.status !== currentFilter) continue;
@@ -3969,7 +3984,9 @@
 
         function updateDashboardStats() {
             let unpaid = 0, paid = 0;
-            Object.values(tablesData).forEach(t => {
+            Object.keys(tablesData).forEach(k => {
+                if (PERMANENT_HIDDEN_TABLES.indexOf(Number(k)) !== -1) return;   // không tính bàn ẩn hẳn
+                const t = tablesData[k];
                 if (t.status === 'unpaid') unpaid++;
                 if (t.status === 'paid') paid++;
             });
@@ -3980,7 +3997,9 @@
             const totalMobileEl = document.getElementById('filterAllCountMobile');
             const unpaidMobileEl = document.getElementById('filterUnpaidCountMobile');
             const paidMobileEl = document.getElementById('filterPaidCountMobile');
-            if (totalMobileEl) totalMobileEl.innerText = TOTAL_TABLES;
+            if (totalMobileEl) totalMobileEl.innerText = VISIBLE_TABLE_COUNT;
+            const totalDeskEl = document.getElementById('totalTablesCount');
+            if (totalDeskEl) totalDeskEl.innerText = VISIBLE_TABLE_COUNT;
             if (unpaidMobileEl) unpaidMobileEl.innerText = unpaid;
             if (paidMobileEl) paidMobileEl.innerText = paid;
         }
@@ -6492,6 +6511,7 @@ function togglePassVisibility(inputId, btn) {
 
             for (let i = 1; i <= TOTAL_TABLES; i++) {
                 if (i === sourceTableId) continue;
+                if (PERMANENT_HIDDEN_TABLES.indexOf(i) !== -1) continue;   // bàn ẩn hẳn không làm bàn đích chuyển/gộp
                 const targetData = tablesData[i];
                 let statusLabel = 'Trống';
                 if (targetData.status === 'unpaid') statusLabel = `Chưa trả (${targetData.total}k)`;
