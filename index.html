@@ -695,13 +695,14 @@
             border-color: #C9944A;
         }
 
-        /* ---------- Nhãn số khách trên sơ đồ: nằm NGOÀI nút bàn, góc trên-phải ----------
-           Ô bàn (#table-node-i) bị xoay 180° để chữ đúng chiều, nên toạ độ trong ô cũng lật:
-           đặt ở góc dưới-trái trong ô = hiện ra góc TRÊN-PHẢI của ô bàn trên màn hình.
-           Chỉ hiện TỔNG số khách của bàn. */
+        /* ---------- Nhãn số khách trên sơ đồ: nằm NGOÀI nút bàn, góc TRÊN-TRÁI ----------
+           mapWrapper xoay 180° và ô bàn (#table-node-i) xoay ngược lại 180° nên hệ toạ độ trong ô
+           đã đúng chiều màn hình: top/left ở đây = góc trên-trái của ô bàn.
+           Khi bàn có nhãn "Quá 45p" (nằm giữa mép trên), nhãn đó được dời sang góc trên-phải
+           để 2 nhãn không đè nhau. Chỉ hiện TỔNG số khách của bàn. */
         .guest-badge {
             position: absolute;
-            bottom: -9px;
+            top: -9px;
             left: -9px;
             z-index: 10;
             display: flex;
@@ -1276,67 +1277,6 @@
 
             <div class="p-3.5 overflow-y-auto space-y-3 flex-1 text-xs">
                 
-                <div>
-                    <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Trạng thái bàn</label>
-                    <div class="grid grid-cols-3 gap-1.5 text-[11px]">
-                        <button type="button" onclick="setSelectStatus('empty')" id="btnStatusEmpty" class="status-option-btn p-2 rounded-lg border border-tys-900 bg-espresso-950 hover:bg-espresso-800 flex items-center justify-center gap-1.5 text-center transition">
-                            <div class="w-2 h-2 rounded-full bg-stone-500 shrink-0"></div>
-                            <div class="truncate font-bold text-stone-300">Trống</div>
-                        </button>
-
-                        <button type="button" onclick="setSelectStatus('unpaid')" id="btnStatusUnpaid" class="status-option-btn p-2 rounded-lg border border-tys-900 bg-espresso-950 hover:bg-espresso-800 flex items-center justify-center gap-1.5 text-center transition">
-                            <div class="w-2 h-2 rounded-full bg-brick-500 shrink-0"></div>
-                            <div class="truncate font-bold text-brick-400">Đang ngồi</div>
-                        </button>
-
-                        <button type="button" onclick="setSelectStatus('paid')" id="btnStatusPaid" class="status-option-btn p-2 rounded-lg border border-tys-900 bg-espresso-950 hover:bg-espresso-800 flex items-center justify-center gap-1.5 text-center transition">
-                            <div class="w-2 h-2 rounded-full bg-sage-500 shrink-0"></div>
-                            <div class="truncate font-bold text-sage-400">Đã trả</div>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- SỐ KHÁCH — tách 2 nhóm: đã trả tại quầy và chưa trả tại bàn.
-                     Chỉ để đếm & hiện ghi chú, không tách bill theo món. -->
-                <div class="bg-espresso-950/70 p-2.5 rounded-xl border border-tys-900">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wide flex items-center gap-1">
-                            <i class="fa-solid fa-users text-tys-500"></i> Số khách
-                        </span>
-                        <span class="text-[11px] font-bold text-tys-400" id="guestTotalDisplay">0 khách</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="bg-espresso-900 rounded-lg border border-sage-900/40 p-2">
-                            <div class="flex items-center gap-1 text-[10px] font-bold text-sage-400 mb-1">
-                                <i class="fa-solid fa-store text-[9px]"></i> Đã trả tại quầy
-                            </div>
-                            <div class="flex items-center justify-between gap-1">
-                                <button type="button" onclick="changeGuestCount('paid', -1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-sage-300 active:scale-90 transition flex items-center justify-center" aria-label="Giảm số khách đã trả tại quầy">
-                                    <i class="fa-solid fa-minus text-[10px]"></i>
-                                </button>
-                                <span id="guestPaidDisplay" class="text-lg font-extrabold text-sage-300 tabular-nums leading-none">0</span>
-                                <button type="button" onclick="changeGuestCount('paid', 1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-sage-300 active:scale-90 transition flex items-center justify-center" aria-label="Tăng số khách đã trả tại quầy">
-                                    <i class="fa-solid fa-plus text-[10px]"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="bg-espresso-900 rounded-lg border border-brick-900/40 p-2">
-                            <div class="flex items-center gap-1 text-[10px] font-bold text-brick-300 mb-1">
-                                <i class="fa-solid fa-chair text-[9px]"></i> Chưa trả tại bàn
-                            </div>
-                            <div class="flex items-center justify-between gap-1">
-                                <button type="button" onclick="changeGuestCount('unpaid', -1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-brick-300 active:scale-90 transition flex items-center justify-center" aria-label="Giảm số khách chưa trả tại bàn">
-                                    <i class="fa-solid fa-minus text-[10px]"></i>
-                                </button>
-                                <span id="guestUnpaidDisplay" class="text-lg font-extrabold text-brick-300 tabular-nums leading-none">0</span>
-                                <button type="button" onclick="changeGuestCount('unpaid', 1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-brick-300 active:scale-90 transition flex items-center justify-center" aria-label="Tăng số khách chưa trả tại bàn">
-                                    <i class="fa-solid fa-plus text-[10px]"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- THÔNG TIN BÀN — trọng tâm hiển thị: món đã gọi + tổng tiền. Luôn hiện,
                      kể cả khi bàn còn trống (sẽ hiện "Chưa chọn món nào"). -->
                 <div class="bg-espresso-950/70 p-2.5 rounded-xl border border-tys-900 space-y-2">
@@ -1411,6 +1351,47 @@
                     <button type="button" onclick="markAsPaidAndClose()" class="px-3 py-1 rounded-lg bg-sage-600 hover:bg-sage-500 text-ink font-bold text-xs flex items-center gap-1 transition">
                         <i class="fa-solid fa-check"></i> Thu Tiền Ngay
                     </button>
+                </div>
+
+                <!-- SỐ KHÁCH — tách 2 nhóm: đã trả tại quầy và chưa trả tại bàn.
+                     Chỉ để đếm & hiện ghi chú, không tách bill theo món. -->
+                <div class="bg-espresso-950/70 p-2.5 rounded-xl border border-tys-900">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wide flex items-center gap-1">
+                            <i class="fa-solid fa-users text-tys-500"></i> Số khách
+                        </span>
+                        <span class="text-[11px] font-bold text-tys-400" id="guestTotalDisplay">0 khách</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="bg-espresso-900 rounded-lg border border-sage-900/40 p-2">
+                            <div class="flex items-center gap-1 text-[10px] font-bold text-sage-400 mb-1">
+                                <i class="fa-solid fa-store text-[9px]"></i> Đã trả tại quầy
+                            </div>
+                            <div class="flex items-center justify-between gap-1">
+                                <button type="button" onclick="changeGuestCount('paid', -1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-sage-300 active:scale-90 transition flex items-center justify-center" aria-label="Giảm số khách đã trả tại quầy">
+                                    <i class="fa-solid fa-minus text-[10px]"></i>
+                                </button>
+                                <span id="guestPaidDisplay" class="text-lg font-extrabold text-sage-300 tabular-nums leading-none">0</span>
+                                <button type="button" onclick="changeGuestCount('paid', 1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-sage-300 active:scale-90 transition flex items-center justify-center" aria-label="Tăng số khách đã trả tại quầy">
+                                    <i class="fa-solid fa-plus text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-espresso-900 rounded-lg border border-brick-900/40 p-2">
+                            <div class="flex items-center gap-1 text-[10px] font-bold text-brick-300 mb-1">
+                                <i class="fa-solid fa-chair text-[9px]"></i> Chưa trả tại bàn
+                            </div>
+                            <div class="flex items-center justify-between gap-1">
+                                <button type="button" onclick="changeGuestCount('unpaid', -1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-brick-300 active:scale-90 transition flex items-center justify-center" aria-label="Giảm số khách chưa trả tại bàn">
+                                    <i class="fa-solid fa-minus text-[10px]"></i>
+                                </button>
+                                <span id="guestUnpaidDisplay" class="text-lg font-extrabold text-brick-300 tabular-nums leading-none">0</span>
+                                <button type="button" onclick="changeGuestCount('unpaid', 1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-brick-300 active:scale-90 transition flex items-center justify-center" aria-label="Tăng số khách chưa trả tại bàn">
+                                    <i class="fa-solid fa-plus text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -2029,7 +2010,7 @@
             { name: 'Mocha Đá Xay', price: 45, category: 'Pha máy' },
             // CACAO - MATCHA
             { name: 'Cacao Sữa Nóng', price: 28, category: 'Cacao - Matcha', bestSeller: 3 },
-            { name: 'Cacao Sữa Đá', price: 28, category: 'Cacao - Matcha', bestSeller: 4 },
+            { name: 'Cacao Sữa Đá', price: 28, category: 'Cacao - Matcha' },
             { name: 'Cacao Kem Phô Mai', price: 35, category: 'Cacao - Matcha' },
             { name: 'Cacao Đá Xay', price: 35, category: 'Cacao - Matcha' },
             { name: 'Matcha Latte', price: 35, category: 'Cacao - Matcha' },
@@ -2038,13 +2019,13 @@
             { name: 'Matcha Cookie Đá Xay', price: 45, category: 'Cacao - Matcha' },
             { name: 'Matcha Tàu Phớ', price: 38, category: 'Cacao - Matcha' },
             // TRÀ TRÁI CÂY (Size M / L)
-            { name: 'Trà Đào', sizes: { M: 28, L: 32 }, category: 'Trà trái cây', bestSeller: 6 },
+            { name: 'Trà Đào', sizes: { M: 28, L: 32 }, category: 'Trà trái cây', bestSeller: 4 },
             { name: 'Trà Đào Cam Sả', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
             { name: 'Trà Vải', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
-            { name: 'Trà Dâu', sizes: { M: 28, L: 32 }, category: 'Trà trái cây', bestSeller: 7 },
+            { name: 'Trà Dâu', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
             { name: 'Trà Việt Quất', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
             { name: 'Trà Tắc Thái Xí Muội', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
-            { name: 'Trà Nhiệt Đới', sizes: { M: 28, L: 32 }, category: 'Trà trái cây', bestSeller: 5 },
+            { name: 'Trà Nhiệt Đới', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
             { name: 'Trà Dâu Tằm', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
             { name: 'Trà Quế Hoa', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
             { name: 'Trà Xoài Chanh Dây', sizes: { M: 28, L: 32 }, category: 'Trà trái cây' },
@@ -2059,7 +2040,7 @@
             { name: 'Sữa Tươi Trân Châu Đường Đen', sizes: { M: 25, L: 29 }, category: 'Trà sữa' },
             { name: 'Trà Sữa Bạch Lan', sizes: { M: 28, L: 32 }, category: 'Trà sữa' },
             { name: 'Trà Sữa Thái Xanh', sizes: { M: 25, L: 29 }, category: 'Trà sữa' },
-            { name: 'Trà Sữa Truyền Thống', sizes: { M: 25, L: 29 }, category: 'Trà sữa', bestSeller: 8 },
+            { name: 'Trà Sữa Truyền Thống', sizes: { M: 25, L: 29 }, category: 'Trà sữa' },
         ];
 
         // Bỏ dấu tiếng Việt để tìm kiếm không cần gõ dấu (vd: "ca phe" vẫn ra "Cà phê")
@@ -2329,7 +2310,19 @@
             return out;
         }
 
+        // Bàn chỉ ẩn trên SƠ ĐỒ GỐC (Sơ đồ 1). Dữ liệu bàn (tablesData), danh sách bàn, lịch sử, tổng kết ca
+        // vẫn giữ nguyên; Sơ đồ 2 vẫn hiện đủ bàn.
+        const HIDDEN_ON_LAYOUT1 = [27, 28, 29];
+
+        function syncHiddenTables() {
+            HIDDEN_ON_LAYOUT1.forEach(function (i) {
+                const node = document.getElementById(`table-node-${i}`);
+                if (node) node.style.display = (activeLayout === 1) ? 'none' : '';
+            });
+        }
+
         function applyLayoutPositions(positions) {
+            syncHiddenTables();
             for (let i = 1; i <= TOTAL_TABLES; i++) {
                 const node = document.getElementById(`table-node-${i}`);
                 if (!node) continue;
@@ -3698,6 +3691,8 @@
             let badgeHTML = "";
             let timerText = "";
 
+            const hasGuestBadge = (guestPaidOf(data) + guestUnpaidOf(data)) > 0;
+
             let elapsedMins = 0;
             if (data.startTime && data.status !== 'empty') {
                 elapsedMins = Math.floor((Date.now() - data.startTime) / (1000 * 60));
@@ -3710,7 +3705,9 @@
                 if (elapsedMins >= 45) {
                     bgStyle = "bg-brick-800 border-brick-accent text-tys-50 pulse-unpaid-fast";
                     numColor = "text-tys-50";
-                    badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-tys-50 text-brick-ink flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Quá 45p</span>`;
+                    // Có nhãn số khách ở góc trên-trái -> đẩy "Quá 45p" sang góc trên-phải (căng 2 nhãn ra 2 bên); không có thì giữ giữa như cũ
+                    const posClass45 = hasGuestBadge ? 'right-[-6px]' : 'left-1/2 -translate-x-1/2';
+                    badgeHTML = `<span class="absolute -top-2 ${posClass45} px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-tys-50 text-brick-ink flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Quá 45p</span>`;
                 } else if (elapsedMins >= 30) {
                     bgStyle = "bg-brick-900 border-brick-600 text-brick-100 pulse-unpaid";
                     numColor = "text-brick-100";
@@ -3734,10 +3731,8 @@
             const opacityClass = isFiltered ? "opacity-100 scale-100" : "opacity-20 scale-90 pointer-events-none";
             const selectedClass = (activeTableId === i) ? "table-selected-glow" : "";
 
-            // Mô tả ngắn trên sơ đồ: ưu tiên ghi chú của bàn, nếu chưa có thì hiện các món đã gọi
-            const descList = descItems(data.items);
-            const mapDesc = data.note ? escapeHtml(data.note)
-                : (descList.length ? groupedItemsText(descList) : '');
+            // Mô tả ngắn trên sơ đồ: chỉ hiện ghi chú của bàn (không hiện tên nước đã gọi)
+            const mapDesc = data.note ? escapeHtml(data.note) : '';
 
             const chipHtml = billChip(i, data);
             const totalHtml = data.total > 0 ? `<span class="text-[13px] font-bold text-tys-400">${data.total}k</span>` : '';
@@ -4215,7 +4210,7 @@
 
         function addPresetItem(name, price) {
             modalItems.push({ name, price });
-            if (selectedStatusInModal === 'empty') { selectedStatusInModal = 'unpaid'; updateModalStatusButtons(); }
+            if (selectedStatusInModal === 'empty' || selectedStatusInModal === 'paid') { selectedStatusInModal = 'unpaid'; updateModalStatusButtons(); }
             syncGuestsFromDrinks();     // gọi thêm nước -> tự nâng số khách chưa trả tại bàn
             renderModalOrderList();
         }
