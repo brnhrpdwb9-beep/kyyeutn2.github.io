@@ -657,24 +657,29 @@
 
         /* Thanh chọn sơ đồ dạng thanh ngang: chỉ hiện "Sơ đồ mặc định" + nút mũi tên; bấm mũi tên để mở thêm
            "Sơ đồ mặc định 2" và "Sơ đồ tùy chọn". */
-        /* Mobile: phần mở rộng xổ XUỐNG thành hàng thứ 2 (đủ chỗ cho cả 3 nút); từ màn sm trở lên mở ngang trên 1 hàng. */
+        /* Thanh chọn sơ đồ. MOBILE: thanh gọn 1 hàng (sơ đồ đang xem + nút mũi tên); bấm vào thì xổ ra một MENU nổi
+           bên dưới, mỗi sơ đồ một dòng (biểu tượng + tên + mô tả ngắn). Từ màn sm trở lên: mở ngang cùng hàng. */
         .layout-extra {
-            display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
-            overflow: hidden;
-            max-height: 0; opacity: 0; visibility: hidden;
-            transition: max-height .28s ease, opacity .2s ease, padding .28s ease, visibility 0s linear .28s;
+            position: absolute; left: 0; top: calc(100% + 6px);
+            display: flex; flex-direction: column; align-items: stretch; gap: 2px;
+            min-width: 230px; max-width: calc(100vw - 1.5rem); padding: 4px;
+            opacity: 0; visibility: hidden; pointer-events: none;
+            transform: translateY(-6px) scale(.97); transform-origin: top left;
+            transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
         }
         .layout-extra.is-open {
-            max-height: 120px; opacity: 1; visibility: visible; padding-top: 4px;
-            transition: max-height .28s ease, opacity .2s ease .05s, padding .28s ease, visibility 0s;
+            opacity: 1; visibility: visible; pointer-events: auto; transform: none;
+            transition: opacity .18s ease, transform .18s ease, visibility 0s;
         }
         @media (min-width: 640px) {
             .layout-extra {
-                flex-wrap: nowrap; white-space: nowrap; max-height: none; max-width: 0;
+                position: static; flex-direction: row; align-items: center; gap: 4px;
+                min-width: 0; max-width: 0; padding: 0; overflow: hidden; white-space: nowrap;
+                transform: none; pointer-events: auto;
                 transition: max-width .28s ease, opacity .2s ease, visibility 0s linear .28s;
             }
             .layout-extra.is-open {
-                max-width: 560px; padding-top: 0; padding-left: 4px;
+                max-width: 560px; padding-left: 4px;
                 transition: max-width .28s ease, opacity .2s ease .05s, visibility 0s;
             }
         }
@@ -1188,16 +1193,19 @@
                                 </button>
                             </div>
                             <!-- Các sơ đồ còn lại (sơ đồ đang xem được ẩn đi vì đã nằm ở ô đầu tiên) -->
-                            <div id="layoutExtra" class="layout-extra">
+                            <div id="layoutExtra" class="layout-extra bg-espresso-900/95 border border-tys-800 rounded-2xl shadow-[0_14px_30px_-10px_rgba(26,21,16,0.5)] backdrop-blur-md sm:bg-transparent sm:border-0 sm:rounded-none sm:shadow-none sm:backdrop-blur-none">
                                 <span class="hidden sm:block w-px h-5 bg-tys-800 shrink-0"></span>
-                                <button type="button" id="layoutTab1" class="layout-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none whitespace-nowrap transition" onclick="selectLayout(1)" aria-label="Xem sơ đồ mặc định" aria-pressed="false">
-                                    <i class="fa-solid fa-map mr-1 hidden sm:inline"></i><span class="sm:hidden">Mặc định</span><span class="hidden sm:inline">Sơ đồ mặc định</span>
+                                <button type="button" id="layoutTab1" class="layout-tab flex items-center gap-2.5 w-full sm:w-auto px-3 py-2.5 sm:py-1.5 rounded-lg text-left whitespace-nowrap transition" onclick="selectLayout(1)" aria-label="Xem sơ đồ mặc định" aria-pressed="false">
+                                    <i class="fa-solid fa-map w-4 text-center text-[13px] sm:text-[11px] sm:w-auto sm:mr-0"></i>
+                                    <span class="flex flex-col leading-tight"><span class="text-[12px] sm:text-[11px] font-bold">Sơ đồ mặc định</span><span class="text-[10px] font-medium opacity-70 sm:hidden">Mặt bằng gốc của quán</span></span>
                                 </button>
-                                <button type="button" id="layoutTab2" class="layout-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none whitespace-nowrap transition" onclick="selectLayout(2)" aria-label="Xem sơ đồ mặc định 2" aria-pressed="false">
-                                    <i class="fa-solid fa-map-location-dot mr-1 hidden sm:inline"></i><span class="sm:hidden">Mặc định 2</span><span class="hidden sm:inline">Sơ đồ mặc định 2</span>
+                                <button type="button" id="layoutTab2" class="layout-tab flex items-center gap-2.5 w-full sm:w-auto px-3 py-2.5 sm:py-1.5 rounded-lg text-left whitespace-nowrap transition" onclick="selectLayout(2)" aria-label="Xem sơ đồ mặc định 2" aria-pressed="false">
+                                    <i class="fa-solid fa-map-location-dot w-4 text-center text-[13px] sm:text-[11px] sm:w-auto sm:mr-0"></i>
+                                    <span class="flex flex-col leading-tight"><span class="text-[12px] sm:text-[11px] font-bold">Sơ đồ mặc định 2</span><span class="text-[10px] font-medium opacity-70 sm:hidden">Bố trí mới, chỉ để xem</span></span>
                                 </button>
-                                <button type="button" id="layoutTab3" class="layout-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none whitespace-nowrap transition" onclick="selectLayout(3)" aria-label="Xem sơ đồ tùy chọn" aria-pressed="false">
-                                    <i class="fa-solid fa-sliders mr-1 hidden sm:inline"></i><span class="sm:hidden">Tùy chọn</span><span class="hidden sm:inline">Sơ đồ tùy chọn</span>
+                                <button type="button" id="layoutTab3" class="layout-tab flex items-center gap-2.5 w-full sm:w-auto px-3 py-2.5 sm:py-1.5 rounded-lg text-left whitespace-nowrap transition" onclick="selectLayout(3)" aria-label="Xem sơ đồ tùy chọn" aria-pressed="false">
+                                    <i class="fa-solid fa-sliders w-4 text-center text-[13px] sm:text-[11px] sm:w-auto sm:mr-0"></i>
+                                    <span class="flex flex-col leading-tight"><span class="text-[12px] sm:text-[11px] font-bold">Sơ đồ tùy chọn</span><span class="text-[10px] font-medium opacity-70 sm:hidden">Tự kéo thả sắp xếp bàn</span></span>
                                 </button>
                             </div>
                         </div>
@@ -2558,6 +2566,15 @@
             syncDecorButton();
         }
 
+        document.addEventListener('pointerdown', function (e) {
+            if (!layoutPanelOpen) return;
+            const sw = document.getElementById('layoutSwitcher');
+            if (sw && !sw.contains(e.target) && window.matchMedia && window.matchMedia('(max-width: 639.98px)').matches) {
+                layoutPanelOpen = false;
+                updateLayoutControls();
+            }
+        });
+
         function toggleLayoutPanel() {
             layoutPanelOpen = !layoutPanelOpen;
             updateLayoutControls();
@@ -2586,6 +2603,8 @@
             if (n === activeLayout) return;
             activeLayout = n;
             try { localStorage.setItem(LAYOUT_ACTIVE_KEY_V2, String(n)); } catch (e) {}
+            // Mobile: menu nổi tự đóng sau khi chọn
+            if (window.matchMedia && window.matchMedia('(max-width: 639.98px)').matches) layoutPanelOpen = false;
             applyActiveLayout();
             updateLayoutControls();
             setTimeout(resetZoomAndFit, 30);
