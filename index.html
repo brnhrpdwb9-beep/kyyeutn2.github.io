@@ -657,15 +657,26 @@
 
         /* Thanh chọn sơ đồ dạng thanh ngang: chỉ hiện "Sơ đồ mặc định" + nút mũi tên; bấm mũi tên để mở thêm
            "Sơ đồ mặc định 2" và "Sơ đồ tùy chọn". */
+        /* Mobile: phần mở rộng xổ XUỐNG thành hàng thứ 2 (đủ chỗ cho cả 3 nút); từ màn sm trở lên mở ngang trên 1 hàng. */
         .layout-extra {
-            display: flex; align-items: center; gap: 4px;
-            overflow: hidden; white-space: nowrap;
-            max-width: 0; opacity: 0; visibility: hidden;
-            transition: max-width .28s ease, opacity .2s ease, visibility 0s linear .28s;
+            display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
+            overflow: hidden;
+            max-height: 0; opacity: 0; visibility: hidden;
+            transition: max-height .28s ease, opacity .2s ease, padding .28s ease, visibility 0s linear .28s;
         }
         .layout-extra.is-open {
-            max-width: 560px; opacity: 1; visibility: visible;
-            transition: max-width .28s ease, opacity .2s ease .05s, visibility 0s;
+            max-height: 120px; opacity: 1; visibility: visible; padding-top: 4px;
+            transition: max-height .28s ease, opacity .2s ease .05s, padding .28s ease, visibility 0s;
+        }
+        @media (min-width: 640px) {
+            .layout-extra {
+                flex-wrap: nowrap; white-space: nowrap; max-height: none; max-width: 0;
+                transition: max-width .28s ease, opacity .2s ease, visibility 0s linear .28s;
+            }
+            .layout-extra.is-open {
+                max-width: 560px; padding-top: 0; padding-left: 4px;
+                transition: max-width .28s ease, opacity .2s ease .05s, visibility 0s;
+            }
         }
         .layout-expand-btn { position: relative; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 8px; flex-shrink: 0; }
         .layout-expand-btn i { font-size: 11px; transition: transform .28s ease; }
@@ -1163,24 +1174,30 @@
                     <!-- BỘ CHỌN SƠ ĐỒ — góc trên trái khung sơ đồ. Sơ đồ 1 là mặt bằng gốc của quán;
                          Sơ đồ 2 là mặt bằng tự sắp xếp (kéo thả từng bàn rồi lưu lại, ghi vào localStorage). -->
                     <div id="layoutSwitcher" class="absolute left-3 sm:left-4 top-3 sm:top-4 z-30 max-w-[calc(100%-4.5rem)]">
-                        <div class="flex items-center gap-1 p-1 rounded-xl bg-espresso-900/95 border border-tys-800 shadow-[0_8px_20px_-8px_rgba(26,21,16,0.45)] backdrop-blur-md">
-                            <button type="button" id="layoutTab1" class="layout-tab is-active px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none whitespace-nowrap transition" onclick="selectLayout(1)" aria-label="Xem sơ đồ mặc định" aria-pressed="true">
-                                <i class="fa-solid fa-map mr-1"></i>Sơ đồ mặc định
-                            </button>
-                            <button type="button" id="layoutPanelToggle" class="layout-tab layout-expand-btn transition" onclick="toggleLayoutPanel()" aria-expanded="false" aria-controls="layoutExtra" aria-label="Mở thêm sơ đồ" title="Mở thêm: Sơ đồ mặc định 2, Sơ đồ tùy chọn">
-                                <i class="fa-solid fa-chevron-right"></i>
-                                <span id="layoutPanelDot" class="layout-dot hidden"></span>
-                            </button>
+                        <div class="flex flex-col sm:flex-row sm:items-center p-1 rounded-xl bg-espresso-900/95 border border-tys-800 shadow-[0_8px_20px_-8px_rgba(26,21,16,0.45)] backdrop-blur-md">
+                            <div class="flex items-center gap-1">
+                                <!-- Ô đầu tiên luôn là sơ đồ ĐANG XEM (tên đổi theo sơ đồ đang chọn). Chạm vào để mở/thu gọn. -->
+                                <button type="button" id="layoutCurrent" class="layout-tab is-active px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none whitespace-nowrap transition" onclick="toggleLayoutPanel()" aria-label="Sơ đồ đang xem — chạm để đổi sơ đồ">
+                                    <i id="layoutCurrentIcon" class="fa-solid fa-map mr-1"></i><span id="layoutCurrentName">Sơ đồ mặc định</span>
+                                </button>
+                                <button type="button" id="layoutEditToggle" class="layout-tab hidden px-2 sm:px-2.5 py-1.5 rounded-lg text-[11px] font-bold leading-none whitespace-nowrap transition border border-tys-800" onclick="toggleLayoutEdit()" aria-label="Chỉnh sửa vị trí bàn" aria-pressed="false" title="Bật chế độ kéo thả để sắp xếp vị trí bàn của Sơ đồ tùy chọn">
+                                    <i class="fa-solid fa-pen-ruler mr-1"></i><span id="layoutEditToggleText">Sửa</span>
+                                </button>
+                                <button type="button" id="layoutPanelToggle" class="layout-tab layout-expand-btn transition" onclick="toggleLayoutPanel()" aria-expanded="false" aria-controls="layoutExtra" aria-label="Chọn sơ đồ khác" title="Chọn sơ đồ khác">
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <!-- Các sơ đồ còn lại (sơ đồ đang xem được ẩn đi vì đã nằm ở ô đầu tiên) -->
                             <div id="layoutExtra" class="layout-extra">
-                                <span class="w-px h-5 bg-tys-800 shrink-0"></span>
+                                <span class="hidden sm:block w-px h-5 bg-tys-800 shrink-0"></span>
+                                <button type="button" id="layoutTab1" class="layout-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none whitespace-nowrap transition" onclick="selectLayout(1)" aria-label="Xem sơ đồ mặc định" aria-pressed="false">
+                                    <i class="fa-solid fa-map mr-1 hidden sm:inline"></i><span class="sm:hidden">Mặc định</span><span class="hidden sm:inline">Sơ đồ mặc định</span>
+                                </button>
                                 <button type="button" id="layoutTab2" class="layout-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none whitespace-nowrap transition" onclick="selectLayout(2)" aria-label="Xem sơ đồ mặc định 2" aria-pressed="false">
                                     <i class="fa-solid fa-map-location-dot mr-1 hidden sm:inline"></i><span class="sm:hidden">Mặc định 2</span><span class="hidden sm:inline">Sơ đồ mặc định 2</span>
                                 </button>
                                 <button type="button" id="layoutTab3" class="layout-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none whitespace-nowrap transition" onclick="selectLayout(3)" aria-label="Xem sơ đồ tùy chọn" aria-pressed="false">
                                     <i class="fa-solid fa-sliders mr-1 hidden sm:inline"></i><span class="sm:hidden">Tùy chọn</span><span class="hidden sm:inline">Sơ đồ tùy chọn</span>
-                                </button>
-                                <button type="button" id="layoutEditToggle" class="layout-tab hidden px-2 sm:px-2.5 py-1.5 rounded-lg text-[11px] font-bold leading-none whitespace-nowrap transition border border-tys-800" onclick="toggleLayoutEdit()" aria-label="Chỉnh sửa vị trí bàn" aria-pressed="false" title="Bật chế độ kéo thả để sắp xếp vị trí bàn của Sơ đồ tùy chọn">
-                                    <i class="fa-solid fa-pen-ruler mr-1"></i><span id="layoutEditToggleText">Sửa</span>
                                 </button>
                             </div>
                         </div>
@@ -2370,7 +2387,7 @@
         // vẫn giữ nguyên. Sơ đồ 2 có danh sách ẩn riêng (layout2.hidden), chỉnh trong chế độ "Sửa" > "Ẩn bàn":
         //   - đang Sửa: bàn bị ẩn vẫn hiện MỜ để còn chạm vào bảng mà hiện lại;
         //   - xem bình thường: bàn bị ẩn biến mất khỏi sơ đồ.
-        const HIDDEN_ON_LAYOUT1 = [29];   // chỉ ẩn ở Sơ đồ 1 (27, 28 ẩn hẳn ở mọi sơ đồ: xem PERMANENT_HIDDEN_TABLES)
+        const HIDDEN_ON_LAYOUT1 = [29, 30, 31];   // chỉ ẩn ở Sơ đồ 1 (27, 28 ẩn hẳn ở mọi sơ đồ: xem PERMANENT_HIDDEN_TABLES)
 
         function currentHiddenOnLayout2() {
             const src = isLayoutEditing ? layout2Working : layout2Saved;
@@ -2502,24 +2519,25 @@
             const mapContainer = document.getElementById('mapContainer');
             const fab = document.getElementById('fabRecenter');
 
+            // Ô đầu tiên = sơ đồ đang xem; danh sách mở rộng chỉ chứa các sơ đồ còn lại
+            const LAYOUT_NAMES = { 1: 'Sơ đồ mặc định', 2: 'Sơ đồ mặc định 2', 3: 'Sơ đồ tùy chọn' };
+            const LAYOUT_ICONS = { 1: 'fa-map', 2: 'fa-map-location-dot', 3: 'fa-sliders' };
+            const curName = document.getElementById('layoutCurrentName');
+            const curIcon = document.getElementById('layoutCurrentIcon');
+            if (curName) curName.textContent = LAYOUT_NAMES[activeLayout];
+            if (curIcon) curIcon.className = 'fa-solid ' + LAYOUT_ICONS[activeLayout] + ' mr-1';
             [1, 2, 3].forEach(function (n) {
                 const t = document.getElementById('layoutTab' + n);
                 if (!t) return;
-                t.classList.toggle('is-active', activeLayout === n);
-                t.setAttribute('aria-pressed', activeLayout === n ? 'true' : 'false');
+                t.classList.toggle('hidden', activeLayout === n);
             });
-            // Đang chỉnh sửa thì luôn mở rộng thanh để thấy nút Sửa/Xong
-            if (isLayoutEditing) layoutPanelOpen = true;
             const extra = document.getElementById('layoutExtra');
             const pbtn = document.getElementById('layoutPanelToggle');
-            const dot = document.getElementById('layoutPanelDot');
             if (extra) extra.classList.toggle('is-open', layoutPanelOpen);
             if (pbtn) {
                 pbtn.setAttribute('aria-expanded', layoutPanelOpen ? 'true' : 'false');
-                pbtn.title = layoutPanelOpen ? 'Thu gọn' : 'Mở thêm: Sơ đồ mặc định 2, Sơ đồ tùy chọn';
+                pbtn.title = layoutPanelOpen ? 'Thu gọn' : 'Chọn sơ đồ khác';
             }
-            // Chấm báo: đang thu gọn nhưng đang xem một sơ đồ khác sơ đồ mặc định
-            if (dot) dot.classList.toggle('hidden', layoutPanelOpen || activeLayout === 1);
             if (toggle) {
                 toggle.classList.toggle('is-active', isLayoutEditing);
                 toggle.setAttribute('aria-pressed', isLayoutEditing ? 'true' : 'false');
@@ -2541,7 +2559,6 @@
         }
 
         function toggleLayoutPanel() {
-            if (isLayoutEditing) return;   // đang sửa: giữ thanh mở
             layoutPanelOpen = !layoutPanelOpen;
             updateLayoutControls();
         }
