@@ -628,6 +628,260 @@
             0%, 100% { box-shadow: 0 0 0 0 rgba(226, 137, 106, 0.42); border-color: #E2896A; }
             50% { box-shadow: 0 0 0 7px rgba(226, 137, 106, 0); border-color: #F0A98A; }
         }
+
+        /* =====================================================================
+           SƠ ĐỒ VỊ TRÍ BÀN — bộ chọn Sơ đồ 1 / Sơ đồ 2 và chế độ kéo thả
+           ===================================================================== */
+
+        /* Tab chọn sơ đồ (segmented control) — đồng bộ tông nâu đồng của thương hiệu */
+        .layout-tab {
+            color: #6e685d;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .layout-tab:hover {
+            color: #4a3623;
+            background: rgba(201, 148, 74, 0.10);
+        }
+        .layout-tab.is-active {
+            background: #C9944A;
+            color: #1a1510;
+            box-shadow: 0 2px 8px -2px rgba(201, 148, 74, 0.55);
+        }
+        html[data-theme="dark"] .layout-tab { color: #A79880; }
+        html[data-theme="dark"] .layout-tab:hover { color: #E7CD9C; }
+        html[data-theme="dark"] .layout-tab.is-active { background: #C9944A; color: #0C0B09; }
+
+        /* Chế độ chỉnh sửa: bàn hiện viền nét đứt để báo "kéo được" */
+        .layout-editing .table-btn {
+            cursor: grab;
+            touch-action: none;
+            outline: 2px dashed rgba(201, 148, 74, 0.70);
+            outline-offset: 3px;
+        }
+        .layout-editing .table-btn:hover { outline-color: #C9944A; }
+        .layout-editing .table-btn:active { transform: none; }
+        .floorplan-container.layout-editing { cursor: default; }
+
+        /* Bàn đang được kéo: nâng lên khỏi mặt sàn, viền liền + quầng sáng */
+        .layout-editing .table-btn.dragging-table {
+            cursor: grabbing;
+            outline-style: solid;
+            outline-color: #C9944A;
+            transform: scale(1.05) !important;
+            transition: none;
+            box-shadow: 0 18px 34px -10px rgba(26, 21, 16, 0.45),
+                        0 0 0 6px rgba(201, 148, 74, 0.18) !important;
+            z-index: 5;
+        }
+        html[data-theme="dark"] .layout-editing .table-btn { outline-color: rgba(230, 196, 140, 0.55); }
+        html[data-theme="dark"] .layout-editing .table-btn.dragging-table {
+            outline-color: #E1B66E;
+            box-shadow: 0 18px 34px -10px rgba(0, 0, 0, 0.65),
+                        0 0 0 6px rgba(201, 148, 74, 0.22) !important;
+        }
+
+        /* Nút "Nền phòng" ở trạng thái bật */
+        #layoutDecorBtn.decor-on {
+            background: #C9944A;
+            color: #1a1510;
+            border-color: #a9793a;
+        }
+        html[data-theme="dark"] #layoutDecorBtn.decor-on {
+            background: #C9944A;
+            color: #0C0B09;
+            border-color: #C9944A;
+        }
+
+        /* ---------- Nhãn số khách trên sơ đồ: nằm NGOÀI nút bàn, góc trên-phải ----------
+           Ô bàn (#table-node-i) bị xoay 180° để chữ đúng chiều, nên toạ độ trong ô cũng lật:
+           đặt ở góc dưới-trái trong ô = hiện ra góc TRÊN-PHẢI của ô bàn trên màn hình.
+           Chỉ hiện TỔNG số khách của bàn. */
+        .guest-badge {
+            position: absolute;
+            bottom: -9px;
+            left: -9px;
+            z-index: 10;
+            display: flex;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .guest-badge .gb-item {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            padding: 1px 6px;
+            border-radius: 999px;
+            font-size: 9px;
+            font-weight: 800;
+            line-height: 1.3;
+            white-space: nowrap;
+            background: #f5f2ec;
+            color: #4a3623;
+            border: 1px solid #e3d2b8;
+            box-shadow: 0 2px 6px -1px rgba(26, 21, 16, 0.35);
+        }
+        .guest-badge.is-dim { opacity: 0.2; }
+        html[data-theme="dark"] .guest-badge .gb-item {
+            background: #1E170D;
+            color: #E7CD9C;
+            border-color: #4a3623;
+        }
+
+        /* =====================================================================
+           ĐĂNG NHẬP NHÂN VIÊN — mỗi người một tài khoản riêng
+           ===================================================================== */
+        .auth-input {
+            width: 100%;
+            background: #f7f5f0;
+            border: 1px solid #edeae2;
+            border-radius: 12px;
+            padding: 11px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1c1a17;
+            outline: none;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+        }
+        .auth-input::placeholder { color: #b9afa0; font-weight: 500; }
+        .auth-input:focus {
+            border-color: #C9944A;
+            box-shadow: 0 0 0 3px rgba(201, 148, 74, 0.16);
+        }
+        .auth-input.has-error {
+            border-color: #d2492c;
+            box-shadow: 0 0 0 3px rgba(210, 73, 44, 0.14);
+        }
+        .auth-input:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+        html[data-theme="dark"] .auth-input {
+            background: #17130e;
+            border-color: #2a241b;
+            color: #F2EDE4;
+        }
+        html[data-theme="dark"] .auth-input::placeholder { color: #6b5f4d; }
+        html[data-theme="dark"] .auth-input:focus {
+            border-color: #C9944A;
+            box-shadow: 0 0 0 3px rgba(201, 148, 74, 0.20);
+        }
+
+        .auth-btn-primary {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            background: #C9944A;
+            color: #1a1510;
+            font-size: 14px;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.12s ease, background-color 0.18s ease, opacity 0.18s ease;
+        }
+        .auth-btn-primary:hover:not(:disabled) { background: #b9803d; }
+        .auth-btn-primary:active:not(:disabled) { transform: scale(0.98); }
+        .auth-btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .auth-btn-ghost {
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: transparent;
+            color: #6e685d;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid #edeae2;
+            cursor: pointer;
+            transition: background-color 0.18s ease, color 0.18s ease;
+        }
+        .auth-btn-ghost:hover { background: rgba(201, 148, 74, 0.10); color: #4a3623; }
+        html[data-theme="dark"] .auth-btn-ghost { color: #A79880; border-color: #2a241b; }
+        html[data-theme="dark"] .auth-btn-ghost:hover { color: #E7CD9C; }
+
+        /* Ô nhập mật khẩu có nút hiện/ẩn */
+        .auth-pass-wrap { position: relative; }
+        .auth-pass-wrap .auth-input { padding-right: 44px; }
+        .auth-pass-toggle {
+            position: absolute;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: #8c8579;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .auth-pass-toggle:hover { color: #4a3623; background: rgba(201,148,74,0.10); }
+        html[data-theme="dark"] .auth-pass-toggle { color: #8A7C68; }
+        html[data-theme="dark"] .auth-pass-toggle:hover { color: #E7CD9C; }
+
+        /* Hiệu ứng rung khi sai mật khẩu */
+        @keyframes authShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-7px); }
+            40% { transform: translateX(7px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+        .auth-shake { animation: authShake 0.4s ease-in-out; }
+
+        /* Hàng tài khoản trong trang quản lý */
+        .auth-user-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 12px;
+            border: 1px solid #edeae2;
+            background: #ffffff;
+        }
+        html[data-theme="dark"] .auth-user-row {
+            background: #17130e;
+            border-color: #2a241b;
+        }
+        .auth-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: #C9944A;
+            color: #1a1510;
+            font-weight: 800;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            text-transform: uppercase;
+        }
+        .auth-avatar.is-off {
+            background: #e7e2d8;
+            color: #ada79a;
+        }
+        html[data-theme="dark"] .auth-avatar.is-off { background: #241c14; color: #6b5f4d; }
+
+        /* Chip nhân viên ở header khi đã đăng nhập */
+        #staffChip.is-logged-in {
+            border-color: rgba(201, 148, 74, 0.45);
+            background: rgba(201, 148, 74, 0.10);
+            color: #a9793a;
+        }
+        html[data-theme="dark"] #staffChip.is-logged-in {
+            border-color: rgba(230, 196, 140, 0.28);
+            background: rgba(201, 148, 74, 0.14);
+            color: #E1B66E;
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col font-sans antialiased overflow-hidden bg-espresso-950">
@@ -637,7 +891,7 @@
         <!-- MASTHEAD: logo + tên thương hiệu + badge + đồng hồ — thương hiệu độc lập, canh giữa,
              tách khỏi thanh công cụ bên dưới bằng viền mảnh cho sang trọng -->
         <div id="mastheadBar" class="relative border-b border-tys-800/60 px-2 sm:px-4 py-2 sm:py-2.5">
-            <button type="button" id="staffChip" onclick="openStaffLogin()" aria-label="Đổi tài khoản" class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 max-w-[38%] truncate px-2.5 py-1.5 rounded-lg bg-espresso-950/70 border border-tys-900 text-tys-300 text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition"></button>
+            <button type="button" id="staffChip" onclick="onStaffChipClick()" aria-label="Đổi tài khoản" class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 max-w-[38%] truncate px-2.5 py-1.5 rounded-lg bg-espresso-950/70 border border-tys-900 text-tys-300 text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition"></button>
             <div class="max-w-[1700px] mx-auto flex items-center justify-center">
                 <div class="flex items-center space-x-2.5 sm:space-x-3">
                     <div class="logo-glow w-12 h-12 rounded-xl bg-espresso-950 p-1.5 flex items-center justify-center border border-tys-700 shadow-sm shadow-tys-900/10 overflow-hidden shrink-0">
@@ -746,6 +1000,21 @@
                         <span class="text-xs font-bold">Lịch sử ca</span>
                         <span id="historyBadge" class="hidden ml-auto min-w-[18px] h-[18px] px-1 rounded-full bg-tys-500 text-ink text-[10px] font-extrabold items-center justify-center tabular-nums">0</span>
                     </button>
+                    <!-- Nhóm tài khoản: chỉ hiện mục quản lý khi người đang đăng nhập là quản lý -->
+                    <button onclick="closeMoreMenu(); openAccounts()" id="btnAccounts" role="menuitem" class="hidden items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Tài khoản nhân viên">
+                        <i class="fa-solid fa-users-gear w-4 text-center text-sm"></i>
+                        <span class="text-xs font-bold">Tài khoản</span>
+                        <span id="accountsBadge" class="ml-auto text-[10px] font-bold text-stone-500 tabular-nums">0</span>
+                    </button>
+                    <button onclick="closeMoreMenu(); openChangePass()" id="btnChangePass" role="menuitem" class="hidden items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Đổi mật khẩu">
+                        <i class="fa-solid fa-key w-4 text-center text-sm"></i>
+                        <span class="text-xs font-bold">Đổi mật khẩu</span>
+                    </button>
+                    <button onclick="closeMoreMenu(); logoutStaff()" id="btnLogout" role="menuitem" class="hidden items-center gap-3 w-full px-3 py-2.5 rounded-xl text-brick-300 hover:bg-brick-950/40 active:scale-95 transition" aria-label="Đăng xuất">
+                        <i class="fa-solid fa-right-from-bracket w-4 text-center text-sm"></i>
+                        <span class="text-xs font-bold">Đăng xuất</span>
+                    </button>
+                    <div class="hidden h-px bg-tys-900 mx-1" id="menuAuthDivider"></div>
                     <button onclick="closeMoreMenu(); openHandoverModal()" id="btnHandover" role="menuitem" class="relative flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Dữ liệu bàn">
                         <i class="fa-solid fa-right-left w-4 text-center text-sm"></i>
                         <span class="text-xs font-bold">Dữ liệu bàn</span>
@@ -761,6 +1030,7 @@
                     <span id="historyDot" class="hidden absolute top-1 right-1 w-2 h-2 rounded-full bg-tys-500 border border-espresso-900"></span>
                 </button>
             </div>
+        </div>
         </nav>
 
     <!-- FAB "Về giữa / Hiện toàn bộ sơ đồ" — control nổi màu hổ phách ấm, đổ bóng dịu -->
@@ -780,6 +1050,10 @@
 
                     <!-- Kích thước map 1.5x: 2100x1350 (Từ 1400x900) -->
                     <div id="mapWrapper" class="absolute w-[2100px] h-[1350px] left-0 top-0">
+                        <!-- LỚP TRANG TRÍ KIẾN TRÚC — tường, phòng lạnh, lối đi, cây, ghế băng.
+                             Ở Sơ đồ 2 lớp này được ẩn đi (mặc định) để có mặt sàn trống cho việc
+                             tự sắp xếp bàn; có thể bật lại bằng nút "Nền phòng" trong thanh chỉnh sửa. -->
+                        <div id="mapDecor" class="absolute inset-0">
                         <!-- Viền khung bảo vệ toàn bộ sơ đồ -->
                         <div class="absolute inset-4 rounded-[32px] border border-tys-900 pointer-events-none"></div>
 
@@ -818,8 +1092,10 @@
                         <!-- Ghế Băng Dài -->
                         <div class="absolute top-[1275px] left-[360px] w-[390px] h-[36px] border border-stone-700/70 bg-espresso-800/80 rounded-lg flex items-center justify-center"></div>
                         <div class="absolute top-[1275px] left-[1110px] w-[630px] h-[36px] border border-stone-700/70 bg-espresso-800/80 rounded-lg flex items-center justify-center"></div>
+                        </div><!-- /#mapDecor -->
 
-                        <!-- Table Nodes (Tọa độ x1.5) -->
+                        <!-- Table Nodes (Tọa độ x1.5) — ở Sơ đồ 1 giữ nguyên tọa độ gốc trong HTML;
+                             ở Sơ đồ 2 toạ độ được JS ghi đè bằng inline style đã lưu. -->
                         <div class="absolute top-[133px] left-[82px]" id="table-node-1"></div>
                         <div class="absolute top-[78px] left-[241px]" id="table-node-2"></div>
                         <div class="absolute top-[190px] left-[241px]" id="table-node-3"></div>
@@ -858,6 +1134,44 @@
                         <div class="absolute top-[1016px] left-[1969px]" id="table-node-28"></div>
                         
                         <div class="absolute top-[1016px] left-[1857px]" id="table-node-29"></div>
+                    </div>
+
+                    <!-- BỘ CHỌN SƠ ĐỒ — góc trên trái khung sơ đồ. Sơ đồ 1 là mặt bằng gốc của quán;
+                         Sơ đồ 2 là mặt bằng tự sắp xếp (kéo thả từng bàn rồi lưu lại, ghi vào localStorage). -->
+                    <div id="layoutSwitcher" class="absolute left-3 sm:left-4 top-3 sm:top-4 z-30">
+                        <div class="flex items-center gap-1 p-1 rounded-xl bg-espresso-900/95 border border-tys-800 shadow-[0_8px_20px_-8px_rgba(26,21,16,0.45)] backdrop-blur-md">
+                            <button type="button" id="layoutTab1" class="layout-tab is-active px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none transition" onclick="selectLayout(1)" aria-label="Xem sơ đồ 1" aria-pressed="true">
+                                <i class="fa-solid fa-map mr-1"></i>Sơ đồ 1
+                            </button>
+                            <button type="button" id="layoutTab2" class="layout-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none transition" onclick="selectLayout(2)" aria-label="Xem sơ đồ 2" aria-pressed="false">
+                                <i class="fa-solid fa-map-location-dot mr-1"></i>Sơ đồ 2
+                            </button>
+                            <span class="w-px h-5 bg-tys-800 shrink-0"></span>
+                            <button type="button" id="layoutEditToggle" class="layout-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none transition" onclick="toggleLayoutEdit()" aria-label="Chỉnh sửa vị trí bàn" aria-pressed="false" title="Bật chế độ kéo thả để sắp xếp vị trí bàn của Sơ đồ 2">
+                                <i class="fa-solid fa-pen-ruler mr-1"></i><span id="layoutEditToggleText">Sửa</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- THANH CHỈNH SỬA SƠ ĐỒ — chỉ hiện khi đang kéo thả vị trí bàn -->
+                    <div id="layoutEditBar" class="hidden absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-30 w-[calc(100%-1.5rem)] sm:w-auto sm:max-w-[92%]">
+                        <div class="flex items-center gap-1.5 p-1.5 rounded-2xl bg-espresso-900/95 border border-tys-800 shadow-[0_12px_30px_-10px_rgba(26,21,16,0.55)] backdrop-blur-md">
+                            <span class="hidden sm:flex items-center gap-1.5 pl-2 pr-1 text-[11px] font-bold text-tys-300 whitespace-nowrap">
+                                <i class="fa-solid fa-hand-pointer"></i>Kéo bàn để sắp xếp
+                            </span>
+                            <button type="button" onclick="toggleLayoutDecor()" id="layoutDecorBtn" class="flex-1 sm:flex-none px-2.5 py-2 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-300 text-[11px] font-bold whitespace-nowrap active:scale-95 transition" title="Hiện/ẩn tường, phòng lạnh, lối đi, cây xanh">
+                                <i class="fa-solid fa-border-all mr-1"></i>Nền phòng
+                            </button>
+                            <button type="button" onclick="resetLayoutEdit()" class="flex-1 sm:flex-none px-2.5 py-2 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-300 text-[11px] font-bold whitespace-nowrap active:scale-95 transition" title="Đưa tất cả bàn về vị trí gốc của Sơ đồ 1">
+                                <i class="fa-solid fa-arrows-rotate mr-1"></i>Gốc
+                            </button>
+                            <button type="button" onclick="cancelLayoutEdit()" class="flex-1 sm:flex-none px-2.5 py-2 rounded-xl bg-espresso-950/70 border border-tys-900 text-brick-300 text-[11px] font-bold whitespace-nowrap active:scale-95 transition">
+                                <i class="fa-solid fa-xmark mr-1"></i>Hủy
+                            </button>
+                            <button type="button" onclick="saveLayoutEdit()" class="flex-1 sm:flex-none px-3 py-2 rounded-xl bg-tys-500 text-ink text-[11px] font-extrabold whitespace-nowrap active:scale-95 transition">
+                                <i class="fa-solid fa-floppy-disk mr-1"></i>Lưu
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Công tắc chuyển giao diện sáng/tối — đặt ngay trong sơ đồ gốc, góc trên cùng bên phải -->
@@ -979,6 +1293,47 @@
                             <div class="w-2 h-2 rounded-full bg-sage-500 shrink-0"></div>
                             <div class="truncate font-bold text-sage-400">Đã trả</div>
                         </button>
+                    </div>
+                </div>
+
+                <!-- SỐ KHÁCH — tách 2 nhóm: đã trả tại quầy và chưa trả tại bàn.
+                     Chỉ để đếm & hiện ghi chú, không tách bill theo món. -->
+                <div class="bg-espresso-950/70 p-2.5 rounded-xl border border-tys-900">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wide flex items-center gap-1">
+                            <i class="fa-solid fa-users text-tys-500"></i> Số khách
+                        </span>
+                        <span class="text-[11px] font-bold text-tys-400" id="guestTotalDisplay">0 khách</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="bg-espresso-900 rounded-lg border border-sage-900/40 p-2">
+                            <div class="flex items-center gap-1 text-[10px] font-bold text-sage-400 mb-1">
+                                <i class="fa-solid fa-store text-[9px]"></i> Đã trả tại quầy
+                            </div>
+                            <div class="flex items-center justify-between gap-1">
+                                <button type="button" onclick="changeGuestCount('paid', -1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-sage-300 active:scale-90 transition flex items-center justify-center" aria-label="Giảm số khách đã trả tại quầy">
+                                    <i class="fa-solid fa-minus text-[10px]"></i>
+                                </button>
+                                <span id="guestPaidDisplay" class="text-lg font-extrabold text-sage-300 tabular-nums leading-none">0</span>
+                                <button type="button" onclick="changeGuestCount('paid', 1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-sage-300 active:scale-90 transition flex items-center justify-center" aria-label="Tăng số khách đã trả tại quầy">
+                                    <i class="fa-solid fa-plus text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="bg-espresso-900 rounded-lg border border-brick-900/40 p-2">
+                            <div class="flex items-center gap-1 text-[10px] font-bold text-brick-300 mb-1">
+                                <i class="fa-solid fa-chair text-[9px]"></i> Chưa trả tại bàn
+                            </div>
+                            <div class="flex items-center justify-between gap-1">
+                                <button type="button" onclick="changeGuestCount('unpaid', -1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-brick-300 active:scale-90 transition flex items-center justify-center" aria-label="Giảm số khách chưa trả tại bàn">
+                                    <i class="fa-solid fa-minus text-[10px]"></i>
+                                </button>
+                                <span id="guestUnpaidDisplay" class="text-lg font-extrabold text-brick-300 tabular-nums leading-none">0</span>
+                                <button type="button" onclick="changeGuestCount('unpaid', 1)" class="w-7 h-7 rounded-md bg-espresso-950 border border-tys-900 text-stone-300 hover:text-brick-300 active:scale-90 transition flex items-center justify-center" aria-label="Tăng số khách chưa trả tại bàn">
+                                    <i class="fa-solid fa-plus text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -1203,18 +1558,63 @@
         </div>
     </div>
 
-    <!-- Đăng nhập nhân viên: chọn sẵn tên, tên hiện trên tin báo thu ngân -->
-    <div id="staffLogin" class="fixed inset-0 z-[200] bg-espresso-950/95 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-espresso-900 border border-tys-800 w-full max-w-sm rounded-2xl shadow-xl p-4 modal-fade-in">
-            <div class="flex items-center gap-2.5 mb-3">
-                <div class="w-9 h-9 rounded-xl bg-tys-500 text-ink flex items-center justify-center shrink-0"><i class="fa-solid fa-user text-sm"></i></div>
-                <div>
-                    <h3 class="text-sm font-extrabold text-tys-100 leading-tight">Đăng nhập</h3>
-                    <p class="text-[10px] text-stone-400 font-medium">Chọn tên của bạn. Tên sẽ hiện trên tin báo thu ngân.</p>
+    <!-- ĐĂNG NHẬP NHÂN VIÊN — mỗi nhân viên một tài khoản riêng (tên đăng nhập + mật khẩu).
+         Không thể đóng khi chưa đăng nhập: mọi thông báo gửi thu ngân đều kèm tên người thao tác. -->
+    <div id="staffLogin" class="fixed inset-0 z-[200] bg-espresso-950/95 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div id="authCard" class="bg-espresso-900 border border-tys-800 w-full max-w-[400px] rounded-2xl shadow-2xl overflow-hidden modal-fade-in">
+
+            <!-- Đầu thẻ: logo + tên quán -->
+            <div class="px-6 pt-6 pb-4 text-center">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-espresso-950 p-2 border border-tys-700 flex items-center justify-center overflow-hidden mb-3">
+                    <img src="logo.png" alt="TYS Coffee"
+                         class="w-full h-full object-contain rounded-lg"
+                         onerror="if(this.src.endsWith('logo.png')){this.src='logo.jpg';}else if(this.src.endsWith('logo.jpg')){this.src='logo.webp';}else{this.onerror=null;this.src='https://placehold.co/150x150/f7f5f0/2e2013?text=TYS';}">
                 </div>
+                <h2 class="brand-serif text-lg font-extrabold text-tys-100 leading-tight">TYS COFFEE</h2>
+                <p class="text-[11px] text-stone-400 font-semibold mt-1" id="authSubtitle">Đăng nhập để bắt đầu ca làm</p>
             </div>
-            <div id="staffGrid" class="grid grid-cols-2 gap-2"></div>
-            <button type="button" id="staffCancel" onclick="closeStaffLogin()" class="hidden mt-3 w-full py-2 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-300 text-xs font-semibold active:scale-95 transition">Hủy</button>
+
+            <!-- Biểu mẫu đăng nhập -->
+            <form id="loginForm" class="px-6 pb-6 space-y-3" onsubmit="return submitLogin(event)" novalidate>
+                <div>
+                    <label for="loginUser" class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Tài khoản</label>
+                    <input type="text" id="loginUser" class="auth-input" placeholder="Tên đăng nhập"
+                           autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false"
+                           maxlength="20" oninput="clearAuthError()">
+                </div>
+                <div>
+                    <label for="loginPass" class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Mật khẩu</label>
+                    <div class="auth-pass-wrap">
+                        <input type="password" id="loginPass" class="auth-input" placeholder="Mật khẩu"
+                               autocomplete="current-password" maxlength="64" oninput="clearAuthError()">
+                        <button type="button" class="auth-pass-toggle" onclick="togglePassVisibility('loginPass', this)" aria-label="Hiện mật khẩu" tabindex="-1">
+                            <i class="fa-solid fa-eye text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="loginError" class="hidden text-[11px] font-bold text-brick-400 flex items-start gap-1.5 leading-snug">
+                    <i class="fa-solid fa-circle-exclamation text-[11px] mt-0.5 shrink-0"></i>
+                    <span id="loginErrorText"></span>
+                </div>
+
+                <button type="submit" id="loginSubmitBtn" class="auth-btn-primary mt-1">
+                    <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
+                    <span id="loginSubmitText">Đăng nhập</span>
+                </button>
+
+                <div class="text-center pt-1">
+                    <button type="button" class="text-[11px] font-bold text-stone-500 hover:text-tys-400 transition" onclick="showForgotHelp()">
+                        Quên mật khẩu?
+                    </button>
+                </div>
+            </form>
+
+            <div class="px-6 pb-4 -mt-1">
+                <p class="text-[10px] text-stone-600 text-center leading-relaxed">
+                    Mỗi nhân viên dùng tài khoản riêng. Quên mật khẩu thì nhờ quản lý cấp lại trong mục “Tài khoản”.
+                </p>
+            </div>
         </div>
     </div>
 
@@ -1289,6 +1689,104 @@
             <div class="flex items-center justify-center gap-2 pt-1">
                 <button onclick="closeResetModal()" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300">Hủy</button>
                 <button onclick="confirmResetAllData()" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-brick-700 hover:bg-brick-600 text-tys-50">Đặt lại ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TÀI KHOẢN CỦA TÔI (bấm vào tên trên header) -->
+    <div id="myAccountModal" onclick="if(event.target===this)closeMyAccount()" class="fixed inset-0 z-[210] bg-espresso-950/90 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-espresso-900 border border-tys-800 w-full max-w-[340px] rounded-2xl shadow-2xl overflow-hidden modal-fade-in">
+            <div class="flex items-center justify-between px-4 pt-4 pb-2">
+                <h3 class="text-sm font-extrabold text-tys-100">Tài khoản của tôi</h3>
+                <button onclick="closeMyAccount()" class="w-8 h-8 rounded-lg text-stone-400 hover:bg-espresso-800 flex items-center justify-center" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="px-4 pb-3">
+                <div class="flex items-center gap-3 p-3 rounded-xl bg-espresso-950/70 border border-tys-900">
+                    <div class="auth-avatar" id="myAccAvatar">?</div>
+                    <div class="min-w-0">
+                        <div class="text-sm font-extrabold text-tys-100 truncate" id="myAccName">—</div>
+                        <div class="text-[11px] text-stone-500 font-semibold truncate" id="myAccUser">@—</div>
+                    </div>
+                    <span id="myAccRole" class="ml-auto px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-tys-900/60 text-tys-300 border border-tys-800 shrink-0">Nhân viên</span>
+                </div>
+            </div>
+            <div class="px-4 pb-4 space-y-1.5">
+                <button onclick="closeMyAccount(); openChangePass()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-espresso-950/70 border border-tys-900 text-tys-300 hover:bg-espresso-800 active:scale-95 transition">
+                    <i class="fa-solid fa-key w-4 text-center text-sm"></i><span class="text-xs font-bold">Đổi mật khẩu</span>
+                </button>
+                <button id="myAccManageBtn" onclick="closeMyAccount(); openAccounts()" class="hidden w-full items-center gap-3 px-3 py-2.5 rounded-xl bg-espresso-950/70 border border-tys-900 text-tys-300 hover:bg-espresso-800 active:scale-95 transition">
+                    <i class="fa-solid fa-users-gear w-4 text-center text-sm"></i><span class="text-xs font-bold">Quản lý tài khoản</span>
+                </button>
+                <button onclick="closeMyAccount(); logoutStaff()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-brick-950/40 border border-brick-900 text-brick-300 hover:bg-brick-950/60 active:scale-95 transition">
+                    <i class="fa-solid fa-right-from-bracket w-4 text-center text-sm"></i><span class="text-xs font-bold">Đăng xuất</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ĐỔI MẬT KHẨU (nhân viên tự đổi) -->
+    <div id="changePassModal" onclick="if(event.target===this)closeChangePass()" class="fixed inset-0 z-[210] bg-espresso-950/90 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-espresso-900 border border-tys-800 w-full max-w-[380px] rounded-2xl shadow-2xl overflow-hidden modal-fade-in">
+            <div class="flex items-center justify-between px-4 pt-4 pb-2">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-tys-500 text-ink flex items-center justify-center shrink-0"><i class="fa-solid fa-key text-xs"></i></div>
+                    <h3 class="text-sm font-extrabold text-tys-100">Đổi mật khẩu</h3>
+                </div>
+                <button onclick="closeChangePass()" class="w-8 h-8 rounded-lg text-stone-400 hover:bg-espresso-800 flex items-center justify-center" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form class="px-4 pb-4 space-y-3" onsubmit="return submitChangePass(event)" novalidate>
+                <p class="text-[11px] text-stone-400 leading-snug">Tài khoản: <b class="text-tys-300" id="chgPassUser">—</b></p>
+                <div>
+                    <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Mật khẩu hiện tại</label>
+                    <div class="auth-pass-wrap">
+                        <input type="password" id="chgPassOld" class="auth-input" placeholder="Mật khẩu hiện tại" autocomplete="current-password" maxlength="64" oninput="clearChgError()">
+                        <button type="button" class="auth-pass-toggle" onclick="togglePassVisibility('chgPassOld', this)" aria-label="Hiện mật khẩu" tabindex="-1"><i class="fa-solid fa-eye text-xs"></i></button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Mật khẩu mới</label>
+                    <div class="auth-pass-wrap">
+                        <input type="password" id="chgPassNew" class="auth-input" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password" maxlength="64" oninput="clearChgError()">
+                        <button type="button" class="auth-pass-toggle" onclick="togglePassVisibility('chgPassNew', this)" aria-label="Hiện mật khẩu" tabindex="-1"><i class="fa-solid fa-eye text-xs"></i></button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1.5">Nhập lại mật khẩu mới</label>
+                    <input type="password" id="chgPassNew2" class="auth-input" placeholder="Nhập lại mật khẩu mới" autocomplete="new-password" maxlength="64" oninput="clearChgError()">
+                </div>
+                <div id="chgPassError" class="hidden text-[11px] font-bold text-brick-400 flex items-start gap-1.5 leading-snug">
+                    <i class="fa-solid fa-circle-exclamation text-[11px] mt-0.5 shrink-0"></i><span id="chgPassErrorText"></span>
+                </div>
+                <div class="flex items-center gap-2 pt-1">
+                    <button type="button" onclick="closeChangePass()" class="auth-btn-ghost flex-1">Hủy</button>
+                    <button type="submit" class="auth-btn-primary flex-1"><i class="fa-solid fa-check text-xs"></i> Đổi mật khẩu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- QUẢN LÝ TÀI KHOẢN (chỉ quản lý) -->
+    <div id="accountsModal" onclick="if(event.target===this)closeAccounts()" class="fixed inset-0 z-[210] bg-espresso-950/90 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-espresso-900 border border-tys-800 w-full max-w-[460px] rounded-2xl shadow-2xl overflow-hidden modal-fade-in flex flex-col max-h-[90vh]">
+            <div class="flex items-center justify-between px-4 pt-4 pb-2 shrink-0">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-tys-500 text-ink flex items-center justify-center shrink-0"><i class="fa-solid fa-users-gear text-xs"></i></div>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-tys-100 leading-tight">Tài khoản nhân viên</h3>
+                        <p class="text-[10px] text-stone-500" id="accountsCount">0 tài khoản</p>
+                    </div>
+                </div>
+                <button onclick="closeAccounts()" class="w-8 h-8 rounded-lg text-stone-400 hover:bg-espresso-800 flex items-center justify-center" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="px-4 pb-3 flex-1 overflow-y-auto">
+                <div id="accountsList" class="space-y-1.5"></div>
+            </div>
+
+            <div class="px-4 pb-4 pt-2 border-t border-tys-900 shrink-0">
+                <p class="text-[10px] text-stone-500 leading-snug text-center">
+                    Danh sách cố định 1 quản lý + 6 nhân viên. Bấm <i class="fa-solid fa-key"></i> để cấp lại mật khẩu khi nhân viên quên.
+                </p>
             </div>
         </div>
     </div>
@@ -1700,6 +2198,7 @@
             }, { passive: false });
 
             container.addEventListener('mousedown', (e) => {
+                if (isLayoutEditing) return;   // chế độ chỉnh sửa: kéo bàn, không kéo nền
                 if (e.target.closest('.table-btn') || e.target.closest('button')) return;
                 isDragging = true;
                 startX = e.clientX - panX;
@@ -1721,6 +2220,11 @@
 
             container.addEventListener('touchstart', (e) => {
                 if (e.touches.length === 1) {
+                    // Chế độ chỉnh sửa: chạm vào bàn là để kéo bàn, không kéo nền sơ đồ
+                    if (isLayoutEditing) {
+                        isDragging = false;
+                        return;
+                    }
                     // Bàn (.table-btn) vẫn cho kéo map; chỉ bỏ qua các nút khác (VD: nút thu tiền nhanh)
                     if (e.target.closest('button:not(.table-btn)')) return;
                     isDragging = true;
@@ -1771,12 +2275,328 @@
                 if (e.touches.length === 0) {
                     isDragging = false;
                 } else if (e.touches.length === 1) {
-                    // Còn 1 ngón sau khi zoom: tiếp tục kéo từ vị trí hiện tại, không bị giật
-                    isDragging = true;
-                    startX = e.touches[0].clientX - panX;
-                    startY = e.touches[0].clientY - panY;
+                    // Còn 1 ngón sau khi zoom: tiếp tục kéo từ vị trí hiện tại, không bị giật.
+                    // Ở chế độ chỉnh sửa sơ đồ thì không kéo nền, để ngón còn lại không làm map trôi.
+                    if (isLayoutEditing) {
+                        isDragging = false;
+                    } else {
+                        isDragging = true;
+                        startX = e.touches[0].clientX - panX;
+                        startY = e.touches[0].clientY - panY;
+                    }
                 }
             });
+        }
+
+        // ==================================================================================
+        // SƠ ĐỒ VỊ TRÍ BÀN — 2 MẶT BẰNG
+        //
+        // Sơ đồ 1: mặt bằng gốc, toạ độ nằm trong HTML (class top-/left- của từng #table-node-i).
+        // Sơ đồ 2: mặt bằng tự sắp xếp. Người dùng bật "Sửa", kéo thả từng bàn trên nền sơ đồ,
+        //          bấm "Lưu" để ghi vào localStorage (tys_layout_2) và dùng làm mặt bằng thứ hai.
+        //
+        // Toàn bộ toạ độ tính theo hệ toạ độ của #mapWrapper (2100 x 1350). Vì mapWrapper được
+        // xoay 180°, kéo ngón tay sang phải sẽ làm toạ độ X trong map GIẢM — công thức quy đổi
+        // nằm ở onLayoutPointerMove (dấu trừ trước dx/scale).
+        // ==================================================================================
+        const LAYOUT2_KEY = 'tys_layout_2';
+        const LAYOUT_ACTIVE_KEY = 'tys_layout_active';
+
+        let activeLayout = 1;            // 1 | 2 — mặt bằng đang xem
+        let isLayoutEditing = false;     // đang bật chế độ kéo thả
+        let layoutDefaultPositions = {}; // toạ độ gốc đọc từ DOM lúc khởi động
+        let layout2Saved = null;         // { v, tables:{id:{x,y}}, decor, savedAt } đã lưu
+        let layout2Working = null;       // bản nháp trong lúc chỉnh sửa
+        let layoutDrag = null;           // trạng thái kéo hiện tại
+        let decorVisible = true;         // lớp tường/phòng lạnh/lối đi có đang hiện không
+
+        function readLayoutDefaults() {
+            const out = {};
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                const node = document.getElementById(`table-node-${i}`);
+                if (!node) continue;
+                // Toạ độ gốc nằm trong class Tailwind dạng top-[133px] left-[82px].
+                // Đọc thẳng từ class thay vì offsetLeft để không phụ thuộc việc Tailwind CDN
+                // đã áp style xong hay chưa (CDN chạy bất đồng bộ, offsetLeft có thể bằng 0).
+                const mTop = /(?:^|\s)top-\[(-?\d+(?:\.\d+)?)px\]/.exec(node.className);
+                const mLeft = /(?:^|\s)left-\[(-?\d+(?:\.\d+)?)px\]/.exec(node.className);
+                if (mTop && mLeft) {
+                    out[i] = { x: parseFloat(mLeft[1]), y: parseFloat(mTop[1]) };
+                } else {
+                    out[i] = { x: node.offsetLeft, y: node.offsetTop };
+                }
+            }
+            return out;
+        }
+
+        function applyLayoutPositions(positions) {
+            for (let i = 1; i <= TOTAL_TABLES; i++) {
+                const node = document.getElementById(`table-node-${i}`);
+                if (!node) continue;
+                const p = positions ? positions[i] : null;
+                if (p && isFinite(p.x) && isFinite(p.y)) {
+                    node.style.left = p.x + 'px';
+                    node.style.top = p.y + 'px';
+                } else {
+                    // Không có toạ độ riêng -> bỏ inline style để quay về toạ độ gốc trong HTML
+                    node.style.left = '';
+                    node.style.top = '';
+                }
+            }
+        }
+
+        function loadLayout2Saved() {
+            let raw = null;
+            try { raw = localStorage.getItem(LAYOUT2_KEY); } catch (e) { return null; }
+            if (!raw) return null;
+            try {
+                const d = JSON.parse(raw);
+                if (!d || typeof d !== 'object' || !d.tables || typeof d.tables !== 'object') return null;
+                const tables = {};
+                for (let i = 1; i <= TOTAL_TABLES; i++) {
+                    const p = d.tables[i] || d.tables[String(i)];
+                    if (p && isFinite(p.x) && isFinite(p.y)) {
+                        tables[i] = { x: Number(p.x), y: Number(p.y) };
+                    }
+                }
+                return { v: 1, tables: tables, decor: !!d.decor, savedAt: d.savedAt || 0 };
+            } catch (e) { return null; }
+        }
+
+        function syncDecorButton() {
+            const b = document.getElementById('layoutDecorBtn');
+            if (!b) return;
+            b.classList.toggle('decor-on', decorVisible);
+            b.setAttribute('aria-pressed', decorVisible ? 'true' : 'false');
+        }
+
+        function setLayoutDecor(show) {
+            decorVisible = !!show;
+            const layer = document.getElementById('mapDecor');
+            if (layer) layer.classList.toggle('hidden', !decorVisible);
+            syncDecorButton();
+        }
+
+        function updateLayoutControls() {
+            const t1 = document.getElementById('layoutTab1');
+            const t2 = document.getElementById('layoutTab2');
+            const toggle = document.getElementById('layoutEditToggle');
+            const toggleText = document.getElementById('layoutEditToggleText');
+            const bar = document.getElementById('layoutEditBar');
+            const mapContainer = document.getElementById('mapContainer');
+            const fab = document.getElementById('fabRecenter');
+
+            if (t1) {
+                t1.classList.toggle('is-active', activeLayout === 1);
+                t1.setAttribute('aria-pressed', activeLayout === 1 ? 'true' : 'false');
+            }
+            if (t2) {
+                t2.classList.toggle('is-active', activeLayout === 2);
+                t2.setAttribute('aria-pressed', activeLayout === 2 ? 'true' : 'false');
+            }
+            if (toggle) {
+                toggle.classList.toggle('is-active', isLayoutEditing);
+                toggle.setAttribute('aria-pressed', isLayoutEditing ? 'true' : 'false');
+            }
+            if (toggleText) toggleText.textContent = isLayoutEditing ? 'Xong' : 'Sửa';
+            if (bar) bar.classList.toggle('hidden', !isLayoutEditing);
+            if (mapContainer) mapContainer.classList.toggle('layout-editing', isLayoutEditing);
+            // Nút "Về giữa" nằm đúng chỗ thanh Lưu/Hủy trên điện thoại -> tạm ẩn khi đang chỉnh sửa
+            if (fab) fab.classList.toggle('hidden', isLayoutEditing);
+            syncDecorButton();
+        }
+
+        function applyActiveLayout() {
+            if (activeLayout === 2) {
+                applyLayoutPositions(layout2Saved ? layout2Saved.tables : null);
+                // Sơ đồ 2 giữ nền phòng giống Sơ đồ 1 cho tới khi người dùng tự tắt bằng nút "Nền phòng"
+                setLayoutDecor(layout2Saved ? !!layout2Saved.decor : true);
+            } else {
+                applyLayoutPositions(null);
+                setLayoutDecor(true);
+            }
+        }
+
+        function selectLayout(n) {
+            n = (n === 2) ? 2 : 1;
+            if (isLayoutEditing) {
+                ackToast('Đang chỉnh sửa sơ đồ — hãy Lưu hoặc Hủy trước khi chuyển sơ đồ.', 'info', 3500);
+                return;
+            }
+            if (n === activeLayout) return;
+            activeLayout = n;
+            try { localStorage.setItem(LAYOUT_ACTIVE_KEY, String(n)); } catch (e) {}
+            applyActiveLayout();
+            updateLayoutControls();
+            setTimeout(resetZoomAndFit, 30);
+        }
+
+        function applyLayoutWorking() {
+            if (!layout2Working) return;
+            applyLayoutPositions(layout2Working.tables);
+            setLayoutDecor(layout2Working.decor);
+        }
+
+        function toggleLayoutEdit() {
+            if (isLayoutEditing) { saveLayoutEdit(); return; }
+
+            // Đang xem Danh sách thì chuyển về Sơ đồ để thấy mặt bằng
+            const listView = document.getElementById('listView');
+            if (listView && !listView.classList.contains('hidden')) toggleView('map');
+
+            // Dọn mọi thao tác chạm đang chờ để không mở nhầm bàn ngay khi vừa bật chế độ sửa
+            if (singleTapTimeout) { clearTimeout(singleTapTimeout); singleTapTimeout = null; }
+            if (touchStartTimer) { clearTimeout(touchStartTimer); touchStartTimer = null; }
+            lastTapTimestamp = 0;
+            lastTapTableId = null;
+
+            // Chỉnh sửa luôn thao tác trên Sơ đồ 2
+            if (activeLayout !== 2) {
+                activeLayout = 2;
+                try { localStorage.setItem(LAYOUT_ACTIVE_KEY, '2'); } catch (e) {}
+            }
+
+            layout2Working = {
+                tables: layout2Saved
+                    ? JSON.parse(JSON.stringify(layout2Saved.tables))
+                    : {},
+                decor: layout2Saved ? !!layout2Saved.decor : decorVisible
+            };
+            isLayoutEditing = true;
+            applyLayoutWorking();
+            updateLayoutControls();
+            setTimeout(resetZoomAndFit, 30);
+            ackToast('Đã bật chỉnh sửa: kéo bàn để sắp xếp, rồi bấm Lưu.', 'info', 4000);
+        }
+
+        function saveLayoutEdit() {
+            if (!isLayoutEditing || !layout2Working) return;
+            layout2Saved = {
+                v: 1,
+                tables: JSON.parse(JSON.stringify(layout2Working.tables)),
+                decor: !!layout2Working.decor,
+                savedAt: Date.now()
+            };
+            let persisted = true;
+            try { localStorage.setItem(LAYOUT2_KEY, JSON.stringify(layout2Saved)); }
+            catch (e) { persisted = false; }
+            isLayoutEditing = false;
+            layout2Working = null;
+            activeLayout = 2;
+            try { localStorage.setItem(LAYOUT_ACTIVE_KEY, '2'); } catch (e) {}
+            updateLayoutControls();
+            ackToast(persisted ? 'Đã lưu Sơ đồ 2.' : 'Không lưu được vào bộ nhớ trình duyệt.', persisted ? 'ok' : 'alert', 3000);
+        }
+
+        function cancelLayoutEdit() {
+            if (!isLayoutEditing) return;
+            isLayoutEditing = false;
+            layout2Working = null;
+            if (layoutDrag) endLayoutDrag();
+            if (activeLayout === 2) applyActiveLayout();
+            updateLayoutControls();
+        }
+
+        function resetLayoutEdit() {
+            if (!isLayoutEditing || !layout2Working) return;
+            layout2Working.tables = {};
+            applyLayoutPositions(null);
+            ackToast('Đã đưa các bàn về vị trí gốc — bấm Lưu để áp dụng.', 'info', 3500);
+        }
+
+        function toggleLayoutDecor() {
+            if (!isLayoutEditing || !layout2Working) return;
+            layout2Working.decor = !layout2Working.decor;
+            setLayoutDecor(layout2Working.decor);
+        }
+
+        function initLayoutDrag() {
+            const wrapper = getMapWrapper();
+            if (!wrapper) return;
+
+            wrapper.addEventListener('pointerdown', function (e) {
+                if (!isLayoutEditing) return;
+                if (e.pointerType === 'mouse' && e.button !== 0) return;
+                // Ngón thứ 2 (pinch zoom) -> huỷ kéo bàn để người dùng vẫn thu phóng được sơ đồ
+                if (!e.isPrimary) { endLayoutDrag(); return; }
+                if (layoutDrag) return;
+                const btn = e.target.closest('.table-btn');
+                if (!btn) return;
+                const node = btn.closest('[id^="table-node-"]');
+                if (!node) return;
+                const id = parseInt(node.id.replace('table-node-', ''), 10);
+                if (!id) return;
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                const base = (layout2Working && layout2Working.tables[id]) || layoutDefaultPositions[id];
+                if (!base) return;
+
+                layoutDrag = {
+                    id: id,
+                    pointerId: e.pointerId,
+                    startClientX: e.clientX,
+                    startClientY: e.clientY,
+                    startLeft: base.x,
+                    startTop: base.y,
+                    node: node,
+                    btn: btn,
+                    moved: false
+                };
+                btn.classList.add('dragging-table');
+                node.style.zIndex = '20';
+                try { btn.setPointerCapture(e.pointerId); } catch (err) {}
+                if (navigator.vibrate) { try { navigator.vibrate(12); } catch (err) {} }
+            }, { passive: false });
+
+            window.addEventListener('pointermove', function (e) {
+                if (!layoutDrag || e.pointerId !== layoutDrag.pointerId) return;
+                const dx = e.clientX - layoutDrag.startClientX;
+                const dy = e.clientY - layoutDrag.startClientY;
+                if (!layoutDrag.moved) {
+                    if (Math.hypot(dx, dy) < 2) return;
+                    layoutDrag.moved = true;
+                }
+                const w = layoutDrag.node.offsetWidth || 102;
+                const h = layoutDrag.node.offsetHeight || 102;
+                const maxX = Math.max(0, MAP_BASE_WIDTH - w);
+                const maxY = Math.max(0, MAP_BASE_HEIGHT - h);
+                // mapWrapper xoay 180° -> dấu trừ: tay sang phải thì toạ độ X trong map giảm
+                const nx = Math.min(Math.max(layoutDrag.startLeft - dx / scale, 0), maxX);
+                const ny = Math.min(Math.max(layoutDrag.startTop - dy / scale, 0), maxY);
+                layoutDrag.node.style.left = nx + 'px';
+                layoutDrag.node.style.top = ny + 'px';
+                if (layout2Working) layout2Working.tables[layoutDrag.id] = { x: nx, y: ny };
+            }, { passive: true });
+
+            window.addEventListener('pointerup', endLayoutDrag);
+            window.addEventListener('pointercancel', endLayoutDrag);
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && isLayoutEditing) cancelLayoutEdit();
+            });
+        }
+
+        function endLayoutDrag(e) {
+            if (!layoutDrag) return;
+            if (e && e.pointerId !== undefined && e.pointerId !== layoutDrag.pointerId) return;
+            try {
+                layoutDrag.btn.classList.remove('dragging-table');
+                layoutDrag.node.style.zIndex = '';
+            } catch (err) {}
+            layoutDrag = null;
+        }
+
+        function initLayoutStudio() {
+            layoutDefaultPositions = readLayoutDefaults();
+            layout2Saved = loadLayout2Saved();
+            try {
+                activeLayout = localStorage.getItem(LAYOUT_ACTIVE_KEY) === '2' ? 2 : 1;
+            } catch (e) { activeLayout = 1; }
+            applyActiveLayout();
+            updateLayoutControls();
+            initLayoutDrag();
         }
 
         function initData() {
@@ -1794,7 +2614,10 @@
             
             for (let i = 1; i <= TOTAL_TABLES; i++) {
                 if (!tablesData[i]) {
-                    tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '' };
+                    tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '', paidGuests: 0, unpaidGuests: 0 };
+                } else {
+                    // Dữ liệu lưu từ bản cũ chưa có 2 trường đếm khách -> bổ sung cho an toàn
+                    tablesData[i] = normalizeGuestCounts(tablesData[i]);
                 }
             }
         }
@@ -1802,7 +2625,7 @@
         function generateDefaultData() {
             tablesData = {};
             for (let i = 1; i <= TOTAL_TABLES; i++) {
-                tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '' };
+                tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '', paidGuests: 0, unpaidGuests: 0 };
             }
 
             tablesData[2] = { id: 2, status: 'unpaid', items: [{name: 'Cà phê đen đá', price: 22}], total: 22, startTime: Date.now() - 15*60*1000, paymentMethod: 'Tiền mặt', note: 'Mới vào' };
@@ -1811,7 +2634,7 @@
             
             tablesData[4] = { id: 4, status: 'paid', items: [{name: 'Cà phê đen đá', price: 22}, {name: 'Cà phê đen đá', price: 22}], total: 44, startTime: Date.now() - 40*60*1000, paymentMethod: 'Chuyển khoản QR', note: 'Đã CK VietQR' };
             tablesData[17] = { id: 17, status: 'paid', items: [{name: 'Cà phê đen đá', price: 22}], total: 22, startTime: Date.now() - 5*60*1000, paymentMethod: 'Tiền mặt', note: 'Quầy bar' };
-            tablesData[25] = { id: 25, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: 'Vừa đi' };
+            tablesData[25] = { id: 25, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: 'Vừa đi', paidGuests: 0, unpaidGuests: 0 };
         }
 
         function saveData() {
@@ -1852,6 +2675,44 @@
         }
         function newHistoryId() { return 'h' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
         function isCashMethod(m) { return !m || m === 'Tiền mặt'; }
+
+        // ================== SỐ KHÁCH TRONG BÀN ==================
+        // Một bàn có thể có 2 nhóm khách:
+        //   • Đã thanh toán tại QUẦY (order & trả tiền ngay ở quầy) — không còn nợ
+        //   • Chưa thanh toán tại BÀN (order tại bàn, cuối buổi mới thu)
+        // Chỉ đếm số người cho mỗi nhóm để hiện thành ghi chú trên sơ đồ; không chia bill theo món.
+        function guestPaidOf(t) {
+            const n = Number(t && t.paidGuests);
+            return isFinite(n) && n > 0 ? Math.floor(n) : 0;
+        }
+        function guestUnpaidOf(t) {
+            const n = Number(t && t.unpaidGuests);
+            return isFinite(n) && n > 0 ? Math.floor(n) : 0;
+        }
+        function normalizeGuestCounts(t) {
+            if (!t) return t;
+            t.paidGuests = guestPaidOf(t);
+            t.unpaidGuests = guestUnpaidOf(t);
+            return t;
+        }
+
+        // Ghi chú ngắn hiện trên thẻ danh sách: chỉ hiện TỔNG số khách của bàn.
+        function guestNoteHtml(t, compact) {
+            const total = guestPaidOf(t) + guestUnpaidOf(t);
+            if (!total) return '';
+            return `<span class="text-tys-300"><i class="fa-solid fa-users text-[8px] mr-0.5"></i>${total} khách</span>`;
+        }
+
+        // Nhãn số khách NỔI BÊN NGOÀI nút bàn (không nằm trong ô số bàn).
+        // Chỉ hiện TỔNG số khách, không tách quầy/bàn.
+        // dim = true khi bàn đang bị bộ lọc làm mờ, để nhãn mờ theo cho khỏi nổi bật sai.
+        function guestBadgeHtml(t, dim) {
+            const total = guestPaidOf(t) + guestUnpaidOf(t);
+            if (!total) return '';
+            return `<div class="guest-badge${dim ? ' is-dim' : ''}">`
+                 + `<span class="gb-item" title="Tổng ${total} khách"><i class="fa-solid fa-users text-[7px]"></i>${total}</span>`
+                 + `</div>`;
+        }
 
         function initHistory() {
             let saved = null, hadSaved = false;
@@ -2051,7 +2912,9 @@
                     paymentMethod: t.paymentMethod || 'Tiền mặt',
                     note: t.note || '',
                     startTime: t.startTime || null,
-                    minutes: t.startTime ? Math.max(0, Math.floor((now - t.startTime) / 60000)) : null
+                    minutes: t.startTime ? Math.max(0, Math.floor((now - t.startTime) / 60000)) : null,
+                    paidGuests: guestPaidOf(t),
+                    unpaidGuests: guestUnpaidOf(t)
                 }));
         }
         function fmtDuration(min) {
@@ -2193,10 +3056,14 @@
                 const badge = isPaid ? C.green : C.red;
                 const border = isPaid ? C.greenLine : C.redLine;
                 const cash = isCashMethod(u.paymentMethod);
+                const gp = Number(u.paidGuests) || 0, gu = Number(u.unpaidGuests) || 0;
+                const guestTotal = gp + gu;
+                const guestLine = guestTotal ? `<span style="font-weight:800">${guestTotal} khách</span>` : '';
                 return `<div style="display:flex;align-items:center;gap:10px;background:${C.card};border:1px solid ${border};border-radius:12px;padding:8px 10px;margin-top:7px">
                     <div style="width:38px;height:38px;border-radius:10px;background:${badge};color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0">B${u.tableId}</div>
                     <div style="min-width:0;flex:1">
                         <div style="font-size:12px;font-weight:700;line-height:1.35">${groupedItemsText(u.items)}</div>
+                        ${guestLine ? `<div style="font-size:10px;margin-top:2px">${guestLine}</div>` : ''}
                         <div style="font-size:10px;margin-top:2px;color:${long ? C.redD : C.muted};font-weight:${long ? 800 : 600}">${u.startTime ? 'Vào ' + fmtTime(u.startTime) + ' · ngồi ' + fmtDuration(u.minutes) : 'Chưa rõ giờ vào'}${u.note ? ' · ' + escapeHtml(u.note) : ''}</div>
                     </div>
                     ${isPaid
@@ -2539,6 +3406,7 @@
 
         function attachTableGestureEvents(btnElement, tableId) {
             btnElement.addEventListener('touchstart', (e) => {
+                if (isLayoutEditing) return;   // đang kéo thả vị trí bàn
                 const data = tablesData[tableId];
                 longPressFired = false;
                 tapMoved = e.touches.length > 1;   // 2 ngón (zoom) → không phải chạm
@@ -2594,6 +3462,14 @@
                     touchStartTimer = null;
                 }
 
+                if (isLayoutEditing) {   // chế độ kéo thả: không mở bàn, không thu tiền nhanh
+                    tapMoved = true;
+                    lastTapTimestamp = 0;
+                    lastTapTableId = null;
+                    if (singleTapTimeout) { clearTimeout(singleTapTimeout); singleTapTimeout = null; }
+                    return;
+                }
+
                 if (longPressFired) {
                     e.preventDefault();
                     return;
@@ -2629,6 +3505,7 @@
 
             // PC: nhấn chuột trái để mở bàn (bỏ qua click giả sinh ra sau thao tác chạm trên điện thoại)
             btnElement.addEventListener('click', (e) => {
+                if (isLayoutEditing) return;   // đang chỉnh sửa sơ đồ: click dùng để chọn/kéo bàn
                 if (Date.now() - lastTouchEndAt < 800) return;
                 if (singleTapTimeout) clearTimeout(singleTapTimeout);
                 singleTapTimeout = setTimeout(() => {
@@ -2639,6 +3516,7 @@
             btnElement.addEventListener('dblclick', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                if (isLayoutEditing) return;
                 const data = tablesData[tableId];
                 if (data && (data.status === 'unpaid' || data.status === 'paid')) {
                     if (singleTapTimeout) clearTimeout(singleTapTimeout);
@@ -2659,6 +3537,8 @@
                 startTime: table.startTime,
                 paymentMethod: table.paymentMethod,
                 note: table.note,
+                paidGuests: guestPaidOf(table),
+                unpaidGuests: guestUnpaidOf(table),
                 histId: table.histId || null
             };
             beginHistoryUndo();
@@ -2687,6 +3567,8 @@
                 table.startTime = null;
                 table.note = '';
                 table.histId = null;
+                table.paidGuests = 0;
+                table.unpaidGuests = 0;
                 messageHtml = `Bàn ${tableId} -> Đã dọn xong (<strong>Trống</strong>) (${gestureType})`;
                 flashClass = 'quick-empty-success-flash';
                 toastConfig = {
@@ -2768,6 +3650,8 @@
                     startTime: lastQuickPayState.startTime,
                     paymentMethod: lastQuickPayState.paymentMethod,
                     note: lastQuickPayState.note,
+                    paidGuests: lastQuickPayState.paidGuests || 0,
+                    unpaidGuests: lastQuickPayState.unpaidGuests || 0,
                     histId: lastQuickPayState.histId || null
                 };
                 renderTableNode(src.id);
@@ -2857,16 +3741,18 @@
 
             const chipHtml = billChip(i, data);
             const totalHtml = data.total > 0 ? `<span class="text-[13px] font-bold text-tys-400">${data.total}k</span>` : '';
+            const guestBadge = guestBadgeHtml(data, !isFiltered);
 
             // Dấu vân tay: đủ mọi thứ ảnh hưởng tới những gì người dùng nhìn thấy trong ô bàn.
             const sig = bgStyle + '\u0001' + numColor + '\u0001' + badgeHTML + '\u0001' + opacityClass
                       + '\u0001' + selectedClass + '\u0001' + chipHtml + '\u0001' + totalHtml
-                      + '\u0001' + timerText + '\u0001' + mapDesc;
+                      + '\u0001' + timerText + '\u0001' + mapDesc + '\u0001' + guestBadge;
             if (tableRenderSig.get(i) === sig && container.firstElementChild) return;
             tableRenderSig.set(i, sig);
 
             // Nút bấm từ 68px tăng thành 102px
             container.innerHTML = `
+                ${guestBadge}
                 <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} ${selectedClass} flex flex-col items-center justify-center p-1.5 transition-all">
                     ${badgeHTML}${chipHtml}
                     <span class="text-[10px] font-bold uppercase tracking-[0.18em] leading-none opacity-60 ${numColor}">Bàn</span>
@@ -2940,6 +3826,7 @@
             const sig = currentFilter + '\u0002' + query + '\u0002' + visibleTables.map(v =>
                 v.i + ':' + v.data.status + ':' + (v.data.total | 0) + ':' + v.elapsedMins + ':' +
                 (v.data.startTime || 0) + ':' + (v.data.note || '') + ':' +
+                (v.data.paidGuests || 0) + ':' + (v.data.unpaidGuests || 0) + ':' +
                 (v.data.items || []).map(x => x.name + (x.note || '')).join(',')
             ).join('|');
 
@@ -2962,6 +3849,7 @@
                 if (data.status === 'paid') statusBadge = `<span class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-sage-950 text-sage-300 border border-sage-700">Đã thanh toán</span>`;
 
                 const cardDesc = descItems(data.items);
+                const cardGuests = guestNoteHtml(data);
 
                 htmlParts.push(`
                     <div class="bg-espresso-900 p-3.5 rounded-xl border border-tys-900 flex flex-col justify-between hover:border-tys-700 transition cursor-pointer select-none active:scale-[0.98]">
@@ -2972,6 +3860,7 @@
                         </div>
                         <div class="text-xs text-stone-400 space-y-1">
                             <div class="text-sm sm:text-xs"><i class="fa-solid fa-coins text-tys-500 mr-1"></i> Tổng: <b class="text-tys-200 font-extrabold">${data.total * 1000}đ</b></div>
+                            ${cardGuests ? `<div class="text-[11px] font-bold flex items-center gap-1"><i class="fa-solid fa-users text-tys-500 mr-1"></i>${cardGuests}</div>` : ''}
                             ${data.startTime ? `<div class="text-sm sm:text-xs font-medium"><i class="fa-regular fa-clock mr-1"></i> Thời gian ngồi: ${elapsedMins} phút</div>` : ''}
                             ${cardDesc.length ? `<div class="text-stone-300 font-medium leading-snug break-words"><i class="fa-solid fa-mug-hot text-tys-500 mr-1"></i>${groupedItemsText(cardDesc)}</div>` : ''}
                             ${data.note ? `<div class="text-stone-400 leading-snug break-words"><i class="fa-regular fa-note-sticky mr-1"></i>${escapeHtml(data.note)}</div>` : ''}
@@ -3056,6 +3945,11 @@
             const btnToggleMobile = document.getElementById('btnToggleViewMobile');
             const fab = document.getElementById('fabRecenter');
 
+            if (isLayoutEditing && mode === 'list') {
+                ackToast('Đang chỉnh sửa sơ đồ — bấm Lưu hoặc Hủy trước.', 'info', 3000);
+                return;
+            }
+
             if (mode === 'map') {
                 mapView.classList.remove('hidden'); listView.classList.add('hidden');
                 btnViewMap.className = "p-1.5 sm:p-2 rounded-lg text-xs font-bold bg-tys-500 text-ink";
@@ -3076,6 +3970,7 @@
         }
 
         function toggleViewMobile() {
+            if (isLayoutEditing) { ackToast('Đang chỉnh sửa sơ đồ — bấm Lưu hoặc Hủy trước.', 'info', 3000); return; }
             const mapView = document.getElementById('mapView');
             const isMapHidden = mapView && mapView.classList.contains('hidden');
             toggleView(isMapHidden ? 'map' : 'list');
@@ -3103,6 +3998,10 @@
             selectedStatusInModal = data.status || 'empty';
             modalItems = (data.items || []).map(i => ({ ...i }));   // clone: sửa note chưa lưu thì không ảnh hưởng dữ liệu gốc
             editingNoteIdx = null;
+
+            modalGuestsPaid = guestPaidOf(data);
+            modalGuestsUnpaid = guestUnpaidOf(data);
+            renderGuestCounters();
 
             renderBestSellerGrid();
             updateModalStatusButtons();
@@ -3293,15 +4192,43 @@
             });
         }
 
+        // ---- TỰ ĐẾM KHÁCH THEO SỐ NƯỚC ----
+        // Mọi món thêm vào modal đều là order TẠI BÀN và CHƯA THANH TOÁN (mặc định của quán).
+        // Mỗi ly nước = 1 khách, nên số khách "chưa trả tại bàn" không bao giờ thấp hơn số nước đã gọi.
+        // Số khách "đã trả tại quầy" chỉ nhập tay bằng nút + / − trong khối Số khách.
+        function countTableDrinks(items) {
+            let n = 0;
+            (items || []).forEach(it => {
+                if (!it || /^Tiền ghi nhanh/.test(it.name || '')) return;   // dòng tiền không phải nước
+                n++;
+            });
+            return n;
+        }
+
+        function syncGuestsFromDrinks() {
+            const drinks = countTableDrinks(modalItems);
+            if (modalGuestsUnpaid < drinks) {
+                modalGuestsUnpaid = drinks;
+                renderGuestCounters();
+            }
+        }
+
         function addPresetItem(name, price) {
             modalItems.push({ name, price });
             if (selectedStatusInModal === 'empty') { selectedStatusInModal = 'unpaid'; updateModalStatusButtons(); }
+            syncGuestsFromDrinks();     // gọi thêm nước -> tự nâng số khách chưa trả tại bàn
             renderModalOrderList();
         }
 
         function removeModalItem(index) {
             editingNoteIdx = null;
+            const it = modalItems[index];
             modalItems.splice(index, 1);
+            // Bỏ nước thì trả lại số khách đã tự cộng cho ly đó (không xuống dưới 0)
+            if (it && !/^Tiền ghi nhanh/.test(it.name || '')) {
+                modalGuestsUnpaid = Math.max(0, modalGuestsUnpaid - 1);
+                renderGuestCounters();
+            }
             renderModalOrderList();
         }
 
@@ -3374,39 +4301,658 @@
             saveModalChanges();
         }
 
-        // ================== ĐĂNG NHẬP NHÂN VIÊN ==================
-        // Chọn sẵn 1 trong các tên dưới đây (nhớ trên từng máy). Tên được thêm vào mọi tin báo thu ngân (Telegram + ntfy).
-        const STAFF_LIST = ['Thành', 'Tú', 'Anh', 'Mỹ', 'Sơn', 'Phương', 'Bảo'];
-        const STAFF_KEY = 'tys_staff';
-        var currentStaff = '';
+        // ---- Số khách trong modal: đã trả tại quầy / chưa trả tại bàn ----
+        let modalGuestsPaid = 0;
+        let modalGuestsUnpaid = 0;
+        const GUEST_MAX = 99;
+
+        function renderGuestCounters() {
+            const pEl = document.getElementById('guestPaidDisplay');
+            const uEl = document.getElementById('guestUnpaidDisplay');
+            const tEl = document.getElementById('guestTotalDisplay');
+            if (pEl) pEl.textContent = modalGuestsPaid;
+            if (uEl) uEl.textContent = modalGuestsUnpaid;
+            if (tEl) tEl.textContent = (modalGuestsPaid + modalGuestsUnpaid) + ' khách';
+        }
+
+        function changeGuestCount(kind, delta) {
+            if (kind === 'paid') {
+                modalGuestsPaid = Math.min(GUEST_MAX, Math.max(0, modalGuestsPaid + delta));
+            } else {
+                modalGuestsUnpaid = Math.min(GUEST_MAX, Math.max(0, modalGuestsUnpaid + delta));
+            }
+            // Bàn đang Trống mà bắt đầu nhập khách -> chuyển sang "Đang ngồi" cho khớp thực tế
+            if (selectedStatusInModal === 'empty' && (modalGuestsPaid + modalGuestsUnpaid) > 0) {
+                selectedStatusInModal = 'unpaid';
+                updateModalStatusButtons();
+            }
+            renderGuestCounters();
+            if (navigator.vibrate) { try { navigator.vibrate(10); } catch (e) {} }
+        }
+
+        // ================== ĐĂNG NHẬP NHÂN VIÊN — MỖI NGƯỜI MỘT TÀI KHOẢN ==================
+        // Trước đây chỉ chọn tên trong danh sách nên ai cũng mạo danh người khác được.
+        // Nay mỗi nhân viên có tài khoản + mật khẩu riêng; mật khẩu KHÔNG lưu dạng đọc được:
+        // lưu salt ngẫu nhiên + SHA-256(salt + tên đăng nhập + mật khẩu). Máy quán chỉ chứa hash.
+        //
+        // Lưu ý bảo mật (cần biết): đây là ứng dụng chạy hoàn toàn trên trình duyệt của quán, nên
+        // người có quyền mở DevTools trên CHÍNH máy đó về lý thuyết vẫn sửa được dữ liệu cục bộ.
+        // Lớp đăng nhập này nhằm (1) chặn nhân viên mạo danh nhau, (2) biết chính xác ai làm thao tác
+        // nào trong tin báo thu ngân, (3) buộc mỗi người dùng đúng tài khoản của mình.
+        // Muốn chống cả người rành kỹ thuật tại máy thì phải xác thực phía Worker (JWT) — ngoài phạm vi trang này.
+
+        const ACCOUNTS_KEY = 'tys_accounts_v1';
+        const SESSION_KEY = 'tys_session_v1';
+        const LOCK_KEY = 'tys_login_lock_v1';
+        const PASS_MIN = 6;
+        const SESSION_HOURS = 12;        // phiên đăng nhập dài 12 giờ, sau đó phải đăng nhập lại
+        const MAX_FAILS = 5;             // sai 5 lần liên tiếp thì tạm khoá 60 giây
+        const LOCK_SECONDS = 60;
+
+        var currentStaff = '';           // TÊN HIỂN THỊ (dùng cho thông báo) — giữ nguyên tên biến cũ
+        var currentUser = null;          // bản ghi tài khoản đang đăng nhập (hoặc null)
+        var authAccounts = [];           // danh sách tài khoản
+
+        // ---------- Tiện ích bảo mật ----------
+        function randomSalt() {
+            try {
+                const a = new Uint8Array(16);
+                (window.crypto || window.msCrypto).getRandomValues(a);
+                return Array.from(a).map(b => b.toString(16).padStart(2, '0')).join('');
+            } catch (e) {
+                // Trình duyệt quá cũ: vẫn tạo được salt (không mạnh bằng crypto nhưng không chặn đăng nhập)
+                let s = '';
+                for (let i = 0; i < 32; i++) s += Math.floor(Math.random() * 16).toString(16);
+                return s;
+            }
+        }
+
+        // SHA-256 thuần JavaScript — cần thiết vì crypto.subtle CHỈ có trên HTTPS hoặc localhost.
+// Quán thường mở trang qua http://192.168.x.x nên crypto.subtle KHÔNG tồn tại; nếu phụ thuộc vào nó
+// thì mật khẩu mặc định sẽ không bao giờ đăng nhập được. Bản này đã đối chiếu khớp 100% với Node crypto.
+        const SHA256_K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+            0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+            0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+            0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+            0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+            0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+            0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+            0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+
+        function sha256Hex(str) {
+            // Chuyển chuỗi sang UTF-8 (xử lý cả tiếng Việt có dấu và emoji)
+            const bytes = [];
+            const s = String(str);
+            for (let i = 0; i < s.length; i++) {
+                let c = s.charCodeAt(i);
+                if (c < 0x80) bytes.push(c);
+                else if (c < 0x800) bytes.push(0xc0 | (c >> 6), 0x80 | (c & 63));
+                else if (c >= 0xd800 && c <= 0xdbff) {
+                    const cp = 0x10000 + ((c - 0xd800) << 10) + (s.charCodeAt(++i) - 0xdc00);
+                    bytes.push(0xf0 | (cp >> 18), 0x80 | ((cp >> 12) & 63), 0x80 | ((cp >> 6) & 63), 0x80 | (cp & 63));
+                } else bytes.push(0xe0 | (c >> 12), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
+            }
+
+            const len = bytes.length;
+            const lo = (len * 8) >>> 0, hi = Math.floor(len / 536870912);
+            const total = (((len + 8) >> 6) + 1) << 6;
+            const buf = new Uint8Array(total);
+            for (let i = 0; i < len; i++) buf[i] = bytes[i];
+            buf[len] = 0x80;
+            buf[total - 8] = (hi >>> 24) & 255; buf[total - 7] = (hi >>> 16) & 255;
+            buf[total - 6] = (hi >>> 8) & 255;  buf[total - 5] = hi & 255;
+            buf[total - 4] = (lo >>> 24) & 255; buf[total - 3] = (lo >>> 16) & 255;
+            buf[total - 2] = (lo >>> 8) & 255;  buf[total - 1] = lo & 255;
+
+            let H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+            const w = new Array(64);
+            const rr = (x, n) => (x >>> n) | (x << (32 - n));
+
+            for (let off = 0; off < total; off += 64) {
+                for (let i = 0; i < 16; i++) {
+                    const p = off + i * 4;
+                    w[i] = (buf[p] << 24) | (buf[p + 1] << 16) | (buf[p + 2] << 8) | buf[p + 3];
+                }
+                for (let i = 16; i < 64; i++) {
+                    const s0 = rr(w[i-15], 7) ^ rr(w[i-15], 18) ^ (w[i-15] >>> 3);
+                    const s1 = rr(w[i-2], 17) ^ rr(w[i-2], 19) ^ (w[i-2] >>> 10);
+                    w[i] = (w[i-16] + s0 + w[i-7] + s1) | 0;
+                }
+                let a = H[0], b = H[1], c = H[2], d = H[3], e = H[4], f = H[5], g = H[6], h = H[7];
+                for (let i = 0; i < 64; i++) {
+                    const S1 = rr(e, 6) ^ rr(e, 11) ^ rr(e, 25);
+                    const ch = (e & f) ^ (~e & g);
+                    const t1 = (h + S1 + ch + SHA256_K[i] + w[i]) | 0;
+                    const S0 = rr(a, 2) ^ rr(a, 13) ^ rr(a, 22);
+                    const mj = (a & b) ^ (a & c) ^ (b & c);
+                    const t2 = (S0 + mj) | 0;
+                    h = g; g = f; f = e; e = (d + t1) | 0;
+                    d = c; c = b; b = a; a = (t1 + t2) | 0;
+                }
+                H[0] = (H[0] + a) | 0; H[1] = (H[1] + b) | 0; H[2] = (H[2] + c) | 0; H[3] = (H[3] + d) | 0;
+                H[4] = (H[4] + e) | 0; H[5] = (H[5] + f) | 0; H[6] = (H[6] + g) | 0; H[7] = (H[7] + h) | 0;
+            }
+            let out = '';
+            for (let i = 0; i < 8; i++) out += (H[i] >>> 0).toString(16).padStart(8, '0');
+            return out;
+        }
+
+        // SHA-256(salt + '|' + user + '|' + pass) — cùng công thức với lúc tạo tài khoản.
+        function hashPass(user, pass, salt) {
+            return Promise.resolve(sha256Hex(salt + '|' + String(user).toLowerCase() + '|' + pass));
+        }
+        // So sánh chuỗi theo thời gian hằng số (chống phân tích thời gian)
+        function safeEqual(a, b) {
+            a = String(a || ''); b = String(b || '');
+            if (a.length !== b.length) return false;
+            let diff = 0;
+            for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+            return diff === 0;
+        }
+
+        // ---------- Đọc / ghi ----------
+        // ---------- 7 TÀI KHOẢN CỐ ĐỊNH: 1 quản lý + 6 nhân viên ----------
+        // Mật khẩu KHÔNG lưu dạng đọc được: chỉ lưu salt + SHA-256(salt|user|pass).
+        // Tài khoản cố định (không tạo thêm): quản lý cấp lại mật khẩu khi nhân viên quên.
+        //   quanly / quanly123   (quản lý)
+        //   thanh  / thanh123    tu  / tu123      anh / anh123
+        //   my     / my123       son / son123     phuong / phuong123
+        const DEFAULT_ACCOUNTS = [
+            { user: 'quanly', name: 'Quản lý', salt: '0ba724f6322290b0d4de7f09ee1e6f2e', hash: 'a8b0d58d2d52e4c8cd366ec9327466016168d66cca0b82160712b52d4339b955', admin: true  },
+            { user: 'thanh',  name: 'Thành',   salt: '8a88a525a178e52d7959cb8eeb18ec92', hash: '591c8ce32764890e437f229df47465cb3cf3bde1dedfff96d9c892c3e0f26ef4', admin: false },
+            { user: 'tu',     name: 'Tú',      salt: 'eca15062e31f040a0894f7781e6be259', hash: '552457dfec6e32f66108fbabef35b9777735dccc3279d23e5c92985093c8de86', admin: false },
+            { user: 'anh',    name: 'Anh',     salt: '0fa6f191fb4e187295e1674f6fc2c452', hash: '3e2d7171fea864ef0632c4de545dd63218a3064de5a82500a3961d606431811b', admin: false },
+            { user: 'my',     name: 'Mỹ',      salt: '9ce4eab60a2a95a3dd55b00760230826', hash: 'e4a9c89b47e803eb8cfdd949f7af91b332cf9af2453bf21d2d517a264e6af641', admin: false },
+            { user: 'son',    name: 'Sơn',     salt: '74735a98e8fadecc19ff35a6f6e2e3cd', hash: '24a216447330c7436f52d64e987414d2d1fa81270871ef2fdfd9276e25f6e49a', admin: false },
+            { user: 'phuong', name: 'Phương',  salt: '77fca1946aae04d4217379e3b0f76958', hash: 'b154da9e2eaaa1a10b51b2db587c42165a54e6290639d90c8d54f7a22ab4fc40', admin: false }
+        ];
+
+        function loadAccounts() {
+            let saved = null;
+            try { saved = JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || 'null'); } catch (e) {}
+
+            // Danh sách cố định; chỉ giữ lại mật khẩu đã đổi / trạng thái khoá đã lưu.
+            const savedList = Array.isArray(saved) ? saved : [];
+            const list = DEFAULT_ACCOUNTS.map(function (d) {
+                const s = savedList.find(function (x) { return x && x.user === d.user; });
+                const acc = {
+                    user: d.user,
+                    name: d.name,
+                    salt: (s && s.salt) || d.salt,
+                    hash: (s && s.hash) || d.hash,
+                    admin: !!d.admin,
+                    active: s ? s.active !== false : true,
+                    createdAt: 0
+                };
+                if (s && s.passChangedAt) acc.passChangedAt = s.passChangedAt;
+                return acc;
+            });
+
+            // Chỉ nhận tài khoản thuộc danh sách cố định
+            authAccounts = list;
+            return list;
+        }
+
+        function saveAccounts() {
+            try { localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(authAccounts)); } catch (e) {}
+        }
+
+        function normalizeUser(u) {
+            return String(u || '').trim().toLowerCase().replace(/\s+/g, '').slice(0, 20);
+        }
+        function findAccount(user) {
+            const u = normalizeUser(user);
+            return authAccounts.find(function (a) { return a.user === u; }) || null;
+        }
+        function adminCount() {
+            return authAccounts.filter(function (a) { return a.admin && a.active; }).length;
+        }
+
+        // ---------- Phiên đăng nhập ----------
+        function saveSession(acc) {
+            try {
+                localStorage.setItem(SESSION_KEY, JSON.stringify({
+                    user: acc.user, at: Date.now(), exp: Date.now() + SESSION_HOURS * 3600000, sig: acc.hash.slice(0, 12)
+                }));
+            } catch (e) {}
+        }
+        function clearSession() { try { localStorage.removeItem(SESSION_KEY); } catch (e) {} }
+
+        function restoreSession() {
+            let s = null;
+            try { s = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (e) {}
+            if (!s || !s.user) return null;
+            if (!s.exp || Date.now() > s.exp) { clearSession(); return null; }
+            const acc = findAccount(s.user);
+            if (!acc || !acc.active) { clearSession(); return null; }
+            // Chữ ký đổi khi mật khẩu đổi -> phiên cũ tự mất hiệu lực
+            if (acc.hash.slice(0, 12) !== s.sig) { clearSession(); return null; }
+            return acc;
+        }
+
+        // ---------- Chống dò mật khẩu ----------
+        function readLock() {
+            try { return JSON.parse(localStorage.getItem(LOCK_KEY) || 'null') || { n: 0, until: 0 }; }
+            catch (e) { return { n: 0, until: 0 }; }
+        }
+        function writeLock(v) { try { localStorage.setItem(LOCK_KEY, JSON.stringify(v)); } catch (e) {} }
+        function lockRemaining() {
+            const l = readLock();
+            return l.until && l.until > Date.now() ? Math.ceil((l.until - Date.now()) / 1000) : 0;
+        }
+
+        // ---------- Giao diện ----------
         function staffRenderChip() {
             const el = document.getElementById('staffChip');
-            if (el) el.innerHTML = '<i class="fa-solid fa-user"></i><span class="truncate">' + (currentStaff || 'Chưa đăng nhập') + '</span>';
+            if (!el) return;
+            if (currentStaff) {
+                el.classList.add('is-logged-in');
+                el.innerHTML = '<span class="w-4 h-4 rounded-md bg-tys-500 text-ink flex items-center justify-center text-[9px] font-extrabold shrink-0">'
+                    + escapeHtml(currentStaff.trim().charAt(0).toUpperCase()) + '</span><span class="truncate">' + escapeHtml(currentStaff) + '</span>';
+                el.setAttribute('aria-label', 'Tài khoản: ' + currentStaff);
+            } else {
+                el.classList.remove('is-logged-in');
+                el.innerHTML = '<i class="fa-solid fa-user"></i><span class="truncate">Đăng nhập</span>';
+                el.setAttribute('aria-label', 'Đăng nhập');
+            }
+            syncAuthMenu();
         }
+
+        // Hiện/ẩn các mục menu theo quyền của người đang đăng nhập
+        function syncAuthMenu() {
+            const logged = !!(currentUser && currentStaff);
+            const isAdmin = !!(currentUser && currentUser.admin);
+            const show = function (id, on, display) {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.classList.toggle('hidden', !on);
+                if (on && display) el.classList.add(display);
+                if (!on && display) el.classList.remove(display);
+            };
+            show('btnAccounts', logged && isAdmin, 'flex');
+            show('btnChangePass', logged, 'flex');
+            show('btnLogout', logged, 'flex');
+            show('menuAuthDivider', logged);
+            const badge = document.getElementById('accountsBadge');
+            if (badge) badge.textContent = logged && isAdmin ? String(authAccounts.length) : '';
+        }
+
+        function authShowError(msg, elId, textId) {
+            const box = document.getElementById(elId || 'loginError');
+            const txt = document.getElementById(textId || 'loginErrorText');
+            if (txt) txt.textContent = msg;
+            if (box) { box.classList.remove('hidden'); box.classList.add('flex'); }
+            const card = document.getElementById('authCard');
+            if (card) { card.classList.remove('auth-shake'); void card.offsetWidth; card.classList.add('auth-shake'); }
+            if (navigator.vibrate) { try { navigator.vibrate([40, 60, 40]); } catch (e) {} }
+        }
+        function clearAuthError() {
+            const b = document.getElementById('loginError');
+            if (b) { b.classList.add('hidden'); b.classList.remove('flex'); }
+            ['loginUser', 'loginPass'].forEach(function (id) {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('has-error');
+            });
+        }
+        function clearChgError() {
+            const b = document.getElementById('chgPassError');
+            if (b) { b.classList.add('hidden'); b.classList.remove('flex'); }
+            ['chgPassOld', 'chgPassNew', 'chgPassNew2'].forEach(function (id) {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('has-error');
+            });
+        }
+function togglePassVisibility(inputId, btn) {
+            const el = document.getElementById(inputId);
+            if (!el) return;
+            const show = el.type === 'password';
+            el.type = show ? 'text' : 'password';
+            const icon = btn && btn.querySelector('i');
+            if (icon) icon.className = show ? 'fa-solid fa-eye-slash text-xs' : 'fa-solid fa-eye text-xs';
+            if (btn) btn.setAttribute('aria-label', show ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+        }
+
+        function showForgotHelp() {
+            authShowError('Mật khẩu do quản lý cấp. Hãy nhờ quản lý vào "Tài khoản nhân viên" để cấp lại mật khẩu mới.', 'loginError', 'loginErrorText');
+        }
+
+        // ---------- Mở / đóng trang đăng nhập ----------
         function openStaffLogin() {
-            const g = document.getElementById('staffGrid');
-            const last = STAFF_LIST.length - 1, odd = STAFF_LIST.length % 2 === 1;
-            g.innerHTML = STAFF_LIST.map(function (n, i) {
-                const on = n === currentStaff;
-                return '<button type="button" onclick="pickStaff(' + i + ')" class="py-3 rounded-xl border text-sm font-extrabold active:scale-95 transition '
-                    + (odd && i === last ? 'col-span-2 ' : '')
-                    + (on ? 'bg-tys-500 text-ink border-tys-600' : 'bg-espresso-950/70 text-tys-300 border-tys-900') + '">' + n + '</button>';
+            loadAccounts();
+            const login = document.getElementById('loginForm');
+            const overlay = document.getElementById('staffLogin');
+
+            if (login) login.classList.remove('hidden');
+            const sub = document.getElementById('authSubtitle');
+            if (sub) sub.textContent = 'Đăng nhập để bắt đầu ca làm';
+
+            const uEl = document.getElementById('loginUser');
+            if (uEl) uEl.value = '';
+            const pEl = document.getElementById('loginPass');
+            if (pEl) pEl.value = '';
+
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            clearAuthError();
+            updateLoginLockUi();
+            setTimeout(function () { if (uEl) uEl.focus(); }, 120);
+        }
+
+        function closeStaffLogin() {
+            // Chỉ cho đóng khi đã đăng nhập
+            if (!currentUser) return;
+            const overlay = document.getElementById('staffLogin');
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+        }
+
+        function updateLoginLockUi() {
+            const left = lockRemaining();
+            const btn = document.getElementById('loginSubmitBtn');
+            const txt = document.getElementById('loginSubmitText');
+            if (!btn || !txt) return;
+            if (left > 0) {
+                btn.disabled = true;
+                txt.textContent = 'Thử lại sau ' + left + 's';
+                setTimeout(updateLoginLockUi, 1000);
+            } else {
+                btn.disabled = false;
+                txt.textContent = 'Đăng nhập';
+            }
+        }
+
+        // ---------- Đăng nhập ----------
+        async function submitLogin(ev) {
+            if (ev) ev.preventDefault();
+            clearAuthError();
+
+            const left = lockRemaining();
+            if (left > 0) {
+                authShowError('Đăng nhập sai quá nhiều lần. Vui lòng chờ ' + left + ' giây rồi thử lại.');
+                return false;
+            }
+
+            const userEl = document.getElementById('loginUser');
+            const passEl = document.getElementById('loginPass');
+            const user = normalizeUser(userEl.value);
+            const pass = passEl.value;
+
+            if (!user) { userEl.classList.add('has-error'); authShowError('Vui lòng nhập tài khoản.'); return false; }
+            if (!pass) { passEl.classList.add('has-error'); authShowError('Vui lòng nhập mật khẩu.'); return false; }
+
+            const btn = document.getElementById('loginSubmitBtn');
+            const txt = document.getElementById('loginSubmitText');
+            btn.disabled = true; txt.textContent = 'Đang kiểm tra…';
+
+            try {
+                const acc = findAccount(user);
+                // Luôn băm dù tài khoản có tồn tại hay không (tránh lộ tài khoản nào có thật qua thời gian phản hồi)
+                const salt = acc ? (acc.salt || '') : 'x';
+                const h = await hashPass(user, pass, salt);
+
+                const fail = function (msg) {
+                    const l = readLock();
+                    l.n = (l.n || 0) + 1;
+                    if (l.n >= MAX_FAILS) { l.until = Date.now() + LOCK_SECONDS * 1000; l.n = 0; }
+                    writeLock(l);
+                    userEl.classList.add('has-error');
+                    passEl.classList.add('has-error');
+                    authShowError(msg);
+                    passEl.value = '';
+                    passEl.focus();
+                    btn.disabled = false; txt.textContent = 'Đăng nhập';
+                    updateLoginLockUi();
+                    return false;
+                };
+
+                if (!acc) return fail('Tài khoản hoặc mật khẩu không đúng.');
+                if (!acc.active) return fail('Tài khoản này đã bị khoá. Liên hệ quản lý.');
+                if (!acc.hash) {
+                    return fail('Tài khoản chưa có mật khẩu. Nhờ quản lý cấp lại trong mục "Tài khoản".');
+                }
+                if (!safeEqual(h, acc.hash)) return fail('Tài khoản hoặc mật khẩu không đúng.');
+
+                // Thành công
+                writeLock({ n: 0, until: 0 });
+                currentUser = acc;
+                currentStaff = acc.name;
+                saveSession(acc);
+                passEl.value = '';
+                staffRenderChip();
+                closeStaffLogin();
+                ackToast('👋 Xin chào ' + acc.name + '. Ca làm đã bắt đầu.', 'ok', 3000);
+                return false;
+            } finally {
+                if (btn) { btn.disabled = false; if (txt) txt.textContent = 'Đăng nhập'; }
+                updateLoginLockUi();
+            }
+        }
+
+        // ---------- Đăng xuất ----------
+        function logoutStaff() {
+            if (!currentUser) return;
+            const name = currentStaff;
+            currentUser = null;
+            currentStaff = '';
+            clearSession();
+            staffRenderChip();
+            closeMoreMenuIfOpen();
+            closeMyAccount();
+            // Đóng các cửa sổ đang mở để trang đăng nhập không bị che
+            try { closeChangePass(); } catch (e) {}
+            try { closeAccounts(); } catch (e) {}
+            try { closeModal(); } catch (e) {}
+            openStaffLogin();
+            ackToast('Đã đăng xuất ' + (name || '') + '.', 'info', 2500);
+        }
+        function closeMoreMenuIfOpen() {
+            try { closeMoreMenu(); } catch (e) {}
+        }
+
+        // ---------- Tài khoản của tôi ----------
+        function openMyAccount() {
+            if (!currentUser) { openStaffLogin(); return; }
+            const nameEl = document.getElementById('myAccName');
+            const userEl = document.getElementById('myAccUser');
+            const avEl = document.getElementById('myAccAvatar');
+            const roleEl = document.getElementById('myAccRole');
+            const mgrEl = document.getElementById('myAccManageBtn');
+            if (nameEl) nameEl.textContent = currentUser.name;
+            if (userEl) userEl.textContent = '@' + currentUser.user;
+            if (avEl) avEl.textContent = (currentUser.name || '?').trim().charAt(0).toUpperCase();
+            if (roleEl) {
+                roleEl.textContent = currentUser.admin ? 'Quản lý' : 'Nhân viên';
+                roleEl.className = currentUser.admin
+                    ? 'ml-auto px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-tys-500/20 text-tys-200 border border-tys-600 shrink-0'
+                    : 'ml-auto px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-espresso-800 text-stone-400 border border-tys-900 shrink-0';
+            }
+            if (mgrEl) {
+                mgrEl.classList.toggle('hidden', !currentUser.admin);
+                if (currentUser.admin) mgrEl.classList.add('flex');
+            }
+            const m = document.getElementById('myAccountModal');
+            m.classList.remove('hidden'); m.classList.add('flex');
+            closeMoreMenuIfOpen();
+        }
+        function closeMyAccount() {
+            const m = document.getElementById('myAccountModal');
+            m.classList.add('hidden'); m.classList.remove('flex');
+        }
+
+        // Bấm vào tên trên header: đã đăng nhập thì mở "Tài khoản của tôi", chưa thì mở trang đăng nhập
+        function onStaffChipClick() {
+            if (currentUser) openMyAccount();
+            else openStaffLogin();
+        }
+
+        // ---------- Đổi mật khẩu ----------
+        function openChangePass() {
+            if (!currentUser) { openStaffLogin(); return; }
+            const el = document.getElementById('chgPassUser');
+            if (el) el.textContent = currentUser.name + ' (' + currentUser.user + ')';
+            ['chgPassOld', 'chgPassNew', 'chgPassNew2'].forEach(function (id) {
+                const i = document.getElementById(id); if (i) i.value = '';
+            });
+            clearChgError();
+            const m = document.getElementById('changePassModal');
+            m.classList.remove('hidden'); m.classList.add('flex');
+            setTimeout(function () { const i = document.getElementById('chgPassOld'); if (i) i.focus(); }, 100);
+        }
+        function closeChangePass() {
+            const m = document.getElementById('changePassModal');
+            m.classList.add('hidden'); m.classList.remove('flex');
+        }
+        function chgError(msg, el) {
+            if (el) el.classList.add('has-error');
+            const box = document.getElementById('chgPassError');
+            const txt = document.getElementById('chgPassErrorText');
+            if (txt) txt.textContent = msg;
+            if (box) { box.classList.remove('hidden'); box.classList.add('flex'); }
+            if (navigator.vibrate) { try { navigator.vibrate(60); } catch (e) {} }
+        }
+        async function submitChangePass(ev) {
+            if (ev) ev.preventDefault();
+            clearChgError();
+            if (!currentUser) return false;
+
+            const oEl = document.getElementById('chgPassOld');
+            const nEl = document.getElementById('chgPassNew');
+            const n2El = document.getElementById('chgPassNew2');
+            const oldP = oEl.value, newP = nEl.value, newP2 = n2El.value;
+
+            if (!oldP) return chgError('Nhập mật khẩu hiện tại.', oEl), false;
+            const hOld = await hashPass(currentUser.user, oldP, currentUser.salt);
+            if (!safeEqual(hOld, currentUser.hash)) return chgError('Mật khẩu hiện tại không đúng.', oEl), false;
+            if (newP.length < PASS_MIN) return chgError('Mật khẩu mới phải có ít nhất ' + PASS_MIN + ' ký tự.', nEl), false;
+            if (newP !== newP2) return chgError('Hai lần nhập mật khẩu mới không khớp.', n2El), false;
+            if (newP === oldP) return chgError('Mật khẩu mới phải khác mật khẩu cũ.', nEl), false;
+
+            const salt = randomSalt();
+            currentUser.salt = salt;
+            currentUser.hash = await hashPass(currentUser.user, newP, salt);
+            currentUser.passChangedAt = Date.now();
+            saveAccounts();
+            saveSession(currentUser);   // làm mới phiên theo hash mới
+            closeChangePass();
+            ackToast('🔑 Đã đổi mật khẩu. Các máy khác dùng tài khoản này sẽ phải đăng nhập lại.', 'ok', 5000);
+            return false;
+        }
+
+        // ---------- Quản lý tài khoản (chỉ quản lý) ----------
+        function openAccounts() {
+            if (!currentUser) { openStaffLogin(); return; }
+            if (!currentUser.admin) {
+                ackToast('Chỉ quản lý mới xem được danh sách tài khoản.', 'alert', 3500);
+                return;
+            }
+            loadAccounts();
+            renderAccounts();
+            const m = document.getElementById('accountsModal');
+            m.classList.remove('hidden'); m.classList.add('flex');
+            closeMoreMenuIfOpen();
+        }
+        function closeAccounts() {
+            const m = document.getElementById('accountsModal');
+            m.classList.add('hidden'); m.classList.remove('flex');
+        }
+
+        function renderAccounts() {
+            const list = document.getElementById('accountsList');
+            const cnt = document.getElementById('accountsCount');
+            if (!list) return;
+            if (cnt) cnt.textContent = authAccounts.length + ' tài khoản · ' + adminCount() + ' quản lý';
+
+            list.innerHTML = authAccounts.map(function (a, idx) {
+                const initial = (a.name || a.user || '?').trim().charAt(0).toUpperCase();
+                const badges = [];
+                if (a.admin) badges.push('<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-tys-900/60 text-tys-300 border border-tys-800">Quản lý</span>');
+                if (!a.active) badges.push('<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-brick-950/60 text-brick-300 border border-brick-800">Đã khoá</span>');
+                const isMe = currentUser && a.user === currentUser.user;
+
+                return '<div class="auth-user-row">'
+                    + '<div class="auth-avatar' + (a.active ? '' : ' is-off') + '">' + escapeHtml(initial) + '</div>'
+                    + '<div class="min-w-0 flex-1">'
+                    +   '<div class="flex items-center gap-1.5 flex-wrap">'
+                    +     '<span class="text-xs font-extrabold text-tys-100 truncate">' + escapeHtml(a.name) + '</span>'
+                    +     (isMe ? '<span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-sage-950 text-sage-300 border border-sage-700">Bạn</span>' : '')
+                    +     badges.join('')
+                    +   '</div>'
+                    +   '<div class="text-[10px] text-stone-500 font-semibold truncate">@' + escapeHtml(a.user) + '</div>'
+                    + '</div>'
+                    + '<div class="flex items-center gap-1 shrink-0">'
+                    +   '<button type="button" onclick="resetAccountPass(' + idx + ')" title="Cấp lại mật khẩu" aria-label="Cấp lại mật khẩu" class="w-8 h-8 rounded-lg bg-espresso-950 border border-tys-900 text-tys-300 hover:bg-espresso-800 flex items-center justify-center active:scale-90 transition"><i class="fa-solid fa-key text-[11px]"></i></button>'
+                    +   '<button type="button" onclick="toggleAccountActive(' + idx + ')" title="' + (a.active ? 'Khoá tài khoản' : 'Mở khoá') + '" aria-label="' + (a.active ? 'Khoá tài khoản' : 'Mở khoá') + '" class="w-8 h-8 rounded-lg bg-espresso-950 border border-tys-900 ' + (a.active ? 'text-stone-400 hover:text-brick-400' : 'text-sage-400 hover:text-sage-300') + ' hover:bg-espresso-800 flex items-center justify-center active:scale-90 transition"><i class="fa-solid fa-' + (a.active ? 'lock' : 'lock-open') + ' text-[11px]"></i></button>'
+                    +   (isMe ? '' : '<button type="button" onclick="deleteAccount(' + idx + ')" title="Xoá tài khoản" aria-label="Xoá tài khoản" class="w-8 h-8 rounded-lg bg-espresso-950 border border-tys-900 text-stone-400 hover:text-brick-400 hover:bg-espresso-800 flex items-center justify-center active:scale-90 transition"><i class="fa-solid fa-trash text-[11px]"></i></button>')
+                    + '</div>'
+                    + '</div>';
             }).join('');
-            document.getElementById('staffCancel').classList.toggle('hidden', !currentStaff);   // chưa đăng nhập thì không cho đóng
-            document.getElementById('staffLogin').classList.remove('hidden');
         }
-        function closeStaffLogin() { if (currentStaff) document.getElementById('staffLogin').classList.add('hidden'); }
-        function pickStaff(i) {
-            const n = STAFF_LIST[i]; if (!n) return;
-            currentStaff = n;
-            try { localStorage.setItem(STAFF_KEY, n); } catch (e) {}
-            staffRenderChip();
-            document.getElementById('staffLogin').classList.add('hidden');
+
+        async function resetAccountPass(idx) {
+            const acc = authAccounts[idx];
+            if (!acc || !currentUser || !currentUser.admin) return;
+            const isMe = acc.user === currentUser.user;
+            const note = isMe
+                ? 'Đặt lại mật khẩu cho chính bạn (' + acc.name + ')?'
+                : 'Cấp lại mật khẩu mới cho ' + acc.name + ' (' + acc.user + ')?\nMật khẩu cũ sẽ KHÔNG dùng được nữa.';
+            const p = prompt(note + '\n\nNhập mật khẩu mới (tối thiểu ' + PASS_MIN + ' ký tự):', '');
+            if (p === null) return;
+            if (p.length < PASS_MIN) { ackToast('Mật khẩu phải có ít nhất ' + PASS_MIN + ' ký tự.', 'alert', 3500); return; }
+            const salt = randomSalt();
+            acc.salt = salt;
+            acc.hash = await hashPass(acc.user, p, salt);
+            acc.active = true;
+            acc.passChangedAt = Date.now();
+            saveAccounts();
+            if (isMe) saveSession(acc);   // giữ phiên cho chính mình
+            renderAccounts();
+            ackToast('🔑 Đã cấp mật khẩu mới cho ' + acc.name + '.', 'ok', 4000);
         }
+
+        function toggleAccountActive(idx) {
+            const acc = authAccounts[idx];
+            if (!acc || !currentUser || !currentUser.admin) return;
+            if (acc.user === currentUser.user) {
+                ackToast('Không thể tự khoá tài khoản đang đăng nhập.', 'alert', 3500);
+                return;
+            }
+            if (acc.active && acc.admin && adminCount() <= 1) {
+                ackToast('Phải còn ít nhất 1 quản lý đang hoạt động.', 'alert', 4000);
+                return;
+            }
+            acc.active = !acc.active;
+            saveAccounts();
+            renderAccounts();
+            ackToast(acc.active ? ('Đã mở khoá ' + acc.name + '.') : ('Đã khoá ' + acc.name + '. Họ sẽ không đăng nhập được.'), 'info', 3500);
+        }
+
+        function deleteAccount(idx) {
+            const acc = authAccounts[idx];
+            if (!acc || !currentUser || !currentUser.admin) return;
+            if (acc.user === currentUser.user) { ackToast('Không thể xoá tài khoản đang đăng nhập.', 'alert', 3500); return; }
+            if (acc.admin && adminCount() <= 1) { ackToast('Phải còn ít nhất 1 quản lý đang hoạt động.', 'alert', 4000); return; }
+            if (!confirm('Xoá tài khoản "' + acc.name + '" (' + acc.user + ')?\nNhân viên này sẽ không đăng nhập được nữa. Lịch sử ca đã ghi vẫn giữ nguyên tên họ.')) return;
+            authAccounts.splice(idx, 1);
+            saveAccounts();
+            renderAccounts();
+            ackToast('Đã xoá tài khoản ' + acc.name + '.', 'info', 3000);
+        }
+
+        // ---------- Khởi động ----------
         function staffInit() {
-            try { const v = localStorage.getItem(STAFF_KEY); if (v && STAFF_LIST.indexOf(v) >= 0) currentStaff = v; } catch (e) {}
+            loadAccounts();
+            const acc = restoreSession();
+            if (acc) {
+                currentUser = acc;
+                currentStaff = acc.name;
+                staffRenderChip();
+                return;
+            }
+            // Chưa đăng nhập (hoặc phiên hết hạn): bắt buộc đăng nhập
+            currentUser = null;
+            currentStaff = '';
             staffRenderChip();
-            if (!currentStaff) openStaffLogin();
+            openStaffLogin();
         }
 
         // ================== THÔNG BÁO ORDER MỚI TỚI MÁY POS (ntfy) ==================
@@ -3474,8 +5020,40 @@
             stale: 1800,                                // giây: quá mức này coi như cũ, không báo động nữa
             escalate: true,                             // false = tắt nhắc + báo động "chưa ai nhận" (thu ngân không bấm nút)
             dailyWarn: 200,                             // cảnh báo khi số tin ntfy gửi trong ngày (từ máy này) đạt mức này
+            maxInflight: 4,                             // số request gửi đi SONG SONG tối đa (cao điểm: tránh dồn nghẽn)
+            ntfyCooldown: 10 * 60000,                   // ntfy bị 429 -> tạm bỏ ntfy 10 phút, chỉ dùng Telegram
+            coalesceMs: 4000,                           // gộp tin liên tiếp cùng bàn trong khoảng này (ms)
+            debounceMs: 300,                            // chờ ngắn trước khi gửi để gộp các lần bấm liên tiếp
+            debounceMaxMs: 1200,                        // dù bấm liên tục cũng không trì hoãn quá mức này
+            tgRetry: 2                                  // Worker thử lại Telegram thêm 2 lần nếu lỗi mạng
         };
         var guardLimitedAt = 0;
+        // Lần cuối gửi thông báo cho từng bàn — dùng để biết lần bấm này là lần đầu hay lặp lại
+        var lastNotifAt = {};
+
+        // ================== CẦU DAO CHO NTFY (tự ngắt khi bị chặn) ==================
+        // ntfy.sh bản miễn phí giới hạn số tin/ngày. Khi bị chặn (HTTP 429) mà vẫn cố gửi thì:
+        //   • mọi tin đều thất bại và phải chờ hết 8s timeout, làm nghẽn cả hàng đợi
+        //   • tin quan trọng (gọi thêm, hủy món) bị đẩy lùi sau các tin vô ích
+        // Nên: hễ gặp 429 là TẠM NGẮT hẳn ntfy trong N phút, chuyển toàn bộ sang Telegram.
+        // Hết thời gian chờ thì thử lại 1 tin; nếu vẫn 429 thì ngắt tiếp (tự phục hồi, không cần thao tác).
+        const NTFY_DOWN_KEY = 'tys_ntfy_down';
+        var ntfyDownUntil = 0;
+        try { ntfyDownUntil = parseInt(localStorage.getItem(NTFY_DOWN_KEY) || '0', 10) || 0; } catch (e) {}
+
+        function ntfyAvailable() {
+            if (!ntfyDownUntil) return true;
+            if (Date.now() >= ntfyDownUntil) { ntfyDownUntil = 0; try { localStorage.removeItem(NTFY_DOWN_KEY); } catch (e) {} return true; }
+            return false;
+        }
+        function ntfyTrip(reason) {
+            guardLimitedAt = Date.now();
+            ntfyDownUntil = Date.now() + GUARD.ntfyCooldown;
+            try { localStorage.setItem(NTFY_DOWN_KEY, String(ntfyDownUntil)); } catch (e) {}
+            try {
+                ackToast('📵 ntfy tạm ngưng (' + (reason || 'quá hạn mức') + '). Tin vẫn tới thu ngân qua Telegram bình thường.', 'info', 8000);
+            } catch (e) {}
+        }
         var OUTBOX_KEY = 'tys_outbox';
         var outboxFlying = {};
         var guardGraceUntil = 0, guardLastSig = {}, guardBarSig = '';
@@ -3574,11 +5152,37 @@
                 job.ok[ch] = true;
                 if (ch === 'n') guardCountSent();
                 guardOnSent(job);
+                // Kênh Telegram trả về message_id của tin vừa gửi -> lưu vào job + billState.
+                // Đây là "chìa khoá" để ack từ Telegram khớp đúng order, không phụ thuộc mốc thời gian.
+                if (ch === 't' && r.json) {
+                    r.json().then(function (d) {
+                        if (d && d.mid) {
+                            job.mid = d.mid;
+                            if (job.table && billState && billState[job.table] && billState[job.table].job === job.id) {
+                                billState[job.table].mid = d.mid; saveBill();
+                            }
+                            outboxSave();
+                        }
+                    }).catch(function () {});
+                }
             }).catch(function (e) {
                 job.fails++;
                 let wait = GUARD.retry[Math.min(job.tries[ch] - 1, GUARD.retry.length - 1)];
-                if (ch === 'n' && e && e.status === 429) { guardLimitedAt = Date.now(); wait = Math.max(wait, 15000); }   // ntfy: vượt hạn mức → đừng dồn dập
+                if (ch === 'n' && e && e.status === 429) {
+                    // Vượt hạn mức ntfy -> ngắt ntfy, chuyển hẳn sang Telegram
+                    ntfyTrip('quá hạn mức');
+                    job.use.n = false;
+                    job.gu.n = true;
+                    if (job.use.t) { job.nx.t = 0; }        // đẩy Telegram đi ngay
+                    wait = 60000;
+                }
                 job.nx[ch] = Date.now() + wait;
+                // Hẹn đẩy lại ĐÚNG lúc được phép thử, không phải chờ vòng guardTick kế tiếp (3s).
+                // Nhờ vậy tin bị lỗi mạng chớp được gửi lại sớm hơn và không phụ thuộc vào việc tab
+                // còn chạy hay không.
+                try {
+                    if (job.tries[ch] <= 3) setTimeout(function () { try { outboxPump(); } catch (e) {} }, wait + 30);
+                } catch (e) {}
                 console.warn((ch === 'n' ? 'ntfy' : 'telegram') + ' lỗi (lần ' + job.tries[ch] + '):', e && e.message);
             }).then(function () {
                 clearTimeout(timer);
@@ -3589,15 +5193,42 @@
 
         function outboxPump() {
             const now = Date.now();
+
+            // ---- GIỚI HẠN SỐ REQUEST SONG SONG ----
+            // Giờ cao điểm (nhiều bàn cùng gọi món) mà bắn hết một lượt thì trình duyệt tự xếp hàng,
+            // ntfy dễ trả 429 và tin quan trọng bị kẹt sau tin phụ. Giữ tối đa 4 request đang bay;
+            // xong cái nào thì vòng lặp kế tiếp (guardTick 3s hoặc sau khi có phản hồi) nhấc cái tiếp theo.
+            let flying = 0;
+            Object.keys(outboxFlying).forEach(function (k) { if (outboxFlying[k]) flying++; });
+
+            // Thứ tự ưu tiên khi phải xếp hàng: ưu tiên cao (priority lớn) trước, cùng mức thì tin cũ trước.
+            const queue = [];
             outbox.forEach(function (job) {
                 ['n', 't'].forEach(function (ch) {
                     if (!job.use[ch] || job.ok[ch] || job.gu[ch]) return;
                     if (outboxFlying[job.id + ch]) return;
                     if (now - job.at > GUARD.maxAge) { job.gu[ch] = true; return; }
                     if (now < job.nx[ch]) return;
-                    outboxAttempt(job, ch);
+                    // DEBOUNCE: chỉ áp dụng cho lần bấm lặp lại của cùng bàn (tin đầu tiên đi ngay).
+                    // Chờ một nhịp ngắn để gộp được các lần bấm dồn dập, tối đa debounceMaxMs.
+                    if (job.debounce) {
+                        const age = now - (job.createdAt || job.at);
+                        if (age < GUARD.debounceMs && age < GUARD.debounceMaxMs) return;
+                    }
+                    queue.push({ job: job, ch: ch });
                 });
             });
+            queue.sort(function (a, b) {
+                const pa = a.job.pr || 4, pb = b.job.pr || 4;
+                if (pa !== pb) return pb - pa;             // ưu tiên cao trước
+                return a.job.at - b.job.at;                // cùng mức: cũ trước (không để tin nào chết đói)
+            });
+
+            for (let i = 0; i < queue.length; i++) {
+                if (flying >= GUARD.maxInflight) break;
+                outboxAttempt(queue[i].job, queue[i].ch);
+                flying++;
+            }
             // Dọn: job đã tới ít nhất 1 kênh và không còn kênh nào cần thử → bỏ khỏi hộp thư đi.
             // Job bỏ cuộc mà KHÔNG kênh nào tới: giữ lại (đánh dấu dead) cho tới khi người dùng bấm "Đã báo miệng".
             outbox = outbox.filter(function (job) {
@@ -3625,14 +5256,56 @@
             // Thêm tên phục vụ đang đăng nhập vào dòng CUỐI nội dung (tin đồng bộ / tin gửi lại có sẵn tên thì bỏ qua)
             if (currentStaff && !opts.sync && !opts.noStaff) parts = parts.concat(['👤 Phục vụ: ' + currentStaff]);
             const useTg = !!NOTIFY_WORKER_URL && opts.tg !== false;
+            // ntfy đang bị ngắt (429) -> chỉ dùng Telegram, không tạo thêm request vô ích
+            const useNtfy = opts.ntfy !== false && ntfyAvailable();
+
+            // ---- GỘP TIN LIÊN TIẾP CÙNG BÀN ----
+            // Phục vụ bấm thêm/xoá món vài lần trong vài giây (rất thường gặp giờ cao điểm) sẽ tạo
+            // 3–5 tin riêng, làm thu ngân phải đọc lại từ đầu và dễ bỏ sót.
+            // Cách làm: tin ĐẦU của một bàn gửi ngay (không làm chậm). Nếu trong coalesceMs vừa có
+            // tin khác cho CÙNG bàn, tin mới được đánh dấu "chờ gộp" và gộp vào tin đó nếu tin đó
+            // còn trong hàng đợi; nếu tin trước đã gửi xong thì tin mới gửi ngay như bình thường.
+            const wantsCoalesce = !!(opts.table && !opts.sync && !opts.ping);
+            let isRepeatForTable = false;
+            if (wantsCoalesce) {
+                const last = lastNotifAt[opts.table] || 0;
+                isRepeatForTable = (Date.now() - last) < GUARD.coalesceMs;
+                lastNotifAt[opts.table] = Date.now();
+
+                const prev = outbox.find(function (j) {
+                    // KHÔNG gộp vào tin đang bay: nội dung đã gửi lên mạng rồi, sửa nữa sẽ mất.
+                    if (outboxFlying[j.id + 'n'] || outboxFlying[j.id + 't']) return false;
+                    return j.table === opts.table && !j.sync && !j.sentAt && !jobAnyOk(j) && !j.dead;
+                });
+                if (prev && (Date.now() - prev.at) < GUARD.coalesceMs) {
+                    if (priority && priority > prev.pr) prev.pr = priority;
+                    prev.title = title;
+                    prev.msg = parts.join('\n');
+                    prev.label = opts.label || prev.label;
+                    prev.merged = (prev.merged || 1) + 1;
+                    prev.at = Math.max(prev.at, Date.now());        // gia hạn để còn gộp tiếp
+                    // Đảm bảo kênh còn sống được bật lại nếu vừa hết thời gian ngắt ntfy
+                    if (useNtfy && !prev.ok.n) { prev.use.n = true; prev.gu.n = false; }
+                    if (useTg && !prev.ok.t) { prev.use.t = true; prev.gu.t = false; }
+                    prev.nx = { n: 0, t: 0 };
+                    prev.debounce = false;                          // được gộp rồi -> đẩy đi ngay
+                    outboxSave();
+                    outboxPump();
+                    return prev.id;
+                }
+            }
+
             const job = {
                 id: 'j' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-                title: title, msg: parts.join('\n'), pr: priority || 4, at: Date.now(),
+                title: title, msg: parts.join('\n'), pr: priority || 4, at: Date.now(), createdAt: Date.now(),
+                // Chỉ lần bấm THỨ HAI trở đi trong cùng cửa sổ mới phải chờ để gộp;
+                // tin đầu tiên của một bàn đi ngay, không làm chậm thông báo.
+                debounce: isRepeatForTable,
                 table: opts.table || null,
                 ackTable: opts.ackTable || opts.table || null, ackAt: opts.ackAt || null, ping: opts.ping || null,
                 sync: !!opts.sync,
                 label: opts.label || (opts.table ? 'Bàn ' + opts.table : String(title).slice(0, 28)),
-                use: { n: opts.ntfy !== false, t: useTg },
+                use: { n: useNtfy, t: useTg },
                 ok: { n: false, t: false }, gu: { n: false, t: false },
                 tries: { n: 0, t: 0 }, nx: { n: 0, t: 0 }, fails: 0
             };
@@ -3640,6 +5313,8 @@
             outbox.push(job);
             outboxSave();
             outboxPump();
+            // Hẹn một nhịp ngắn để đẩy tin đi nếu debounce đang giữ nó lại
+            setTimeout(function () { try { outboxPump(); } catch (e) {} }, GUARD.debounceMs + 60);
             return job.id;
         }
 
@@ -4112,18 +5787,25 @@
                 .then(function () { clearTimeout(timer); ackPollBusy = false; });
         }
         // ---- ĐƯỜNG DỰ PHÒNG 2: hỏi thẳng Worker (Worker lưu tin của Telegram vào D1) — không đi qua ntfy nên không bị 429 ----
+        // Dùng LONG-POLL: Worker giữ kết nối tới 20 giây và trả về ngay khi có tin mới.
+        // Nhờ vậy thu ngân bấm "ĐÃ NHẬP BILL" là máy phục vụ biết sau ~0,2–0,7 giây
+        // (trước đây phải đợi hết chu kỳ 2,5 giây, và tới 15 giây khi bàn không ở trạng thái chờ).
         var wAckBusy = false, wAckLast = 0, wAckId = 0;
         try { wAckId = parseInt(localStorage.getItem('tys_ack_wid') || '0', 10) || 0; } catch (e) {}
         function ackPollWorker() {
             if (!NOTIFY_WORKER_URL || wAckBusy) return;
             wAckBusy = true;
             const ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-            const timer = setTimeout(function () { try { if (ctl) ctl.abort(); } catch (e) {} }, 6000);
-            fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/acks?key=' + encodeURIComponent(NOTIFY_KEY) + '&since=' + wAckId, { signal: ctl ? ctl.signal : undefined, cache: 'no-store' })
+            // Chờ tối đa 24s (Worker giữ tối đa 25s) để không bị cắt giữa chừng
+            const timer = setTimeout(function () { try { if (ctl) ctl.abort(); } catch (e) {} }, 24000);
+            const pending = ackHasPending();
+            const waitSec = pending ? 20 : 10;   // đang có bàn chờ thu ngân -> giữ kết nối lâu hơn
+            fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/acks?key=' + encodeURIComponent(NOTIFY_KEY) + '&since=' + wAckId + '&wait=' + waitSec, { signal: ctl ? ctl.signal : undefined, cache: 'no-store' })
                 .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
                 .then(function (d) {
                     if (!d || !d.ok) return;
                     ackPollOkAt = Date.now();
+                    wAckFail = 0;   // thành công -> xoá backoff
                     (d.rows || []).forEach(function (row) {
                         if (row.id > wAckId) wAckId = row.id;
                         if (!row.ack) return;
@@ -4131,21 +5813,36 @@
                     });
                     try { localStorage.setItem('tys_ack_wid', String(wAckId)); } catch (e) {}
                 })
-                .catch(function (e) { console.warn('ack worker poll lỗi:', e && e.message); })
+                .catch(function (e) { wAckFail++; console.warn('ack worker poll lỗi:', e && e.message); })
                 .then(function () { clearTimeout(timer); wAckBusy = false; });
         }
+        // Long-poll tự giữ kết nối nên chỉ cần khởi động lại ngay sau khi vòng trước kết thúc:
+        // đang có bàn chờ thì gần như liên tục, còn khi rảnh thì nghỉ 2s cho nhẹ máy chủ.
+        // wAckFail đếm số lần lỗi liên tiếp để giãn nhịp khi mạng/Worker có sự cố (tránh bão request).
+        var wAckFail = 0;
+        var jitterNext = 0;
         setInterval(function () {
             if (document.visibilityState !== 'visible') return;
-            const gap = ackHasPending() ? 2500 : 15000;   // Worker không bị giới hạn như ntfy nên hỏi dày hơn được
-            if (Date.now() - wAckLast >= gap) { wAckLast = Date.now(); ackPollWorker(); }
-        }, 1000);
+            if (wAckBusy) return;
+            const backoff = wAckFail ? Math.min(30000, 2000 * wAckFail) : 0;
+            // JITTER: mỗi máy lệch nhau một chút (0–800ms) để nhiều máy không hỏi đúng cùng một giây.
+            if (!jitterNext) jitterNext = Date.now() + Math.floor(Math.random() * 800);
+            const gap = ackHasPending() ? backoff : Math.max(2000, backoff);
+            if (Date.now() - wAckLast >= gap && Date.now() >= jitterNext) {
+                wAckLast = Date.now();
+                jitterNext = 0;
+                ackPollWorker();
+            }
+        }, 500);
         function ackHasPending() {
             return Object.keys(billState || {}).some(function (t) { const b = billState[t]; return b && (b.s === 'wait' || b.s === 'claimed') && tablesData[t] && tablesData[t].status !== 'empty'; });
         }
         var ackPollLast = 0;
         setInterval(function () {
             if (document.visibilityState !== 'visible') return;
-            const gap = ackHasPending() ? 6000 : 20000;   // đang chờ thu ngân → hỏi dày hơn
+            // ntfy hay bị 429 nên giữ nhịp thưa hơn Worker. Khi đang có bàn chờ thì hỏi 4s/lần,
+            // còn bình thường 30s/lần (trước đây 6s và 20s) vì Worker đã là kênh chính, gần như tức thời.
+            const gap = ackHasPending() ? 4000 : 30000;
             if (Date.now() - ackPollLast >= gap) { ackPollLast = Date.now(); ackPoll(); }
         }, 2000);
 
@@ -4222,10 +5919,25 @@
             const prev = billState[o.table] || null;
             const extra = { src: 'ack', st: m.time || 0 };
             // Giữ lại thông tin của order đang theo dõi để các bước sau (đang nhập → đã nhập → hoàn lại) không mất dấu
-            if (prev) ['job', 'title', 'msg', 'sentAt', 'ord'].forEach(function (k) { if (prev[k] !== undefined) extra[k] = prev[k]; });
+            if (prev) ['job', 'title', 'msg', 'sentAt', 'ord', 'mid'].forEach(function (k) { if (prev[k] !== undefined) extra[k] = prev[k]; });
 
-            // Chống nhầm: thu ngân bấm "ĐÃ NHẬP" trên thông báo CŨ trong khi bàn đã có order MỚI chưa ai nhận
-            if ((o.t === 'done' || o.t === 'claim') && prev && prev.ord && o.at && o.at < prev.ord - 1500 && (prev.s === 'wait' || prev.s === 'claimed')) {
+            // Đối chiếu order: ưu tiên message_id (chính xác tuyệt đối).
+            // Chỉ khi tin ack không có mid (bản Worker cũ) mới dùng mốc thời gian.
+            var ackMid = Number(o.mid) || 0;
+            var ackPressedMid = Number(o.pressedMid) || 0;
+            var prevMid = Number(prev && prev.mid) || 0;
+
+            // Chống nhầm: thu ngân bấm "ĐÃ NHẬP" trên thông báo CŨ trong khi bàn đã có order MỚI chưa ai nhận.
+            // Với ack có mid: chỉ báo nhầm khi mid KHÔNG khớp order đang chờ (và cũng không phải tin nhắc của nó).
+            var isOldOrder = false;
+            if ((o.t === 'done' || o.t === 'claim') && prev && (prev.s === 'wait' || prev.s === 'claimed')) {
+                if (ackMid && prevMid) {
+                    isOldOrder = (ackMid !== prevMid && ackPressedMid !== prevMid);
+                } else if (prev.ord && o.at) {
+                    isOldOrder = o.at < prev.ord - 1500;
+                }
+            }
+            if (isOldOrder) {
                 ackToast('⚠️ ' + label + ': ' + who + ' vừa ' + (o.t === 'done' ? 'nhập xong' : 'nhận') + ' order CŨ. Order MỚI/gọi thêm của bàn này CHƯA có ai nhận.', 'alert', 12000);
                 ackAlert();
                 return;
@@ -4233,7 +5945,15 @@
 
             if (o.t === 'done') {
                 const wasOpen = !!(prev && prev.s !== 'done');
+                // Ghi trạng thái "đã nhập bill" trước, rồi mới đặt cờ tắt nhắc SAU
+                // (markBill tạo object mới nên nếu đặt trước sẽ bị ghi đè).
+                extra.rem = 99; extra.alm = 99; extra.ackDone = true; extra.ackMid = ackMid || null;
                 markBill(o.table, 'done', who, extra);
+                // Gỡ mọi job đang chờ của bàn này khỏi hộp thư đi để không gửi lại / nhắc lại
+                try {
+                    outbox = outbox.filter(function (j) { return String(j.table) !== String(o.table); });
+                    outboxSave();
+                } catch (e) {}
                 ackToast('✅ ' + label + ': thu ngân ' + (who && who !== 'thu ngân' ? '(' + who + ') ' : '') + 'ĐÃ BẤM NHẬP BILL', 'ok', 8000);
                 // Tin đồng bộ CHỈ gửi sang Telegram (không gửi ntfy lên màn hình POS).
                 // Chỉ máy đang theo dõi order này (có mã job) mới gửi, để nhiều máy cùng mở không gửi trùng.
@@ -4289,13 +6009,16 @@
         // Điện thoại khóa màn hình / chuyển app (vd Telegram) có thể làm đứt kết nối mà KHÔNG báo lỗi → nối lại khi quay về trang.
         document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { connectAck(); ackPoll(); ackPollWorker(); } });
         window.addEventListener('pageshow', function () { connectAck(); ackPoll(); });
-        window.addEventListener('focus', function () { if (Date.now() - ackLastBeat > 60000) connectAck(); });
+        window.addEventListener('focus', function () { if (Date.now() - ackLastBeat > 15000) connectAck(); });
         window.addEventListener('online', function () { connectAck(); ackPoll(); });
         // Giám sát: quá ~100s không có nhịp tim nào thì coi là đã đứt ngầm, nối lại.
+        // Giảm xuống 45s: ntfy gửi keepalive ~45s một lần nên 100s là quá trễ — điện thoại ngủ
+        // có thể mất tới gần 2 phút mới biết SSE đã chết, trong khoảng đó tin "đã nhập bill" chỉ
+        // tới được nhờ polling. Nối lại sớm thì tin tới ngay.
         setInterval(function () {
             if (document.visibilityState !== 'visible') return;
-            if (ackLastBeat && Date.now() - ackLastBeat > 100000) connectAck();
-        }, 20000);
+            if (ackLastBeat && Date.now() - ackLastBeat > 45000) connectAck();
+        }, 10000);
         window.addEventListener('load', function () { connectAck(); ackPoll(); ackPollWorker(); });
 
         function saveModalChanges() {
@@ -4326,10 +6049,17 @@
             const prevSnap = { status: prevStatus, items: prevItems, pay: table.paymentMethod, note: table.note || '' };
             const prevTotal = table.total || 0;
             table.status = selectedStatusInModal;
-            table.items = [...modalItems];
+            table.items = modalItems.map(function (it) {
+                // Chỉ giữ dữ liệu thật của món; bỏ mọi cờ tạm dùng trong phiên sửa
+                const o = { name: it.name, price: it.price };
+                if (it.note) o.note = it.note;
+                return o;
+            });
             table.total = modalItems.reduce((acc, curr) => acc + curr.price, 0);
             table.paymentMethod = document.getElementById('paymentMethodSelect').value;
             table.note = document.getElementById('tableNoteInput').value;
+            table.paidGuests = modalGuestsPaid;
+            table.unpaidGuests = modalGuestsUnpaid;
 
             if (prevStatus === 'empty' && selectedStatusInModal !== 'empty') table.startTime = Date.now();
             else if (selectedStatusInModal === 'empty') table.startTime = null;
@@ -4354,7 +6084,7 @@
             const targetId = activeTableId;
             const before = tablesData[targetId];
             if (before) notifyTableCancelled(targetId, before.status, before.items, before.total);   // xóa bàn khi chưa trả → báo thu ngân xóa bill
-            tablesData[targetId] = { id: targetId, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '' };
+            tablesData[targetId] = { id: targetId, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '', paidGuests: 0, unpaidGuests: 0 };
             saveData(); 
             renderTableNode(targetId);
             const listView = document.getElementById('listView');
@@ -4378,7 +6108,11 @@
             if (!t || !['unpaid', 'paid'].includes(t.status)) return null;
             const items = (Array.isArray(t.items) ? t.items : [])
                 .filter(i => i && typeof i.name === 'string' && isFinite(Number(i.price)))
-                .map(i => { const o = { name: i.name.slice(0, 80), price: Number(i.price) }; if (typeof i.note === 'string' && i.note.trim()) o.note = i.note.trim().slice(0, 60); return o; });
+                .map(i => {
+                    const o = { name: i.name.slice(0, 80), price: Number(i.price) };
+                    if (typeof i.note === 'string' && i.note.trim()) o.note = i.note.trim().slice(0, 60);
+                    return o;
+                });
             let total = Number(t.total);
             if (!isFinite(total)) total = items.reduce((a, i) => a + i.price, 0);
             const st = Number(t.startTime);
@@ -4386,7 +6120,9 @@
                 id, status: t.status, items, total,
                 startTime: isFinite(st) && st > 0 ? st : null,
                 paymentMethod: typeof t.paymentMethod === 'string' && t.paymentMethod ? t.paymentMethod.slice(0, 40) : 'Tiền mặt',
-                note: typeof t.note === 'string' ? t.note.slice(0, 200) : ''
+                note: typeof t.note === 'string' ? t.note.slice(0, 200) : '',
+                paidGuests: guestPaidOf(t),
+                unpaidGuests: guestUnpaidOf(t)
             };
         }
 
@@ -4591,10 +6327,10 @@
             try { localStorage.setItem(HANDOVER_BACKUP_KEY, JSON.stringify({ at: Date.now(), tables: tablesData })); } catch (e) {}
             if (handoverMode === 'replace') {
                 for (let i = 1; i <= TOTAL_TABLES; i++) {
-                    tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '' };
+                    tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '', paidGuests: 0, unpaidGuests: 0 };
                 }
             }
-            Object.values(handoverParsed.tables).forEach(t => { tablesData[t.id] = Object.assign({}, t, { histId: null }); });
+            Object.values(handoverParsed.tables).forEach(t => { tablesData[t.id] = Object.assign({}, normalizeGuestCounts(t), { histId: null }); });
             lastQuickPayState = null;
             lastHistoryUndo = null;
             const toast = document.getElementById('quickPayToast');
@@ -4619,7 +6355,8 @@
             if (!b || !b.tables) { res.innerHTML = '<div class="text-brick-300 font-semibold">Không còn bản sao lưu.</div>'; return; }
             tablesData = b.tables;
             for (let i = 1; i <= TOTAL_TABLES; i++) {
-                if (!tablesData[i]) tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '' };
+                if (!tablesData[i]) tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '', paidGuests: 0, unpaidGuests: 0 };
+                else tablesData[i] = normalizeGuestCounts(tablesData[i]);
             }
             try { localStorage.removeItem(HANDOVER_BACKUP_KEY); } catch (e) {}
             lastQuickPayState = null;
@@ -4653,7 +6390,7 @@
         // SỬA Ở ĐÂY: Reset toàn bộ bàn về dạng empty 100% thay vì tạo mock data
         function confirmResetAllData() { 
             for (let i = 1; i <= TOTAL_TABLES; i++) {
-                tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '' };
+                tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '', paidGuests: 0, unpaidGuests: 0 };
             }
             saveData(); 
             renderMap(); 
@@ -4798,6 +6535,8 @@
                 startTime: target.startTime,
                 paymentMethod: target.paymentMethod,
                 note: target.note,
+                paidGuests: guestPaidOf(target),
+                unpaidGuests: guestUnpaidOf(target),
                 histId: target.histId || null,
                 sourceBackup: {
                     id: srcId,
@@ -4807,6 +6546,8 @@
                     startTime: source.startTime,
                     paymentMethod: source.paymentMethod,
                     note: source.note,
+                    paidGuests: guestPaidOf(source),
+                    unpaidGuests: guestUnpaidOf(source),
                     histId: source.histId || null
                 }
             };
@@ -4821,7 +6562,9 @@
                     total: source.total,
                     startTime: source.startTime,
                     paymentMethod: source.paymentMethod || 'Tiền mặt',
-                    note: source.note ? `(Từ B${srcId}) ${source.note}` : `Chuyển từ Bàn ${srcId}`
+                    note: source.note ? `(Từ B${srcId}) ${source.note}` : `Chuyển từ Bàn ${srcId}`,
+                    paidGuests: guestPaidOf(source),
+                    unpaidGuests: guestUnpaidOf(source)
                 };
 
                 tablesData[srcId] = {
@@ -4831,7 +6574,9 @@
                     total: 0,
                     startTime: null,
                     paymentMethod: 'Tiền mặt',
-                    note: ''
+                    note: '',
+                    paidGuests: 0,
+                    unpaidGuests: 0
                 };
 
                 showQuickPayToast(targetId, `Đã chuyển thành công từ <b>Bàn ${srcId}</b> sang <b>Bàn ${targetId}</b>!`, {
@@ -4870,7 +6615,9 @@
                     total: mergedTotal,
                     startTime: earliestTime || Date.now(),
                     paymentMethod: target.paymentMethod || source.paymentMethod || 'Tiền mặt',
-                    note: combinedNote || `Gộp từ Bàn ${srcId}`
+                    note: combinedNote || `Gộp từ Bàn ${srcId}`,
+                    paidGuests: guestPaidOf(target) + guestPaidOf(source),
+                    unpaidGuests: guestUnpaidOf(target) + guestUnpaidOf(source)
                 };
 
                 tablesData[srcId] = {
@@ -4880,7 +6627,9 @@
                     total: 0,
                     startTime: null,
                     paymentMethod: 'Tiền mặt',
-                    note: ''
+                    note: '',
+                    paidGuests: 0,
+                    unpaidGuests: 0
                 };
 
                 showQuickPayToast(targetId, `Đã gộp thành công <b>Bàn ${srcId}</b> vào <b>Bàn ${targetId}</b> (Tổng: ${mergedTotal}k)!`, {
@@ -4963,9 +6712,10 @@
             renderMap();
             updateDashboardStats();
             updateClock();
-            
+
             initInteractiveMapEvents();
-            
+            initLayoutStudio();
+
             resetZoomAndFit();
             setTimeout(resetZoomAndFit, 100);
 
@@ -4986,7 +6736,7 @@
             // (vẽ lại giữa thao tác là nguyên nhân giật), và bỏ qua khi tab đang ẩn.
             // Số phút vẫn được cập nhật ở vòng kế tiếp nên không sai lệch thông tin.
             setInterval(() => {
-                if (isDragging || document.visibilityState === 'hidden') return;
+                if (isDragging || layoutDrag || document.visibilityState === 'hidden') return;
                 renderMap();
                 const lv = document.getElementById('listView');
                 if (lv && !lv.classList.contains('hidden')) {
