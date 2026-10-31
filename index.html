@@ -654,6 +654,25 @@
         html[data-theme="dark"] .layout-tab:hover { color: #E7CD9C; }
         html[data-theme="dark"] .layout-tab.is-active { background: #C9944A; color: #0C0B09; }
 
+
+        /* Thanh chọn sơ đồ dạng thanh ngang: chỉ hiện "Sơ đồ mặc định" + nút mũi tên; bấm mũi tên để mở thêm
+           "Sơ đồ mặc định 2" và "Sơ đồ tùy chọn". */
+        .layout-extra {
+            display: flex; align-items: center; gap: 4px;
+            overflow: hidden; white-space: nowrap;
+            max-width: 0; opacity: 0; visibility: hidden;
+            transition: max-width .28s ease, opacity .2s ease, visibility 0s linear .28s;
+        }
+        .layout-extra.is-open {
+            max-width: 560px; opacity: 1; visibility: visible;
+            transition: max-width .28s ease, opacity .2s ease .05s, visibility 0s;
+        }
+        .layout-expand-btn { position: relative; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 8px; flex-shrink: 0; }
+        .layout-expand-btn i { font-size: 11px; transition: transform .28s ease; }
+        .layout-expand-btn[aria-expanded="true"] i { transform: rotate(180deg); }
+        .layout-dot { position: absolute; top: 3px; right: 3px; width: 7px; height: 7px; border-radius: 9999px; background: #C9944A; box-shadow: 0 0 0 2px rgba(255,255,255,.85); }
+        html[data-theme="dark"] .layout-dot { box-shadow: 0 0 0 2px #1a1510; }
+
         /* Chế độ chỉnh sửa: bàn hiện viền nét đứt để báo "kéo được" */
         .layout-editing .table-btn {
             cursor: grab;
@@ -1087,7 +1106,7 @@
                         <!-- Cây xanh (scaled size) -->
                         <div class="absolute top-[330px] left-[195px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80 rotate-180"><i class="fa-solid fa-tree text-3xl"></i></div>
                         <div class="absolute top-[720px] left-[195px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80 rotate-180"><i class="fa-solid fa-tree text-3xl"></i></div>
-                        <div class="absolute top-[1020px] left-[255px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80 rotate-180"><i class="fa-solid fa-tree text-3xl"></i></div>
+                        <div class="absolute top-[1020px] left-[285px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80 rotate-180"><i class="fa-solid fa-tree text-3xl"></i></div>
                         <div class="absolute top-[1035px] left-[1269px] w-[84px] h-[84px] rounded-full border border-sage-700/50 bg-sage-950/30 flex items-center justify-center text-sage-500/80 rotate-180"><i class="fa-solid fa-tree text-3xl"></i></div>
 
                         <!-- Ghế Băng Dài -->
@@ -1143,18 +1162,27 @@
 
                     <!-- BỘ CHỌN SƠ ĐỒ — góc trên trái khung sơ đồ. Sơ đồ 1 là mặt bằng gốc của quán;
                          Sơ đồ 2 là mặt bằng tự sắp xếp (kéo thả từng bàn rồi lưu lại, ghi vào localStorage). -->
-                    <div id="layoutSwitcher" class="absolute left-3 sm:left-4 top-3 sm:top-4 z-30">
+                    <div id="layoutSwitcher" class="absolute left-3 sm:left-4 top-3 sm:top-4 z-30 max-w-[calc(100%-4.5rem)]">
                         <div class="flex items-center gap-1 p-1 rounded-xl bg-espresso-900/95 border border-tys-800 shadow-[0_8px_20px_-8px_rgba(26,21,16,0.45)] backdrop-blur-md">
-                            <button type="button" id="layoutTab1" class="layout-tab is-active px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none transition" onclick="selectLayout(1)" aria-label="Xem sơ đồ 1" aria-pressed="true">
-                                <i class="fa-solid fa-map mr-1"></i>Sơ đồ 1
+                            <button type="button" id="layoutTab1" class="layout-tab is-active px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none whitespace-nowrap transition" onclick="selectLayout(1)" aria-label="Xem sơ đồ mặc định" aria-pressed="true">
+                                <i class="fa-solid fa-map mr-1"></i>Sơ đồ mặc định
                             </button>
-                            <button type="button" id="layoutTab2" class="layout-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none transition" onclick="selectLayout(2)" aria-label="Xem sơ đồ 2" aria-pressed="false">
-                                <i class="fa-solid fa-map-location-dot mr-1"></i>Sơ đồ 2
+                            <button type="button" id="layoutPanelToggle" class="layout-tab layout-expand-btn transition" onclick="toggleLayoutPanel()" aria-expanded="false" aria-controls="layoutExtra" aria-label="Mở thêm sơ đồ" title="Mở thêm: Sơ đồ mặc định 2, Sơ đồ tùy chọn">
+                                <i class="fa-solid fa-chevron-right"></i>
+                                <span id="layoutPanelDot" class="layout-dot hidden"></span>
                             </button>
-                            <span class="w-px h-5 bg-tys-800 shrink-0"></span>
-                            <button type="button" id="layoutEditToggle" class="layout-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none transition" onclick="toggleLayoutEdit()" aria-label="Chỉnh sửa vị trí bàn" aria-pressed="false" title="Bật chế độ kéo thả để sắp xếp vị trí bàn của Sơ đồ 2">
-                                <i class="fa-solid fa-pen-ruler mr-1"></i><span id="layoutEditToggleText">Sửa</span>
-                            </button>
+                            <div id="layoutExtra" class="layout-extra">
+                                <span class="w-px h-5 bg-tys-800 shrink-0"></span>
+                                <button type="button" id="layoutTab2" class="layout-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none whitespace-nowrap transition" onclick="selectLayout(2)" aria-label="Xem sơ đồ mặc định 2" aria-pressed="false">
+                                    <i class="fa-solid fa-map-location-dot mr-1 hidden sm:inline"></i><span class="sm:hidden">Mặc định 2</span><span class="hidden sm:inline">Sơ đồ mặc định 2</span>
+                                </button>
+                                <button type="button" id="layoutTab3" class="layout-tab px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] font-bold leading-none whitespace-nowrap transition" onclick="selectLayout(3)" aria-label="Xem sơ đồ tùy chọn" aria-pressed="false">
+                                    <i class="fa-solid fa-sliders mr-1 hidden sm:inline"></i><span class="sm:hidden">Tùy chọn</span><span class="hidden sm:inline">Sơ đồ tùy chọn</span>
+                                </button>
+                                <button type="button" id="layoutEditToggle" class="layout-tab hidden px-2 sm:px-2.5 py-1.5 rounded-lg text-[11px] font-bold leading-none whitespace-nowrap transition border border-tys-800" onclick="toggleLayoutEdit()" aria-label="Chỉnh sửa vị trí bàn" aria-pressed="false" title="Bật chế độ kéo thả để sắp xếp vị trí bàn của Sơ đồ tùy chọn">
+                                    <i class="fa-solid fa-pen-ruler mr-1"></i><span id="layoutEditToggleText">Sửa</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -1163,7 +1191,7 @@
                         <!-- BẢNG ẨN BÀN — chạm số bàn để ẩn / hiện bàn đó trên Sơ đồ 2 (dữ liệu bàn không bị xoá) -->
                         <div id="layoutHidePanel" class="hidden mb-1.5 p-2.5 rounded-2xl bg-espresso-900/95 border border-tys-800 shadow-[0_12px_30px_-10px_rgba(26,21,16,0.55)] backdrop-blur-md">
                             <div class="flex items-center justify-between mb-1.5 gap-2">
-                                <span class="text-[11px] font-bold text-tys-300"><i class="fa-solid fa-eye-slash mr-1"></i>Chạm số bàn để ẩn / hiện trên Sơ đồ 2</span>
+                                <span class="text-[11px] font-bold text-tys-300"><i class="fa-solid fa-eye-slash mr-1"></i>Chạm số bàn để ẩn / hiện trên Sơ đồ tùy chọn</span>
                                 <span id="layoutHideCount" class="text-[10px] font-semibold text-stone-500 whitespace-nowrap"></span>
                             </div>
                             <div id="layoutHideGrid" class="grid grid-cols-8 sm:grid-cols-10 gap-1"></div>
@@ -1172,13 +1200,13 @@
                             <span class="hidden sm:flex items-center gap-1.5 pl-2 pr-1 text-[11px] font-bold text-tys-300 whitespace-nowrap">
                                 <i class="fa-solid fa-hand-pointer"></i>Kéo bàn để sắp xếp
                             </span>
-                            <button type="button" onclick="toggleLayoutHidePanel()" id="layoutHideBtn" class="flex-1 sm:flex-none px-2.5 py-2 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-300 text-[11px] font-bold whitespace-nowrap active:scale-95 transition" title="Ẩn / hiện từng bàn trên Sơ đồ 2" aria-pressed="false">
+                            <button type="button" onclick="toggleLayoutHidePanel()" id="layoutHideBtn" class="flex-1 sm:flex-none px-2.5 py-2 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-300 text-[11px] font-bold whitespace-nowrap active:scale-95 transition" title="Ẩn / hiện từng bàn trên Sơ đồ tùy chọn" aria-pressed="false">
                                 <i class="fa-solid fa-eye-slash mr-1"></i>Ẩn bàn
                             </button>
                             <button type="button" onclick="toggleLayoutDecor()" id="layoutDecorBtn" class="flex-1 sm:flex-none px-2.5 py-2 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-300 text-[11px] font-bold whitespace-nowrap active:scale-95 transition" title="Hiện/ẩn tường, phòng lạnh, lối đi, cây xanh">
                                 <i class="fa-solid fa-border-all mr-1"></i>Nền phòng
                             </button>
-                            <button type="button" onclick="resetLayoutEdit()" class="flex-1 sm:flex-none px-2.5 py-2 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-300 text-[11px] font-bold whitespace-nowrap active:scale-95 transition" title="Đưa tất cả bàn về vị trí gốc của Sơ đồ 1">
+                            <button type="button" onclick="resetLayoutEdit()" class="flex-1 sm:flex-none px-2.5 py-2 rounded-xl bg-espresso-950/70 border border-tys-900 text-stone-300 text-[11px] font-bold whitespace-nowrap active:scale-95 transition" title="Đưa tất cả bàn về vị trí của Sơ đồ mặc định">
                                 <i class="fa-solid fa-arrows-rotate mr-1"></i>Gốc
                             </button>
                             <button type="button" onclick="cancelLayoutEdit()" class="flex-1 sm:flex-none px-2.5 py-2 rounded-xl bg-espresso-950/70 border border-tys-900 text-brick-300 text-[11px] font-bold whitespace-nowrap active:scale-95 transition">
@@ -1307,7 +1335,8 @@
                     <!-- Tìm món trong toàn bộ menu (dùng khi khách kêu món không phải best seller) -->
                     <div class="relative">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 text-[11px] z-10"></i>
-                        <input type="text" id="menuSearchInput" oninput="handleMenuSearch()" onkeydown="handleMenuSearchKeydown(event)" placeholder="Tìm món..." class="w-full bg-espresso-900 border border-tys-900 rounded-lg pl-8 pr-3 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
+                        <input type="text" id="menuSearchInput" oninput="handleMenuSearch()" onfocus="handleMenuSearch()" onkeydown="handleMenuSearchKeydown(event)" placeholder="Tìm món..." autocomplete="off" class="w-full bg-espresso-900 border border-tys-900 rounded-lg pl-8 pr-8 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-tys-600 placeholder-stone-600">
+                        <button type="button" id="menuSearchClear" onclick="clearMenuSearch()" aria-label="Xóa ô tìm món" title="Xóa để tìm món khác" class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full text-stone-500 hover:text-stone-200 text-[11px] z-10"><i class="fa-solid fa-xmark"></i></button>
                         <div id="menuSearchResults" class="hidden absolute z-20 left-0 right-0 mt-1 max-h-[180px] overflow-y-auto bg-espresso-900 border border-tys-800 rounded-lg shadow-xl divide-y divide-tys-950/80"></div>
                     </div>
 
@@ -2298,9 +2327,19 @@
         // nằm ở onLayoutPointerMove (dấu trừ trước dx/scale).
         // ==================================================================================
         const LAYOUT2_KEY = 'tys_layout_2';
-        const LAYOUT_ACTIVE_KEY = 'tys_layout_active';
+        const LAYOUT_ACTIVE_KEY = 'tys_layout_active';          // khóa cũ: '2' = sơ đồ tự sắp xếp (nay là Sơ đồ tùy chọn)
+        const LAYOUT_ACTIVE_KEY_V2 = 'tys_layout_active_v2';    // khóa mới: '1' | '2' | '3'
 
-        let activeLayout = 1;            // 1 | 2 — mặt bằng đang xem
+        // SƠ ĐỒ MẶC ĐỊNH 2 — mặt bằng cố định (lấy từ ảnh sơ đồ), chỉ xem, không chỉnh sửa.
+        // Toạ độ tính theo hệ toạ độ #mapWrapper (2100 x 1350). Bàn 4, 5, 7, 8 bị ẩn trên sơ đồ này.
+        const LAYOUT_PRESET2 = {
+            tables: { 1: { x: 82, y: 134 }, 2: { x: 240, y: 78 }, 3: { x: 241, y: 191 }, 4: { x: 83, y: 478 }, 5: { x: 83, y: 588 }, 6: { x: 446, y: 860 }, 7: { x: 161, y: 1006 }, 8: { x: 109, y: 853 }, 9: { x: 302, y: 712 }, 10: { x: 415, y: 712 }, 11: { x: 450, y: 969 }, 12: { x: 447, y: 1119 }, 13: { x: 619, y: 1120 }, 15: { x: 236, y: 532 }, 16: { x: 347, y: 532 }, 17: { x: 1178, y: 467 }, 18: { x: 1459, y: 467 }, 19: { x: 1257, y: 656 }, 20: { x: 1387, y: 657 }, 21: { x: 1516, y: 656 }, 22: { x: 1216, y: 1154 }, 23: { x: 1495, y: 1154 }, 24: { x: 1606, y: 1154 }, 25: { x: 1718, y: 1154 }, 26: { x: 4, y: 397 }, 29: { x: 139, y: 964 }, 30: { x: 90, y: 855 }, 31: { x: 7, y: 633 } },
+            hidden: [4, 5, 7, 8],
+            decor: true
+        };
+        let layoutPanelOpen = false;     // thanh chọn sơ đồ đang mở rộng (hiện thêm Mặc định 2 / Tùy chọn)
+
+        let activeLayout = 1;            // 1 = Sơ đồ mặc định | 2 = Sơ đồ mặc định 2 | 3 = Sơ đồ tùy chọn
         let isLayoutEditing = false;     // đang bật chế độ kéo thả
         let layoutDefaultPositions = {}; // toạ độ gốc đọc từ DOM lúc khởi động
         let layout2Saved = null;         // { v, tables:{id:{x,y}}, decor, savedAt } đã lưu
@@ -2339,7 +2378,7 @@
         }
 
         function syncHiddenTables() {
-            const hidden2 = (activeLayout === 2) ? currentHiddenOnLayout2() : [];
+            const hidden2 = (activeLayout === 3) ? currentHiddenOnLayout2() : (activeLayout === 2 ? LAYOUT_PRESET2.hidden : []);
             for (let i = 1; i <= TOTAL_TABLES; i++) {
                 const node = document.getElementById(`table-node-${i}`);
                 if (!node) continue;
@@ -2396,7 +2435,7 @@
                 layout2Working.hidden.push(id);
                 const t = tablesData[id];
                 if (t && t.status && t.status !== 'empty') {
-                    ackToast('Bàn ' + id + ' đang có khách — ẩn khỏi Sơ đồ 2 thì sẽ không thấy bàn này trên sơ đồ (vẫn còn trong Danh sách).', 'info', 5000);
+                    ackToast('Bàn ' + id + ' đang có khách — ẩn khỏi Sơ đồ tùy chọn thì sẽ không thấy bàn này trên sơ đồ (vẫn còn trong Danh sách).', 'info', 5000);
                 }
             } else {
                 layout2Working.hidden.splice(k, 1);
@@ -2457,27 +2496,37 @@
         }
 
         function updateLayoutControls() {
-            const t1 = document.getElementById('layoutTab1');
-            const t2 = document.getElementById('layoutTab2');
             const toggle = document.getElementById('layoutEditToggle');
             const toggleText = document.getElementById('layoutEditToggleText');
             const bar = document.getElementById('layoutEditBar');
             const mapContainer = document.getElementById('mapContainer');
             const fab = document.getElementById('fabRecenter');
 
-            if (t1) {
-                t1.classList.toggle('is-active', activeLayout === 1);
-                t1.setAttribute('aria-pressed', activeLayout === 1 ? 'true' : 'false');
+            [1, 2, 3].forEach(function (n) {
+                const t = document.getElementById('layoutTab' + n);
+                if (!t) return;
+                t.classList.toggle('is-active', activeLayout === n);
+                t.setAttribute('aria-pressed', activeLayout === n ? 'true' : 'false');
+            });
+            // Đang chỉnh sửa thì luôn mở rộng thanh để thấy nút Sửa/Xong
+            if (isLayoutEditing) layoutPanelOpen = true;
+            const extra = document.getElementById('layoutExtra');
+            const pbtn = document.getElementById('layoutPanelToggle');
+            const dot = document.getElementById('layoutPanelDot');
+            if (extra) extra.classList.toggle('is-open', layoutPanelOpen);
+            if (pbtn) {
+                pbtn.setAttribute('aria-expanded', layoutPanelOpen ? 'true' : 'false');
+                pbtn.title = layoutPanelOpen ? 'Thu gọn' : 'Mở thêm: Sơ đồ mặc định 2, Sơ đồ tùy chọn';
             }
-            if (t2) {
-                t2.classList.toggle('is-active', activeLayout === 2);
-                t2.setAttribute('aria-pressed', activeLayout === 2 ? 'true' : 'false');
-            }
+            // Chấm báo: đang thu gọn nhưng đang xem một sơ đồ khác sơ đồ mặc định
+            if (dot) dot.classList.toggle('hidden', layoutPanelOpen || activeLayout === 1);
             if (toggle) {
                 toggle.classList.toggle('is-active', isLayoutEditing);
                 toggle.setAttribute('aria-pressed', isLayoutEditing ? 'true' : 'false');
             }
             if (toggleText) toggleText.textContent = isLayoutEditing ? 'Xong' : 'Sửa';
+            // Nút Sửa chỉ xuất hiện khi đang xem Sơ đồ tùy chọn (hoặc đang sửa) — đúng sơ đồ mà nó chỉnh
+            if (toggle) toggle.classList.toggle('hidden', !(activeLayout === 3 || isLayoutEditing));
             if (bar) bar.classList.toggle('hidden', !isLayoutEditing);
             if (!isLayoutEditing) {
                 const hp = document.getElementById('layoutHidePanel');
@@ -2491,11 +2540,20 @@
             syncDecorButton();
         }
 
+        function toggleLayoutPanel() {
+            if (isLayoutEditing) return;   // đang sửa: giữ thanh mở
+            layoutPanelOpen = !layoutPanelOpen;
+            updateLayoutControls();
+        }
+
         function applyActiveLayout() {
-            if (activeLayout === 2) {
+            if (activeLayout === 3) {
                 applyLayoutPositions(layout2Saved ? layout2Saved.tables : null);
-                // Sơ đồ 2 giữ nền phòng giống Sơ đồ 1 cho tới khi người dùng tự tắt bằng nút "Nền phòng"
+                // Sơ đồ tùy chọn giữ nền phòng giống sơ đồ mặc định cho tới khi người dùng tự tắt bằng nút "Nền phòng"
                 setLayoutDecor(layout2Saved ? !!layout2Saved.decor : true);
+            } else if (activeLayout === 2) {
+                applyLayoutPositions(LAYOUT_PRESET2.tables);
+                setLayoutDecor(LAYOUT_PRESET2.decor);
             } else {
                 applyLayoutPositions(null);
                 setLayoutDecor(true);
@@ -2503,14 +2561,14 @@
         }
 
         function selectLayout(n) {
-            n = (n === 2) ? 2 : 1;
+            n = (n === 3) ? 3 : (n === 2 ? 2 : 1);
             if (isLayoutEditing) {
                 ackToast('Đang chỉnh sửa sơ đồ — hãy Lưu hoặc Hủy trước khi chuyển sơ đồ.', 'info', 3500);
                 return;
             }
             if (n === activeLayout) return;
             activeLayout = n;
-            try { localStorage.setItem(LAYOUT_ACTIVE_KEY, String(n)); } catch (e) {}
+            try { localStorage.setItem(LAYOUT_ACTIVE_KEY_V2, String(n)); } catch (e) {}
             applyActiveLayout();
             updateLayoutControls();
             setTimeout(resetZoomAndFit, 30);
@@ -2535,10 +2593,10 @@
             lastTapTimestamp = 0;
             lastTapTableId = null;
 
-            // Chỉnh sửa luôn thao tác trên Sơ đồ 2
-            if (activeLayout !== 2) {
-                activeLayout = 2;
-                try { localStorage.setItem(LAYOUT_ACTIVE_KEY, '2'); } catch (e) {}
+            // Chỉnh sửa luôn thao tác trên Sơ đồ tùy chọn
+            if (activeLayout !== 3) {
+                activeLayout = 3;
+                try { localStorage.setItem(LAYOUT_ACTIVE_KEY_V2, '3'); } catch (e) {}
             }
 
             layout2Working = {
@@ -2569,11 +2627,11 @@
             catch (e) { persisted = false; }
             isLayoutEditing = false;
             layout2Working = null;
-            activeLayout = 2;
-            try { localStorage.setItem(LAYOUT_ACTIVE_KEY, '2'); } catch (e) {}
+            activeLayout = 3;
+            try { localStorage.setItem(LAYOUT_ACTIVE_KEY_V2, '3'); } catch (e) {}
             syncHiddenTables();          // thoát chế độ Sửa: bàn bị ẩn biến mất hẳn (hết hiện mờ)
             updateLayoutControls();
-            ackToast(persisted ? 'Đã lưu Sơ đồ 2.' : 'Không lưu được vào bộ nhớ trình duyệt.', persisted ? 'ok' : 'alert', 3000);
+            ackToast(persisted ? 'Đã lưu Sơ đồ tùy chọn.' : 'Không lưu được vào bộ nhớ trình duyệt.', persisted ? 'ok' : 'alert', 3000);
         }
 
         function cancelLayoutEdit() {
@@ -2581,7 +2639,7 @@
             isLayoutEditing = false;
             layout2Working = null;
             if (layoutDrag) endLayoutDrag();
-            if (activeLayout === 2) applyActiveLayout();
+            if (activeLayout === 3) applyActiveLayout();
             updateLayoutControls();
         }
 
@@ -2680,7 +2738,9 @@
             layoutDefaultPositions = readLayoutDefaults();
             layout2Saved = loadLayout2Saved();
             try {
-                activeLayout = localStorage.getItem(LAYOUT_ACTIVE_KEY) === '2' ? 2 : 1;
+                const v2 = localStorage.getItem(LAYOUT_ACTIVE_KEY_V2);
+                if (v2 === '1' || v2 === '2' || v2 === '3') activeLayout = Number(v2);
+                else activeLayout = (localStorage.getItem(LAYOUT_ACTIVE_KEY) === '2') ? 3 : 1;   // dữ liệu cũ: "Sơ đồ 2" = Sơ đồ tùy chọn
             } catch (e) { activeLayout = 1; }
             applyActiveLayout();
             updateLayoutControls();
@@ -2716,13 +2776,6 @@
                 tablesData[i] = { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '', paidGuests: 0, unpaidGuests: 0 };
             }
 
-            tablesData[2] = { id: 2, status: 'unpaid', items: [{name: 'Cà phê đen đá', price: 22}], total: 22, startTime: Date.now() - 15*60*1000, paymentMethod: 'Tiền mặt', note: 'Mới vào' };
-            tablesData[9] = { id: 9, status: 'unpaid', items: [{name: 'Cà phê đen đá', price: 22}], total: 22, startTime: Date.now() - 35*60*1000, paymentMethod: 'Tiền mặt', note: 'Sắp về' };
-            tablesData[12] = { id: 12, status: 'unpaid', items: [{name: 'Bạc xỉu', price: 25}], total: 25, startTime: Date.now() - 55*60*1000, paymentMethod: 'Tiền mặt', note: 'Ngồi lâu - Nhấn giữ để thu tiền' };
-            
-            tablesData[4] = { id: 4, status: 'paid', items: [{name: 'Cà phê đen đá', price: 22}, {name: 'Cà phê đen đá', price: 22}], total: 44, startTime: Date.now() - 40*60*1000, paymentMethod: 'Chuyển khoản QR', note: 'Đã CK VietQR' };
-            tablesData[17] = { id: 17, status: 'paid', items: [{name: 'Cà phê đen đá', price: 22}], total: 22, startTime: Date.now() - 5*60*1000, paymentMethod: 'Tiền mặt', note: 'Quầy bar' };
-            tablesData[25] = { id: 25, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: 'Vừa đi', paidGuests: 0, unpaidGuests: 0 };
         }
 
         function saveData() {
@@ -4156,6 +4209,9 @@
         function hideMenuSearchResults() {
             const box = document.getElementById('menuSearchResults');
             if (box) { box.classList.add('hidden'); box.innerHTML = ''; }
+            const inp = document.getElementById('menuSearchInput');
+            const clr = document.getElementById('menuSearchClear');
+            if (clr) clr.classList.toggle('hidden', !(inp && inp.value));
         }
 
         // Tìm trong toàn bộ MENU_DATA (không dấu vẫn tìm được) — dùng khi khách kêu món
@@ -4166,6 +4222,8 @@
             const box = document.getElementById('menuSearchResults');
             const query = normalizeVN(input.value.trim());
 
+            const clr = document.getElementById('menuSearchClear');
+            if (clr) clr.classList.toggle('hidden', !input.value);
             if (!query) { hideMenuSearchResults(); return; }
 
             const matches = MENU_DATA.filter(item => normalizeVN(item.name).includes(query)).slice(0, 8);
@@ -4182,18 +4240,18 @@
                     return `
                         <div class="w-full flex items-center hover:bg-espresso-800 transition">
                             <button type="button" onclick="selectMenuItem('${safeName} (Size M)', ${item.sizes.M})" class="flex-1 min-w-0 flex items-center justify-between px-3 py-2 text-left">
-                                <span class="text-stone-200 font-medium truncate mr-2">${item.name}</span>
+                                <span class="text-stone-200 font-medium truncate mr-2">${item.name}${searchCountBadge(item.name + ' (Size M)')}</span>
                                 <span class="text-tys-400 font-bold text-[11px] shrink-0">${item.sizes.M}k</span>
                             </button>
                             <button type="button" onclick="selectMenuItem('${safeName} (Size L)', ${item.sizes.L})" title="Thêm size L (${item.sizes.L}k)" class="w-9 h-full shrink-0 border-l border-tys-900 text-[10px] font-bold text-stone-500 hover:text-tys-300 transition flex items-center justify-center py-2">
-                                L
+                                L${searchCountBadge(item.name + ' (Size L)')}
                             </button>
                         </div>
                     `;
                 }
                 return `
                     <button type="button" onclick="selectMenuItem('${safeName}', ${item.price})" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-espresso-800 transition">
-                        <span class="text-stone-200 font-medium truncate mr-2">${item.name}</span>
+                        <span class="text-stone-200 font-medium truncate mr-2">${item.name}${searchCountBadge(item.name)}</span>
                         <span class="text-tys-400 font-bold text-[11px] shrink-0">${item.price}k</span>
                     </button>
                 `;
@@ -4213,14 +4271,34 @@
             else selectMenuItem(match.name, match.price);
         }
 
-        // Thêm món tìm được từ ô tìm kiếm, rồi dọn ô tìm kiếm để gõ tiếp món khác
+        // Số ly đã có trong bàn của đúng món (và size) này — hiện thành nhãn "×N" ngay trên dòng kết quả
+        function searchCountBadge(fullName) {
+            const n = modalItems.reduce((c, it) => c + (it && it.name === fullName ? 1 : 0), 0);
+            return n > 0 ? ` <span class="ml-1 px-1.5 py-0.5 rounded-full bg-tys-500 text-ink text-[10px] font-extrabold align-middle">×${n}</span>` : '';
+        }
+
+        // Thêm món tìm được từ ô tìm kiếm. GIỮ NGUYÊN ô tìm và danh sách kết quả để khách kêu nhiều ly
+        // cùng món thì chạm liên tiếp (nhãn ×N tăng dần); muốn tìm món khác thì bấm nút X trong ô tìm.
         function selectMenuItem(name, price) {
             addPresetItem(name, price);
+            handleMenuSearch();   // vẽ lại kết quả để cập nhật nhãn ×N
+        }
+
+        function clearMenuSearch() {
             const input = document.getElementById('menuSearchInput');
             input.value = '';
-            hideMenuSearchResults();
+            handleMenuSearch();
             input.focus();
         }
+
+        // Chạm ra ngoài ô tìm thì đóng danh sách kết quả (chữ đã gõ vẫn giữ; chạm vào ô tìm sẽ mở lại)
+        document.addEventListener('pointerdown', function (e) {
+            const input = document.getElementById('menuSearchInput');
+            const box = document.getElementById('menuSearchResults');
+            if (!input || !box || box.classList.contains('hidden')) return;
+            const wrap = input.parentElement;
+            if (wrap && !wrap.contains(e.target)) { box.classList.add('hidden'); }
+        });
 
         // Mở/thu gọn khu vực "Gọi món" (best seller + tìm kiếm + món tự ghi).
         // expand=true: mở ra (khách kêu thêm món / bàn còn trống). expand=false: thu gọn,
