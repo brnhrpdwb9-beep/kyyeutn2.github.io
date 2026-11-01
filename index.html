@@ -6979,94 +6979,227 @@ function togglePassVisibility(inputId, btn) {
     </script>
 
     <!-- ============================================================
-         BẢNG THÔNG BÁO BẮT BUỘC ĐỌC
-         - Hiện sau khi nhân viên đăng nhập, cho tới khi tích ô "Tôi đã đọc" và bấm xác nhận.
-         - Ghi nhớ THEO TỪNG TÀI KHOẢN + PHIÊN BẢN nội dung (NOTICE_VERSION).
-         - Muốn bắt cả quán đọc lại: đổi NOTICE_VERSION (vd 'v2').
-         - Có tài liệu hướng dẫn thì điền đường dẫn vào NOTICE_GUIDE_URL để hiện nút mở.
+         PHIẾU THÔNG BÁO BẮT BUỘC ĐỌC (thiết kế dạng phiếu bill của quán)
+         - Hiện sau khi nhân viên đăng nhập, cho tới khi tích ô xác nhận và bấm "Xác nhận đã đọc".
+         - Ghi nhớ THEO TỪNG TÀI KHOẢN + PHIÊN BẢN (NOTICE_VERSION). Đổi 'v2' -> 'v3' để cả quán đọc lại.
+         - ADMIN có nút "Xem lại thông báo" (menu ⋯ và bảng tài khoản) để xem bất cứ lúc nào, không ghi nhận gì.
+         - Có tài liệu hướng dẫn thì điền đường dẫn vào NOTICE_GUIDE_URL để hiện liên kết mở tài liệu.
          ============================================================ -->
     <script>
     (function () {
-        var NOTICE_VERSION = 'v1';
-        var NOTICE_GUIDE_URL = '';   // vd 'https://.../huong-dan.pdf' — để trống thì ẩn nút
+        var NOTICE_VERSION = 'v2';
+        var NOTICE_GUIDE_URL = '';
+
+        // Font chữ tiêu đề dạng nhãn/phiếu (có dấu tiếng Việt). Lỗi tải thì rơi về font hẹp của hệ thống.
+        try {
+            var fl = document.createElement('link');
+            fl.rel = 'stylesheet';
+            fl.href = 'https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&display=swap';
+            document.head.appendChild(fl);
+        } catch (e) {}
+
+        var css = document.createElement('style');
+        css.id = 'tysNoticeCss';
+        css.textContent = [
+            '.tn-ov{position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;',
+            'padding:max(14px,env(safe-area-inset-top,0px)) 14px max(14px,env(safe-area-inset-bottom,0px));',
+            'background:rgba(14,12,10,.84);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);',
+            '--ink:#1b2230;--paper:#ecefee;--red:#b3261e;--blue:#27389a;--rule:rgba(27,34,48,.32);}',
+            '.tn-wrap{display:flex;width:100%;max-width:420px;max-height:100%;filter:drop-shadow(0 22px 34px rgba(0,0,0,.55));}',
+            '.tn-slip{position:relative;display:flex;flex-direction:column;min-height:0;width:100%;color:var(--ink);',
+            'font-family:"Plus Jakarta Sans",system-ui,sans-serif;',
+            'background:repeating-linear-gradient(0deg,rgba(27,34,48,.022) 0 1px,transparent 1px 3px),var(--paper);',
+            '-webkit-mask:linear-gradient(#000 0 0) top/100% calc(100% - 9px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/18px 9px repeat-x;',
+            'mask:linear-gradient(#000 0 0) top/100% calc(100% - 9px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/18px 9px repeat-x;}',
+            '.tn-slip.tn-hit{animation:tnHit .22s ease-out;}',
+            '@keyframes tnHit{0%{transform:translateY(0)}40%{transform:translateY(3px)}100%{transform:translateY(0)}}',
+
+            '.tn-prev{display:none;align-items:center;gap:10px;padding:8px 14px;background:var(--ink);color:#d8dde6;font-size:12px;font-weight:600;line-height:1.35;}',
+            '.tn-prev button{margin-left:auto;flex-shrink:0;padding:6px 12px;border:1px solid #6f7a90;border-radius:4px;background:transparent;color:#fff;font:800 12px "Plus Jakarta Sans",sans-serif;cursor:pointer;}',
+
+            '.tn-head{padding:14px 20px 10px;}',
+            '.tn-shop{display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:700;color:rgba(27,34,48,.62);margin-bottom:8px;}',
+            '.tn-titlerow{display:flex;gap:12px;align-items:center;}',
+            '.tn-tri{flex-shrink:0;width:42px;height:42px;}',
+            '.tn-h1{margin:0;font-family:"Barlow Condensed","Roboto Condensed","Arial Narrow",sans-serif;font-weight:800;font-size:36px;line-height:.94;letter-spacing:.01em;color:var(--ink);white-space:nowrap;}',
+            '.tn-h2{margin:6px 0 0;font-size:13px;font-weight:800;line-height:1.3;color:var(--red);}',
+
+            '.tn-rule{border:0;border-top:2px dashed var(--rule);margin:0;}',
+            '.tn-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 20px 4px;}',
+            '.tn-req{margin:0 0 12px;padding-left:12px;border-left:4px solid var(--red);font-size:14px;font-weight:800;line-height:1.45;}',
+            '.tn-sub{margin:0 0 2px;font-size:12px;font-weight:800;color:rgba(27,34,48,.62);}',
+            '.tn-list{list-style:none;margin:0;padding:0;}',
+            '.tn-list li{display:flex;gap:11px;padding:8px 0;border-top:1.5px dashed var(--rule);font-size:13.5px;font-weight:500;line-height:1.55;}',
+            '.tn-list li::before{content:"";flex-shrink:0;width:7px;height:7px;margin-top:8px;background:var(--ink);transform:rotate(45deg);}',
+            '.tn-hl{color:inherit;font-weight:700;background:linear-gradient(transparent 52%,rgba(255,213,0,.8) 52% 94%,transparent 94%);padding:0 1px;}',
+
+            '.tn-foot{padding:12px 20px 24px;}',
+            '.tn-guide{display:none;margin:0 0 12px;font-size:13px;font-weight:800;color:var(--ink);text-decoration:underline;text-underline-offset:3px;}',
+            '.tn-check{display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-size:14px;font-weight:700;line-height:1.5;}',
+            '.tn-check input{-webkit-appearance:none;appearance:none;flex-shrink:0;width:28px;height:28px;margin:0;border:2.5px solid var(--ink);border-radius:4px;background:transparent;cursor:pointer;}',
+            '.tn-check input:checked{background:var(--ink) url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23ecefee\' stroke-width=\'3.4\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M5 12.5l4.5 4.5L19 7.5\'/%3E%3C/svg%3E") center/20px no-repeat;}',
+            '.tn-check input:focus-visible,.tn-btn:focus-visible,.tn-prev button:focus-visible{outline:3px solid var(--blue);outline-offset:3px;}',
+
+            '.tn-zone{position:relative;display:flex;align-items:center;justify-content:center;height:56px;margin:10px 0;border:2px dashed var(--rule);border-radius:6px;font-size:12px;font-weight:600;color:rgba(27,34,48,.5);}',
+            '.tn-stamp{position:absolute;display:none;flex-direction:column;align-items:center;padding:5px 16px 6px;border:3px solid var(--blue);outline:1.5px solid var(--blue);outline-offset:3px;border-radius:6px;',
+            'color:var(--blue);mix-blend-mode:multiply;opacity:.9;transform:rotate(-8deg);filter:url(#tnInk);pointer-events:none;}',
+            '.tn-stamp b{font-family:"Barlow Condensed","Roboto Condensed","Arial Narrow",sans-serif;font-weight:800;font-size:30px;line-height:1;letter-spacing:.06em;}',
+            '.tn-stamp i{font-style:normal;font-size:11px;font-weight:800;line-height:1.3;}',
+            '.tn-stamp.tn-on{display:flex;animation:tnSlam .26s cubic-bezier(.2,.9,.3,1.2) both;}',
+            '@keyframes tnSlam{0%{opacity:0;transform:translateY(-16px) rotate(-17deg) scale(1.9)}65%{opacity:.95;transform:rotate(-8deg) scale(.96)}100%{opacity:.9;transform:rotate(-8deg) scale(1)}}',
+
+            '.tn-btn{display:block;width:100%;height:48px;border:2px solid var(--ink);border-radius:6px;background:var(--ink);color:var(--paper);font:800 15px "Plus Jakarta Sans",sans-serif;cursor:pointer;}',
+            '.tn-btn:disabled{background:transparent;border-style:dashed;border-color:var(--rule);color:rgba(27,34,48,.45);cursor:not-allowed;}',
+            '@media (max-height:620px){.tn-h1{font-size:30px}.tn-zone{height:48px;margin:8px 0}.tn-tri{width:34px;height:34px}}',
+            '@media (prefers-reduced-motion:reduce){.tn-stamp.tn-on{animation:none}.tn-slip.tn-hit{animation:none}}'
+        ].join('');
+        document.head.appendChild(css);
 
         var ov = document.createElement('div');
+        ov.className = 'tn-ov';
         ov.id = 'mustReadOverlay';
-        ov.setAttribute('role', 'alertdialog');
+        ov.setAttribute('role', 'dialog');
         ov.setAttribute('aria-modal', 'true');
-        ov.style.cssText = 'position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;'
-            + 'padding:max(14px,env(safe-area-inset-top,0px)) 14px max(14px,env(safe-area-inset-bottom,0px));'
-            + 'background:rgba(8,6,4,.88);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);';
+        ov.setAttribute('aria-labelledby', 'tnTitle');
+        ov.tabIndex = -1;
         ov.innerHTML = ''
-            + '<div style="width:100%;max-width:520px;max-height:100%;display:flex;flex-direction:column;background:#17140f;color:#e8e2d8;'
-            +   'border:1px solid #5a4318;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.6);overflow:hidden;font-family:system-ui,-apple-system,\'Segoe UI\',sans-serif">'
-            +   '<div style="padding:16px 18px;background:linear-gradient(135deg,#7a1f1f,#b45309);color:#fff">'
-            +     '<div style="font-weight:800;font-size:16px;line-height:1.35">⚠️ THÔNG BÁO QUAN TRỌNG – VUI LÒNG ĐỌC KỸ HƯỚNG DẪN</div>'
+            + '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="tnInk" x="-5%" y="-5%" width="110%" height="110%">'
+            +   '<feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="4" result="t"/>'
+            +   '<feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.1 1.85" result="m"/>'
+            +   '<feComposite in="SourceGraphic" in2="m" operator="in"/></filter></svg>'
+            + '<div class="tn-wrap"><div class="tn-slip" id="tnSlip">'
+            +   '<div class="tn-prev" id="tnPrev"><span>Bản xem thử dành cho admin. Nhân viên không có nút Đóng.</span><button type="button" id="tnClose">Đóng</button></div>'
+            +   '<div class="tn-head">'
+            +     '<div class="tn-shop"><span>TYS Coffee</span><span id="tnWho"></span></div>'
+            +     '<div class="tn-titlerow">'
+            +       '<svg class="tn-tri" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 4 46 43H2z" fill="#b3261e" stroke="#b3261e" stroke-width="3" stroke-linejoin="round"/><path d="M24 17v13" stroke="#ecefee" stroke-width="4.4" stroke-linecap="round"/><circle cx="24" cy="36" r="2.7" fill="#ecefee"/></svg>'
+            +       '<div><h1 class="tn-h1" id="tnTitle">THÔNG BÁO<br>QUAN TRỌNG</h1><p class="tn-h2">VUI LÒNG ĐỌC KỸ HƯỚNG DẪN</p></div>'
+            +     '</div>'
             +   '</div>'
-            +   '<div style="padding:16px 18px;overflow-y:auto;-webkit-overflow-scrolling:touch;font-size:14px;line-height:1.6">'
-            +     '<p style="margin:0 0 14px;font-weight:800;color:#f3d9a4">YÊU CẦU TOÀN BỘ NHÂN VIÊN ĐỌC KỸ TÀI LIỆU HƯỚNG DẪN SỬ DỤNG TRƯỚC KHI THAO TÁC HỆ THỐNG ORDER.</p>'
-            +     '<p style="margin:0 0 6px;font-weight:800">LƯU Ý QUAN TRỌNG:</p>'
-            +     '<ul style="margin:0 0 4px;padding-left:20px">'
-            +       '<li style="margin-bottom:8px">Mọi thao tác gửi ORDER trên hệ thống đều được thông báo trực tiếp đến thu ngân để tiếp nhận và nhập bill.</li>'
-            +       '<li style="margin-bottom:8px">Nhân viên cần hiểu rõ cách sử dụng hệ thống trước khi thực hiện, tránh thao tác sai hoặc nhầm lẫn trong quá trình phục vụ.</li>'
-            +       '<li style="margin-bottom:8px">Việc không đọc kỹ hướng dẫn có thể dẫn đến sai lệch thông tin order, sai bill hoặc nhầm bill giữa các bàn, ảnh hưởng trực tiếp đến quá trình thanh toán và vận hành của quán.</li>'
+            +   '<hr class="tn-rule">'
+            +   '<div class="tn-scroll">'
+            +     '<p class="tn-req">YÊU CẦU TOÀN BỘ NHÂN VIÊN ĐỌC KỸ TÀI LIỆU HƯỚNG DẪN SỬ DỤNG TRƯỚC KHI THAO TÁC HỆ THỐNG ORDER.</p>'
+            +     '<p class="tn-sub">LƯU Ý QUAN TRỌNG:</p>'
+            +     '<ul class="tn-list">'
+            +       '<li><span>Mọi thao tác gửi ORDER trên hệ thống đều được thông báo trực tiếp đến thu ngân để tiếp nhận và nhập bill.</span></li>'
+            +       '<li><span>Nhân viên cần hiểu rõ cách sử dụng hệ thống trước khi thực hiện, tránh thao tác sai hoặc nhầm lẫn trong quá trình phục vụ.</span></li>'
+            +       '<li><span>Việc không đọc kỹ hướng dẫn có thể dẫn đến <mark class="tn-hl">sai lệch thông tin order, sai bill hoặc nhầm bill giữa các bàn</mark>, ảnh hưởng trực tiếp đến quá trình thanh toán và vận hành của quán.</span></li>'
             +     '</ul>'
             +   '</div>'
-            +   '<div style="padding:14px 18px 16px;border-top:1px solid #2a241b;background:#120f0b">'
-            +     '<div id="mustReadGuide" style="display:none;margin-bottom:12px"><a id="mustReadGuideLink" href="#" target="_blank" rel="noopener" '
-            +       'style="display:block;text-align:center;padding:10px;border-radius:10px;border:1px solid #c8963c;color:#e6c48c;font-weight:800;font-size:13px;text-decoration:none">📖 Mở tài liệu hướng dẫn</a></div>'
-            +     '<label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14px;font-weight:700;line-height:1.45;margin-bottom:12px">'
-            +       '<input type="checkbox" id="mustReadCheck" style="width:22px;height:22px;flex-shrink:0;margin-top:1px;accent-color:#c8963c;cursor:pointer">'
-            +       '<span>Tôi đã đọc kỹ tài liệu hướng dẫn và hiểu rõ các lưu ý trên.</span>'
-            +     '</label>'
-            +     '<button type="button" id="mustReadBtn" disabled style="width:100%;padding:13px;border:0;border-radius:12px;font-weight:800;font-size:15px;'
-            +       'background:#c8963c;color:#1a1510;cursor:pointer;opacity:.4">XÁC NHẬN ĐÃ ĐỌC</button>'
+            +   '<hr class="tn-rule">'
+            +   '<div class="tn-foot">'
+            +     '<a class="tn-guide" id="tnGuide" href="#" target="_blank" rel="noopener">Mở tài liệu hướng dẫn</a>'
+            +     '<label class="tn-check"><input type="checkbox" id="tnCheck"><span>Tôi đã đọc kỹ tài liệu hướng dẫn và hiểu rõ các lưu ý trên.</span></label>'
+            +     '<div class="tn-zone" aria-live="polite"><span id="tnHint">Tích ô xác nhận để đóng dấu</span>'
+            +       '<div class="tn-stamp" id="tnStamp"><b>ĐÃ ĐỌC</b><i id="tnStampMeta"></i></div></div>'
+            +     '<button type="button" class="tn-btn" id="tnBtn" disabled>Xác nhận đã đọc</button>'
             +   '</div>'
-            + '</div>';
+            + '</div></div>';
         document.body.appendChild(ov);
 
-        var chk = ov.querySelector('#mustReadCheck');
-        var btn = ov.querySelector('#mustReadBtn');
-        if (NOTICE_GUIDE_URL) {
-            ov.querySelector('#mustReadGuide').style.display = 'block';
-            ov.querySelector('#mustReadGuideLink').href = NOTICE_GUIDE_URL;
-        }
+        var $ = function (id) { return ov.querySelector('#' + id); };
+        var chk = $('tnCheck'), btn = $('tnBtn'), stamp = $('tnStamp'), hint = $('tnHint'),
+            slip = $('tnSlip'), prev = $('tnPrev');
+        var preview = false;
 
+        if (NOTICE_GUIDE_URL) { var g = $('tnGuide'); g.style.display = 'inline-block'; g.href = NOTICE_GUIDE_URL; }
+
+        function userName() { try { return (window.currentUser && currentUser.name) || ''; } catch (e) { return ''; } }
         function keyFor() {
             var u = '';
             try { u = (window.currentUser && currentUser.user) || ''; } catch (e) {}
             return u ? 'tys_notice_' + NOTICE_VERSION + ':' + u : '';
         }
         function acked(k) { try { return !!localStorage.getItem(k); } catch (e) { return false; } }
+        function two(n) { return (n < 10 ? '0' : '') + n; }
+        function stampText() {
+            var d = new Date();
+            return userName() + ' · ' + two(d.getDate()) + '/' + two(d.getMonth() + 1) + ' ' + two(d.getHours()) + ':' + two(d.getMinutes());
+        }
 
         chk.addEventListener('change', function () {
             btn.disabled = !chk.checked;
-            btn.style.opacity = chk.checked ? '1' : '.4';
+            if (chk.checked) {
+                $('tnStampMeta').textContent = stampText();
+                hint.style.display = 'none';
+                stamp.classList.remove('tn-on'); void stamp.offsetWidth; stamp.classList.add('tn-on');
+                slip.classList.remove('tn-hit'); void slip.offsetWidth;
+                setTimeout(function () { slip.classList.add('tn-hit'); }, 120);
+            } else {
+                stamp.classList.remove('tn-on');
+                hint.style.display = '';
+            }
         });
         btn.addEventListener('click', function () {
             if (!chk.checked) return;
-            var k = keyFor();
-            try { if (k) localStorage.setItem(k, String(Date.now())); } catch (e) {}
+            if (!preview) {
+                var k = keyFor();
+                try { if (k) localStorage.setItem(k, String(Date.now())); } catch (e) {}
+            }
             hide();
         });
-        // Không cho đóng bằng cách chạm nền hay phím Esc
+        $('tnClose').addEventListener('click', hide);
         ov.addEventListener('click', function (e) { e.stopPropagation(); });
         document.addEventListener('keydown', function (e) {
-            if (ov.style.display !== 'none' && e.key === 'Escape') e.preventDefault();
+            if (ov.style.display !== 'flex') return;
+            if (e.key === 'Escape') { e.preventDefault(); if (preview) hide(); }
         }, true);
 
         function show() {
             if (ov.style.display === 'flex') return;
-            chk.checked = false; btn.disabled = true; btn.style.opacity = '.4';
+            chk.checked = false; btn.disabled = true;
+            stamp.classList.remove('tn-on'); hint.style.display = '';
+            $('tnWho').textContent = userName();
+            prev.style.display = preview ? 'flex' : 'none';
             ov.style.display = 'flex';
+            try { ov.focus({ preventScroll: true }); } catch (e) {}
         }
-        function hide() { ov.style.display = 'none'; }
+        function hide() { ov.style.display = 'none'; preview = false; }
 
-        // Chỉ hiện khi đã đăng nhập (tránh chồng lên màn hình đăng nhập) và tài khoản này chưa xác nhận.
+        // ADMIN xem lại: không ghi nhận, đóng được.
+        window.tysNoticePreview = function () { preview = true; ov.style.display = 'none'; show(); };
+
+        var adminBtns = [];
+        function adminButtons() {
+            if (adminBtns.length) return adminBtns;
+            var moreAnchor = document.getElementById('btnAccounts');
+            if (moreAnchor && moreAnchor.parentNode && !document.getElementById('btnNotice')) {
+                var b1 = document.createElement('button');
+                b1.id = 'btnNotice'; b1.setAttribute('role', 'menuitem'); b1.setAttribute('aria-label', 'Xem lại thông báo');
+                b1.className = 'hidden items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition';
+                b1.innerHTML = '<i class="fa-solid fa-file-circle-exclamation w-4 text-center text-sm"></i><span class="text-xs font-bold">Xem lại thông báo</span>';
+                b1.onclick = function () { try { closeMoreMenu(); } catch (e) {} window.tysNoticePreview(); };
+                moreAnchor.parentNode.insertBefore(b1, moreAnchor.nextSibling);
+                adminBtns.push(b1);
+            }
+            var accAnchor = document.getElementById('myAccManageBtn');
+            if (accAnchor && accAnchor.parentNode && !document.getElementById('myAccNoticeBtn')) {
+                var b2 = document.createElement('button');
+                b2.id = 'myAccNoticeBtn';
+                b2.className = 'hidden w-full items-center gap-3 px-3 py-2.5 rounded-xl bg-espresso-950/70 border border-tys-900 text-tys-300 hover:bg-espresso-800 active:scale-95 transition';
+                b2.innerHTML = '<i class="fa-solid fa-file-circle-exclamation w-4 text-center text-sm"></i><span class="text-xs font-bold">Xem lại thông báo</span>';
+                b2.onclick = function () { try { closeMyAccount(); } catch (e) {} window.tysNoticePreview(); };
+                accAnchor.parentNode.insertBefore(b2, accAnchor.nextSibling);
+                adminBtns.push(b2);
+            }
+            return adminBtns;
+        }
+        function syncAdminButtons() {
+            var isAdmin = false;
+            try { isAdmin = !!(window.currentUser && currentUser.admin); } catch (e) {}
+            adminButtons().forEach(function (b) {
+                b.classList.toggle('hidden', !isAdmin);
+                b.classList.toggle('flex', isAdmin);
+            });
+        }
+
+        // Chỉ hiện khi đã đăng nhập (không chồng lên màn hình đăng nhập) và tài khoản này chưa xác nhận.
         function tick() {
+            syncAdminButtons();
             var k = keyFor();
-            if (!k) { hide(); return; }
-            if (acked(k)) { hide(); return; }
+            if (!k) { if (ov.style.display === 'flex') hide(); return; }
+            if (preview) return;
+            if (acked(k)) { if (ov.style.display === 'flex') hide(); return; }
             show();
         }
         setInterval(tick, 700);
