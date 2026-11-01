@@ -917,6 +917,323 @@
             background: rgba(201, 148, 74, 0.14);
             color: #E1B66E;
         }
+
+
+        /* ================== TEM PHIẾU "TRẠNG THÁI THU NGÂN" DƯỚI Ô BÀN ================== */
+        /* Giấy kem cố định ở cả sáng/tối (giống tờ bill). Màu nhấn lấy từ biến --bc. */
+        .bchip {
+            --bc: #d97706;
+            position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+            padding: 2px 8px 2px 14px; border-radius: 3px;
+            font-size: 9px; font-weight: 800; line-height: 1.25; letter-spacing: .02em; white-space: nowrap;
+            color: #5b3f1c;
+            background: linear-gradient(180deg, #fffcf3 0%, #f6ecd4 100%);
+            border: 1px dashed var(--bc);
+            box-shadow: 0 1px 2px rgba(40, 25, 5, .30);
+        }
+        /* chấm kẹp: như đinh ghim xuyên qua tem */
+        .bchip::before {
+            content: ""; position: absolute; left: 4px; top: 50%; width: 5px; height: 5px; margin-top: -2.5px;
+            border-radius: 50%; background: var(--bc);
+            box-shadow: 0 0 0 1.5px #fffcf3, 0 0 0 2.5px rgba(40, 25, 5, .14);
+        }
+        .bchip-guard { color: var(--bc); }
+        /* đang nhập: viền vàng liền, nền vàng nhạt, không còn chấm kẹp */
+        .bchip-claimed {
+            --bc: #ca8a04; padding: 2px 8px; color: #6b4a06;
+            background: linear-gradient(180deg, #fffbe6 0%, #fbefb8 100%);
+            border: 1.5px solid var(--bc);
+            box-shadow: 0 1px 2px rgba(40, 25, 5, .30), 0 0 0 1px rgba(202, 138, 4, .20);
+        }
+        .bchip-claimed::before { display: none; }
+        /* đã vào bill: con dấu xanh nghiêng nhẹ */
+        .bchip-done {
+            --bc: #15803d; padding: 2px 8px; color: #15803d; letter-spacing: .12em;
+            background: #f6fbf2;
+            border: 1.5px solid var(--bc);
+            outline: 1px solid rgba(21, 128, 61, .50); outline-offset: -4px;
+            transform: translateX(-50%) rotate(-5deg);
+        }
+        .bchip-done::before { display: none; }
+        .bchip-done.bchip-anim { animation: bchipStamp .45s cubic-bezier(.2, .9, .25, 1) both; }
+        @keyframes bchipStamp {
+            0%   { opacity: 0; transform: translateX(-50%) rotate(-14deg) scale(2.2); }
+            60%  { opacity: 1; transform: translateX(-50%) rotate(-5deg) scale(.92); }
+            80%  { transform: translateX(-50%) rotate(-5deg) scale(1.05); }
+            100% { opacity: 1; transform: translateX(-50%) rotate(-5deg) scale(1); }
+        }
+        @media (prefers-reduced-motion: reduce) { .bchip-done.bchip-anim { animation: none; } }
+
+
+        /* ================== NHÃN TRÊN Ô BÀN (Chưa trả / Quá 45p / Đã trả / số khách): cùng họ tem giấy ================== */
+        /* Vị trí vẫn do lớp Tailwind trong renderTableNode quyết định; ở đây chỉ lo hình dạng + màu. */
+        .tbadge {
+            --bc: #C9944A;
+            padding: 2px 8px 2px 7px; border-radius: 3px;
+            font-size: 9px; font-weight: 800; line-height: 1.25; letter-spacing: .05em; text-transform: uppercase;
+            color: #7a4a14;
+            background: linear-gradient(180deg, #fffcf3 0%, #f6ecd4 100%);
+            border-left: 3px solid var(--bc);
+            box-shadow: 0 1px 2px rgba(40, 25, 5, .32);
+        }
+        .tbadge-late { --bc: #d2492c; color: #a83420; background: linear-gradient(180deg, #fff6f2 0%, #fbe3da 100%); }
+        .tbadge-over {                                   /* quá 45p: tem đỏ đặc, đường nét đứt bên trong */
+            --bc: #ffd9cc; color: #fff6ee; letter-spacing: .04em;
+            background: linear-gradient(180deg, #d2492c 0%, #a83420 100%);
+            outline: 1px dashed rgba(255, 235, 225, .65); outline-offset: -3px;
+        }
+        .tbadge-paid {                                   /* đã trả: dấu xanh viền kép */
+            color: #2f6b25; letter-spacing: .08em; padding: 2px 8px;
+            background: #f6fbf2;
+            border: 1.5px solid #3f7a2e;
+            outline: 1px solid rgba(63, 122, 46, .5); outline-offset: -3.5px;
+        }
+        .guest-badge .gb-item, html[data-theme="dark"] .guest-badge .gb-item {
+            border-radius: 3px; padding: 1px 6px 1px 5px;
+            background: linear-gradient(180deg, #fffcf3 0%, #f6ecd4 100%);
+            color: #5b3f1c; border: 0; border-left: 3px solid #C9944A;
+            box-shadow: 0 1px 2px rgba(40, 25, 5, .32);
+        }
+
+        /* ================== THÔNG BÁO NỔI (ackToast): vé có nấc khuyết 2 bên, gáy màu theo mức độ ================== */
+        .atoast {
+            --tc: #334155; --ink: #2b2118;
+            position: relative; padding: 1px 1px 1px 7px; border-radius: 10px;
+            background: var(--tc);
+        }
+        .atoast-sh {                                      /* lớp ngoài: bóng đổ + hiệu ứng vào (mask nằm ở lớp trong nên không cắt bóng) */
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .28));
+            animation: atoastIn .22s cubic-bezier(.16, 1, .3, 1) both;
+        }
+        .atoast-ok    { --tc: #15803d; }
+        .atoast-info  { --tc: #ca8a04; }
+        .atoast-alert { --tc: #b91c1c; --ink: #5c1f14; }
+        .atoast-body {
+            position: relative; overflow: hidden; border-radius: 9px;
+            padding: 9px 13px 11px 12px;
+            font: 600 13px/1.35 system-ui, -apple-system, 'Segoe UI', sans-serif; color: var(--ink);
+            background:
+                radial-gradient(rgba(120, 90, 50, .06) 1px, transparent 1.4px) 0 0 / 5px 5px,
+                linear-gradient(180deg, #fffcf3 0%, #f7eed8 100%);
+            word-break: break-word;
+        }
+        .atoast-alert .atoast-body { background:
+                radial-gradient(rgba(150, 40, 25, .06) 1px, transparent 1.4px) 0 0 / 5px 5px,
+                linear-gradient(180deg, #fff7f3 0%, #fbe5dc 100%); }
+        .atoast-bar {                                     /* thanh thời gian tự đóng */
+            position: absolute; left: 0; bottom: 0; height: 3px; width: 100%;
+            background: var(--tc); opacity: .55; transform-origin: left center;
+            animation: atoastBar var(--ms, 6000ms) linear forwards;
+        }
+        @keyframes atoastBar { to { transform: scaleX(0); } }
+        @keyframes atoastIn { from { opacity: 0; transform: translateY(-8px) scale(.97); } }
+        @media (prefers-reduced-motion: reduce) { .atoast-sh { animation: none; } .atoast-bar { animation: none; opacity: 0; } }
+
+        /* ================== THANH CẢNH BÁO ĐỎ (guardBar): băng giấy đỏ, mép dưới răng cưa ================== */
+        .gbar {
+            position: fixed; left: 0; right: 0; top: 0; z-index: 9990; display: none;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .40));
+        }
+        .gbar-in {
+            flex: 1; display: flex; align-items: center; gap: 10px;
+            padding: calc(7px + env(safe-area-inset-top, 0px)) 10px 13px;
+            color: #fff; font: 700 12px/1.35 system-ui, -apple-system, 'Segoe UI', sans-serif;
+            background:
+                repeating-linear-gradient(135deg, rgba(255, 255, 255, .07) 0 8px, transparent 8px 16px),
+                linear-gradient(180deg, #c42222 0%, #a31717 100%);
+            -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 14px 100%;
+                    mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 14px 100%;
+        }
+        .gbar-msg { flex: 1; min-width: 0; white-space: pre-line; }
+        .gbar-btns { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+        .gbar-btn {
+            padding: 5px 10px; border-radius: 4px; font: 800 11px system-ui, sans-serif; white-space: nowrap; cursor: pointer;
+            border: 0; background: linear-gradient(180deg, #fffcf3 0%, #f6ecd4 100%); color: #b91c1c;
+            outline: 1px dashed rgba(185, 28, 28, .45); outline-offset: -3px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+        }
+        .gbar-btn-ghost {
+            background: rgba(255, 255, 255, .14); color: #fff;
+            outline: 1px dashed rgba(255, 255, 255, .65); box-shadow: none;
+        }
+
+        /* ================== TỜ BILL "MÓN ĐÃ GỌI" ================== */
+        /* Giấy luôn là giấy (kem ấm) ở cả giao diện sáng lẫn tối nên dùng màu cố định, không dùng thang màu theme. */
+        .bill-shadow {
+            position: relative;
+            filter: drop-shadow(0 2px 3px rgba(60, 40, 15, 0.20)) drop-shadow(0 6px 10px rgba(60, 40, 15, 0.10));
+        }
+        html[data-theme="dark"] .bill-shadow {
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.55)) drop-shadow(0 8px 14px rgba(0, 0, 0, 0.35));
+        }
+        .bill-wrap {
+            --bill-tooth: 14px;
+            padding-bottom: calc(var(--bill-tooth) / 2);     /* chỗ cho răng cưa, nằm NGOÀI vùng cuộn */
+            border-radius: 5px 5px 0 0;
+            background:
+                radial-gradient(rgba(120, 90, 50, 0.055) 1px, transparent 1.4px) 0 0 / 5px 5px,
+                linear-gradient(180deg, #fffdf6 0%, #fbf5e6 100%);
+            -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--bill-tooth) 100%;
+                    mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--bill-tooth) 100%;
+        }
+        .bill-scroll {
+            min-height: 64px;
+            max-height: 224px;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            padding: 0 12px;
+            color: #2b2118;
+            font-size: 12px;
+            scrollbar-width: thin;
+            scrollbar-color: #d6c9ae transparent;
+        }
+        .bill-scroll::-webkit-scrollbar-track { background: transparent; }
+        .bill-scroll::-webkit-scrollbar-thumb { background: #d6c9ae; }
+
+        .bill-head {
+            display: flex; align-items: center; justify-content: space-between; gap: 8px;
+            padding: 9px 0 6px;
+            font-size: 9.5px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+            color: #8a7a62;
+            border-bottom: 1.5px dashed rgba(90, 65, 35, 0.30);
+        }
+        .bill-head b { color: #5b3f1c; font-weight: 800; }
+
+        .bill-row { display: flex; align-items: center; gap: 2px; padding: 5px 0 1px; }
+        .bill-line { flex: 1; min-width: 0; display: flex; align-items: baseline; }
+        .bill-name {
+            min-width: 0; max-width: 68%;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            font-weight: 600; color: #2b2118;
+        }
+        .bill-leader {
+            flex: 1; min-width: 14px; margin: 0 6px;
+            border-bottom: 2px dotted rgba(90, 65, 35, 0.38);
+            position: relative; top: -3px;
+        }
+        .bill-price { flex-shrink: 0; font-weight: 800; color: #7a4a14; font-variant-numeric: tabular-nums; }
+        .bill-btn {
+            flex-shrink: 0; width: 24px; height: 24px; border-radius: 6px;
+            border: 0; padding: 0; background: transparent; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 11px; color: #a89a82; transition: color .15s, background-color .15s;
+        }
+        .bill-btn:hover { background: rgba(120, 90, 50, 0.10); color: #4f4a41; }
+        .bill-btn.bill-btn-on { color: #b9803d; }
+        .bill-btn.bill-btn-x:hover { color: #b23a22; background: rgba(178, 58, 34, 0.10); }
+
+        .bill-note {
+            margin: 0 0 1px 8px; padding-left: 7px;
+            border-left: 2px solid rgba(185, 128, 61, 0.45);
+            font-size: 10.5px; line-height: 1.25; font-style: italic; color: #8a5a1f;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;
+        }
+        .bill-note-input {
+            display: block; width: calc(100% - 8px); margin: 2px 0 3px 8px; padding: 3px 2px;
+            background: transparent; border: 0; border-bottom: 1.5px dashed #b9803d; border-radius: 0;
+            font: inherit; font-size: 11.5px; font-style: italic; color: #2b2118; outline: none;
+        }
+        .bill-note-input:focus { border-bottom-style: solid; background: rgba(201, 148, 74, 0.08); }
+        .bill-note-input::placeholder { color: #b3a58c; }
+
+        .bill-empty { text-align: center; padding: 16px 0 14px; color: #a39580; }
+        .bill-empty i { display: block; font-size: 15px; margin-bottom: 5px; opacity: .55; }
+        .bill-empty span { font-size: 11px; font-style: italic; }
+
+        .bill-total {
+            position: sticky; bottom: 0; z-index: 2;
+            margin-top: 6px; padding: 7px 0 9px;
+            display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+            background: linear-gradient(180deg, #fbf6e8, #fbf5e6);
+            border-top: 3px double rgba(90, 65, 35, 0.45);
+        }
+        .bill-total-label { font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #5b3f1c; }
+        .bill-total-label small { font-weight: 600; letter-spacing: .02em; text-transform: none; color: #9a8a70; margin-left: 4px; }
+        .bill-total-val { font-size: 19px; font-weight: 800; line-height: 1; color: #1a1510; font-variant-numeric: tabular-nums; }
+
+        /* Con dấu ĐÃ TRẢ */
+        .bill-stamp {
+            position: absolute; left: 50%; top: 50%; z-index: 5; pointer-events: none;
+            --rot: -9deg;
+            transform: translate(-50%, -50%) rotate(var(--rot));
+            padding: 3px 7px;
+            border: 3px solid currentColor; border-radius: 9px;
+            color: #2f7a28;
+            mix-blend-mode: multiply;
+            opacity: .86;
+            filter: url(#billInk);
+            text-align: center; white-space: nowrap; line-height: 1;
+        }
+        .bill-stamp::before {
+            content: ""; position: absolute; inset: 2px; border: 1px solid currentColor; border-radius: 6px; opacity: .75;
+        }
+        .bill-stamp-in {
+            position: relative; display: block; padding: 4px 12px 5px;
+            font-weight: 800; font-size: 28px; letter-spacing: .09em; text-transform: uppercase;
+        }
+        .bill-stamp-in small {
+            display: block; margin-top: 3px; padding-top: 3px;
+            border-top: 1.5px solid currentColor;
+            font-size: 10.5px; font-weight: 800; letter-spacing: .24em; text-transform: uppercase;
+        }
+        .bill-stamp.bill-stamp-anim { animation: billStampIn .55s cubic-bezier(.2, .9, .25, 1) both; }
+        @keyframes billStampIn {
+            0%   { opacity: 0;   transform: translate(-50%, -50%) rotate(calc(var(--rot) - 14deg)) scale(2.7); }
+            58%  { opacity: .95; transform: translate(-50%, -50%) rotate(var(--rot)) scale(.9); }
+            76%  { opacity: .9;  transform: translate(-50%, -50%) rotate(var(--rot)) scale(1.045); }
+            100% { opacity: .86; transform: translate(-50%, -50%) rotate(var(--rot)) scale(1); }
+        }
+        .bill-shadow.bill-thud { animation: billThud .55s ease-out; }
+        @keyframes billThud {
+            0%, 55% { transform: translateY(0); }
+            62%     { transform: translateY(2.5px); }
+            78%     { transform: translateY(-1px); }
+            100%    { transform: translateY(0); }
+        }
+        /* ---------- Giao diện tối: "phiếu đêm" — giấy nâu cà phê rang, mực vàng đồng, dấu xanh phát sáng ---------- */
+        html[data-theme="dark"] .bill-shadow {
+            filter: drop-shadow(0 0 0.6px rgba(225, 182, 110, 0.55))
+                    drop-shadow(0 3px 6px rgba(0, 0, 0, 0.55))
+                    drop-shadow(0 10px 18px rgba(201, 148, 74, 0.10));
+        }
+        html[data-theme="dark"] .bill-wrap {
+            background:
+                radial-gradient(rgba(230, 196, 140, 0.05) 1px, transparent 1.4px) 0 0 / 5px 5px,
+                linear-gradient(180deg, rgba(255, 226, 170, 0.07) 0, rgba(255, 226, 170, 0) 26px),
+                linear-gradient(180deg, #3a2d20 0%, #2c2218 100%);
+        }
+        html[data-theme="dark"] .bill-scroll { color: #f1e6d2; scrollbar-color: #6b5538 transparent; }
+        html[data-theme="dark"] .bill-scroll::-webkit-scrollbar-thumb { background: #6b5538; }
+        html[data-theme="dark"] .bill-head { color: #a8977a; border-bottom-color: rgba(230, 196, 140, 0.28); }
+        html[data-theme="dark"] .bill-head b { color: #E1B66E; }
+        html[data-theme="dark"] .bill-name { color: #f4ead7; }
+        html[data-theme="dark"] .bill-leader { border-bottom-color: rgba(230, 196, 140, 0.34); }
+        html[data-theme="dark"] .bill-price { color: #E1B66E; }
+        html[data-theme="dark"] .bill-btn { color: #8f7e63; }
+        html[data-theme="dark"] .bill-btn:hover { background: rgba(230, 196, 140, 0.12); color: #f1e6d2; }
+        html[data-theme="dark"] .bill-btn.bill-btn-on { color: #E1B66E; }
+        html[data-theme="dark"] .bill-btn.bill-btn-x:hover { color: #ff9b83; background: rgba(217, 119, 87, 0.16); }
+        html[data-theme="dark"] .bill-note { color: #d9a95c; border-left-color: rgba(225, 182, 110, 0.5); }
+        html[data-theme="dark"] .bill-note-input { color: #f4ead7; border-bottom-color: #C9944A; }
+        html[data-theme="dark"] .bill-note-input:focus { background: rgba(225, 182, 110, 0.10); }
+        html[data-theme="dark"] .bill-note-input::placeholder { color: #7f6f56; }
+        html[data-theme="dark"] .bill-empty { color: #8f7e63; }
+        html[data-theme="dark"] .bill-total {
+            background: linear-gradient(180deg, #2f241a, #2c2218);
+            border-top-color: rgba(225, 182, 110, 0.55);
+        }
+        html[data-theme="dark"] .bill-total-label { color: #E1B66E; }
+        html[data-theme="dark"] .bill-total-label small { color: #a8977a; }
+        html[data-theme="dark"] .bill-total-val { color: #ffe9b8; text-shadow: 0 0 12px rgba(225, 182, 110, 0.35); }
+        /* Dấu trên nền tối: mực "phát sáng" (screen) thay cho multiply */
+        html[data-theme="dark"] .bill-stamp {
+            color: #9be07a;
+            mix-blend-mode: screen;
+            filter: url(#billInk) drop-shadow(0 0 5px rgba(155, 224, 122, 0.38));
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .bill-stamp.bill-stamp-anim, .bill-shadow.bill-thud { animation: none; }
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col font-sans antialiased overflow-hidden bg-espresso-950">
@@ -1395,7 +1712,23 @@
                         <span class="text-sm sm:text-xs font-bold text-tys-400" id="totalAmountDisplay">Tổng: 0đ</span>
                     </div>
 
-                    <div id="modalOrderList" class="min-h-[45px] max-h-[150px] overflow-y-auto space-y-1 text-xs bg-espresso-950 p-1.5 rounded-lg border border-tys-900"></div>
+                    <!-- Tờ phiếu: .bill-shadow (đổ bóng + chỗ đặt con dấu) > .bill-wrap (nền giấy + mép răng cưa) > #modalOrderList (phần cuộn).
+                         Răng cưa chỉ áp lên .bill-wrap nên thanh cuộn bên trong không bị cắt. -->
+                    <div class="bill-shadow">
+                        <div class="bill-wrap">
+                            <div id="modalOrderList" class="bill-scroll"></div>
+                        </div>
+                    </div>
+                    <!-- Bộ lọc "mực đóng dấu" (hơi lem, hơi khuyết) cho con dấu ĐÃ TRẢ -->
+                    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+                        <filter id="billInk" x="-6%" y="-10%" width="112%" height="120%">
+                            <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="2" seed="7" result="n"/>
+                            <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  7 0 0 0 -2.15" result="speck"/>
+                            <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="1" seed="2" result="w"/>
+                            <feDisplacementMap in="SourceGraphic" in2="w" scale="2.2" xChannelSelector="R" yChannelSelector="G" result="wob"/>
+                            <feComposite in="wob" in2="speck" operator="in"/>
+                        </filter>
+                    </svg>
 
                     <!-- (Không còn dùng: khu "Gọi món" luôn mở nên không cần nút này) -->
                     <button type="button" id="btnAddMoreOrder" onclick="toggleOrderPanel(true)" class="hidden w-full py-1.5 px-3 rounded-lg bg-espresso-800 hover:bg-tys-500 hover:text-ink text-tys-300 font-bold transition text-xs flex items-center justify-center gap-1.5 border border-tys-800">
@@ -3907,20 +4240,20 @@
                     numColor = "text-tys-50";
                     // Có nhãn số khách ở góc trên-trái -> đẩy "Quá 45p" sang góc trên-phải (căng 2 nhãn ra 2 bên); không có thì giữ giữa như cũ
                     const posClass45 = hasGuestBadge ? 'right-[-6px]' : 'left-1/2 -translate-x-1/2';
-                    badgeHTML = `<span class="absolute -top-2 ${posClass45} px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-tys-50 text-brick-ink flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Quá 45p</span>`;
+                    badgeHTML = `<span class="absolute -top-2 ${posClass45} tbadge tbadge-over flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Quá 45p</span>`;
                 } else if (elapsedMins >= 30) {
                     bgStyle = "bg-brick-900 border-brick-600 text-brick-100 pulse-unpaid";
                     numColor = "text-brick-100";
-                    badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-brick-600 text-tys-50 whitespace-nowrap">Chưa trả</span>`;
+                    badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 tbadge tbadge-late whitespace-nowrap">Chưa trả</span>`;
                 } else {
                     bgStyle = "bg-tys-900/60 border-tys-600 text-tys-100 table-active-breathe";
                     numColor = "text-tys-100";
-                    badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-tys-600 text-tys-50 whitespace-nowrap">Chưa trả</span>`;
+                    badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 tbadge whitespace-nowrap">Chưa trả</span>`;
                 }
             } else if (data.status === 'paid') {
                 bgStyle = "bg-sage-950/80 border-sage-600 text-sage-200 table-paid-halo";
                 numColor = "text-sage-300";
-                badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-sage-700 text-sage-50 whitespace-nowrap">Đã trả</span>`;
+                badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 -rotate-2 tbadge tbadge-paid whitespace-nowrap">Đã trả</span>`;
             }
 
             const isFiltered = (currentFilter === 'all') ||
@@ -4178,6 +4511,9 @@
 
         let selectedStatusInModal = 'empty';
         let modalItems = [];
+        // Nhớ con dấu "ĐÃ TRẢ" đã đóng cho bàn/hóa đơn nào ở lần mở modal hiện tại,
+        // để hiệu ứng đóng dấu chỉ chạy 1 lần mỗi lần mở (không chạy lại khi hàm vẽ lại).
+        let stampShownFor = null;
         // true = đang hiện khu vực "Gọi món" (best seller + tìm kiếm); false = đang thu gọn,
         // chỉ hiện nút "Gọi thêm món". Mặc định: bàn trống -> mở sẵn; bàn đã có món -> thu gọn.
         let orderPanelExpanded = true;
@@ -4198,6 +4534,7 @@
             selectedStatusInModal = data.status || 'empty';
             modalItems = (data.items || []).map(i => ({ ...i }));   // clone: sửa note chưa lưu thì không ảnh hưởng dữ liệu gốc
             editingNoteIdx = null;
+            resetBillStamp();           // mỗi lần mở modal -> được đóng dấu lại từ đầu
 
             modalGuestsPaid = guestPaidOf(data);
             modalGuestsUnpaid = guestUnpaidOf(data);
@@ -4221,6 +4558,7 @@
 
         function closeModal() {
             document.getElementById('tableModal').classList.add('hidden');
+            resetBillStamp();
             const prevActiveId = activeTableId;
             activeTableId = null;
             if (prevActiveId) renderTableNode(prevActiveId);
@@ -4476,37 +4814,92 @@
             }
         }
 
+        // Bỏ con dấu cũ + quên "đã đóng dấu" (gọi khi mở/đóng modal)
+        function resetBillStamp() {
+            stampShownFor = null;
+            document.querySelectorAll('#tableModal .bill-stamp').forEach(n => n.remove());
+            const slip = document.querySelector('#tableModal .bill-shadow');
+            if (slip) slip.classList.remove('bill-thud');
+        }
+
+        // Con dấu ĐÃ TRẢ nằm NGOÀI vùng cuộn (trên .bill-shadow) nên không bị cuộn/cắt, cũng không bị xóa khi
+        // danh sách dựng lại. Chỉ tạo mới khi chưa có hoặc đổi bàn/hóa đơn; chỉ chạy hiệu ứng khi chưa đóng dấu.
+        function syncBillStamp(container) {
+            const slip = container.closest('.bill-shadow');
+            if (!slip) return;
+            const t = activeTableId ? tablesData[activeTableId] : null;
+            const old = slip.querySelector('.bill-stamp');
+            if (!t || t.status !== 'paid') { if (old) old.remove(); return; }
+
+            const key = activeTableId + ':' + (t.histId || '');
+            if (old && old.dataset.key === key) return;        // đã đóng rồi -> giữ nguyên, không vẽ lại
+            if (old) old.remove();
+
+            const method = isCashMethod(t.paymentMethod) ? 'Tiền mặt' : 'CK QR';
+            const stamp = document.createElement('div');
+            stamp.className = 'bill-stamp';
+            stamp.dataset.key = key;
+            stamp.setAttribute('role', 'img');
+            stamp.setAttribute('aria-label', `ĐÃ TRẢ · ${method}`);
+            stamp.innerHTML = `<span class="bill-stamp-in" aria-hidden="true">ĐÃ TRẢ<small>· ${method} ·</small></span>`;
+
+            if (stampShownFor !== key) {                        // lần đầu trong lần mở này -> đóng dấu có hiệu ứng
+                stampShownFor = key;
+                stamp.classList.add('bill-stamp-anim');
+                slip.classList.remove('bill-thud');
+                void slip.offsetWidth;                          // khởi động lại animation "giật nhẹ" của tờ phiếu
+                slip.classList.add('bill-thud');
+                slip.addEventListener('animationend', function done(e) {
+                    if (e.target !== slip) return;
+                    slip.classList.remove('bill-thud');
+                    slip.removeEventListener('animationend', done);
+                });
+            }
+            slip.appendChild(stamp);
+        }
+
         function renderModalOrderList() {
             const container = document.getElementById('modalOrderList');
             container.innerHTML = '';
             let sum = 0;
             if (modalItems.length === 0) {
-                container.innerHTML = `<div class="text-[11px] text-stone-500 text-center py-2 italic">Chưa chọn món nào</div>`;
+                container.innerHTML = `<div class="bill-empty"><i class="fa-solid fa-receipt"></i><span>Chưa chọn món nào</span></div>`;
             } else {
+                const head = document.createElement('div');
+                head.className = 'bill-head';
+                head.innerHTML = `<b>Bàn ${activeTableId != null ? activeTableId : ''}</b><span>Phiếu gọi món</span>`;
+                container.appendChild(head);
+
                 modalItems.forEach((item, idx) => {
                     sum += item.price;
                     const editing = editingNoteIdx === idx;
                     const hasNote = !!item.note;
                     const row = document.createElement('div');
-                    row.className = "bg-stone-900 px-2.5 py-1 rounded border border-stone-800";
                     row.innerHTML = `
-                        <div class="flex items-center justify-between">
-                            <span class="text-stone-200 font-medium truncate max-w-[200px]">${item.name}</span>
-                            <div class="flex items-center gap-1.5 shrink-0">
-                                <button type="button" onclick="editItemNote(${idx})" aria-label="Ghi chú món" title="Ghi chú món" class="px-1 text-[11px] transition ${hasNote ? 'text-tys-400' : 'text-stone-600 hover:text-stone-300'}"><i class="${hasNote ? 'fa-solid' : 'fa-regular'} fa-comment-dots"></i></button>
-                                <span class="font-bold text-tys-500">${item.price}k</span>
-                                <button type="button" onclick="removeModalItem(${idx})" class="text-stone-500 hover:text-brick-400 transition px-1"><i class="fa-solid fa-xmark"></i></button>
+                        <div class="bill-row">
+                            <div class="bill-line">
+                                <span class="bill-name">${item.name}</span>
+                                <span class="bill-leader" aria-hidden="true"></span>
+                                <span class="bill-price">${item.price}k</span>
                             </div>
+                            <button type="button" onclick="editItemNote(${idx})" aria-label="Ghi chú món" title="Ghi chú món" class="bill-btn ${hasNote ? 'bill-btn-on' : ''}"><i class="${hasNote ? 'fa-solid' : 'fa-regular'} fa-comment-dots"></i></button>
+                            <button type="button" onclick="removeModalItem(${idx})" aria-label="Xóa món" title="Xóa món" class="bill-btn bill-btn-x"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                         ${editing
-                            ? `<input type="text" id="itemNoteInput" maxlength="${ITEM_NOTE_MAX}" placeholder="Ghi chú món (VD: ít đường, không đá)" oninput="onItemNoteInput(${idx}, this.value)" onkeydown="onItemNoteKeydown(event, ${idx})" onblur="setTimeout(() => finishItemNote(${idx}), 200)" class="w-full mt-1 mb-0.5 bg-espresso-950 border border-tys-900 rounded px-2 py-1 text-[11px] text-stone-100 focus:outline-none focus:border-tys-600 placeholder-stone-600">`
-                            : (hasNote ? `<div onclick="editItemNote(${idx})" class="text-[10px] leading-tight text-tys-400 italic truncate cursor-pointer">↳ ${escapeHtml(item.note)}</div>` : '')}
+                            ? `<input type="text" id="itemNoteInput" maxlength="${ITEM_NOTE_MAX}" placeholder="Ghi chú món (VD: ít đường, không đá)" oninput="onItemNoteInput(${idx}, this.value)" onkeydown="onItemNoteKeydown(event, ${idx})" onblur="setTimeout(() => finishItemNote(${idx}), 200)" class="bill-note-input">`
+                            : (hasNote ? `<div onclick="editItemNote(${idx})" class="bill-note">↳ ${escapeHtml(item.note)}</div>` : '')}
                     `;
                     if (editing) row.querySelector('input').value = item.note || '';
                     container.appendChild(row);
                 });
+
+                const total = document.createElement('div');
+                total.className = 'bill-total';
+                total.innerHTML = `<span class="bill-total-label">Tổng cộng<small>${modalItems.length} món</small></span><span class="bill-total-val">${+sum.toFixed(2)}k</span>`;
+                container.appendChild(total);
             }
             document.getElementById('totalAmountDisplay').innerText = `Tổng: ${(sum * 1000).toLocaleString('vi-VN')}đ`;
+            syncBillStamp(container);
         }
 
         function markAsPaidAndClose() {
@@ -5670,12 +6063,13 @@ function togglePassVisibility(inputId, btn) {
             if (!bar) {
                 bar = document.createElement('div');
                 bar.id = 'guardBar';
-                bar.style.cssText = 'position:fixed;left:0;right:0;top:0;z-index:9990;display:none;align-items:center;gap:8px;padding:calc(6px + env(safe-area-inset-top,0px)) 10px 6px;background:#b91c1c;color:#fff;font:700 12px/1.35 system-ui,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.4)';
-                bar.innerHTML = '<div id="guardMsg" style="flex:1;white-space:pre-line"></div>'
-                    + '<div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">'
-                    + '<button type="button" onclick="guardResend()" style="padding:5px 9px;border-radius:8px;background:#fff;color:#b91c1c;font:800 11px system-ui,sans-serif;border:0">Gửi lại ngay</button>'
-                    + '<button type="button" onclick="guardManual()" style="padding:5px 9px;border-radius:8px;background:rgba(255,255,255,.2);color:#fff;font:800 11px system-ui,sans-serif;border:1px solid rgba(255,255,255,.6)">Đã báo miệng</button>'
-                    + '</div>';
+                bar.className = 'gbar';
+                bar.style.cssText = 'display:none';
+                bar.innerHTML = '<div class="gbar-in"><div id="guardMsg" class="gbar-msg"></div>'
+                    + '<div class="gbar-btns">'
+                    + '<button type="button" onclick="guardResend()" class="gbar-btn">Gửi lại ngay</button>'
+                    + '<button type="button" onclick="guardManual()" class="gbar-btn gbar-btn-ghost">Đã báo miệng</button>'
+                    + '</div></div>';
                 document.body.appendChild(bar);
             }
             const sig = lines.join('|');
@@ -5896,17 +6290,27 @@ function togglePassVisibility(inputId, btn) {
             try { renderTableNode(parseInt(tableId, 10)); } catch (e) {}
         }
 
-        // Nhãn nhỏ dưới ô bàn: ⏳ chờ thu ngân → 🟡 đang nhập → ✔ đã vào bill.
+        // Nhãn dưới ô bàn dạng tem phiếu: chờ thu ngân (tem giấy + chấm kẹp) → đang nhập (viền vàng) → ĐÃ VÀO BILL (dấu xanh).
+        // Chuỗi trả về là "dấu vân tay" để quyết định có vẽ lại ô bàn hay không (renderTableNode, guardTick),
+        // nên chỉ phụ thuộc trạng thái; không chèn thời gian/số ngẫu nhiên. Duy nhất 1 cờ thời gian: bchip-anim
+        // (chỉ trong 4s đầu sau khi vào bill) để dấu chỉ "đóng" 1 lần, không chạy lại mỗi lần ô bàn vẽ lại.
         function billChip(i, data) {
             const b = billState && billState[i];
             if (!b || !data || data.status === 'empty') return '';
             if (b.at + 5000 < (data.startTime || 0)) return '';                  // nhãn của lượt khách trước
             if (b.s === 'done' && Date.now() - b.at > 20 * 60000) return '';     // xong lâu rồi thì ẩn
-            let m = { wait: ['⏳ Chờ thu ngân', '#d97706'], claimed: ['🟡 Đang nhập', '#ca8a04'], done: ['✔ Đã vào bill', '#15803d'] }[b.s];
-            if (b.s === 'wait' && b.job) { const g = guardChipState(b); if (g) m = g; }   // 📤 đang gửi / CHƯA GỬI ĐƯỢC / Chưa nhận / Đã báo miệng
+            let m = { wait: ['Chờ thu ngân'], claimed: ['Đang nhập'], done: ['ĐÃ VÀO BILL'] }[b.s];
+            let guard = false;
+            if (b.s === 'wait' && b.job) { const g = guardChipState(b); if (g) { m = g; guard = true; } }   // 📤 đang gửi / CHƯA GỬI ĐƯỢC / Chưa nhận / Đã báo miệng
             if (!m) return '';
-            return '<span' + (m[2] ? ' class="guard-pulse"' : '') + ' style="position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);padding:1px 7px;border-radius:999px;font-size:9px;font-weight:700;white-space:nowrap;color:#fff;background:' + m[1] + '">' + m[0] + '</span>';
+            const fresh = b.s === 'done' && Date.now() - b.at < 4000;
+            const cls = 'bchip bchip-' + b.s + (guard ? ' bchip-guard' : '') + (m[2] ? ' guard-pulse' : '') + (fresh ? ' bchip-anim' : '');
+            return '<span class="' + cls + '"' + (guard ? ' style="--bc:' + m[1] + '"' : '') + '>' + m[0] + '</span>';
         }
+
+        // Nấc khuyết tròn ở giữa 2 cạnh (hình vé). Mask đặt thẳng trên .atoast; bóng đổ nằm ở filter nên không bị cắt.
+        const TOAST_MASK = '-webkit-mask:radial-gradient(circle 6px at 0 50%,#0000 96%,#000) left/51% 100% no-repeat,radial-gradient(circle 6px at 100% 50%,#0000 96%,#000) right/51% 100% no-repeat;'
+                         + 'mask:radial-gradient(circle 6px at 0 50%,#0000 96%,#000) left/51% 100% no-repeat,radial-gradient(circle 6px at 100% 50%,#0000 96%,#000) right/51% 100% no-repeat;';
 
         function ackToast(text, tone, ms) {
             try {
@@ -5918,14 +6322,28 @@ function togglePassVisibility(inputId, btn) {
                     document.body.appendChild(box);
                 }
                 box.style.top = (window.__guardBarH ? window.__guardBarH + 8 : 10) + 'px';   // né thanh cảnh báo đỏ
+                const tone2 = ({ ok: 'ok', info: 'info', alert: 'alert' })[tone] || 'plain';
+                const dur = ms || 6000;
                 const c = document.createElement('div');
-                const bg = { ok: '#15803d', info: '#ca8a04', alert: '#b91c1c' }[tone] || '#334155';
-                c.style.cssText = 'pointer-events:auto;padding:10px 12px;border-radius:12px;color:#fff;font:600 14px/1.3 system-ui,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.35);background:' + bg;
-                c.textContent = text;
+                c.className = 'atoast-sh';
+                c.setAttribute('role', tone2 === 'alert' ? 'alert' : 'status');
+                c.style.cssText = 'pointer-events:auto;cursor:pointer';
+                c.style.setProperty('--ms', dur + 'ms');
+                const tk = document.createElement('div');
+                tk.className = 'atoast atoast-' + tone2;
+                tk.style.cssText = TOAST_MASK;
+                const body = document.createElement('div');
+                body.className = 'atoast-body';
+                body.textContent = text;
+                const bar = document.createElement('span');
+                bar.className = 'atoast-bar';
+                body.appendChild(bar);
+                tk.appendChild(body);
+                c.appendChild(tk);
                 c.onclick = function () { c.remove(); };
                 box.appendChild(c);
                 while (box.children.length > 4) box.firstChild.remove();
-                setTimeout(function () { c.remove(); }, ms || 6000);
+                setTimeout(function () { c.remove(); }, dur);
             } catch (e) {}
         }
 
