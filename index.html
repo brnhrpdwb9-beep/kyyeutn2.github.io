@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+(<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,6 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="dns-prefetch" href="https://ntfy.sh">
     <link rel="dns-prefetch" href="https://falling-tooth-d67e.brnhrpdwb9.workers.dev">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -5173,16 +5172,15 @@ function togglePassVisibility(inputId, btn) {
             openStaffLogin();
         }
 
-        // ================== THÔNG BÁO ORDER MỚI TỚI MÁY POS (ntfy) ==================
-        // Trên máy POS: cài app "ntfy" (Google Play) và đăng ký ĐÚNG tên topic bên dưới.
-        // Tên topic đóng vai trò như mật khẩu: giữ kín, đừng chia sẻ cho người ngoài.
-        const NTFY_URL = 'https://ntfy.sh';
-        const NTFY_TOPIC = 'tys-order-ad394398934dc009';
-
-        // ---- Telegram (chạy SONG SONG với ntfy: thu ngân bấm "ĐÃ NHẬP" ngay trong tin nhắn) ----
-        // Để trống '' nếu muốn tắt Telegram và chỉ dùng ntfy.
+        // ================== THÔNG BÁO ORDER MỚI TỚI THU NGÂN (TELEGRAM, 2 NHÓM) ==================
+        // KÊNH DUY NHẤT LÀ TELEGRAM. Không còn ntfy.
+        // Lý do dùng 2 nhóm: máy POS mở sẵn Telegram ở NHÓM CHÍNH nên tin ở nhóm đó KHÔNG phát âm
+        // thanh. Vì vậy mỗi thông báo được Worker gửi thêm vào NHÓM THỨ HAI (cấu hình CHAT_ID_ALERT
+        // bên Worker) — nhóm đó mới kêu chuông trên máy POS.
+        // Trang web KHÔNG biết số nhóm: chỉ gửi 1 request, Worker tự nhân bản sang cả 2 nhóm.
         const NOTIFY_WORKER_URL = 'https://falling-tooth-d67e.brnhrpdwb9.workers.dev';
         const NOTIFY_KEY = '6dd81ad0b4ba8b3d5fc58d37';   // phải trùng với biến NOTIFY_KEY trong Worker
+        // Nhóm phụ (CHAT_ID_ALERT) đặt trong Worker. Thu ngân bấm nút ở nhóm nào cũng được.
 
         // So sánh 2 danh sách món, trả về những món có ở `next` mà không có ở `prev`.
         // Dùng 2 chiều: (prev → next) = món thêm; (next → prev) = món bị hủy.
@@ -5204,7 +5202,9 @@ function togglePassVisibility(inputId, btn) {
         }
 
         // Gom món trùng tên thành "SL × Tên" (ngắn gọn để liếc là đọc được ngay).
-        function ntfyGroupLines(items) {
+        // Định dạng này phải khớp với bodyHtml() trong Worker để tin trên Telegram in đậm/nghiêng đúng:
+        // tên món in đậm, ghi chú in nghiêng, ngăn cách bằng " — 📝 ".
+        function groupLines(items) {
             const map = new Map();
             items.forEach(i => {
                 const key = i.name + '|' + (i.note || '');
@@ -5212,91 +5212,83 @@ function togglePassVisibility(inputId, btn) {
                 g.qty++;
                 map.set(key, g);
             });
-            return [...map.values()].map(g => g.qty + ' × ' + g.name + (g.note ? '  📝 ' + g.note : ''));
+            return [...map.values()].map(g => g.qty + ' × ' + g.name + (g.note ? ' — 📝 ' + g.note : ''));
         }
+        // Giữ tên cũ để các chỗ đang gọi không phải sửa.
+        var ntfyGroupLines = groupLines;
 
-        // ================== PHÒNG THỦ NHIỀU LỚP: THÔNG BÁO KHÔNG ĐƯỢC PHÉP "ÂM THẦM" THẤT LẠC ==================
-        // (Phần Telegram được GIỮ NGUYÊN như bản gốc: gửi 1 lần, lỗi thử lại 1 lần sau 3s. Mọi lớp bên dưới chỉ áp dụng cho ntfy.)
-        // Lớp 1  Gửi ntfy có kiểm tra kết quả: chờ tối đa 8s, lỗi thì tự thử lại (3s, 8s, 20s, 45s, rồi mỗi 60s).
+// ================== PHÒNG THỦ NHIỀU LỚP: THÔNG BÁO KHÔNG ĐƯỢC PHÉP "ÂM THẦM" THẤT LẠC ==================
+        // Lớp 1  Gửi Telegram qua Worker có kiểm tra kết quả: chờ tối đa 8s, lỗi thì tự thử lại (3s, 8s, 20s, 45s, rồi mỗi 60s).
         // Lớp 2  "Hộp thư đi" lưu trong máy: mất mạng / tắt app rồi mở lại vẫn gửi bù (kèm dòng "GỬI TRỄ ... phút").
         // Lớp 3  Mỗi order có nhãn trạng thái dưới ô bàn: 📤 Đang gửi → ⏳ Chờ thu ngân → 🟡 Đang nhập → ✔ Đã vào bill.
         //        Không gửi được: nhãn ĐỎ "📤 CHƯA GỬI ĐƯỢC" + chuông + thanh cảnh báo.
-        // Lớp 4  Tin ntfy có sẵn 2 NÚT BẤM cho thu ngân: "🟡 ĐANG NHẬP" / "✅ ĐÃ NHẬP" (bấm ngay trên thông báo, không cần mở app).
-        //        Quá 120s thu ngân chưa bấm nhận: tự gửi tin NHẮC sang Telegram + ntfy (POS), ưu tiên 5, kể cả khi màn hình máy phục vụ đang tắt. Chuông/toast trên máy phục vụ chỉ bật khi GUARD.waiterAlarm = true.
+        // Lớp 4  Tin Telegram có sẵn nút bấm cho thu ngân: "✅ ĐÃ NHẬP BILL" (bấm ngay trong tin nhắn, không cần mở app).
+        //        Worker tự nhân bản mỗi tin sang NHÓM THỨ HAI để máy POS kêu chuông.
         // Lớp 5  Thanh cảnh báo đỏ trên cùng, 2 nút: "Gửi lại ngay" / "Đã báo miệng" (tắt báo động sau khi đã nói trực tiếp).
         // Lớp 6  Nút "Thử báo thu ngân" (menu Thêm): gửi tin thử, thu ngân bấm "NHẬN ĐƯỢC" thì phục vụ thấy ✅ ngay.
-        // Lớp 7  Báo ngay khi ntfy từ chối (HTTP 429 = vượt hạn mức) và cảnh báo khi số tin trong ngày gần chạm trần.
+        // Nhắc thu ngân: CHỈ do Worker (cron mỗi phút) đảm nhiệm — xem GUARD.remind bên dưới.
         // Lưu ý: Lớp 4 cần thu ngân bấm nút. Nếu thu ngân chỉ đọc mà không bấm thì sẽ bị báo động giả → đổi GUARD.escalate = false.
         var GUARD = {
             retry: [3000, 8000, 20000, 45000, 60000],   // chờ giữa các lần thử lại (ms)
             timeout: 8000,                              // mỗi lần gửi chờ tối đa (ms)
-            maxAge: 30 * 60000,                         // quá 30 phút thì ngừng thử lại một kênh
+            maxAge: 30 * 60000,                         // quá 30 phút thì ngừng thử lại
             pruneAge: 3 * 3600000,                      // hộp thư đi: bỏ tin cũ hơn 3 giờ khi mở lại app
-            remind: [120],                                 // NHẮC thu ngân do WORKER (cron mỗi phút) đảm nhiệm nên để rỗng để khỏi nhắc trùng. Worker chưa cài cron thì đổi lại thành [120] (web tự nhắc khi máy đang mở)
+            // NHẮC thu ngân do WORKER (cron mỗi phút) đảm nhiệm, nên đây phải để RỖNG.
+            // Để [120] như trước sẽ có 2 bộ nhắc chạy song song: thu ngân nhận 2 tin nhắc cho 1 order,
+            // và khi web lỡ mất tín hiệu "đã nhập" thì web vẫn nhắc dù Worker đã biết là xong.
+            // Chỉ điền lại (vd [120]) khi Worker CHƯA cài cron.
+            remind: [],
             waiterAlarm: false,                         // true = máy phục vụ cũng bật chuông + toast + thanh đỏ "thu ngân chưa nhận". false = chỉ nhắc phía thu ngân
             alarm: [120, 300],                          // giây: chuông + cảnh báo trên máy phục vụ (chỉ dùng khi waiterAlarm = true)
             stale: 1800,                                // giây: quá mức này coi như cũ, không báo động nữa
             escalate: true,                             // false = tắt nhắc + báo động "chưa ai nhận" (thu ngân không bấm nút)
-            dailyWarn: 200,                             // cảnh báo khi số tin ntfy gửi trong ngày (từ máy này) đạt mức này
             maxInflight: 4,                             // số request gửi đi SONG SONG tối đa (cao điểm: tránh dồn nghẽn)
-            ntfyCooldown: 10 * 60000,                   // ntfy bị 429 -> tạm bỏ ntfy 10 phút, chỉ dùng Telegram
             coalesceMs: 4000,                           // gộp tin liên tiếp cùng bàn trong khoảng này (ms)
             debounceMs: 300,                            // chờ ngắn trước khi gửi để gộp các lần bấm liên tiếp
             debounceMaxMs: 1200,                        // dù bấm liên tục cũng không trì hoãn quá mức này
             tgRetry: 2                                  // Worker thử lại Telegram thêm 2 lần nếu lỗi mạng
         };
-        var guardLimitedAt = 0;
         // Lần cuối gửi thông báo cho từng bàn — dùng để biết lần bấm này là lần đầu hay lặp lại
         var lastNotifAt = {};
 
-        // ================== CẦU DAO CHO NTFY (tự ngắt khi bị chặn) ==================
-        // ntfy.sh bản miễn phí giới hạn số tin/ngày. Khi bị chặn (HTTP 429) mà vẫn cố gửi thì:
-        //   • mọi tin đều thất bại và phải chờ hết 8s timeout, làm nghẽn cả hàng đợi
-        //   • tin quan trọng (gọi thêm, hủy món) bị đẩy lùi sau các tin vô ích
-        // Nên: hễ gặp 429 là TẠM NGẮT hẳn ntfy trong N phút, chuyển toàn bộ sang Telegram.
-        // Hết thời gian chờ thì thử lại 1 tin; nếu vẫn 429 thì ngắt tiếp (tự phục hồi, không cần thao tác).
-        const NTFY_DOWN_KEY = 'tys_ntfy_down';
-        var ntfyDownUntil = 0;
-        try { ntfyDownUntil = parseInt(localStorage.getItem(NTFY_DOWN_KEY) || '0', 10) || 0; } catch (e) {}
-
-        function ntfyAvailable() {
-            if (!ntfyDownUntil) return true;
-            if (Date.now() >= ntfyDownUntil) { ntfyDownUntil = 0; try { localStorage.removeItem(NTFY_DOWN_KEY); } catch (e) {} return true; }
-            return false;
-        }
-        function ntfyTrip(reason) {
-            guardLimitedAt = Date.now();
-            ntfyDownUntil = Date.now() + GUARD.ntfyCooldown;
-            try { localStorage.setItem(NTFY_DOWN_KEY, String(ntfyDownUntil)); } catch (e) {}
-            try {
-                ackToast('📵 ntfy tạm ngưng (' + (reason || 'quá hạn mức') + '). Tin vẫn tới thu ngân qua Telegram bình thường.', 'info', 8000);
-            } catch (e) {}
-        }
         var OUTBOX_KEY = 'tys_outbox';
         var outboxFlying = {};
         var guardGraceUntil = 0, guardLastSig = {}, guardBarSig = '';
+        var guardStartedAt = Date.now();   // mốc mở trang: dùng để biết kênh nhận báo có sống hay không
         var outbox = (function () {
             try {
                 const a = JSON.parse(localStorage.getItem(OUTBOX_KEY) || '[]');
                 const now = Date.now();
-                return (Array.isArray(a) ? a : []).filter(function (j) { return j && j.id && j.use && j.ok && j.gu && j.nx && j.tries && now - j.at < GUARD.pruneAge; })
-                    .map(function (j) { if (j.sync === undefined) j.sync = false; return j; });
+                return (Array.isArray(a) ? a : [])
+                    .filter(function (j) { return j && j.id && j.use && j.ok && j.gu && j.nx && j.tries && now - j.at < GUARD.pruneAge; })
+                    // Hộp thư đi của bản CŨ có thêm kênh 'n' (ntfy). Bỏ hẳn khoá đó và BẬT kênh Telegram,
+                    // để tin còn kẹt từ trước (kể cả tin chỉ định gửi ntfy) vẫn được gửi bù tới thu ngân.
+                    .map(function (j) {
+                        if (j.sync === undefined) j.sync = false;
+                        ['use', 'ok', 'gu'].forEach(function (k) {
+                            if (!j[k] || typeof j[k] !== 'object') j[k] = {};
+                            delete j[k].n;
+                        });
+                        ['tries', 'nx'].forEach(function (k) {
+                            if (!j[k] || typeof j[k] !== 'object') j[k] = {};
+                            delete j[k].n;
+                            if (j[k].t === undefined) j[k].t = 0;
+                        });
+                        j.use.t = true;                       // ntfy không còn: mọi tin đi Telegram
+                        if (j.ok.t === undefined) j.ok.t = false;
+                        if (j.gu.t === undefined) j.gu.t = false;
+                        return j;
+                    });
             } catch (e) { return []; }
         })();
 
         function outboxSave() { try { localStorage.setItem(OUTBOX_KEY, JSON.stringify(outbox.slice(-30))); } catch (e) {} }
-        function jobAnyOk(j) { return !!((j.use.n && j.ok.n) || (j.use.t && j.ok.t)); }
-        // Đủ cả 2 kênh (ntfy + Telegram) đã tới? Kênh không dùng thì bỏ qua.
-        function jobAllOk(j) { return ['n', 't'].every(function (c) { return !j.use[c] || j.ok[c]; }); }
-        // Tên các kênh CHƯA tới (để cảnh báo "chỉ tới 1 kênh")
-        function jobMissing(j) {
-            const out = [];
-            if (j.use.n && !j.ok.n) out.push('ntfy (màn hình POS)');
-            if (j.use.t && !j.ok.t) out.push('Telegram');
-            return out;
-        }
+        // Từ nay chỉ còn MỘT kênh: Telegram (Worker tự nhân bản sang 2 nhóm).
+        // Vẫn giữ cấu trúc use/ok/gu theo khoá 't' để hộp thư đi lưu trong máy của bản cũ đọc được.
+        function jobAnyOk(j) { return !!j.ok.t; }
+        function jobAllOk(j) { return !j.use.t || !!j.ok.t; }
 
-        // 'sent' = đã tới ít nhất 1 kênh · 'sending' = vừa gửi, đang chờ · 'unsent' = chưa kênh nào nhận được
+        // 'sent' = đã tới Telegram · 'sending' = vừa gửi, đang chờ · 'unsent' = chưa gửi được
         function jobState(id) {
             const j = (outbox || []).find(function (x) { return x.id === id; });
             if (!j) return 'sent';
@@ -5306,8 +5298,10 @@ function togglePassVisibility(inputId, btn) {
         }
 
         function guardOnSent(job) {
-            if (job.sentAt) return;
-            job.sentAt = Date.now();
+            if (!job.sentAt) job.sentAt = Date.now();
+            // Đồng bộ mốc "đã gửi" xuống billState (nếu bàn này đang theo dõi đúng job này và chưa có mốc).
+            // Trước đây hàm thoát ngay khi job đã có sentAt, nên tin được GỘP vào một job cũ (đã gửi trước đó)
+            // không ghi được mốc cho bàn → bàn mất mốc chờ và nhãn đứng ở "⏳ Chờ thu ngân".
             try {
                 if (job.table && billState) {
                     const b = billState[job.table];
@@ -5316,25 +5310,7 @@ function togglePassVisibility(inputId, btn) {
             } catch (e) {}
         }
 
-        // Đếm số tin ntfy gửi thành công trong ngày (theo máy này). Gói miễn phí có hạn mức theo ngày.
-        function guardCountSent() {
-            try {
-                const d = new Date(), key = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-                let c = JSON.parse(localStorage.getItem('tys_ntfy_day') || 'null');
-                if (!c || c.d !== key) c = { d: key, n: 0, w: false };
-                c.n++;
-                if (c.n >= GUARD.dailyWarn && !c.w) {
-                    c.w = true;
-                    ackToast('⚠️ Hôm nay máy này đã gửi ' + c.n + ' thông báo ntfy. Bản miễn phí có hạn mức theo ngày (khoảng 250), gần chạm trần thì tin có thể không tới thu ngân.', 'alert', 20000);
-                }
-                localStorage.setItem('tys_ntfy_day', JSON.stringify(c));
-            } catch (e) {}
-        }
-
-        // 2 nút bấm hiện ngay trên thông báo ntfy của thu ngân. Bấm = ntfy gửi 1 tin vào kênh "ack" mà app đang lắng nghe,
-        // nên app biết ngay (không cần Telegram). "clear": true = bấm xong thông báo tự biến mất.
-        // Thông báo ntfy trên máy POS KHÔNG có nút bấm (thu ngân bấm nút ở Telegram). Giữ hàm để chỗ gọi không phải đổi.
-        function guardActions(job) { return undefined; }
+        // Đã bỏ: đếm hạn mức ntfy trong ngày (ntfy không còn dùng).
 
         function outboxAttempt(job, ch) {
             const key = job.id + ch;
@@ -5344,56 +5320,61 @@ function togglePassVisibility(inputId, btn) {
             let message = age > 60000
                 ? '⏱ GỬI TRỄ ' + Math.round(age / 60000) + ' phút (order lúc ' + fmtTime(job.at) + ')\n' + job.msg
                 : job.msg;
-            if (message.length > 1800) message = message.slice(0, 1800) + '\n…(còn nữa — xem trên máy phục vụ)';   // ntfy giới hạn ~4KB/tin
             const ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
             const timer = setTimeout(function () { try { if (ctl) ctl.abort(); } catch (e) {} }, GUARD.timeout);
             let p;
             try {
-                if (ch === 'n') {
-                    const payload = { topic: NTFY_TOPIC, title: job.title, message: message, priority: job.pr };
-                    const acts = guardActions(job);
-                    if (acts) payload.actions = acts;
-                    p = fetch(NTFY_URL, { method: 'POST', keepalive: true, signal: ctl ? ctl.signal : undefined, body: JSON.stringify(payload) });
-                } else {
-                    // Telegram qua Worker. Kèm id để Worker (nếu hỗ trợ) bỏ qua tin trùng khi ta gửi lại do mất phản hồi.
-                    // Chỉ dựng chuỗi JSON khi thật sự gửi qua Worker.
-                    const tgBody = JSON.stringify({ key: NOTIFY_KEY, title: job.title, message: message, priority: job.pr, id: job.id, at: job.at, table: job.ackTable || null, sync: !!job.sync });
-                    // text/plain để trình duyệt không cần hỏi trước (preflight) khi gọi sang Worker.
-                    p = fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/notify', {
-                        method: 'POST', keepalive: true, signal: ctl ? ctl.signal : undefined,
-                        headers: { 'Content-Type': 'text/plain' }, body: tgBody
-                    });
-                }
+                // Telegram qua Worker. Kèm id để Worker bỏ qua tin trùng khi ta gửi lại do mất phản hồi.
+                // Worker tự gửi tin này vào CẢ 2 NHÓM (nhóm chính + nhóm phụ kêu chuông trên máy POS).
+                const tgBody = JSON.stringify({ key: NOTIFY_KEY, title: job.title, message: message, priority: job.pr, id: job.id, at: job.at, table: job.ackTable || null, sync: !!job.sync });
+                // text/plain để trình duyệt không cần hỏi trước (preflight) khi gọi sang Worker.
+                p = fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/notify', {
+                    method: 'POST', keepalive: true, signal: ctl ? ctl.signal : undefined,
+                    headers: { 'Content-Type': 'text/plain' }, body: tgBody
+                });
             } catch (e) { p = Promise.reject(e); }
             p.then(function (r) {
                 if (!r.ok) { const err = new Error('HTTP ' + r.status); err.status = r.status; throw err; }
                 job.ok[ch] = true;
-                if (ch === 'n') guardCountSent();
                 guardOnSent(job);
-                // Kênh Telegram trả về message_id của tin vừa gửi -> lưu vào job + billState.
+                // Worker trả về message_id của tin trong NHÓM CHÍNH (và cả tin ở nhóm phụ trong mids).
                 // Đây là "chìa khoá" để ack từ Telegram khớp đúng order, không phụ thuộc mốc thời gian.
-                if (ch === 't' && r.json) {
+                if (r.json) {
                     r.json().then(function (d) {
-                        if (d && d.mid) {
-                            job.mid = d.mid;
-                            if (job.table && billState && billState[job.table] && billState[job.table].job === job.id) {
-                                billState[job.table].mid = d.mid; saveBill();
-                            }
-                            outboxSave();
+                        if (!d) return;
+                        const ids = Array.isArray(d.mids) ? d.mids.filter(Boolean) : [];
+                        if (d.mid) job.mid = d.mid;
+                        if (d.alertMid) job.alertMid = d.alertMid;
+                        job.mids = ids;
+                        // Mốc gửi theo GIỜ SERVER (không dùng đồng hồ điện thoại): dùng khi phải so
+                        // một ack là của order cũ hay order đang chờ.
+                        if (d.at) job.srvAt = d.at;
+                        if (job.table && billState && billState[job.table] && billState[job.table].job === job.id) {
+                            const b = billState[job.table];
+                            if (d.mid) b.mid = d.mid;
+                            b.mids = ids;         // để ack bấm ở nhóm nào cũng nhận ra đúng order
+                            if (d.at) b.ord = d.at;
+                            saveBill();
                         }
+                        // Tin đã tới nhóm chính (thu ngân thấy) nhưng CHƯA tới nhóm phụ:
+                        // máy POS sẽ KHÔNG kêu chuông. Đây không phải mất bill, nhưng phải biết để sửa.
+                        if (d.all === false && Array.isArray(d.missing) && d.missing.length) {
+                            job.missing = d.missing;
+                            if (!job.warnedAlert) {
+                                job.warnedAlert = true;
+                                if (document.visibilityState === 'visible') {
+                                    ackToast('🔕 ' + job.label + ': tin đã tới nhóm thu ngân nhưng CHƯA tới nhóm phụ — máy POS sẽ không kêu chuông. Kiểm tra CHAT_ID_ALERT / bot đã ở trong nhóm đó chưa.', 'info', 15000);
+                                }
+                            }
+                        } else {
+                            job.missing = null;
+                        }
+                        outboxSave();
                     }).catch(function () {});
                 }
             }).catch(function (e) {
                 job.fails++;
                 let wait = GUARD.retry[Math.min(job.tries[ch] - 1, GUARD.retry.length - 1)];
-                if (ch === 'n' && e && e.status === 429) {
-                    // Vượt hạn mức ntfy -> ngắt ntfy, chuyển hẳn sang Telegram
-                    ntfyTrip('quá hạn mức');
-                    job.use.n = false;
-                    job.gu.n = true;
-                    if (job.use.t) { job.nx.t = 0; }        // đẩy Telegram đi ngay
-                    wait = 60000;
-                }
                 job.nx[ch] = Date.now() + wait;
                 // Hẹn đẩy lại ĐÚNG lúc được phép thử, không phải chờ vòng guardTick kế tiếp (3s).
                 // Nhờ vậy tin bị lỗi mạng chớp được gửi lại sớm hơn và không phụ thuộc vào việc tab
@@ -5401,7 +5382,7 @@ function togglePassVisibility(inputId, btn) {
                 try {
                     if (job.tries[ch] <= 3) setTimeout(function () { try { outboxPump(); } catch (e) {} }, wait + 30);
                 } catch (e) {}
-                console.warn((ch === 'n' ? 'ntfy' : 'telegram') + ' lỗi (lần ' + job.tries[ch] + '):', e && e.message);
+                console.warn('telegram lỗi (lần ' + job.tries[ch] + '):', e && e.message);
             }).then(function () {
                 clearTimeout(timer);
                 delete outboxFlying[key];
@@ -5413,8 +5394,8 @@ function togglePassVisibility(inputId, btn) {
             const now = Date.now();
 
             // ---- GIỚI HẠN SỐ REQUEST SONG SONG ----
-            // Giờ cao điểm (nhiều bàn cùng gọi món) mà bắn hết một lượt thì trình duyệt tự xếp hàng,
-            // ntfy dễ trả 429 và tin quan trọng bị kẹt sau tin phụ. Giữ tối đa 4 request đang bay;
+            // Giờ cao điểm (nhiều bàn cùng gọi món) mà bắn hết một lượt thì trình duyệt tự xếp hàng và
+            // tin quan trọng bị kẹt sau tin phụ. Giữ tối đa 4 request đang bay;
             // xong cái nào thì vòng lặp kế tiếp (guardTick 3s hoặc sau khi có phản hồi) nhấc cái tiếp theo.
             let flying = 0;
             Object.keys(outboxFlying).forEach(function (k) { if (outboxFlying[k]) flying++; });
@@ -5422,7 +5403,7 @@ function togglePassVisibility(inputId, btn) {
             // Thứ tự ưu tiên khi phải xếp hàng: ưu tiên cao (priority lớn) trước, cùng mức thì tin cũ trước.
             const queue = [];
             outbox.forEach(function (job) {
-                ['n', 't'].forEach(function (ch) {
+                ['t'].forEach(function (ch) {
                     if (!job.use[ch] || job.ok[ch] || job.gu[ch]) return;
                     if (outboxFlying[job.id + ch]) return;
                     if (now - job.at > GUARD.maxAge) { job.gu[ch] = true; return; }
@@ -5447,35 +5428,31 @@ function togglePassVisibility(inputId, btn) {
                 outboxAttempt(queue[i].job, queue[i].ch);
                 flying++;
             }
-            // Dọn: job đã tới ít nhất 1 kênh và không còn kênh nào cần thử → bỏ khỏi hộp thư đi.
-            // Job bỏ cuộc mà KHÔNG kênh nào tới: giữ lại (đánh dấu dead) cho tới khi người dùng bấm "Đã báo miệng".
+            // Dọn: job đã gửi được → bỏ khỏi hộp thư đi. Job bỏ cuộc mà CHƯA tới:
+            // giữ lại (đánh dấu dead) cho tới khi người dùng bấm "Đã báo miệng".
             outbox = outbox.filter(function (job) {
-                const chans = ['n', 't'].filter(function (c) { return job.use[c]; });
-                if (!chans.every(function (c) { return job.ok[c] || job.gu[c]; })) return true;
+                if (!(job.use.t && (job.ok.t || job.gu.t))) return true;
                 if (jobAllOk(job)) return false;
                 job.dead = true;
-                if (jobAnyOk(job)) return now - job.at < GUARD.pruneAge;   // chỉ tới 1 kênh: giữ để cảnh báo, hết hạn mới bỏ
                 return !job.silenced;
             });
             outboxSave();
         }
 
         function outboxRetryNow() {
-            outbox.forEach(function (j) { if (!j.dead) { j.nx.n = 0; j.nx.t = 0; } });
+            outbox.forEach(function (j) { if (!j.dead) { j.nx.t = 0; } });
             outboxPump();
         }
 
-        // Gửi 1 thông báo tới CẢ HAI kênh: ntfy (màn hình POS) và Telegram — cùng đi qua hộp thư đi, cùng tự thử lại.
+        // Gửi 1 thông báo tới thu ngân. KÊNH DUY NHẤT: Telegram (Worker tự nhân bản sang 2 nhóm).
         // opts.table: gắn với bàn (nhãn trạng thái + theo dõi "chưa ai nhận") · opts.label: tên trên thanh cảnh báo
-        // opts.ackTable / opts.ackAt: hiện nút ĐANG NHẬP / ĐÃ NHẬP cho bàn này · opts.ping: mã tin thử
-        // opts.tg === false: KHÔNG gửi bản Telegram (tin thử) · opts.sync: tin đồng bộ trạng thái (không cần thu ngân bấm)
-        function ntfySend(title, parts, priority, opts) {
+        // opts.ackTable / opts.ackAt: gắn nút ĐÃ NHẬP cho bàn này · opts.ping: mã tin thử
+        // opts.tg === false: KHÔNG gửi (giữ để chỗ gọi cũ không lỗi) · opts.sync: tin đồng bộ trạng thái (không cần thu ngân bấm)
+        function sendNotice(title, parts, priority, opts) {
             opts = opts || {};
             // Thêm tên phục vụ đang đăng nhập vào dòng CUỐI nội dung (tin đồng bộ / tin gửi lại có sẵn tên thì bỏ qua)
             if (currentStaff && !opts.sync && !opts.noStaff) parts = parts.concat(['👤 Phục vụ: ' + currentStaff]);
             const useTg = !!NOTIFY_WORKER_URL && opts.tg !== false;
-            // ntfy đang bị ngắt (429) -> chỉ dùng Telegram, không tạo thêm request vô ích
-            const useNtfy = opts.ntfy !== false && ntfyAvailable();
 
             // ---- GỘP TIN LIÊN TIẾP CÙNG BÀN ----
             // Phục vụ bấm thêm/xoá món vài lần trong vài giây (rất thường gặp giờ cao điểm) sẽ tạo
@@ -5492,7 +5469,7 @@ function togglePassVisibility(inputId, btn) {
 
                 const prev = outbox.find(function (j) {
                     // KHÔNG gộp vào tin đang bay: nội dung đã gửi lên mạng rồi, sửa nữa sẽ mất.
-                    if (outboxFlying[j.id + 'n'] || outboxFlying[j.id + 't']) return false;
+                    if (outboxFlying[j.id + 't']) return false;
                     return j.table === opts.table && !j.sync && !j.sentAt && !jobAnyOk(j) && !j.dead;
                 });
                 if (prev && (Date.now() - prev.at) < GUARD.coalesceMs) {
@@ -5502,10 +5479,8 @@ function togglePassVisibility(inputId, btn) {
                     prev.label = opts.label || prev.label;
                     prev.merged = (prev.merged || 1) + 1;
                     prev.at = Math.max(prev.at, Date.now());        // gia hạn để còn gộp tiếp
-                    // Đảm bảo kênh còn sống được bật lại nếu vừa hết thời gian ngắt ntfy
-                    if (useNtfy && !prev.ok.n) { prev.use.n = true; prev.gu.n = false; }
                     if (useTg && !prev.ok.t) { prev.use.t = true; prev.gu.t = false; }
-                    prev.nx = { n: 0, t: 0 };
+                    prev.nx.t = 0;
                     prev.debounce = false;                          // được gộp rồi -> đẩy đi ngay
                     outboxSave();
                     outboxPump();
@@ -5523,11 +5498,11 @@ function togglePassVisibility(inputId, btn) {
                 ackTable: opts.ackTable || opts.table || null, ackAt: opts.ackAt || null, ping: opts.ping || null,
                 sync: !!opts.sync,
                 label: opts.label || (opts.table ? 'Bàn ' + opts.table : String(title).slice(0, 28)),
-                use: { n: useNtfy, t: useTg },
-                ok: { n: false, t: false }, gu: { n: false, t: false },
-                tries: { n: 0, t: 0 }, nx: { n: 0, t: 0 }, fails: 0
+                use: { t: useTg },
+                ok: { t: false }, gu: { t: false },
+                tries: { t: 0 }, nx: { t: 0 }, fails: 0
             };
-            if (!job.use.n && !job.use.t) return job.id;   // không còn kênh nào để gửi
+            if (!job.use.t) return job.id;   // không có kênh nào để gửi
             outbox.push(job);
             outboxSave();
             outboxPump();
@@ -5535,11 +5510,13 @@ function togglePassVisibility(inputId, btn) {
             setTimeout(function () { try { outboxPump(); } catch (e) {} }, GUARD.debounceMs + 60);
             return job.id;
         }
+        // Giữ tên cũ để hàng trăm chỗ gọi không phải sửa.
+        var ntfySend = sendNotice;
 
         // ---- Nhắc thu ngân / gửi lại ----
         function guardRemind(t, b, sec) {
-            // Gửi cùng lúc: Telegram (có nút ĐANG NHẬP / ĐÃ NHẬP) + ntfy (thông báo trên máy POS), ưu tiên cao nhất.
-            ntfySend('🔔 NHẮC · BÀN ' + t + ' · CHƯA BẤM BILL SAU ' + Math.max(1, Math.round(sec / 60)) + ' PHÚT', [
+            // Nhắc cũng đi Telegram và cũng tới cả 2 nhóm (Worker tự nhân bản).
+            sendNotice('🔔 NHẮC · BÀN ' + t + ' · CHƯA BẤM BILL SAU ' + Math.max(1, Math.round(sec / 60)) + ' PHÚT', [
                 '⏳ Order gửi lúc ' + fmtTime(b.sentAt) + ' — đã ' + Math.floor(sec / 60) + 'p' + (Math.floor(sec) % 60 ? ' ' + (Math.floor(sec) % 60) + 's' : '') + ' mà thu ngân chưa bấm nhận.',
                 '👉 Vào nhập bill bàn ' + t + ' ngay.',
                 '━━━━━━━━━━━━',
@@ -5549,7 +5526,7 @@ function togglePassVisibility(inputId, btn) {
 
         // Job đã bỏ cuộc (quá 30 phút): tạo job mới gửi lại, ghi rõ là order cũ.
         function guardRevive(job) {
-            const nid = ntfySend(job.title, ['⏱ Order cũ lúc ' + fmtTime(job.at) + ' (gửi lại)', job.msg], job.pr,
+            const nid = sendNotice(job.title, ['⏱ Order cũ lúc ' + fmtTime(job.at) + ' (gửi lại)', job.msg], job.pr,
                 { table: job.table, label: job.label, ackTable: job.ackTable, ackAt: job.ackAt || job.at, sync: job.sync, noStaff: true });
             outbox = outbox.filter(function (x) { return x !== job; });
             try {
@@ -5565,7 +5542,7 @@ function togglePassVisibility(inputId, btn) {
             outbox.slice().forEach(function (j) {
                 if (j.silenced || jobAllOk(j)) return;
                 if (j.dead) { if (!jobAnyOk(j)) guardRevive(j); }
-                else { j.nx.n = 0; j.nx.t = 0; j.gu.n = false; j.gu.t = false; }
+                else { j.nx.t = 0; j.gu.t = false; }
                 n++;
             });
             Object.keys(billState || {}).forEach(function (t) {
@@ -5604,11 +5581,14 @@ function togglePassVisibility(inputId, btn) {
             const st = jobState(b.job);
             if (st === 'sending') return ['📤 Đang gửi...', '#475569', false];
             if (st === 'unsent') return ['📤 CHƯA GỬI ĐƯỢC', '#b91c1c', true];
-            const jj = (outbox || []).find(function (x) { return x.id === b.job; });
-            if (jj && !jj.silenced && jobAnyOk(jj) && !jobAllOk(jj) && (jj.fails > 0 || jj.dead)) return ['⚠️ Chỉ tới ' + (jj.ok.n ? 'POS' : 'Telegram'), '#b45309', true];
             if (GUARD.escalate && b.sentAt) {
                 const sec = (Date.now() - b.sentAt) / 1000;
-                if (sec >= GUARD.alarm[0] && sec <= GUARD.stale) return ['⚠️ Chưa nhận ' + Math.floor(sec / 60) + 'p', '#b91c1c', true];
+                if (sec >= GUARD.alarm[0] && sec <= GUARD.stale) {
+                    // Mất kênh nhận báo từ thu ngân thì KHÔNG được khẳng định "chưa nhận":
+                    // rất có thể thu ngân đã bấm mà máy này không biết. Báo đúng sự thật đang biết.
+                    if (ackFeedDead()) return ['📡 Chưa rõ (mất kênh nhận)', '#b45309', true];
+                    return ['⚠️ Chưa nhận ' + Math.floor(sec / 60) + 'p', '#b91c1c', true];
+                }
             }
             return null;
         }
@@ -5652,7 +5632,7 @@ function togglePassVisibility(inputId, btn) {
             } catch (e) { console.warn('notifyTableUpdate lỗi:', e); return false; }
         }
 
-        function guardRenderBar(unsent, escalated, ackDead, partial) {
+        function guardRenderBar(unsent, escalated, ackDead, silencedAlert) {
             let bar = document.getElementById('guardBar');
             const lines = [];
             if (unsent.length) {
@@ -5660,8 +5640,11 @@ function togglePassVisibility(inputId, btn) {
                 unsent.forEach(function (j) { if (labels.indexOf(j.label) < 0) labels.push(j.label); });
                 lines.push('📤 CHƯA GỬI ĐƯỢC cho thu ngân: ' + labels.slice(0, 3).join(', ') + (labels.length > 3 ? ' +' + (labels.length - 3) : '') + ' — đang thử lại. Hãy báo miệng!');
             }
-            if (partial && partial.length) {
-                lines.push('⚠️ Chỉ tới 1 kênh: ' + partial.slice(0, 3).map(function (j) { return j.label + ' (thiếu ' + jobMissing(j).join(', ') + ')'; }).join('; ') + ' — đang thử lại.');
+            if (silencedAlert && silencedAlert.length) {
+                const labels = silencedAlert.map(function (j) { return j.label; });
+                lines.push('🔕 Tới được nhóm thu ngân nhưng CHƯA tới nhóm phụ: ' + labels.slice(0, 3).join(', ')
+                    + (labels.length > 3 ? ' +' + (labels.length - 3) : '')
+                    + ' — máy POS sẽ KHÔNG kêu. Kiểm tra CHAT_ID_ALERT và việc bot đã ở trong nhóm đó.');
             }
             if (ackDead) {
                 lines.push('📡 Máy KHÔNG nhận được báo từ thu ngân (mất mạng/kênh ack lỗi). Có thể thu ngân đã nhập nhưng web chưa biết.');
@@ -5670,9 +5653,6 @@ function togglePassVisibility(inputId, btn) {
                 lines.push('⏰ Thu ngân CHƯA nhận: ' + escalated.slice(0, 3).map(function (e) { return 'Bàn ' + e.t + ' (' + Math.floor(e.sec / 60) + 'p)'; }).join(', ')
                     + (escalated.length > 3 ? ' +' + (escalated.length - 3) : '')
                     );
-            }
-            if (guardLimitedAt && Date.now() - guardLimitedAt < 10 * 60000) {
-                lines.unshift('⛔ ntfy từ chối vì gửi quá nhiều (HTTP 429): thông báo có thể KHÔNG tới thu ngân. Hãy báo miệng!');
             }
             if (!lines.length) {
                 if (bar) bar.style.display = 'none';
@@ -5702,7 +5682,7 @@ function togglePassVisibility(inputId, btn) {
                 outboxPump();
                 const now = Date.now();
                 const visible = document.visibilityState === 'visible';
-                const ackDead = !!(ackLastBeat && now - ackLastBeat > 120000 && now - ackPollOkAt > 60000);
+                const ackDead = ackFeedDead();
 
                 // (a) Tin chưa gửi được: báo động 1 lần trên máy phục vụ
                 outbox.forEach(function (job) {
@@ -5713,20 +5693,10 @@ function togglePassVisibility(inputId, btn) {
                     }
                 });
 
-                // (a1) Chỉ tới 1 kênh (vd ntfy tới mà Telegram chưa, hoặc ngược lại): cảnh báo 1 lần
-                const partial = [];
-                outbox.forEach(function (job) {
-                    if (job.silenced || !jobAnyOk(job) || jobAllOk(job)) return;
-                    if (job.sync || job.ping) return;
-                    if (!(job.fails > 0 || job.dead) || now - job.at < 10000) return;
-                    partial.push(job);
-                    if (!job.warnedP) {
-                        job.warnedP = true; outboxSave();
-                        if (visible) { ackToast('⚠️ ' + job.label + ' mới tới ' + (job.ok.n ? 'màn hình POS (ntfy)' : 'Telegram') + ', ' + jobMissing(job).join(' + ') + ' CHƯA gửi được — đang thử lại.', 'alert', 12000); ackAlert(); }
-                    }
-                });
-
-                // (b) Đã gửi mà chưa ai nhận: tự nhắc + báo động trên máy phục vụ
+                // (b) Đã gửi mà chưa ai nhận: báo động trên máy phục vụ.
+                //     Nhắc thu ngân thì KHÔNG làm ở đây nữa — Worker cron đảm nhiệm (xem GUARD.remind).
+                //     Nhờ vậy dù tab phục vụ đóng hay trạng thái cục bộ bị lệch, thu ngân vẫn được nhắc
+                //     đúng MỘT lần, và không bao giờ bị nhắc lại sau khi đã bấm "đã nhập bill".
                 const escalated = [];
                 let billDirty = false;
                 Object.keys(billState || {}).forEach(function (t) {
@@ -5737,7 +5707,7 @@ function togglePassVisibility(inputId, btn) {
                     if (sec > GUARD.stale) return;
                     if (GUARD.waiterAlarm && sec >= GUARD.alarm[0]) escalated.push({ t: t, sec: sec });
                     if (now < guardGraceUntil) return;   // vừa mở lại app: chờ vài giây để nhận bù tin "đã nhận" từ thu ngân
-                    // Nhắc thu ngân (Telegram + ntfy): chạy cả khi màn hình máy phục vụ đang tắt/ẩn tab.
+                    // Chỉ chạy khi người dùng chủ động bật lại GUARD.remind (Worker chưa cài cron).
                     for (let k = GUARD.remind.length - 1; k >= 0; k--) {
                         if (sec >= GUARD.remind[k] && (b.rem || 0) <= k) { b.rem = k + 1; billDirty = true; guardRemind(t, b, sec); break; }
                     }
@@ -5766,7 +5736,13 @@ function togglePassVisibility(inputId, btn) {
                 }
 
                 // (d) Thanh cảnh báo
-                guardRenderBar(outbox.filter(function (j) { return !j.silenced && !j.sync && jobState(j.id) === 'unsent'; }), escalated, ackDead, partial);
+                guardRenderBar(
+                    outbox.filter(function (j) { return !j.silenced && !j.sync && jobState(j.id) === 'unsent'; }),
+                    escalated,
+                    ackDead,
+                    // Tin đã tới nhóm chính nhưng thiếu nhóm phụ -> máy POS không kêu chuông
+                    outbox.filter(function (j) { return !j.sync && Array.isArray(j.missing) && j.missing.length; })
+                );
             } catch (e) { console.warn('guardTick lỗi:', e); }
         }
 
@@ -5884,9 +5860,9 @@ function togglePassVisibility(inputId, btn) {
             }
         }
 
-        // ================== NHẬN BÁO NGƯỢC TỪ THU NGÂN (qua ntfy) ==================
-        // Khi thu ngân bấm nút trong Telegram, Worker gửi một tin vào kênh này; trang nào đang mở cũng nhận được.
-        const NTFY_ACK_TOPIC = 'tys-ack-c8ccf061d65dc036';   // phải trùng ACK_TOPIC trong Worker
+        // ================== NHẬN BÁO NGƯỢC TỪ THU NGÂN (qua Worker) ==================
+        // Khi thu ngân bấm nút trong Telegram (ở NHÓM CHÍNH hoặc NHÓM PHỤ), Worker ghi 1 dòng vào D1;
+        // trang web đang mở hỏi /acks và nhận được, nên biết ngay bill đã nhập hay chưa.
         var billState = (function () { try { return JSON.parse(localStorage.getItem('tys_bill_state') || '{}'); } catch (e) { return {}; } })();
         const ackSeen = new Set();
 
@@ -5951,11 +5927,9 @@ function togglePassVisibility(inputId, btn) {
             return m ? m + 'p' + (sec % 60) + 's' : sec + 's';
         }
 
-        var ackEs = null, ackRetry = null, ackDown = false, ackShownOnce = false, ackLastBeat = 0;
-        // Tạm ẩn 2 thông báo trạng thái "Đã kết nối / Mất kết nối nhận báo từ thu ngân".
-        // Kết nối vẫn chạy bình thường; muốn hiện lại thì đổi thành true.
-        const ACK_SHOW_CONN_STATUS = false;
-        const ACK_SEEN_KEY = 'tys_ack_seen', ACK_ALIVE_KEY = 'tys_ack_alive';
+        // KÊNH NHẬN BÁO NGƯỢC: chỉ còn LONG-POLL Worker (/acks, đọc từ D1). ntfy và SSE đã bỏ hoàn toàn
+        // nên không còn tình trạng 429 / đứt kết nối ngầm của ntfy.
+        const ACK_SEEN_KEY = 'tys_ack_seen';
 
         // Nhớ các tin đã xử lý (kể cả sau khi tải lại trang) để nối lại có thể phát lại tin bị lỡ mà không báo trùng.
         (function () { try { JSON.parse(localStorage.getItem(ACK_SEEN_KEY) || '[]').forEach(function (id) { ackSeen.add(id); }); } catch (e) {} })();
@@ -5967,44 +5941,19 @@ function togglePassVisibility(inputId, btn) {
             } catch (e) {}
         }
 
-        // Lần cuối kết nối còn sống (giây). Nối lại thì xin ntfy phát lại mọi tin từ mốc này, nên không lỡ tin khi điện thoại khóa màn hình.
-        function ackBeat() {
-            ackLastBeat = Date.now();
-            try { localStorage.setItem(ACK_ALIVE_KEY, String(Math.floor(ackLastBeat / 1000))); } catch (e) {}
-        }
-        // Mốc để xin ntfy phát lại tin: lấy thời điểm gần nhất mà SSE HOẶC polling còn sống (lùi 20s cho chắc; tin trùng đã có ackSeen chặn).
-        var ackPollOkAt = 0, ackPollBusy = false;
-        const ACK_POLL_KEY = 'tys_ack_poll';
-        try { ackPollOkAt = (parseInt(localStorage.getItem(ACK_POLL_KEY) || '0', 10) || 0) * 1000; } catch (e) {}
-        function ackSince() {
-            let t = 0;
-            try { t = parseInt(localStorage.getItem(ACK_ALIVE_KEY) || '0', 10) || 0; } catch (e) {}
-            t = Math.max(t, Math.floor(ackPollOkAt / 1000));
-            const now = Math.floor(Date.now() / 1000);
-            if (!t || now - t > 15 * 60) return '15m';
-            return String(Math.max(0, t - 20));
+        // Worker giữ kết nối 10–20s nên "còn sống" nghĩa là vừa có phản hồi trong ~1,5 phút.
+        // Dùng để phân biệt "thu ngân chưa bấm" với "máy này đang mất kênh nhận báo" —
+        // hai chuyện rất khác nhau: khẳng định sai "chưa nhập" chính là lỗi hay gặp trước đây.
+        var ackPollOkAt = 0;
+        function ackFeedDead() {
+            if (!NOTIFY_WORKER_URL) return true;
+            // Tab đang ẩn thì KHÔNG hỏi Worker, nên không thể kết luận gì. Đừng báo sai.
+            if (document.visibilityState !== 'visible') return false;
+            const last = ackPollOkAt || guardStartedAt;
+            return Date.now() - last > 90000;
         }
 
-        // ---- Lớp dự phòng cho kênh nhận: hỏi thẳng ntfy định kỳ (poll) — không phụ thuộc kết nối SSE dễ đứt ngầm trên điện thoại ----
-        function ackPoll() {
-            if (ackPollBusy) return;
-            ackPollBusy = true;
-            const ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
-            const timer = setTimeout(function () { try { if (ctl) ctl.abort(); } catch (e) {} }, 8000);
-            fetch(NTFY_URL + '/' + NTFY_ACK_TOPIC + '/json?poll=1&since=' + encodeURIComponent(ackSince()), { signal: ctl ? ctl.signal : undefined, cache: 'no-store' })
-                .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
-                .then(function (txt) {
-                    ackPollOkAt = Date.now();
-                    try { localStorage.setItem(ACK_POLL_KEY, String(Math.floor(ackPollOkAt / 1000))); } catch (e) {}
-                    String(txt || '').split('\n').forEach(function (line) {
-                        line = line.trim(); if (!line) return;
-                        try { handleAck(JSON.parse(line)); } catch (e) {}
-                    });
-                })
-                .catch(function (e) { console.warn('ack poll lỗi:', e && e.message); })
-                .then(function () { clearTimeout(timer); ackPollBusy = false; });
-        }
-        // ---- ĐƯỜNG DỰ PHÒNG 2: hỏi thẳng Worker (Worker lưu tin của Telegram vào D1) — không đi qua ntfy nên không bị 429 ----
+        // ---- Hỏi thẳng Worker (Worker lưu tin của Telegram vào D1) ----
         // Dùng LONG-POLL: Worker giữ kết nối tới 20 giây và trả về ngay khi có tin mới.
         // Nhờ vậy thu ngân bấm "ĐÃ NHẬP BILL" là máy phục vụ biết sau ~0,2–0,7 giây
         // (trước đây phải đợi hết chu kỳ 2,5 giây, và tới 15 giây khi bàn không ở trạng thái chờ).
@@ -6055,16 +6004,8 @@ function togglePassVisibility(inputId, btn) {
         function ackHasPending() {
             return Object.keys(billState || {}).some(function (t) { const b = billState[t]; return b && (b.s === 'wait' || b.s === 'claimed') && tablesData[t] && tablesData[t].status !== 'empty'; });
         }
-        var ackPollLast = 0;
-        setInterval(function () {
-            if (document.visibilityState !== 'visible') return;
-            // ntfy hay bị 429 nên giữ nhịp thưa hơn Worker. Khi đang có bàn chờ thì hỏi 4s/lần,
-            // còn bình thường 30s/lần (trước đây 6s và 20s) vì Worker đã là kênh chính, gần như tức thời.
-            const gap = ackHasPending() ? 4000 : 30000;
-            if (Date.now() - ackPollLast >= gap) { ackPollLast = Date.now(); ackPoll(); }
-        }, 2000);
 
-        // ---- Đọc tin từ thu ngân: chịu được nhiều dạng (JSON từ nút ntfy, JSON/văn bản từ Worker Telegram) ----
+        // ---- Đọc tin từ thu ngân: JSON do Worker gửi, hoặc văn bản thường ----
         const ACK_TYPE_ALIAS = {
             done: 'done', ok: 'done', finished: 'done', complete: 'done', completed: 'done', entered: 'done', 'đã nhập': 'done', 'da nhap': 'done', 'xong': 'done',
             claim: 'claim', claimed: 'claim', processing: 'claim', working: 'claim', 'đang nhập': 'claim', 'dang nhap': 'claim',
@@ -6119,7 +6060,7 @@ function togglePassVisibility(inputId, btn) {
                 return;
             }
             if (a.t === 'ping') return;   // tin thử đã bỏ
-            // Cùng 1 lần bấm của thu ngân có thể tới bằng 2 đường (ntfy + Worker): chỉ xử lý 1 lần
+            // Chặn trùng theo aid (mỗi lần bấm có 1 aid riêng do Worker sinh ra).
             const aidRaw = a.o && a.o.aid;
             if (aidRaw) {
                 const ak = 'aid:' + aidRaw;
@@ -6137,21 +6078,34 @@ function togglePassVisibility(inputId, btn) {
             const prev = billState[o.table] || null;
             const extra = { src: 'ack', st: m.time || 0 };
             // Giữ lại thông tin của order đang theo dõi để các bước sau (đang nhập → đã nhập → hoàn lại) không mất dấu
-            if (prev) ['job', 'title', 'msg', 'sentAt', 'ord', 'mid'].forEach(function (k) { if (prev[k] !== undefined) extra[k] = prev[k]; });
+            if (prev) ['job', 'title', 'msg', 'sentAt', 'ord', 'mid', 'mids'].forEach(function (k) { if (prev[k] !== undefined) extra[k] = prev[k]; });
 
-            // Đối chiếu order: ưu tiên message_id (chính xác tuyệt đối).
-            // Chỉ khi tin ack không có mid (bản Worker cũ) mới dùng mốc thời gian.
+            // ---- ĐỐI CHIẾU XEM ACK NÀY CÓ THUỘC ĐƠN ĐANG CHỜ KHÔNG ----
+            // Worker gửi kèm "mid" = message_id của tin order ở NHÓM CHÍNH. Mỗi đơn nay nằm ở 2 nhóm
+            // nên còn có mids[] = mọi message_id của đơn đó; bấm ở nhóm nào cũng khớp.
+            // "pressedMid" = tin thực sự bị bấm (có thể là tin NHẮC, không phải tin order).
             var ackMid = Number(o.mid) || 0;
             var ackPressedMid = Number(o.pressedMid) || 0;
-            var prevMid = Number(prev && prev.mid) || 0;
+            // Danh sách id "hợp lệ" của đơn đang chờ: tin order ở nhóm chính + bản sao ở nhóm phụ.
+            var prevIds = [];
+            if (prev) {
+                if (prev.mid) prevIds.push(Number(prev.mid));
+                if (Array.isArray(prev.mids)) prev.mids.forEach(function (x) { if (x) prevIds.push(Number(x)); });
+            }
+            function ownsOrder(id) { return !!id && prevIds.indexOf(Number(id)) >= 0; }
 
             // Chống nhầm: thu ngân bấm "ĐÃ NHẬP" trên thông báo CŨ trong khi bàn đã có order MỚI chưa ai nhận.
-            // Với ack có mid: chỉ báo nhầm khi mid KHÔNG khớp order đang chờ (và cũng không phải tin nhắc của nó).
+            // QUAN TRỌNG: mặc định phải là "KHÔNG nhầm". Trước đây điều kiện chỉ là "mid khác nhau" nên
+            // mọi cú bấm trên tin NHẮC (tin nhắc không phải tin order, id khác) đều bị coi là order cũ
+            // → web không ghi nhận "đã nhập" → 2 phút sau lại nhắc dù thu ngân đã bấm.
             var isOldOrder = false;
             if ((o.t === 'done' || o.t === 'claim') && prev && (prev.s === 'wait' || prev.s === 'claimed')) {
-                if (ackMid && prevMid) {
-                    isOldOrder = (ackMid !== prevMid && ackPressedMid !== prevMid);
+                if (ackMid || ackPressedMid) {
+                    // Có id để đối chiếu: chỉ coi là order cũ khi KHÔNG id nào thuộc đơn đang chờ
+                    // VÀ cú bấm thực sự đến từ một đơn khác đã cũ (giờ gửi cũ hơn đơn đang chờ).
+                    isOldOrder = !ownsOrder(ackMid) && !ownsOrder(ackPressedMid) && !!(prev.ord && o.at && o.at < prev.ord - 5000);
                 } else if (prev.ord && o.at) {
+                    // Bản Worker cũ không gửi id: đành so mốc thời gian.
                     isOldOrder = o.at < prev.ord - 1500;
                 }
             }
@@ -6167,20 +6121,27 @@ function togglePassVisibility(inputId, btn) {
                 // (markBill tạo object mới nên nếu đặt trước sẽ bị ghi đè).
                 extra.rem = 99; extra.alm = 99; extra.ackDone = true; extra.ackMid = ackMid || null;
                 markBill(o.table, 'done', who, extra);
-                // Gỡ mọi job đang chờ của bàn này khỏi hộp thư đi để không gửi lại / nhắc lại
+                // Gỡ khỏi hộp thư đi những tin đã tới thu ngân rồi, để không gửi lại / không cảnh báo nữa.
+                // CHỈ gỡ job của lần báo CŨ HƠN hoặc chính job đang theo dõi — KHÔNG gỡ tin "gọi thêm"
+                // vừa được tạo sau đó, nếu không món thêm sẽ không bao giờ tới thu ngân và cũng không còn ai nhắc.
                 try {
-                    outbox = outbox.filter(function (j) { return String(j.table) !== String(o.table); });
+                    const cutAt = prev && prev.ord ? prev.ord + 5000 : 0;
+                    outbox = outbox.filter(function (j) {
+                        if (String(j.table) !== String(o.table)) return true;
+                        if (prev && prev.job && j.id === prev.job) return false;     // đúng tin đã được nhập
+                        return !(cutAt && j.at <= cutAt);                           // tin cũ hơn mốc → đã xử lý
+                    });
                     outboxSave();
                 } catch (e) {}
                 ackToast('✅ ' + label + ': thu ngân ' + (who && who !== 'thu ngân' ? '(' + who + ') ' : '') + 'ĐÃ BẤM NHẬP BILL', 'ok', 8000);
-                // Tin đồng bộ CHỈ gửi sang Telegram (không gửi ntfy lên màn hình POS).
+                // Tin đồng bộ gửi sang Telegram để thu ngân biết máy phục vụ đã nhận.
                 // Chỉ máy đang theo dõi order này (có mã job) mới gửi, để nhiều máy cùng mở không gửi trùng.
                 if (wasOpen && prev && prev.job) {
                     try {
-                        ntfySend('🔄 ĐÃ THÔNG BÁO VỚI PHỤC VỤ · BÀN ' + o.table, [
+                        sendNotice('🔄 ĐÃ THÔNG BÁO VỚI PHỤC VỤ · BÀN ' + o.table, [
                             '✅ Phục vụ đã nhận được báo "đã nhập bill" của bàn ' + o.table + '.',
                             '🕒 ' + fmtTime(Date.now())
-                        ], 2, { sync: true, ntfy: false, label: 'Đồng bộ #' + o.table });
+                        ], 2, { sync: true, label: 'Đồng bộ #' + o.table });
                     } catch (e) {}
                 }
             } else if (o.t === 'claim') {
@@ -6203,45 +6164,17 @@ function togglePassVisibility(inputId, btn) {
             }
         }
 
-        function connectAck() {
-            try { if (ackEs) ackEs.close(); } catch (e) {}
-            clearTimeout(ackRetry);
-            try {
-                ackEs = new EventSource(NTFY_URL + '/' + NTFY_ACK_TOPIC + '/sse?since=' + encodeURIComponent(ackSince()));
-                ackEs.onopen = function () {
-                    ackBeat();
-                    if (ACK_SHOW_CONN_STATUS && (!ackShownOnce || ackDown)) ackToast('🔔 Đã kết nối nhận báo từ thu ngân', 'info', 2500);
-                    ackShownOnce = true; ackDown = false;
-                };
-                // ntfy gửi 'keepalive' mỗi ~45s: dùng làm nhịp tim để biết kết nối còn sống.
-                ackEs.addEventListener('keepalive', ackBeat);
-                ackEs.addEventListener('open', ackBeat);
-                ackEs.onmessage = function (ev) { ackBeat(); try { handleAck(JSON.parse(ev.data)); } catch (e) {} };
-                ackEs.onerror = function () {
-                    try { ackEs.close(); } catch (e) {}
-                    if (!ackDown) { ackDown = true; if (ACK_SHOW_CONN_STATUS) ackToast('⚠️ Mất kết nối nhận báo từ thu ngân, đang thử lại...', 'info', 3000); }
-                    ackRetry = setTimeout(connectAck, 3000);
-                };
-            } catch (e) { ackRetry = setTimeout(connectAck, 5000); }
-        }
-        // Điện thoại khóa màn hình / chuyển app (vd Telegram) có thể làm đứt kết nối mà KHÔNG báo lỗi → nối lại khi quay về trang.
-        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { connectAck(); ackPoll(); ackPollWorker(); } });
-        window.addEventListener('pageshow', function () { connectAck(); ackPoll(); });
-        window.addEventListener('focus', function () { if (Date.now() - ackLastBeat > 15000) connectAck(); });
-        window.addEventListener('online', function () { connectAck(); ackPoll(); });
-        // Giám sát: quá ~100s không có nhịp tim nào thì coi là đã đứt ngầm, nối lại.
-        // Giảm xuống 45s: ntfy gửi keepalive ~45s một lần nên 100s là quá trễ — điện thoại ngủ
-        // có thể mất tới gần 2 phút mới biết SSE đã chết, trong khoảng đó tin "đã nhập bill" chỉ
-        // tới được nhờ polling. Nối lại sớm thì tin tới ngay.
-        setInterval(function () {
-            if (document.visibilityState !== 'visible') return;
-            if (ackLastBeat && Date.now() - ackLastBeat > 45000) connectAck();
-        }, 10000);
-        window.addEventListener('load', function () { connectAck(); ackPoll(); ackPollWorker(); });
+        // Trang vừa mở / quay lại: hỏi Worker ngay để nhận bù tin "đã nhập" trong lúc màn hình tắt.
+        // (Trước đây còn phải nối lại SSE của ntfy; ntfy đã bỏ nên chỉ còn long-poll Worker.)
+        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { ackPollWorker(); guardTick(); } });
+        window.addEventListener('pageshow', function () { ackPollWorker(); });
+        window.addEventListener('focus', function () { ackPollWorker(); });
+        window.addEventListener('online', function () { ackPollWorker(); });
+        window.addEventListener('load', function () { ackPollWorker(); });
 
         // ================== CHẾ ĐỘ NHẬP DỮ LIỆU (CHỈ ADMIN) ==================
         // Bật từ menu 3 chấm → "Nhập dữ liệu" (chỉ tài khoản ADMIN thấy). Khi đang bật, mọi thao tác bàn trên MÁY NÀY:
-        //   • KHÔNG gửi bất kỳ thông báo nào (ntfy / Telegram) tới thu ngân: order, gọi thêm, hủy món, hủy bàn,
+        //   • KHÔNG gửi bất kỳ thông báo nào (Telegram) tới thu ngân: order, gọi thêm, hủy món, hủy bàn,
         //     cập nhật ghi chú/thanh toán, chuyển/gộp bàn;
         //   • được ghi nhận như thu ngân đã bấm "ĐÃ NHẬP" (nhãn ✔ Đã vào bill) → không chờ, không nhắc, không báo động;
         //   • không bị chặn bởi kiểm tra WiFi quán (vì không có dữ liệu nào rời khỏi máy).
