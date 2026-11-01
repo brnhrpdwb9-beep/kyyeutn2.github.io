@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+(<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TYS COFFEE - THANH TOÁN</title>
+    <title>TYS ORDER</title>
     
     <!-- TỐI ƯU: mở kết nối sớm tới 3 CDN để giảm thời gian chờ DNS/TLS khi tải lần đầu.
          Không thay đổi nội dung hay giao diện — chỉ báo trước cho trình duyệt. -->
@@ -5230,7 +5230,7 @@ function togglePassVisibility(inputId, btn) {
         // Lưu ý: Lớp 4 cần thu ngân bấm nút. Nếu thu ngân chỉ đọc mà không bấm thì sẽ bị báo động giả → đổi GUARD.escalate = false.
         var GUARD = {
             retry: [3000, 8000, 20000, 45000, 60000],   // chờ giữa các lần thử lại (ms)
-            timeout: 8000,                              // mỗi lần gửi chờ tối đa (ms)
+            timeout: 12000,                             // mỗi lần gửi chờ tối đa (ms) — để Worker kịp trả lời kể cả khi Telegram phải thử lại
             maxAge: 30 * 60000,                         // quá 30 phút thì ngừng thử lại
             pruneAge: 3 * 3600000,                      // hộp thư đi: bỏ tin cũ hơn 3 giờ khi mở lại app
             // NHẮC thu ngân do WORKER (cron mỗi phút) đảm nhiệm, nên đây phải để RỖNG.
@@ -5355,6 +5355,11 @@ function togglePassVisibility(inputId, btn) {
                             b.mids = ids;         // để ack bấm ở nhóm nào cũng nhận ra đúng order
                             if (d.at) b.ord = d.at;
                             saveBill();
+                        }
+                        // Worker không đặt được NHẮC TỰ ĐỘNG cho đơn này (D1 lỗi): tin vẫn tới thu ngân.
+                        if (d.tracked === false && !job.warnedTrack) {
+                            job.warnedTrack = true;
+                            ackToast('⚠️ ' + job.label + ': tin ĐÃ tới thu ngân nhưng KHÔNG đặt được nhắc tự động. Nếu thu ngân chậm, hãy báo miệng.', 'info', 12000);
                         }
                         // Tin đã tới nhóm chính (thu ngân thấy) nhưng CHƯA tới nhóm phụ:
                         // máy POS sẽ KHÔNG kêu chuông. Đây không phải mất bill, nhưng phải biết để sửa.
@@ -5632,7 +5637,7 @@ function togglePassVisibility(inputId, btn) {
             } catch (e) { console.warn('notifyTableUpdate lỗi:', e); return false; }
         }
 
-        function guardRenderBar(unsent, escalated, ackDead, silencedAlert) {
+        function guardRenderBar(unsent, escalated, ackDead, silencedAlert, healthBadFlag) {
             let bar = document.getElementById('guardBar');
             const lines = [];
             if (unsent.length) {
@@ -5645,6 +5650,9 @@ function togglePassVisibility(inputId, btn) {
                 lines.push('🔕 Tới được nhóm thu ngân nhưng CHƯA tới nhóm phụ: ' + labels.slice(0, 3).join(', ')
                     + (labels.length > 3 ? ' +' + (labels.length - 3) : '')
                     + ' — máy POS sẽ KHÔNG kêu. Kiểm tra CHAT_ID_ALERT và việc bot đã ở trong nhóm đó.');
+            }
+            if (healthBadFlag) {
+                lines.push('⏱ Bộ NHẮC tự động của Worker đang NGỪNG hoạt động. Thu ngân sẽ không được nhắc, hãy báo miệng và nhờ người kiểm tra Worker.');
             }
             if (ackDead) {
                 lines.push('📡 Máy KHÔNG nhận được báo từ thu ngân (mất mạng/kênh ack lỗi). Có thể thu ngân đã nhập nhưng web chưa biết.');
@@ -5677,8 +5685,21 @@ function togglePassVisibility(inputId, btn) {
         }
 
         // Nhịp kiểm tra mỗi 3 giây: gửi lại tin lỗi, cảnh báo, nhắc thu ngân, cập nhật nhãn + thanh cảnh báo.
+        // Hỏi /health của Worker mỗi ~60s (chỉ khi tab đang hiện). Lỗi mạng KHÔNG coi là cron chết:
+        // trường hợp đó đã có cảnh báo "mất kênh nhận báo" riêng.
+        var healthAt = 0, healthBad = false;
+        function checkHealth() {
+            if (!NOTIFY_WORKER_URL || document.visibilityState !== 'visible' || Date.now() - healthAt < 60000) return;
+            healthAt = Date.now();
+            fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/health?key=' + encodeURIComponent(NOTIFY_KEY), { cache: 'no-store' })
+                .then(function (r) { return r.json(); })
+                .then(function (d) { healthBad = !!d && d.ok === false; })
+                .catch(function () {});
+        }
+
         function guardTick() {
             try {
+                checkHealth();
                 outboxPump();
                 const now = Date.now();
                 const visible = document.visibilityState === 'visible';
@@ -5741,7 +5762,8 @@ function togglePassVisibility(inputId, btn) {
                     escalated,
                     ackDead,
                     // Tin đã tới nhóm chính nhưng thiếu nhóm phụ -> máy POS không kêu chuông
-                    outbox.filter(function (j) { return !j.sync && Array.isArray(j.missing) && j.missing.length; })
+                    outbox.filter(function (j) { return !j.sync && Array.isArray(j.missing) && j.missing.length; }),
+                    healthBad
                 );
             } catch (e) { console.warn('guardTick lỗi:', e); }
         }
