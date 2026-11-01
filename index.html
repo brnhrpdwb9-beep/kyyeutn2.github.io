@@ -6072,6 +6072,8 @@ function togglePassVisibility(inputId, btn) {
         function notifyTableCancelled(tableId, prevStatus, prevItems, prevTotal, nextStatus) {
             try {
                 if (nextStatus && nextStatus !== 'empty') return false;
+                // Lớp chặn thứ 2: không tin người gọi. Nếu bàn đang còn khách/đã trả (không phải Trống) thì không phải hủy bàn.
+                if (!nextStatus) { const cur = tablesData[tableId]; if (!cur || cur.status !== 'empty') return false; }
                 if (prevStatus !== 'unpaid' || !(prevItems && prevItems.length)) return false;
                 ntfySend('🗑️ BÀN ' + tableId + ' · HỦY BÀN · ' + prevItems.length + ' món', [
                     '❌ Hủy CẢ BÀN — xóa bill:',
