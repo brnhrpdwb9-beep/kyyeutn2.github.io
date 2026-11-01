@@ -6067,8 +6067,11 @@ function togglePassVisibility(inputId, btn) {
         function itemsSig(items) { return (items || []).map(function (i) { return i.name + '|' + (i.note || ''); }).sort().join('\n'); }
 
         // Hủy cả bàn khi khách chưa trả (bill đã nhập bên thu ngân cần xóa). Trả về true nếu đã gửi.
-        function notifyTableCancelled(tableId, prevStatus, prevItems, prevTotal) {
+        // nextStatus: trạng thái bàn SAU thao tác. Chỉ khi bàn về "Trống" mới là hủy bàn; bấm "Thu tiền"
+        // (unpaid → paid) vẫn còn bill nên TUYỆT ĐỐI không được báo "xóa bill" cho thu ngân.
+        function notifyTableCancelled(tableId, prevStatus, prevItems, prevTotal, nextStatus) {
             try {
+                if (nextStatus && nextStatus !== 'empty') return false;
                 if (prevStatus !== 'unpaid' || !(prevItems && prevItems.length)) return false;
                 ntfySend('🗑️ BÀN ' + tableId + ' · HỦY BÀN · ' + prevItems.length + ' món', [
                     '❌ Hủy CẢ BÀN — xóa bill:',
@@ -6802,7 +6805,7 @@ function togglePassVisibility(inputId, btn) {
                 adminEntryMarkDone(activeTableId);
             } else if (!notifyCashier(activeTableId, prevItems, modalItems, table)) {
                 // Không có món thêm/bớt: kiểm tra các trường hợp trước đây im lặng (hủy cả bàn, đổi thanh toán/ghi chú)
-                if (!notifyTableCancelled(activeTableId, prevStatus, prevItems, prevTotal) && !notifyTableUpdate(activeTableId, prevSnap, table)) {
+                if (!notifyTableCancelled(activeTableId, prevStatus, prevItems, prevTotal, table.status) && !notifyTableUpdate(activeTableId, prevSnap, table)) {
                     notifyPayment(activeTableId, prevStatus, table);
                 }
             }
@@ -6816,7 +6819,7 @@ function togglePassVisibility(inputId, btn) {
             if (!activeTableId) return;
             const targetId = activeTableId;
             const before = tablesData[targetId];
-            if (before && !adminEntryActive()) notifyTableCancelled(targetId, before.status, before.items, before.total);   // xóa bàn khi chưa trả → báo thu ngân xóa bill
+            if (before && !adminEntryActive()) notifyTableCancelled(targetId, before.status, before.items, before.total, 'empty');   // xóa bàn khi chưa trả → báo thu ngân xóa bill
             tablesData[targetId] = { id: targetId, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '', paidGuests: 0, unpaidGuests: 0 };
             saveData(); 
             renderTableNode(targetId);
