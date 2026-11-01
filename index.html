@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+(<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -5966,13 +5966,20 @@ function togglePassVisibility(inputId, btn) {
         // Worker giữ kết nối 10–20s nên "còn sống" nghĩa là vừa có phản hồi trong ~1,5 phút.
         // Dùng để phân biệt "thu ngân chưa bấm" với "máy này đang mất kênh nhận báo" —
         // hai chuyện rất khác nhau: khẳng định sai "chưa nhập" chính là lỗi hay gặp trước đây.
-        var ackPollOkAt = 0;
+        var ackPollOkAt = 0, ackGraceUntil = 0, ackLastCheck = 0;
         function ackFeedDead() {
+            const now = Date.now();
+            // Hàm này được gọi liên tục khi trang đang chạy. Nếu bị gián đoạn hơn 10s thì trang vừa
+            // bị ẩn/đóng băng (khoá màn hình, chuyển tab): cho 25s để vòng hỏi /acks kịp chạy lại,
+            // tránh báo "mất kênh" nhầm.
+            if (now - ackLastCheck > 10000) ackGraceUntil = now + 25000;
+            ackLastCheck = now;
             if (!NOTIFY_WORKER_URL) return true;
             // Tab đang ẩn thì KHÔNG hỏi Worker, nên không thể kết luận gì. Đừng báo sai.
             if (document.visibilityState !== 'visible') return false;
+            if (now < ackGraceUntil) return false;
             const last = ackPollOkAt || guardStartedAt;
-            return Date.now() - last > 90000;
+            return now - last > 90000;
         }
 
         // ---- Hỏi thẳng Worker (Worker lưu tin của Telegram vào D1) ----
@@ -6969,6 +6976,102 @@ function togglePassVisibility(inputId, btn) {
         window.addEventListener('orientationchange', () => {
             setTimeout(resetZoomAndFit, 200);
         });
+    </script>
+
+    <!-- ============================================================
+         BẢNG THÔNG BÁO BẮT BUỘC ĐỌC
+         - Hiện sau khi nhân viên đăng nhập, cho tới khi tích ô "Tôi đã đọc" và bấm xác nhận.
+         - Ghi nhớ THEO TỪNG TÀI KHOẢN + PHIÊN BẢN nội dung (NOTICE_VERSION).
+         - Muốn bắt cả quán đọc lại: đổi NOTICE_VERSION (vd 'v2').
+         - Có tài liệu hướng dẫn thì điền đường dẫn vào NOTICE_GUIDE_URL để hiện nút mở.
+         ============================================================ -->
+    <script>
+    (function () {
+        var NOTICE_VERSION = 'v1';
+        var NOTICE_GUIDE_URL = '';   // vd 'https://.../huong-dan.pdf' — để trống thì ẩn nút
+
+        var ov = document.createElement('div');
+        ov.id = 'mustReadOverlay';
+        ov.setAttribute('role', 'alertdialog');
+        ov.setAttribute('aria-modal', 'true');
+        ov.style.cssText = 'position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;'
+            + 'padding:max(14px,env(safe-area-inset-top,0px)) 14px max(14px,env(safe-area-inset-bottom,0px));'
+            + 'background:rgba(8,6,4,.88);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);';
+        ov.innerHTML = ''
+            + '<div style="width:100%;max-width:520px;max-height:100%;display:flex;flex-direction:column;background:#17140f;color:#e8e2d8;'
+            +   'border:1px solid #5a4318;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.6);overflow:hidden;font-family:system-ui,-apple-system,\'Segoe UI\',sans-serif">'
+            +   '<div style="padding:16px 18px;background:linear-gradient(135deg,#7a1f1f,#b45309);color:#fff">'
+            +     '<div style="font-weight:800;font-size:16px;line-height:1.35">⚠️ THÔNG BÁO QUAN TRỌNG – VUI LÒNG ĐỌC KỸ HƯỚNG DẪN</div>'
+            +   '</div>'
+            +   '<div style="padding:16px 18px;overflow-y:auto;-webkit-overflow-scrolling:touch;font-size:14px;line-height:1.6">'
+            +     '<p style="margin:0 0 14px;font-weight:800;color:#f3d9a4">YÊU CẦU TOÀN BỘ NHÂN VIÊN ĐỌC KỸ TÀI LIỆU HƯỚNG DẪN SỬ DỤNG TRƯỚC KHI THAO TÁC HỆ THỐNG ORDER.</p>'
+            +     '<p style="margin:0 0 6px;font-weight:800">LƯU Ý QUAN TRỌNG:</p>'
+            +     '<ul style="margin:0 0 4px;padding-left:20px">'
+            +       '<li style="margin-bottom:8px">Mọi thao tác gửi ORDER trên hệ thống đều được thông báo trực tiếp đến thu ngân để tiếp nhận và nhập bill.</li>'
+            +       '<li style="margin-bottom:8px">Nhân viên cần hiểu rõ cách sử dụng hệ thống trước khi thực hiện, tránh thao tác sai hoặc nhầm lẫn trong quá trình phục vụ.</li>'
+            +       '<li style="margin-bottom:8px">Việc không đọc kỹ hướng dẫn có thể dẫn đến sai lệch thông tin order, sai bill hoặc nhầm bill giữa các bàn, ảnh hưởng trực tiếp đến quá trình thanh toán và vận hành của quán.</li>'
+            +     '</ul>'
+            +   '</div>'
+            +   '<div style="padding:14px 18px 16px;border-top:1px solid #2a241b;background:#120f0b">'
+            +     '<div id="mustReadGuide" style="display:none;margin-bottom:12px"><a id="mustReadGuideLink" href="#" target="_blank" rel="noopener" '
+            +       'style="display:block;text-align:center;padding:10px;border-radius:10px;border:1px solid #c8963c;color:#e6c48c;font-weight:800;font-size:13px;text-decoration:none">📖 Mở tài liệu hướng dẫn</a></div>'
+            +     '<label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14px;font-weight:700;line-height:1.45;margin-bottom:12px">'
+            +       '<input type="checkbox" id="mustReadCheck" style="width:22px;height:22px;flex-shrink:0;margin-top:1px;accent-color:#c8963c;cursor:pointer">'
+            +       '<span>Tôi đã đọc kỹ tài liệu hướng dẫn và hiểu rõ các lưu ý trên.</span>'
+            +     '</label>'
+            +     '<button type="button" id="mustReadBtn" disabled style="width:100%;padding:13px;border:0;border-radius:12px;font-weight:800;font-size:15px;'
+            +       'background:#c8963c;color:#1a1510;cursor:pointer;opacity:.4">XÁC NHẬN ĐÃ ĐỌC</button>'
+            +   '</div>'
+            + '</div>';
+        document.body.appendChild(ov);
+
+        var chk = ov.querySelector('#mustReadCheck');
+        var btn = ov.querySelector('#mustReadBtn');
+        if (NOTICE_GUIDE_URL) {
+            ov.querySelector('#mustReadGuide').style.display = 'block';
+            ov.querySelector('#mustReadGuideLink').href = NOTICE_GUIDE_URL;
+        }
+
+        function keyFor() {
+            var u = '';
+            try { u = (window.currentUser && currentUser.user) || ''; } catch (e) {}
+            return u ? 'tys_notice_' + NOTICE_VERSION + ':' + u : '';
+        }
+        function acked(k) { try { return !!localStorage.getItem(k); } catch (e) { return false; } }
+
+        chk.addEventListener('change', function () {
+            btn.disabled = !chk.checked;
+            btn.style.opacity = chk.checked ? '1' : '.4';
+        });
+        btn.addEventListener('click', function () {
+            if (!chk.checked) return;
+            var k = keyFor();
+            try { if (k) localStorage.setItem(k, String(Date.now())); } catch (e) {}
+            hide();
+        });
+        // Không cho đóng bằng cách chạm nền hay phím Esc
+        ov.addEventListener('click', function (e) { e.stopPropagation(); });
+        document.addEventListener('keydown', function (e) {
+            if (ov.style.display !== 'none' && e.key === 'Escape') e.preventDefault();
+        }, true);
+
+        function show() {
+            if (ov.style.display === 'flex') return;
+            chk.checked = false; btn.disabled = true; btn.style.opacity = '.4';
+            ov.style.display = 'flex';
+        }
+        function hide() { ov.style.display = 'none'; }
+
+        // Chỉ hiện khi đã đăng nhập (tránh chồng lên màn hình đăng nhập) và tài khoản này chưa xác nhận.
+        function tick() {
+            var k = keyFor();
+            if (!k) { hide(); return; }
+            if (acked(k)) { hide(); return; }
+            show();
+        }
+        setInterval(tick, 700);
+        tick();
+    })();
     </script>
 </body>
 </html>
