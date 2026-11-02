@@ -362,74 +362,69 @@
         /* Chia khu Trái / Phải — kiểu kính iOS (liquid glass): nền trong mờ, blur + tăng bão hoà, viền sáng mảnh, vệt phản chiếu phía trên */
         .zone-tab {
             position: fixed; top: 50%; transform: translateY(-50%); z-index: 40;
-            width: 18px; height: 44px; padding: 0; border: 1px solid rgba(255, 238, 200, .75);
+            width: 18px; height: 44px; padding: 0; border: 0;
             display: flex; align-items: center; justify-content: center;
-            color: #b57a1c; overflow: hidden;
-            /* kính kiểu iOS: nền gần như không màu, blur + tăng bão hòa để tách khỏi nền, viền sáng mảnh */
-            background: linear-gradient(180deg, rgba(255, 240, 200, .30), rgba(255, 215, 140, .12));
-            -webkit-backdrop-filter: blur(16px) saturate(190%) brightness(1.08);
-            backdrop-filter: blur(16px) saturate(190%) brightness(1.08);
-            box-shadow: 0 4px 14px rgba(70, 42, 8, .20),
-                        0 0 0 .5px rgba(190, 135, 50, .35),
-                        inset 0 1px 0 rgba(255, 255, 255, .8),
-                        inset 0 -1px 0 rgba(255, 255, 255, .25);
-            cursor: pointer; transition: background .2s ease, color .2s ease, width .15s ease, border-color .2s ease;
+            color: rgba(60, 60, 67, .78); overflow: hidden;
+            /* Liquid Glass (iOS 26) nền sáng: gần như trong suốt, blur mạnh + tăng bão hòa để nền phía sau “khúc xạ”,
+               viền sáng ở hai góc đối diện, không có màu riêng */
+            background: linear-gradient(135deg, rgba(255, 255, 255, .34), rgba(255, 255, 255, .12) 55%, rgba(255, 255, 255, .22));
+            -webkit-backdrop-filter: blur(22px) saturate(190%) brightness(1.04);
+            backdrop-filter: blur(22px) saturate(190%) brightness(1.04);
+            box-shadow: 0 0 0 .5px rgba(0, 0, 0, .10),
+                        0 8px 24px -4px rgba(0, 0, 0, .16),
+                        0 1px 3px rgba(0, 0, 0, .10),
+                        inset 1.5px 1.5px 1.5px -1px rgba(255, 255, 255, .95),
+                        inset -1.5px -1.5px 1.5px -1px rgba(255, 255, 255, .75),
+                        inset 0 0 14px rgba(255, 255, 255, .28);
+            cursor: pointer; transition: background .2s ease, color .2s ease, width .15s ease, box-shadow .2s ease;
             -webkit-tap-highlight-color: transparent;
+        }
+        /* vệt sáng mềm phía trên mặt kính */
+        .zone-tab::before {
+            content: ''; position: absolute; inset: 0 0 50% 0; z-index: -1; pointer-events: none;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0));
+            border-radius: inherit;
         }
         .zone-tab i { font-size: 10px; line-height: 1; }
         .zone-tab span { display: none; }
-        .zone-tab-left { left: 0; border-left: 0; border-radius: 0 12px 12px 0; }
-        .zone-tab-right { right: 0; border-right: 0; border-radius: 12px 0 0 12px; }
-        .zone-tab:active { width: 21px; background: linear-gradient(180deg, rgba(255, 232, 170, .45), rgba(240, 190, 100, .28)); }
-        /* đang chọn: vàng đậm hơn một chút nhưng vẫn là kính */
+        .zone-tab-left { left: 0; border-radius: 0 12px 12px 0; }
+        .zone-tab-right { right: 0; border-radius: 12px 0 0 12px; }
+        .zone-tab:active { width: 21px; background: linear-gradient(135deg, rgba(255, 255, 255, .5), rgba(255, 255, 255, .26)); }
+        /* đang chọn: kính đặc hơn, icon đậm hơn (không dùng màu) */
         .zone-tab.fab-zone-active {
-            color: #6b3f06; border-color: rgba(255, 228, 160, .95);
-            background: linear-gradient(180deg, rgba(250, 205, 100, .55), rgba(232, 162, 55, .38));
+            color: rgba(0, 0, 0, .88);
+            background: linear-gradient(135deg, rgba(255, 255, 255, .72), rgba(255, 255, 255, .42));
+            box-shadow: 0 0 0 .5px rgba(0, 0, 0, .14),
+                        0 8px 24px -4px rgba(0, 0, 0, .22),
+                        inset 1.5px 1.5px 1.5px -1px rgba(255, 255, 255, 1),
+                        inset -1.5px -1.5px 1.5px -1px rgba(255, 255, 255, .85),
+                        inset 0 0 14px rgba(255, 255, 255, .4);
         }
         html[data-theme="dark"] .zone-tab {
-            color: #f0cd8a; border-color: rgba(255, 226, 165, .45);
-            background: linear-gradient(180deg, rgba(255, 232, 175, .20), rgba(225, 182, 110, .08));
-            -webkit-backdrop-filter: blur(16px) saturate(170%) brightness(1.2);
-            backdrop-filter: blur(16px) saturate(170%) brightness(1.2);
-            box-shadow: 0 4px 14px rgba(0, 0, 0, .45),
-                        0 0 0 .5px rgba(255, 226, 165, .25),
-                        inset 0 1px 0 rgba(255, 240, 200, .45),
-                        inset 0 -1px 0 rgba(255, 240, 200, .12);
+            color: rgba(255, 255, 255, .82);
+            background: linear-gradient(135deg, rgba(255, 255, 255, .20), rgba(255, 255, 255, .06) 55%, rgba(255, 255, 255, .12));
+            -webkit-backdrop-filter: blur(22px) saturate(170%) brightness(1.15);
+            backdrop-filter: blur(22px) saturate(170%) brightness(1.15);
+            box-shadow: 0 0 0 .5px rgba(255, 255, 255, .22),
+                        0 8px 24px -4px rgba(0, 0, 0, .5),
+                        inset 1.5px 1.5px 1.5px -1px rgba(255, 255, 255, .6),
+                        inset -1.5px -1.5px 1.5px -1px rgba(255, 255, 255, .3),
+                        inset 0 0 14px rgba(255, 255, 255, .08);
         }
-        html[data-theme="dark"] .zone-tab:active { background: linear-gradient(180deg, rgba(255, 232, 175, .32), rgba(225, 182, 110, .2)); }
+        html[data-theme="dark"] .zone-tab::before { background: linear-gradient(180deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, 0)); }
+        html[data-theme="dark"] .zone-tab:active { background: linear-gradient(135deg, rgba(255, 255, 255, .32), rgba(255, 255, 255, .16)); }
         html[data-theme="dark"] .zone-tab.fab-zone-active {
-            color: #fff0cc; border-color: rgba(255, 232, 175, .85);
-            background: linear-gradient(180deg, rgba(240, 195, 115, .5), rgba(210, 155, 75, .34));
+            color: #fff;
+            background: linear-gradient(135deg, rgba(255, 255, 255, .38), rgba(255, 255, 255, .2));
+            box-shadow: 0 0 0 .5px rgba(255, 255, 255, .35),
+                        0 8px 24px -4px rgba(0, 0, 0, .55),
+                        inset 1.5px 1.5px 1.5px -1px rgba(255, 255, 255, .75),
+                        inset -1.5px -1.5px 1.5px -1px rgba(255, 255, 255, .4),
+                        inset 0 0 14px rgba(255, 255, 255, .14);
         }
         @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-            .zone-tab { background: rgba(250, 232, 190, .6); }
-            html[data-theme="dark"] .zone-tab { background: rgba(92, 66, 34, .6); }
-        }
-        /* nền sáng: kính cần viền đôi (tối ngoài, sáng trong) + vệt phản chiếu thì mới nổi khỏi nền trắng */
-        html:not([data-theme="dark"]) .zone-tab {
-            background: linear-gradient(180deg, rgba(255, 236, 180, .50), rgba(246, 200, 110, .26) 55%, rgba(240, 185, 90, .34));
-            -webkit-backdrop-filter: blur(18px) saturate(210%) contrast(1.04);
-            backdrop-filter: blur(18px) saturate(210%) contrast(1.04);
-            border-color: rgba(255, 255, 255, .85);
-            box-shadow: 0 0 0 .75px rgba(184, 128, 36, .55),
-                        0 8px 18px -4px rgba(95, 58, 10, .32),
-                        0 1px 3px rgba(95, 58, 10, .18),
-                        inset 0 1.5px 0 rgba(255, 255, 255, .95),
-                        inset 0 0 0 1px rgba(255, 255, 255, .35),
-                        inset 0 -6px 10px -4px rgba(232, 165, 55, .35);
-        }
-        html:not([data-theme="dark"]) .zone-tab::before {
-            content: ''; position: absolute; inset: 0 0 55% 0; z-index: -1; pointer-events: none;
-            background: linear-gradient(180deg, rgba(255, 255, 255, .65), rgba(255, 255, 255, 0));
-            border-radius: inherit;
-        }
-        html:not([data-theme="dark"]) .zone-tab:active { background: linear-gradient(180deg, rgba(255, 228, 160, .65), rgba(240, 185, 90, .45)); }
-        html:not([data-theme="dark"]) .zone-tab.fab-zone-active {
-            background: linear-gradient(180deg, rgba(252, 208, 100, .72), rgba(232, 160, 50, .55));
-            box-shadow: 0 0 0 .75px rgba(170, 110, 20, .75),
-                        0 8px 18px -4px rgba(120, 70, 10, .4),
-                        inset 0 1.5px 0 rgba(255, 255, 255, .95),
-                        inset 0 -6px 10px -4px rgba(210, 130, 30, .45);
+            .zone-tab { background: rgba(255, 255, 255, .7); }
+            html[data-theme="dark"] .zone-tab { background: rgba(70, 70, 75, .7); }
         }
         /* mobile: dải kéo dài theo chiều cao màn hình, mỏng ở chiều ngang */
         @media (max-width: 639px) {
@@ -1436,12 +1431,12 @@
             </div>
         </div>
 
-        <!-- THANH BÁO: CHẾ ĐỘ NHẬP DỮ LIỆU (mọi tài khoản đã đăng nhập, chỉ hiện khi đang bật) -->
+        <!-- THANH BÁO: CHẾ ĐỘ NHẬP BILL IM LẶNG (mọi tài khoản đã đăng nhập, chỉ hiện khi đang bật) -->
         <div id="adminEntryBar" class="hidden items-center justify-between gap-2 px-3 py-1.5 bg-tys-500 text-ink">
             <div class="flex items-center gap-2 min-w-0">
                 <i class="fa-solid fa-pen-to-square text-xs shrink-0"></i>
-                <span class="text-[11px] font-extrabold truncate">CHẾ ĐỘ NHẬP DỮ LIỆU</span>
-                <span class="text-[10px] font-semibold opacity-80 truncate hidden sm:inline">Không gửi thông báo · tính như thu ngân đã nhập bill</span>
+                <span class="text-[11px] font-extrabold truncate">ĐANG NHẬP BILL · KHÔNG BÁO THU NGÂN</span>
+                <span class="text-[10px] font-semibold opacity-80 truncate hidden sm:inline">Tính như thu ngân đã vào bill</span>
             </div>
             <button type="button" onclick="setAdminEntryMode(false)" class="shrink-0 px-2.5 py-1 rounded-md bg-ink text-tys-700 text-[10px] font-extrabold active:scale-95 transition">TẮT</button>
         </div>
@@ -1530,7 +1525,7 @@
             </button>
             <div class="relative shrink-0">
                 <!-- Menu 3 chấm: mở thẳng đứng lên trên -->
-                <div id="moreMenu" role="menu" class="hidden absolute bottom-full right-0 mb-2 w-44 flex-col gap-1 p-1.5 rounded-2xl bg-espresso-900 border border-tys-800 shadow-[0_12px_28px_-8px_rgba(26,21,16,0.45)] modal-fade-in">
+                <div id="moreMenu" role="menu" class="hidden absolute bottom-full right-0 mb-2 w-52 flex-col gap-1 p-1.5 rounded-2xl bg-espresso-900 border border-tys-800 shadow-[0_12px_28px_-8px_rgba(26,21,16,0.45)] modal-fade-in">
                     <button onclick="closeMoreMenu(); openHistoryModal()" id="btnHistory" role="menuitem" class="relative flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Lịch sử ca">
                         <i class="fa-solid fa-flag-checkered w-4 text-center text-sm"></i>
                         <span class="text-xs font-bold">Lịch sử ca</span>
@@ -1542,9 +1537,9 @@
                         <span class="text-xs font-bold">Tài khoản</span>
                         <span id="accountsBadge" class="ml-auto text-[10px] font-bold text-stone-500 tabular-nums">0</span>
                     </button>
-                    <button onclick="closeMoreMenu(); toggleAdminEntryMode()" id="btnAdminEntry" role="menuitem" class="hidden items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Chế độ nhập dữ liệu">
+                    <button onclick="closeMoreMenu(); toggleAdminEntryMode()" id="btnAdminEntry" role="menuitem" class="hidden items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Nhập bill im lặng">
                         <i class="fa-solid fa-pen-to-square w-4 text-center text-sm"></i>
-                        <span class="text-xs font-bold">Nhập dữ liệu</span>
+                        <span class="text-xs font-bold">Nhập bill im lặng</span>
                         <span id="adminEntryBadge" class="hidden ml-auto px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-tys-500 text-ink">BẬT</span>
                     </button>
                     <button onclick="closeMoreMenu(); openChangePass()" id="btnChangePass" role="menuitem" class="hidden items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Đổi mật khẩu">
@@ -1556,9 +1551,9 @@
                         <span class="text-xs font-bold">Đăng xuất</span>
                     </button>
                     <div class="hidden h-px bg-tys-900 mx-1" id="menuAuthDivider"></div>
-                    <button onclick="closeMoreMenu(); openHandoverModal()" id="btnHandover" role="menuitem" class="relative flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Dữ liệu bàn">
+                    <button onclick="closeMoreMenu(); openHandoverModal()" id="btnHandover" role="menuitem" class="relative flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Bàn giao máy">
                         <i class="fa-solid fa-right-left w-4 text-center text-sm"></i>
-                        <span class="text-xs font-bold">Dữ liệu bàn</span>
+                        <span class="text-xs font-bold">Bàn giao máy</span>
                     </button>
                     <button onclick="closeMoreMenu(); openResetModal()" role="menuitem" class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-stone-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Đặt lại dữ liệu">
                         <i class="fa-solid fa-rotate-right w-4 text-center text-sm"></i>
@@ -2203,14 +2198,14 @@
         </div>
     </div>
 
-    <!-- Dữ liệu bàn: xuất / nhập -->
+    <!-- Bàn giao máy: gửi đi / nhận về -->
     <div id="handoverModal" onclick="if(event.target===this)closeHandoverModal()" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-espresso-900 border border-tys-800 w-full max-w-md rounded-t-2xl sm:rounded-2xl max-h-[90vh] flex flex-col shadow-xl modal-fade-in">
             <div class="flex items-center justify-between gap-2 px-4 pt-3 pb-2">
                 <div class="flex items-center gap-2 min-w-0">
                     <div class="w-8 h-8 rounded-lg bg-tys-500 text-ink flex items-center justify-center shrink-0"><i class="fa-solid fa-right-left text-sm"></i></div>
                     <div class="min-w-0">
-                        <h3 class="text-sm font-bold text-tys-100 leading-tight">Dữ liệu bàn</h3>
+                        <h3 class="text-sm font-bold text-tys-100 leading-tight">Bàn giao sang máy khác</h3>
                     </div>
                 </div>
                 <button onclick="closeHandoverModal()" class="w-8 h-8 rounded-lg text-stone-400 hover:bg-espresso-800 flex items-center justify-center" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
@@ -2218,13 +2213,13 @@
 
             <div class="px-4 pb-2">
                 <div class="flex p-1 rounded-xl bg-espresso-950/70 border border-tys-900">
-                    <button id="hoTabExport" onclick="switchHandoverTab('export')" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-arrow-up-from-bracket mr-1"></i>Xuất</button>
-                    <button id="hoTabImport" onclick="switchHandoverTab('import')" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-arrow-down-to-bracket mr-1"></i>Nhập</button>
+                    <button id="hoTabExport" onclick="switchHandoverTab('export')" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-arrow-up-from-bracket mr-1"></i>Gửi đi</button>
+                    <button id="hoTabImport" onclick="switchHandoverTab('import')" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-arrow-down-to-bracket mr-1"></i>Nhận về</button>
                 </div>
             </div>
 
             <div class="flex-1 overflow-y-auto px-4 pb-4 space-y-3">
-                <!-- Tab XUẤT -->
+                <!-- Tab GỬI ĐI -->
                 <div id="hoPaneExport" class="space-y-3">
                     <div id="hoExportSummary" class="rounded-xl border border-tys-900 bg-espresso-950 p-2.5 text-xs space-y-1"></div>
                     <textarea id="hoExportCode" readonly rows="3" onclick="this.select()" style="user-select:text;-webkit-user-select:text" class="w-full text-[10px] font-mono rounded-lg bg-espresso-950 border border-tys-900 p-2 text-stone-300 resize-none break-all"></textarea>
@@ -2236,9 +2231,9 @@
                     <p id="hoExportMsg" class="hidden text-[11px] text-sage-400 text-center font-semibold"></p>
                 </div>
 
-                <!-- Tab NHẬP -->
+                <!-- Tab NHẬN VỀ -->
                 <div id="hoPaneImport" class="space-y-3 hidden">
-                    <textarea id="hoImportCode" rows="4" oninput="hoPreviewImport()" placeholder="Dán mã dữ liệu bàn" style="user-select:text;-webkit-user-select:text" class="w-full text-[10px] font-mono rounded-lg bg-espresso-950 border border-tys-900 p-2 text-stone-200 resize-none break-all"></textarea>
+                    <textarea id="hoImportCode" rows="4" oninput="hoPreviewImport()" placeholder="Dán mã bàn giao" style="user-select:text;-webkit-user-select:text" class="w-full text-[10px] font-mono rounded-lg bg-espresso-950 border border-tys-900 p-2 text-stone-200 resize-none break-all"></textarea>
                     <div class="grid grid-cols-2 gap-2">
                         <button onclick="hoPasteClipboard()" class="py-2 rounded-xl bg-espresso-950/70 border border-tys-800 text-tys-300 text-xs font-bold active:scale-95 transition"><i class="fa-regular fa-paste mr-1"></i>Dán từ clipboard</button>
                         <button onclick="document.getElementById('hoFile').click()" class="py-2 rounded-xl bg-espresso-950/70 border border-tys-800 text-tys-300 text-xs font-bold active:scale-95 transition"><i class="fa-regular fa-file mr-1"></i>Chọn file</button>
@@ -2256,7 +2251,7 @@
                         </button>
                     </div>
 
-                    <button id="hoBtnApply" onclick="hoApplyImport()" disabled class="w-full py-2.5 rounded-xl bg-tys-500 text-ink text-xs font-bold active:scale-95 transition disabled:opacity-40 disabled:active:scale-100"><i class="fa-solid fa-check mr-1"></i>Nhập vào máy</button>
+                    <button id="hoBtnApply" onclick="hoApplyImport()" disabled class="w-full py-2.5 rounded-xl bg-tys-500 text-ink text-xs font-bold active:scale-95 transition disabled:opacity-40 disabled:active:scale-100"><i class="fa-solid fa-check mr-1"></i>Nhận vào máy này</button>
                     <div id="hoImportResult" class="hidden rounded-xl border border-sage-600 bg-sage-950 p-2.5 text-xs text-sage-300 space-y-2"></div>
                 </div>
             </div>
@@ -7135,7 +7130,7 @@ function togglePassVisibility(inputId, btn) {
         window.addEventListener('load', function () { ackPollWorker(); });
 
         // ================== CHẾ ĐỘ NHẬP DỮ LIỆU (MỌI TÀI KHOẢN) ==================
-        // Bật từ menu 3 chấm → "Nhập dữ liệu" (mọi tài khoản đã đăng nhập đều thấy). Khi đang bật, mọi thao tác bàn trên MÁY NÀY:
+        // Bật từ menu 3 chấm → "Nhập bill im lặng" (mọi tài khoản đã đăng nhập đều thấy). Khi đang bật, mọi thao tác bàn trên MÁY NÀY:
         //   • KHÔNG gửi bất kỳ thông báo nào (Telegram) tới thu ngân: order, gọi thêm, hủy món, hủy bàn,
         //     cập nhật ghi chú/thanh toán, chuyển/gộp bàn;
         //   • được ghi nhận như thu ngân đã bấm "ĐÃ NHẬP" (nhãn ✔ Đã vào bill) → không chờ, không nhắc, không báo động;
@@ -7154,13 +7149,13 @@ function togglePassVisibility(inputId, btn) {
         function setAdminEntryMode(on, quiet) {
             on = !!on;
             if (on && !(currentUser && currentStaff)) {
-                ackToast('Hãy đăng nhập để bật chế độ nhập dữ liệu.', 'alert', 3500);
+                ackToast('Hãy đăng nhập để bật chế độ nhập bill im lặng.', 'alert', 3500);
                 return;
             }
             if (adminEntryOn === on) { adminEntryRender(); return; }
             adminEntryOn = on;
             adminEntryRender();
-            if (!quiet) ackToast(on ? '📝 Đã BẬT chế độ nhập dữ liệu: không gửi thông báo cho thu ngân.' : 'Đã TẮT chế độ nhập dữ liệu. Order từ giờ báo thu ngân như bình thường.', on ? 'info' : 'ok', 4500);
+            if (!quiet) ackToast(on ? '📝 Đã BẬT nhập bill im lặng: không gửi thông báo cho thu ngân.' : 'Đã TẮT nhập bill im lặng. Order từ giờ báo thu ngân như bình thường.', on ? 'info' : 'ok', 4500);
         }
         function toggleAdminEntryMode() { setAdminEntryMode(!adminEntryOn); }
 
@@ -7297,7 +7292,7 @@ function togglePassVisibility(inputId, btn) {
 
         function hoDecode(text) {
             let s = String(text || '').trim();
-            if (!s) throw new Error('Chưa có mã để nhập.');
+            if (!s) throw new Error('Chưa có mã để nhận.');
             let json;
             try {
                 const idx = s.indexOf(HANDOVER_PREFIX);
@@ -7315,7 +7310,7 @@ function togglePassVisibility(inputId, btn) {
                 throw new Error('Mã không đọc được.');
             }
             if (!obj || obj.app !== 'tys-coffee' || typeof obj.tables !== 'object' || !obj.tables) {
-                throw new Error('Mã không phải dữ liệu bàn của TYS Coffee.');
+                throw new Error('Mã không phải mã bàn giao của TYS Coffee.');
             }
             const tables = {};
             Object.keys(obj.tables).forEach(k => {
@@ -7401,7 +7396,7 @@ function togglePassVisibility(inputId, btn) {
 
         function hoShareCode() {
             const text = document.getElementById('hoExportCode').value;
-            if (navigator.share) navigator.share({ title: 'Dữ liệu bàn TYS Coffee', text }).catch(() => {});
+            if (navigator.share) navigator.share({ title: 'Bàn giao TYS Coffee', text }).catch(() => {});
         }
 
         function hoDownloadFile() {
@@ -7473,7 +7468,7 @@ function togglePassVisibility(inputId, btn) {
                 if (!local || local.status === 'empty') continue;
                 if (handoverMode === 'replace' || ids.includes(i)) overwritten.push(i);
             }
-            const when = parsed.exportedAt ? `Xuất lúc ${fmtDateTime(parsed.exportedAt)}` : 'Không rõ thời điểm xuất';
+            const when = parsed.exportedAt ? `Gửi lúc ${fmtDateTime(parsed.exportedAt)}` : 'Không rõ thời điểm gửi';
             let html = `<div class="flex items-center justify-between"><span class="font-bold text-tys-300">${c.n} bàn (${c.unpaid} chưa trả · ${c.paid} đã trả)</span><span class="text-[10px] text-stone-500">${when}</span></div>`;
             html += c.n ? Object.values(parsed.tables).sort((a, b) => a.id - b.id).map(hoRowHtml).join('') : '<div class="text-stone-500 text-center py-1">Mã này không có bàn nào đang có khách.</div>';
             if (overwritten.length) {
@@ -7513,7 +7508,7 @@ function togglePassVisibility(inputId, btn) {
             document.getElementById('hoPreview').classList.add('hidden');
             document.getElementById('hoModeBox').classList.add('hidden');
             const res = document.getElementById('hoImportResult');
-            res.innerHTML = `<div class="font-bold"><i class="fa-solid fa-circle-check mr-1"></i>Đã nhập ${n} bàn vào sơ đồ.</div>
+            res.innerHTML = `<div class="font-bold"><i class="fa-solid fa-circle-check mr-1"></i>Đã nhận ${n} bàn vào sơ đồ.</div>
                 <button onclick="hoUndoImport()" class="px-3 py-1.5 rounded-lg bg-espresso-900 border border-sage-600 text-sage-300 text-[11px] font-bold active:scale-95 transition"><i class="fa-solid fa-rotate-left mr-1"></i>Hoàn tác lần nhập này</button>`;
             res.classList.remove('hidden');
         }
