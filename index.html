@@ -359,11 +359,25 @@
 
         /* ---------- FAB hổ phách (nút "toàn màn hình / hiện toàn bộ sơ đồ") —
            bóng đổ có hướng, mềm mại như ánh sáng thật, viền kim loại mảnh — không quầng sáng ---------- */
-        /* FAB chia khu Trái / Phải: nền tối viền hổ phách để khác nút "Về giữa" nhưng cùng bộ */
-        .fab-zone { background: #3a2a1a; color: #f0d9a8; border-color: #b9803d; box-shadow: 0 6px 16px -4px rgba(0,0,0,.45); }
-        .fab-zone.fab-zone-active { background: #c9944a; color: #1d1308; border-color: #f0c987; }
-        html[data-theme="dark"] .fab-zone { background: #2a1e13; color: #e1b66e; border-color: #c9944a; }
-        html[data-theme="dark"] .fab-zone.fab-zone-active { background: #e1b66e; color: #1d1308; }
+        /* Chia khu Trái / Phải: tab mỏng dính mép màn hình, ở giữa chiều cao, hơi trong suốt để không che sơ đồ */
+        .zone-tab {
+            position: fixed; top: 50%; transform: translateY(-50%); z-index: 40;
+            width: 22px; padding: 8px 0; border: 1px solid #b9803d;
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            background: rgba(58, 42, 26, .82); color: #f0d9a8;
+            -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+            box-shadow: 0 4px 12px -3px rgba(0, 0, 0, .45);
+            cursor: pointer; transition: background .15s ease, width .15s ease;
+        }
+        .zone-tab i { font-size: 11px; line-height: 1; }
+        .zone-tab span { writing-mode: vertical-rl; font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; line-height: 1; }
+        .zone-tab-left { left: 0; border-left: 0; border-radius: 0 12px 12px 0; }
+        .zone-tab-right { right: 0; border-right: 0; border-radius: 12px 0 0 12px; }
+        .zone-tab:active { width: 26px; }
+        .zone-tab.fab-zone-active { background: #c9944a; color: #1d1308; border-color: #f0c987; }
+        html[data-theme="dark"] .zone-tab { background: rgba(42, 30, 19, .85); color: #e1b66e; border-color: #c9944a; }
+        html[data-theme="dark"] .zone-tab.fab-zone-active { background: #e1b66e; color: #1d1308; }
+        .zone-tab.hidden { display: none; }
         .fab-glow {
             box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset,
                         0 10px 22px -8px rgba(26,21,16,0.35),
@@ -1498,15 +1512,16 @@
         </div>
         </nav>
 
+    <!-- Chia khu: 2 "tab cạnh màn hình" mỏng ở giữa mép TRÁI / PHẢI (thay cho 2 nút tròn to). Chạm tab → phóng vào khu phía đó; chạm lại → về toàn bộ. -->
+    <button type="button" onclick="focusMapZone('left')" id="fabZoneLeft" class="map-fab zone-tab zone-tab-left" title="Phóng vào khu bên trái" aria-label="Khu bên trái">
+        <i class="fa-solid fa-angles-left"></i><span>Trái</span>
+    </button>
+    <button type="button" onclick="focusMapZone('right')" id="fabZoneRight" class="map-fab zone-tab zone-tab-right" title="Phóng vào khu bên phải" aria-label="Khu bên phải">
+        <i class="fa-solid fa-angles-right"></i><span>Phải</span>
+    </button>
+
     <!-- FAB "Về giữa / Hiện toàn bộ sơ đồ" — control nổi màu hổ phách ấm, đổ bóng dịu -->
     <div id="fabCluster" class="fixed right-3 sm:right-6 bottom-[94px] sm:bottom-[104px] z-40 flex flex-col items-center gap-2.5 transition-transform duration-200 ease-out">
-        <!-- Chia khu: phóng vào khu BÊN TRÁI / BÊN PHẢI của sơ đồ (theo đúng chiều nhân viên đang nhìn trên màn hình) -->
-        <button type="button" onclick="focusMapZone('left')" id="fabZoneLeft" class="map-fab fab-zone fab-glow w-12 h-12 sm:w-14 sm:h-14 rounded-full border flex flex-col items-center justify-center gap-0.5 active:scale-90 transition" title="Phóng vào khu bên trái" aria-label="Khu bên trái">
-            <i class="fa-solid fa-angles-left text-sm leading-none"></i><span class="text-[9px] font-extrabold uppercase tracking-wide leading-none">Trái</span>
-        </button>
-        <button type="button" onclick="focusMapZone('right')" id="fabZoneRight" class="map-fab fab-zone fab-glow w-12 h-12 sm:w-14 sm:h-14 rounded-full border flex flex-col items-center justify-center gap-0.5 active:scale-90 transition" title="Phóng vào khu bên phải" aria-label="Khu bên phải">
-            <i class="fa-solid fa-angles-right text-sm leading-none"></i><span class="text-[9px] font-extrabold uppercase tracking-wide leading-none">Phải</span>
-        </button>
         <button onclick="resetZoomAndFit()" id="fabRecenter" class="map-fab fab-glow w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-tys-500 text-ink border border-tys-600 flex items-center justify-center active:scale-90 transition" title="Về giữa - Hiện toàn bộ sơ đồ" aria-label="Về giữa">
         <i class="fa-solid fa-expand text-base"></i>
     </button>
@@ -2695,7 +2710,7 @@
 
         // Ẩn / hiện cả cụm nút nổi của sơ đồ (Về giữa + chia khu Trái / Phải) cùng lúc
         function setMapFabHidden(hidden) {
-            document.querySelectorAll('#fabCluster .map-fab').forEach(function (b) { b.classList.toggle('hidden', !!hidden); });
+            document.querySelectorAll('.map-fab').forEach(function (b) { b.classList.toggle('hidden', !!hidden); });
         }
 
         // Toạ độ gốc (trong #mapWrapper) của ô bàn: ưu tiên style inline (Sơ đồ 2/tùy chọn), không có thì đọc từ class top-[..] left-[..]
@@ -2712,6 +2727,9 @@
         function focusMapZone(side) {
             const container = document.getElementById('mapContainer');
             if (!container) return;
+            // Chạm lại tab của khu đang phóng -> về toàn bộ sơ đồ
+            const tabBtn = document.getElementById(side === 'left' ? 'fabZoneLeft' : 'fabZoneRight');
+            if (tabBtn && tabBtn.classList.contains('fab-zone-active')) { resetZoomAndFit(); return; }
             invalidateMapRect();
             const availW = container.clientWidth, availH = container.clientHeight;
             if (availW <= 0 || availH <= 0) return;
@@ -2740,32 +2758,43 @@
             const cxB = (minX + maxX) / 2, cyB = (minY + maxY) / 2;
             const MAX_FIT = 1.5;
 
-            // Vừa khít khung nhìn; insetRight = phần bên phải bị nút nổi che (nếu có)
-            function fit(insetRight) {
-                const aw = Math.max(50, availW - insetRight);
-                const sc = Math.min(aw / (maxX - minX), availH / (maxY - minY), MAX_FIT);
+            // Vừa khít khung nhìn; insL / insR / insT = phần mép trái / phải / trên bị nút nổi che (nếu có)
+            function fit(ins) {
+                const aw = Math.max(50, availW - ins.left - ins.right);
+                const ah = Math.max(50, availH - ins.top);
+                const sc = Math.min(aw / (maxX - minX), ah / (maxY - minY), MAX_FIT);
                 // màn hình = pan + scale * (kích thước - toạ độ gốc) vì sơ đồ xoay 180° quanh tâm
-                return { sc, px: aw / 2 - sc * (MAP_BASE_WIDTH - cxB), py: availH / 2 - sc * (MAP_BASE_HEIGHT - cyB) };
+                return { sc, px: ins.left + aw / 2 - sc * (MAP_BASE_WIDTH - cxB), py: ins.top + ah / 2 - sc * (MAP_BASE_HEIGHT - cyB) };
             }
-            // Cụm nút nổi (Trái/Phải/Về giữa) nằm đè lên góc phải-dưới khung sơ đồ: nếu có bàn bị che thì chừa thêm lề phải đúng bằng bề rộng cụm nút
-            function coveredByFab(f) {
-                const fab = document.getElementById('fabCluster');
-                if (!fab) return 0;
-                const fr = fab.getBoundingClientRect(), cr = container.getBoundingClientRect();
-                if (!fr.width || !fr.height) return 0;
-                for (const c of cells) {
-                    const sx = cr.left + f.px + f.sc * (MAP_BASE_WIDTH - (c.x + c.w));
-                    const sy = cr.top + f.py + f.sc * (MAP_BASE_HEIGHT - (c.y + c.h));
-                    const sw = c.w * f.sc, sh = c.h * f.sc;
-                    if (sx < fr.right && sx + sw > fr.left && sy < fr.bottom && sy + sh > fr.top) {
-                        return Math.max(0, cr.right - fr.left + 6);
+            // Các nút/khung nổi có thể đè lên bàn: cụm "Về giữa" (góc phải-dưới), 2 tab Trái/Phải (giữa mép),
+            // bộ chọn sơ đồ "Sơ đồ mặc định" (góc trên-trái). Chỉ khi có bàn thật sự bị che mới chừa thêm lề phía đó.
+            const OBSTACLES = [['fabCluster', 'right'], ['fabZoneLeft', 'left'], ['fabZoneRight', 'right'], ['layoutSwitcher', 'top']];
+            function growInsets(f, ins) {
+                const cr = container.getBoundingClientRect();
+                let grew = false;
+                OBSTACLES.forEach(function (o) {
+                    const el = document.getElementById(o[0]);
+                    if (!el) return;
+                    const fr = el.getBoundingClientRect();
+                    if (!fr.width || !fr.height) return;
+                    for (const c of cells) {
+                        const sx = cr.left + f.px + f.sc * (MAP_BASE_WIDTH - (c.x + c.w));
+                        const sy = cr.top + f.py + f.sc * (MAP_BASE_HEIGHT - (c.y + c.h));
+                        const sw = c.w * f.sc, sh = c.h * f.sc;
+                        if (sx < fr.right && sx + sw > fr.left && sy < fr.bottom && sy + sh > fr.top) {
+                            let v;
+                            if (o[1] === 'right') { v = cr.right - fr.left + 6; if (v > ins.right) { ins.right = v; grew = true; } }
+                            else if (o[1] === 'left') { v = fr.right - cr.left + 6; if (v > ins.left) { ins.left = v; grew = true; } }
+                            else { v = fr.bottom - cr.top + 6; if (v > ins.top) { ins.top = v; grew = true; } }
+                            break;
+                        }
                     }
-                }
-                return 0;
+                });
+                return grew;
             }
-            let f = fit(0);
-            const inset = coveredByFab(f);
-            if (inset > 0) f = fit(inset);
+            const ins = { left: 0, right: 0, top: 0 };
+            let f = fit(ins);
+            for (let k = 0; k < 3 && growInsets(f, ins); k++) f = fit(ins);   // thu nhỏ dần cho tới khi không còn bàn nào bị đè
             scale = f.sc; panX = f.px; panY = f.py;
             const wrapper = getMapWrapper();
             if (wrapper) {
