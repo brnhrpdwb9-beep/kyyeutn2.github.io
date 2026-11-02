@@ -364,41 +364,52 @@
             position: fixed; top: 50%; transform: translateY(-50%); z-index: 40;
             width: 18px; height: 44px; padding: 0; border: 0;
             display: flex; align-items: center; justify-content: center;
-            color: rgba(60, 60, 67, .78); overflow: hidden;
-            /* Liquid Glass (iOS 26) nền sáng: gần như trong suốt, blur mạnh + tăng bão hòa để nền phía sau “khúc xạ”,
-               viền sáng ở hai góc đối diện, không có màu riêng */
-            background: linear-gradient(135deg, rgba(255, 255, 255, .34), rgba(255, 255, 255, .12) 55%, rgba(255, 255, 255, .22));
-            -webkit-backdrop-filter: blur(22px) saturate(190%) brightness(1.04);
-            backdrop-filter: blur(22px) saturate(190%) brightness(1.04);
-            box-shadow: 0 0 0 .5px rgba(0, 0, 0, .10),
-                        0 8px 24px -4px rgba(0, 0, 0, .16),
-                        0 1px 3px rgba(0, 0, 0, .10),
-                        inset 1.5px 1.5px 1.5px -1px rgba(255, 255, 255, .95),
-                        inset -1.5px -1.5px 1.5px -1px rgba(255, 255, 255, .75),
-                        inset 0 0 14px rgba(255, 255, 255, .28);
+            color: rgba(50, 50, 60, .82); overflow: hidden;
+            /* Liquid Glass nền sáng: kính trên nền sáng KHÔNG trắng hơn nền mà hơi xám/đục hơn + có độ dày.
+               Nhìn ra “kính” nhờ: nền phía sau bị blur-bão hòa, viền đôi (xám ngoài / trắng trong),
+               bóng mép dưới tạo độ dày, điểm sáng phản chiếu và bóng đổ rõ. */
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, .55) 0%, rgba(255, 255, 255, .14) 38%, rgba(140, 146, 160, .16) 100%);
+            -webkit-backdrop-filter: blur(20px) saturate(210%) brightness(.97) contrast(1.06);
+            backdrop-filter: blur(20px) saturate(210%) brightness(.97) contrast(1.06);
+            box-shadow: 0 0 0 .75px rgba(40, 45, 60, .22),
+                        0 10px 22px -6px rgba(30, 35, 50, .32),
+                        0 2px 5px rgba(30, 35, 50, .14),
+                        inset 0 0 0 1px rgba(255, 255, 255, .55),
+                        inset 0 1.5px 1px rgba(255, 255, 255, .95),
+                        inset 0 -9px 12px -7px rgba(40, 45, 60, .20),
+                        inset 0 -1px 1px rgba(255, 255, 255, .6);
             cursor: pointer; transition: background .2s ease, color .2s ease, width .15s ease, box-shadow .2s ease;
             -webkit-tap-highlight-color: transparent;
         }
-        /* vệt sáng mềm phía trên mặt kính */
+        /* điểm sáng phản chiếu ở đỉnh + ánh nhẹ ở đáy */
         .zone-tab::before {
-            content: ''; position: absolute; inset: 0 0 50% 0; z-index: -1; pointer-events: none;
-            background: linear-gradient(180deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0));
+            content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+            background:
+                radial-gradient(90% 16% at 50% 5%, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+                radial-gradient(80% 14% at 50% 97%, rgba(255, 255, 255, .5), rgba(255, 255, 255, 0));
+            border-radius: inherit;
+        }
+        /* vệt sáng chéo mảnh chạy dọc thân kính */
+        .zone-tab::after {
+            content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+            background: linear-gradient(100deg, rgba(255, 255, 255, 0) 18%, rgba(255, 255, 255, .55) 36%, rgba(255, 255, 255, 0) 52%);
             border-radius: inherit;
         }
         .zone-tab i { font-size: 10px; line-height: 1; }
         .zone-tab span { display: none; }
         .zone-tab-left { left: 0; border-radius: 0 12px 12px 0; }
         .zone-tab-right { right: 0; border-radius: 12px 0 0 12px; }
-        .zone-tab:active { width: 21px; background: linear-gradient(135deg, rgba(255, 255, 255, .5), rgba(255, 255, 255, .26)); }
-        /* đang chọn: kính đặc hơn, icon đậm hơn (không dùng màu) */
+        .zone-tab:active { width: 21px; background: linear-gradient(180deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, .3) 40%, rgba(140, 146, 160, .26)); }
+        /* đang chọn: kính đục hơn, icon đậm hơn (không dùng màu) */
         .zone-tab.fab-zone-active {
-            color: rgba(0, 0, 0, .88);
-            background: linear-gradient(135deg, rgba(255, 255, 255, .72), rgba(255, 255, 255, .42));
-            box-shadow: 0 0 0 .5px rgba(0, 0, 0, .14),
-                        0 8px 24px -4px rgba(0, 0, 0, .22),
-                        inset 1.5px 1.5px 1.5px -1px rgba(255, 255, 255, 1),
-                        inset -1.5px -1.5px 1.5px -1px rgba(255, 255, 255, .85),
-                        inset 0 0 14px rgba(255, 255, 255, .4);
+            color: rgba(0, 0, 0, .9);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .85) 0%, rgba(255, 255, 255, .45) 40%, rgba(150, 156, 170, .32) 100%);
+            box-shadow: 0 0 0 .75px rgba(30, 35, 50, .3),
+                        0 10px 22px -6px rgba(30, 35, 50, .4),
+                        inset 0 0 0 1px rgba(255, 255, 255, .7),
+                        inset 0 1.5px 1px rgba(255, 255, 255, 1),
+                        inset 0 -9px 12px -7px rgba(40, 45, 60, .26);
         }
         html[data-theme="dark"] .zone-tab {
             color: rgba(255, 255, 255, .82);
@@ -411,6 +422,7 @@
                         inset -1.5px -1.5px 1.5px -1px rgba(255, 255, 255, .3),
                         inset 0 0 14px rgba(255, 255, 255, .08);
         }
+        html[data-theme="dark"] .zone-tab::after { opacity: .35; }
         html[data-theme="dark"] .zone-tab::before { background: linear-gradient(180deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, 0)); }
         html[data-theme="dark"] .zone-tab:active { background: linear-gradient(135deg, rgba(255, 255, 255, .32), rgba(255, 255, 255, .16)); }
         html[data-theme="dark"] .zone-tab.fab-zone-active {
