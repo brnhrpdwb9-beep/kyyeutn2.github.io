@@ -4553,6 +4553,7 @@
         let orderPanelExpanded = true;
 
         function openModal(tableId) {
+            clearPayNowIntent();
             const prevActiveId = activeTableId;
             activeTableId = tableId;
             const data = tablesData[tableId];
@@ -4973,8 +4974,17 @@
             }
         }
 
+        // Cờ "ý định thu tiền": đặt khi bấm nút Thu tiền, được saveModalChangesInner dùng 1 lần rồi tắt.
+        // Khi cờ bật, đường lưu KHÔNG BAO GIỜ được gửi tin "HỦY BÀN" cho thu ngân (bàn vẫn còn bill, chỉ đổi sang Đã trả).
+        let payNowIntent = false;
+        let payNowTimer = null;
+        function clearPayNowIntent() { payNowIntent = false; if (payNowTimer) { clearTimeout(payNowTimer); payNowTimer = null; } }
+
         function markAsPaidAndClose() {
-            if (!activeTableId) return;
+            if (!activeTableId || payNowIntent) return;     // bấm đúp nút Thu tiền: bỏ qua lần thứ hai
+            payNowIntent = true;
+            if (payNowTimer) clearTimeout(payNowTimer);
+            payNowTimer = setTimeout(clearPayNowIntent, 8000);   // dự phòng: nếu lưu bị chặn (kiểm tra WiFi) thì tự mở khóa
             selectedStatusInModal = 'paid';
             saveModalChanges();
         }
@@ -6071,9 +6081,11 @@ function togglePassVisibility(inputId, btn) {
         // (unpaid → paid) vẫn còn bill nên TUYỆT ĐỐI không được báo "xóa bill" cho thu ngân.
         function notifyTableCancelled(tableId, prevStatus, prevItems, prevTotal, nextStatus) {
             try {
-                if (nextStatus && nextStatus !== 'empty') return false;
-                // Lớp chặn thứ 2: không tin người gọi. Nếu bàn đang còn khách/đã trả (không phải Trống) thì không phải hủy bàn.
-                if (!nextStatus) { const cur = tablesData[tableId]; if (!cur || cur.status !== 'empty') return false; }
+                // Chỉ hủy bàn khi trạng thái SAU thao tác đúng là 'empty' (không còn trường hợp thiếu tham số được suy đoán).
+                if (nextStatus !== 'empty') return false;
+                // Lớp chặn thứ 2: không tin người gọi. Bàn thực tế phải đang Trống (nếu có dữ liệu bàn) thì mới là hủy bàn.
+                { const cur = tablesData[tableId]; if (cur && cur.status !== 'empty') return false; }
+                if (payNowIntent) return false;   // lớp chặn thứ 3: đang thu tiền ngay thì không bao giờ là hủy bàn
                 if (prevStatus !== 'unpaid' || !(prevItems && prevItems.length)) return false;
                 ntfySend('🗑️ BÀN ' + tableId + ' · HỦY BÀN · ' + prevItems.length + ' món', [
                     '❌ Hủy CẢ BÀN — xóa bill:',
@@ -6765,8 +6777,8 @@ function togglePassVisibility(inputId, btn) {
             if (LAN_GUARD.mode !== 'off' && !adminEntryActive()) {   // chế độ nhập dữ liệu: không gửi gì ra ngoài nên không cần kiểm tra WiFi
                 const snapshot = { id: activeTableId };
                 NetGuard.require().then(function (ok) {
-                    if (!ok) return;                       // đã hiện cảnh báo, không làm gì thêm
-                    if (activeTableId !== snapshot.id) return;   // người dùng đã đóng/đổi bàn
+                    if (!ok) { clearPayNowIntent(); return; }                       // đã hiện cảnh báo, không làm gì thêm
+                    if (activeTableId !== snapshot.id) { clearPayNowIntent(); return; }   // người dùng đã đóng/đổi bàn
                     saveModalChangesInner();
                 });
                 return;
@@ -6783,6 +6795,10 @@ function togglePassVisibility(inputId, btn) {
             const prevItems = [...(table.items || [])];
             const prevSnap = { status: prevStatus, items: prevItems, pay: table.paymentMethod, note: table.note || '' };
             const prevTotal = table.total || 0;
+            // Thu tiền ngay: ép trạng thái = Đã trả và ghi nhớ để bên dưới không bao giờ coi đây là "hủy bàn".
+            const payNow = payNowIntent;
+            clearPayNowIntent();
+            if (payNow) selectedStatusInModal = 'paid';
             table.status = selectedStatusInModal;
             table.items = modalItems.map(function (it) {
                 // Chỉ giữ dữ liệu thật của món; bỏ mọi cờ tạm dùng trong phiên sửa
@@ -6807,7 +6823,10 @@ function togglePassVisibility(inputId, btn) {
                 adminEntryMarkDone(activeTableId);
             } else if (!notifyCashier(activeTableId, prevItems, modalItems, table)) {
                 // Không có món thêm/bớt: kiểm tra các trường hợp trước đây im lặng (hủy cả bàn, đổi thanh toán/ghi chú)
-                if (!notifyTableCancelled(activeTableId, prevStatus, prevItems, prevTotal, table.status) && !notifyTableUpdate(activeTableId, prevSnap, table)) {
+                if (payNow) {
+                    // Thu tiền ngay: chỉ đổi sang Đã trả, bill vẫn còn → KHÔNG hủy bàn, không báo xóa bill.
+                    notifyPayment(activeTableId, prevStatus, table);
+                } else if (!notifyTableCancelled(activeTableId, prevStatus, prevItems, prevTotal, table.status) && !notifyTableUpdate(activeTableId, prevSnap, table)) {
                     notifyPayment(activeTableId, prevStatus, table);
                 }
             }
@@ -6821,8 +6840,9 @@ function togglePassVisibility(inputId, btn) {
             if (!activeTableId) return;
             const targetId = activeTableId;
             const before = tablesData[targetId];
-            if (before && !adminEntryActive()) notifyTableCancelled(targetId, before.status, before.items, before.total, 'empty');   // xóa bàn khi chưa trả → báo thu ngân xóa bill
+            clearPayNowIntent();
             tablesData[targetId] = { id: targetId, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '', paidGuests: 0, unpaidGuests: 0 };
+            if (before && !adminEntryActive()) notifyTableCancelled(targetId, before.status, before.items, before.total, 'empty');   // xóa bàn khi chưa trả → báo thu ngân xóa bill
             saveData(); 
             renderTableNode(targetId);
             const listView = document.getElementById('listView');
