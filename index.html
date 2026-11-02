@@ -1215,6 +1215,8 @@
             transition: transform .12s ease, filter .15s ease;
             animation: payPillGlow 2.6s ease-in-out infinite;
         }
+        .pay-pill.clean-pill { color: #3b2410; background: linear-gradient(135deg, #e3b36a, #b9803d); box-shadow: 0 3px 10px rgba(185, 128, 61, .40), inset 0 1px 0 rgba(255, 255, 255, .35); animation: none; }
+        html[data-theme="dark"] .pay-pill.clean-pill { color: #1d1308; background: linear-gradient(135deg, #f0c987, #c9944a); box-shadow: 0 3px 12px rgba(201, 148, 74, .35), inset 0 1px 0 rgba(255, 255, 255, .35); }
         .pay-pill:hover { filter: brightness(1.07); }
         .pay-pill:active { transform: scale(.95); }
         .pay-pill-ico { width: 30px; height: 30px; border-radius: 50%; background: rgba(255, 255, 255, .22); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
@@ -1766,6 +1768,11 @@
                         <span class="pay-pill-ico"><i class="fa-solid fa-hand-holding-dollar"></i></span>
                         <span class="pay-pill-txt"><b>Thu tiền</b><small id="quickPayAmount"></small></span>
                     </button>
+                    <!-- Dọn bàn: cùng kiểu nút Thu tiền nhưng dành cho bàn ĐÃ thanh toán (đưa bàn về Trống, có Hoàn tác như thao tác 1-chạm) -->
+                    <button type="button" id="quickCleanActions" onclick="cleanPaidTableAndClose()" class="pay-pill clean-pill" aria-label="Dọn bàn" style="display:none">
+                        <span class="pay-pill-ico"><i class="fa-solid fa-broom"></i></span>
+                        <span class="pay-pill-txt"><b>Dọn bàn</b><small>Về Trống</small></span>
+                    </button>
                     <button onclick="closeModal()" class="w-7 h-7 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-400 hover:text-stone-100 flex items-center justify-center transition">
                         <i class="fa-solid fa-xmark text-xs"></i>
                     </button>
@@ -1903,14 +1910,14 @@
 
             <!-- CHÂN MODAL — 2 hàng (nằm sát đáy, dễ với tay cái):
                  Hàng 1: Order (gọi món), chiếm cả chiều ngang.
-                 Hàng 2: Xoá bàn · Chuyển / Gộp · Hủy. (Nút Thu tiền nằm riêng ngay dưới tờ phiếu, không cùng dòng với Order.) -->
+                 Hàng 2: Hủy bàn · Chuyển / Gộp · Hủy. (Nút Thu tiền nằm riêng ngay dưới tờ phiếu, không cùng dòng với Order.) -->
             <div class="bg-espresso-950 px-3.5 pt-2.5 pb-3 border-t border-tys-900 space-y-2">
                 <button type="button" onclick="saveModalChanges()" class="w-full py-3 rounded-xl text-base font-extrabold bg-tys-500 hover:bg-tys-600 active:scale-[0.98] text-ink transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-paper-plane text-sm"></i> Order
                 </button>
                 <div class="flex items-stretch gap-1.5">
                     <button type="button" onclick="clearTableData()" class="flex-1 py-2 rounded-lg text-xs font-semibold text-brick-400 border border-brick-800/70 hover:bg-brick-500/10 active:scale-95 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
-                        <i class="fa-solid fa-trash"></i> Xoá bàn
+                        <i class="fa-solid fa-trash"></i> Hủy bàn
                     </button>
                     <button type="button" onclick="openTransferModal(activeTableId)" class="flex-1 py-2 rounded-lg text-xs font-semibold text-tys-400 border border-tys-800 hover:bg-tys-500/10 active:scale-95 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <i class="fa-solid fa-right-left"></i> Chuyển / Gộp
@@ -4890,6 +4897,22 @@
             el.classList.remove('hidden');
             el.style.display = show ? '' : 'none';
             updateQuickPayAmount();
+            // Bàn ĐÃ thanh toán (và chưa gọi thêm món trong lần mở này): hiện nút Dọn bàn thay cho Thu tiền
+            const cl = document.getElementById('quickCleanActions');
+            if (cl) {
+                const showClean = modalOrigStatus === 'paid' && selectedStatusInModal === 'paid' && !modalItems.some(i => i._new);
+                cl.style.display = showClean ? '' : 'none';
+            }
+        }
+
+        // Dọn bàn từ cửa sổ chi tiết: đóng cửa sổ rồi đưa bàn đã thanh toán về Trống (giống nút "Dọn Xong" ở danh sách, có Hoàn tác)
+        function cleanPaidTableAndClose() {
+            const id = activeTableId;
+            if (!id) return;
+            const t = tablesData[id];
+            if (!t || t.status !== 'paid') return;
+            closeModal();
+            triggerQuickStateTransition(id, '1-Chạm');
         }
         // Ghi số tiền còn phải thu lên nút Thu tiền (nút to nên thu ngân nhìn là biết thu bao nhiêu)
         function updateQuickPayAmount() {
@@ -4906,6 +4929,7 @@
             selectedStatusInModal = status;
             reopenedByAdd = false;          // người dùng tự chọn trạng thái -> thôi tự động theo dõi
             updateModalStatusButtons();
+            refreshQuickPayButton();
             renderModalOrderList();         // vẽ lại để con dấu / dòng "còn phải thu" khớp trạng thái mới
         }
 
