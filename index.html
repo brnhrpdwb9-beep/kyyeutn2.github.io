@@ -396,13 +396,13 @@
             .zone-tab { background: rgba(250, 232, 190, .55); }
             html[data-theme="dark"] .zone-tab { background: rgba(92, 66, 34, .55); }
         }
-        /* mobile: thò ra dài hơn từ mép màn hình, thấp hơn */
+        /* mobile: dải kéo dài theo chiều cao màn hình, mỏng ở chiều ngang */
         @media (max-width: 639px) {
-            .zone-tab { width: 30px; height: 30px; }
-            .zone-tab i { font-size: 11px; }
-            .zone-tab-left { border-radius: 0 15px 15px 0; }
-            .zone-tab-right { border-radius: 15px 0 0 15px; }
-            .zone-tab:active { width: 34px; }
+            .zone-tab { width: 14px; height: clamp(110px, 34vh, 260px); }
+            .zone-tab i { font-size: 9px; }
+            .zone-tab-left { border-radius: 0 10px 10px 0; }
+            .zone-tab-right { border-radius: 10px 0 0 10px; }
+            .zone-tab:active { width: 17px; }
         }
         .zone-tab.hidden { display: none; }
         .fab-glow {
