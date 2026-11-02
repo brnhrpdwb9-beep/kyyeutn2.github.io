@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TYS ORDER</title>
+    <title>TYS COFFEE - THANH TOÁN</title>
     
     <!-- TỐI ƯU: mở kết nối sớm tới 3 CDN để giảm thời gian chờ DNS/TLS khi tải lần đầu.
          Không thay đổi nội dung hay giao diện — chỉ báo trước cho trình duyệt. -->
@@ -298,6 +298,24 @@
                             inset 0 0 0 1px rgba(185,128,61,0.42);
             }
         }
+        /* Bàn mới order, chưa trả (<30p): nền đỏ để dễ thấy; mốc 30p và 45p đỏ đậm hơn */
+        .table-new-unpaid {
+            background-color: #f5bfb1 !important;
+            border-color: #d2492c !important;
+            box-shadow: 0 0 0 2px rgba(210, 73, 44, .30), 0 8px 18px -8px rgba(210, 73, 44, .55);
+        }
+        .table-new-unpaid::after { background: linear-gradient(90deg, transparent, #d2492c, transparent) !important; }
+        .table-new-unpaid.table-active-breathe { animation: breathe-red-light 3.2s ease-in-out infinite; }
+        @keyframes breathe-red-light {
+            0%, 100% { box-shadow: 0 0 0 2px rgba(210,73,44,.28), 0 8px 18px -8px rgba(210,73,44,.50); }
+            50%      { box-shadow: 0 0 0 3px rgba(210,73,44,.48), 0 10px 24px -6px rgba(210,73,44,.70); }
+        }
+        html[data-theme="dark"] .table-new-unpaid { background-color: #5a221a !important; border-color: #e2724c !important; }
+        html[data-theme="dark"] .table-new-unpaid.table-active-breathe { animation: breathe-red-dark 3.2s ease-in-out infinite; }
+        @keyframes breathe-red-dark {
+            0%, 100% { box-shadow: 0 0 0 1px rgba(226,114,76,.45), 0 0 10px 1px rgba(210,73,44,.45), 0 0 28px 6px rgba(210,73,44,.20); }
+            50%      { box-shadow: 0 0 0 1px rgba(226,114,76,.65), 0 0 20px 3px rgba(210,73,44,.65), 0 0 46px 10px rgba(210,73,44,.28); }
+        }
         .table-active-breathe {
             animation: breathe-paper 3.6s ease-in-out infinite;
             position: relative;
@@ -312,6 +330,17 @@
             opacity: 0.85;
         }
 
+        /* Bộ lọc trạng thái: bàn khớp được phóng to, nổi lên trên các bàn xung quanh */
+        .table-btn.table-filter-zoom {
+            transform: scale(1.18) !important;
+            z-index: 20;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, .85), 0 10px 24px -4px rgba(0, 0, 0, .35);
+            animation: filterZoomIn .28s cubic-bezier(.2, .9, .3, 1.2);
+        }
+        .table-btn.table-filter-zoom:active { transform: scale(1.12) !important; }
+        html[data-theme="dark"] .table-btn.table-filter-zoom { box-shadow: 0 0 0 3px rgba(255, 255, 255, .55), 0 0 22px 4px rgba(143, 190, 110, .35); }
+        @keyframes filterZoomIn { from { transform: scale(1); } to { transform: scale(1.18); } }
+        @media (prefers-reduced-motion: reduce) { .table-btn.table-filter-zoom { animation: none; } }
         .table-paid-halo {
             box-shadow: 0 1px 2px rgba(26,21,16,0.05),
                         0 10px 20px -14px rgba(63,101,48,0.30),
@@ -1344,7 +1373,7 @@
                 <div class="hidden sm:flex flex-1 items-center justify-between lg:justify-start gap-1 sm:gap-2 bg-espresso-950/70 p-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl border border-tys-900">
                     <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md text-stone-300 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
                         <span class="text-[9px] sm:text-[11px] text-stone-500">Tổng</span>
-                        <strong id="totalTablesCount" class="text-xs sm:text-sm font-bold text-stone-100">29</strong>
+                        <strong id="totalTablesCount" class="text-xs sm:text-sm font-bold text-stone-100">25</strong>
                     </div>
                     <div class="w-px h-4 bg-tys-900 hidden sm:block"></div>
                     <div class="flex-1 lg:flex-none px-1.5 sm:px-3 py-1 rounded-md text-sage-400 flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5">
@@ -1532,8 +1561,8 @@
                         <div class="absolute top-[530px] left-[236px]" id="table-node-15"></div>
                         <div class="absolute top-[530px] left-[348px]" id="table-node-16"></div>
 
-                        <div class="absolute top-[476px] left-[82px]" id="table-node-4"></div>
-                        <div class="absolute top-[588px] left-[82px]" id="table-node-5"></div>
+                        <div class="absolute top-[466px] left-[82px]" id="table-node-4"></div>
+                        <div class="absolute top-[598px] left-[82px]" id="table-node-5"></div>
                         <div class="absolute top-[888px] left-[446px]" id="table-node-6"></div>
 
                         <div class="absolute top-[851px] left-[110px]" id="table-node-7"></div>
@@ -2256,7 +2285,24 @@
         // Bàn bị ẨN HẲN ở mọi sơ đồ (Sơ đồ 1, Sơ đồ 2, cả lúc đang Sửa), danh sách bàn và bộ đếm.
         // Chỉ ẩn hiển thị — dữ liệu bàn vẫn nằm trong bộ nhớ, muốn hiện lại thì bỏ số bàn khỏi mảng này.
         const PERMANENT_HIDDEN_TABLES = [27, 28];
-        const VISIBLE_TABLE_COUNT = TOTAL_TABLES - PERMANENT_HIDDEN_TABLES.length;
+        // Bàn đã GHÉP vào bàn dài (6 -> 11, 9 -> 10, 16 -> 15, 3 -> 2): ẩn ô riêng ở Sơ đồ 1 và Sơ đồ 2. KHÔNG áp dụng cho Sơ đồ tùy chọn (số 3),
+        // ở đó các bàn vẫn là ô riêng như cũ — xem isHiddenTable() / longTableOf().
+        const MERGED_HIDDEN_TABLES = [6, 9, 16, 3];
+        // Bàn dài = ghép 2 ô thành 1: { số bàn: {w, h} kích thước nút (px) }. 102 + khe 10 + 102 = 214.
+        // Nút giữ nguyên vị trí gốc của bàn đó và kéo dài về phía ô đã ghép (toạ độ #mapWrapper):
+        //   - bàn 11: dài LÊN TRÊN (ô bàn 6 cũ nằm ngay trên);  - bàn 10: dài sang TRÁI (ô bàn 9 cũ nằm ngay bên trái);
+        //   - bàn 15: dài sang PHẢI (ô bàn 16 cũ nằm ngay bên phải);  - bàn 2: dài XUỐNG DƯỚI (ô bàn 3 cũ nằm ngay dưới).
+        const LONG_TABLES = { 11: { w: 102, h: 214 }, 10: { w: 214, h: 102 }, 15: { w: 214, h: 102, right: true }, 2: { w: 102, h: 214, down: true } };   // down: dài XUỐNG DƯỚI (bàn 3 cũ nằm ngay dưới bàn 2)   // right: dài sang PHẢI (bàn 16 cũ nằm ngay bên phải bàn 15)
+        function isHiddenTable(i) {
+            if (PERMANENT_HIDDEN_TABLES.indexOf(i) !== -1) return true;
+            return activeLayout !== 3 && MERGED_HIDDEN_TABLES.indexOf(i) !== -1;
+        }
+        function longTableOf(i) { return activeLayout !== 3 ? (LONG_TABLES[i] || null) : null; }
+        function visibleTableCount() {
+            let n = 0;
+            for (let i = 1; i <= TOTAL_TABLES; i++) if (!isHiddenTable(i)) n++;
+            return n;
+        }
         let tablesData = {};
         let activeTableId = null;
         let currentFilter = 'all';
@@ -2822,7 +2868,7 @@
                 const node = document.getElementById(`table-node-${i}`);
                 if (!node) continue;
                 let display = '', opacity = '';
-                if (PERMANENT_HIDDEN_TABLES.indexOf(i) !== -1) {
+                if (isHiddenTable(i)) {
                     node.style.display = 'none';
                     node.style.opacity = '';
                     continue;
@@ -2845,7 +2891,7 @@
             const hidden = (layout2Working && layout2Working.hidden) || [];
             let html = '';
             for (let i = 1; i <= TOTAL_TABLES; i++) {
-                if (PERMANENT_HIDDEN_TABLES.indexOf(i) !== -1) continue;   // đã ẩn hẳn ở mọi sơ đồ
+                if (isHiddenTable(i)) continue;   // đã ẩn hẳn (ở sơ đồ đang xem)
                 const off = hidden.indexOf(i) !== -1;
                 html += `<button type="button" onclick="toggleTableHiddenOnLayout2(${i})" aria-pressed="${off ? 'true' : 'false'}" title="${off ? 'Đang ẩn — chạm để hiện lại' : 'Chạm để ẩn bàn này'}" `
                       + `class="py-1.5 rounded-lg text-[11px] font-bold tabular-nums border transition active:scale-90 `
@@ -3006,6 +3052,17 @@
                 applyLayoutPositions(null);
                 setLayoutDecor(true);
             }
+            refreshForLayout();
+        }
+
+        // Bàn ghép (6->11, 9->10) chỉ có ở Sơ đồ 1/2 nên đổi sơ đồ phải vẽ lại sơ đồ, danh sách và bộ đếm
+        function refreshForLayout() {
+            try {
+                renderMap();
+                updateDashboardStats();
+                const lv = document.getElementById('listView');
+                if (lv && !lv.classList.contains('hidden')) renderListView(true);
+            } catch (e) {}
         }
 
         function selectLayout(n) {
@@ -3028,6 +3085,7 @@
             if (!layout2Working) return;
             applyLayoutPositions(layout2Working.tables);
             setLayoutDecor(layout2Working.decor);
+            refreshForLayout();
         }
 
         function toggleLayoutEdit() {
@@ -4333,7 +4391,7 @@
                     numColor = "text-brick-100";
                     badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 tbadge tbadge-late whitespace-nowrap">Chưa trả</span>`;
                 } else {
-                    bgStyle = "bg-tys-900/60 border-tys-600 text-tys-100 table-active-breathe";
+                    bgStyle = "table-new-unpaid text-tys-100 table-active-breathe";   // mới order chưa trả: nền đỏ nhạt + viền đỏ (đậm dần ở mốc 30p / 45p)
                     numColor = "text-tys-100";
                     badgeHTML = `<span class="absolute -top-2 left-1/2 -translate-x-1/2 tbadge whitespace-nowrap">Chưa trả</span>`;
                 }
@@ -4348,8 +4406,16 @@
                                (currentFilter === 'paid' && data.status === 'paid') ||
                                (currentFilter === 'empty' && data.status === 'empty');
 
-            const opacityClass = isFiltered ? "opacity-100 scale-100" : "opacity-20 scale-90 pointer-events-none";
+            // Đang lọc (không phải "Tất cả"): bàn khớp bộ lọc được PHÓNG TO + viền sáng để nhân viên thấy ngay, bàn không khớp mờ và thu nhỏ
+            const zoomMatched = isFiltered && currentFilter !== 'all';
+            const opacityClass = isFiltered ? ("opacity-100 scale-100" + (zoomMatched ? " table-filter-zoom" : "")) : "opacity-20 scale-90 pointer-events-none";
             const selectedClass = (activeTableId === i) ? "table-selected-glow" : "";
+            const lt = longTableOf(i);
+            const longH = lt ? lt.h : 0, longW = lt ? lt.w : 0;
+            container.style.marginTop = (lt && lt.h > 102 && !lt.down) ? ('-' + (lt.h - 102) + 'px') : '';
+            container.style.marginLeft = (lt && lt.w > 102 && !lt.right) ? ('-' + (lt.w - 102) + 'px') : '';
+            // Ô bàn có transform nên tự thành một lớp riêng: phải nâng cả ô lên thì bàn phóng to mới nằm trên bàn bên cạnh
+            container.style.zIndex = zoomMatched ? '20' : '';
 
             // Mô tả ngắn trên sơ đồ: chỉ hiện ghi chú của bàn (không hiện tên nước đã gọi)
             const mapDesc = data.note ? escapeHtml(data.note) : '';
@@ -4362,14 +4428,14 @@
             // Dấu vân tay: đủ mọi thứ ảnh hưởng tới những gì người dùng nhìn thấy trong ô bàn.
             const sig = bgStyle + '\u0001' + numColor + '\u0001' + badgeHTML + '\u0001' + opacityClass
                       + '\u0001' + selectedClass + '\u0001' + chipHtml + '\u0001' + totalHtml
-                      + '\u0001' + timerText + '\u0001' + mapDesc + '\u0001' + guestBadge;
+                      + '\u0001' + timerText + '\u0001' + mapDesc + '\u0001' + guestBadge + '\u0001' + longW + 'x' + longH;
             if (tableRenderSig.get(i) === sig && container.firstElementChild) return;
             tableRenderSig.set(i, sig);
 
             // Nút bấm từ 68px tăng thành 102px
             container.innerHTML = `
                 ${guestBadge}
-                <button type="button" class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} ${selectedClass} flex flex-col items-center justify-center p-1.5 transition-all">
+                <button type="button" ${lt ? `style="width:${longW}px;height:${longH}px"` : ''} class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} ${selectedClass} flex flex-col items-center justify-center p-1.5 transition-all">
                     ${badgeHTML}${chipHtml}
                     <span class="text-[10px] font-bold uppercase tracking-[0.18em] leading-none opacity-60 ${numColor}">Bàn</span>
                     <span class="text-[36px] font-extrabold leading-none tracking-tight tabular-nums ${numColor} mt-0.5">${i}</span>
@@ -4419,7 +4485,7 @@
             // 3) Trống — xếp cuối theo số thứ tự
             let visibleTables = [];
             for (let i = 1; i <= TOTAL_TABLES; i++) {
-                if (PERMANENT_HIDDEN_TABLES.indexOf(i) !== -1) continue;   // bàn ẩn hẳn không hiện ở danh sách
+                if (isHiddenTable(i)) continue;   // bàn ẩn hẳn không hiện ở danh sách
                 const data = tablesData[i];
 
                 if (currentFilter !== 'all' && data.status !== currentFilter) continue;
@@ -4511,7 +4577,7 @@
         function updateDashboardStats() {
             let unpaid = 0, paid = 0;
             Object.keys(tablesData).forEach(k => {
-                if (PERMANENT_HIDDEN_TABLES.indexOf(Number(k)) !== -1) return;   // không tính bàn ẩn hẳn
+                if (isHiddenTable(Number(k))) return;   // không tính bàn ẩn hẳn
                 const t = tablesData[k];
                 if (t.status === 'unpaid') unpaid++;
                 if (t.status === 'paid') paid++;
@@ -4523,9 +4589,9 @@
             const totalMobileEl = document.getElementById('filterAllCountMobile');
             const unpaidMobileEl = document.getElementById('filterUnpaidCountMobile');
             const paidMobileEl = document.getElementById('filterPaidCountMobile');
-            if (totalMobileEl) totalMobileEl.innerText = VISIBLE_TABLE_COUNT;
+            if (totalMobileEl) totalMobileEl.innerText = visibleTableCount();
             const totalDeskEl = document.getElementById('totalTablesCount');
-            if (totalDeskEl) totalDeskEl.innerText = VISIBLE_TABLE_COUNT;
+            if (totalDeskEl) totalDeskEl.innerText = visibleTableCount();
             if (unpaidMobileEl) unpaidMobileEl.innerText = unpaid;
             if (paidMobileEl) paidMobileEl.innerText = paid;
         }
@@ -7317,7 +7383,7 @@ function togglePassVisibility(inputId, btn) {
 
             for (let i = 1; i <= TOTAL_TABLES; i++) {
                 if (i === sourceTableId) continue;
-                if (PERMANENT_HIDDEN_TABLES.indexOf(i) !== -1) continue;   // bàn ẩn hẳn không làm bàn đích chuyển/gộp
+                if (isHiddenTable(i)) continue;   // bàn ẩn hẳn không làm bàn đích chuyển/gộp
                 const targetData = tablesData[i];
                 let statusLabel = 'Trống';
                 if (targetData.status === 'unpaid') statusLabel = `Chưa trả (${targetData.total}k)`;
