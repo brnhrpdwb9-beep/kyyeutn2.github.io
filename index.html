@@ -1177,6 +1177,34 @@
         }
         .bill-total-label { font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #5b3f1c; }
         .bill-total-label small { font-weight: 600; letter-spacing: .02em; text-transform: none; color: #9a8a70; margin-left: 4px; }
+        /* Nút Thu tiền (góc trên modal): viên thuốc xanh, biểu tượng trong vòng tròn, số tiền nhỏ bên dưới */
+        .pay-pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 5px 14px 5px 5px; border: 0; border-radius: 999px; cursor: pointer;
+            color: #fff; background: linear-gradient(135deg, #52a042, #2f7a28);
+            box-shadow: 0 3px 10px rgba(47, 122, 40, .38), inset 0 1px 0 rgba(255, 255, 255, .28);
+            transition: transform .12s ease, filter .15s ease;
+            animation: payPillGlow 2.6s ease-in-out infinite;
+        }
+        .pay-pill:hover { filter: brightness(1.07); }
+        .pay-pill:active { transform: scale(.95); }
+        .pay-pill-ico { width: 30px; height: 30px; border-radius: 50%; background: rgba(255, 255, 255, .22); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+        .pay-pill-txt { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1; white-space: nowrap; }
+        .pay-pill-txt b { font-size: 13px; font-weight: 800; letter-spacing: .01em; }
+        .pay-pill-txt small { font-size: 10.5px; font-weight: 700; opacity: .9; font-variant-numeric: tabular-nums; }
+        .pay-pill-txt small:empty { display: none; }
+        @keyframes payPillGlow { 0%, 100% { box-shadow: 0 3px 10px rgba(47, 122, 40, .38), inset 0 1px 0 rgba(255,255,255,.28); } 50% { box-shadow: 0 3px 16px rgba(82, 160, 66, .65), inset 0 1px 0 rgba(255,255,255,.28); } }
+        html[data-theme="dark"] .pay-pill { color: #10200a; background: linear-gradient(135deg, #86c660, #5C8A41); box-shadow: 0 3px 12px rgba(111, 168, 78, .35), inset 0 1px 0 rgba(255, 255, 255, .3); }
+        html[data-theme="dark"] .pay-pill-ico { background: rgba(16, 32, 10, .18); }
+        @media (prefers-reduced-motion: reduce) { .pay-pill { animation: none; } }
+                .bill-row-prepaid .bill-name, .bill-row-prepaid .bill-price { opacity: .55; }
+        .bill-prepaid-tag { flex-shrink: 0; margin-right: 6px; font-size: 9px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: #3f7d4e; border: 1px solid currentColor; border-radius: 4px; padding: 0 4px; line-height: 14px; }
+        .bill-total { flex-wrap: wrap; }
+        .bill-due { flex-basis: 100%; display: flex; justify-content: space-between; align-items: baseline; font-size: 11px; color: #7a4a14; margin-top: 2px; }
+        .bill-due b { font-size: 13px; font-weight: 800; color: #b3412a; }
+        html[data-theme="dark"] .bill-prepaid-tag { color: #8fd19e; }
+        html[data-theme="dark"] .bill-due { color: #E1B66E; }
+        html[data-theme="dark"] .bill-due b { color: #ff9b83; }
         .bill-total-val { font-size: 19px; font-weight: 800; line-height: 1; color: #1a1510; font-variant-numeric: tabular-nums; }
 
         /* Số khách trên phiếu: ở đầu phiếu và ở dòng tổng (dòng tổng luôn dính đáy nên không bị cuộn mất) */
@@ -1203,7 +1231,7 @@
         }
         .bill-stamp-in {
             position: relative; display: block; padding: 4px 12px 5px;
-            font-weight: 800; font-size: 28px; letter-spacing: .09em; text-transform: uppercase;
+            font-weight: 800; font-size: 24px; line-height: 1.15; letter-spacing: .07em; text-transform: uppercase;
         }
         .bill-stamp-in small {
             display: block; margin-top: 3px; padding-top: 3px;
@@ -1695,17 +1723,24 @@
     <div id="tableModal" class="fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm hidden flex items-center justify-center p-2 sm:p-4">
         <div class="bg-espresso-900 border border-tys-800 w-full max-w-md rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[95vh] text-stone-200 modal-fade-in">
             
-            <div class="bg-espresso-950 px-4 py-3 border-b border-tys-900 flex items-center justify-between">
-                <div class="flex items-center gap-2.5">
-                    <div id="modalTableBadge" class="w-9 h-9 rounded-lg bg-tys-500 font-bold text-lg flex items-center justify-center text-ink">0</div>
-                    <div>
-                        <h3 class="font-bold text-tys-100 text-sm leading-tight" id="modalTitle">Quản Lý Bàn Số 0</h3>
+            <div class="bg-espresso-950 px-4 py-3 border-b border-tys-900 flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <div id="modalTableBadge" class="w-9 h-9 shrink-0 rounded-lg bg-tys-500 font-bold text-lg flex items-center justify-center text-ink">0</div>
+                    <div class="min-w-0">
+                        <h3 class="font-bold text-tys-100 text-sm leading-tight truncate" id="modalTitle">Quản Lý Bàn Số 0</h3>
                         <p class="text-[10px] text-stone-500 hidden" id="modalSubtitle"></p>
                     </div>
                 </div>
-                <button onclick="closeModal()" class="w-7 h-7 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-400 hover:text-stone-100 flex items-center justify-center transition">
-                    <i class="fa-solid fa-xmark text-xs"></i>
-                </button>
+                <div class="flex items-center gap-2 shrink-0">
+                    <!-- Thu tiền: nút viên thuốc ở góc trên modal, xa nút Order ở đáy. Chỉ hiện khi bàn đã lưu ở trạng thái Chưa trả. -->
+                    <button type="button" id="quickPaymentActions" onclick="markAsPaidAndClose()" class="pay-pill" aria-label="Thu tiền">
+                        <span class="pay-pill-ico"><i class="fa-solid fa-hand-holding-dollar"></i></span>
+                        <span class="pay-pill-txt"><b>Thu tiền</b><small id="quickPayAmount"></small></span>
+                    </button>
+                    <button onclick="closeModal()" class="w-7 h-7 rounded-lg bg-espresso-800 hover:bg-espresso-700 text-stone-400 hover:text-stone-100 flex items-center justify-center transition">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                    </button>
+                </div>
             </div>
 
             <div class="p-3.5 overflow-y-auto space-y-3 flex-1 text-xs">
@@ -1837,12 +1872,12 @@
 
             </div>
 
-            <!-- CHÂN MODAL — 2 hàng:
-                 Hàng 1: nút Order (chiếm cả chiều ngang).
-                 Hàng 2: Xoá bàn · Chuyển / Gộp · (Thu tiền, chỉ hiện khi bàn đang ngồi) · Hủy — cùng cỡ, chia đều. -->
+            <!-- CHÂN MODAL — 2 hàng (nằm sát đáy, dễ với tay cái):
+                 Hàng 1: Order (gọi món), chiếm cả chiều ngang.
+                 Hàng 2: Xoá bàn · Chuyển / Gộp · Hủy. (Nút Thu tiền nằm riêng ngay dưới tờ phiếu, không cùng dòng với Order.) -->
             <div class="bg-espresso-950 px-3.5 pt-2.5 pb-3 border-t border-tys-900 space-y-2">
-                <button type="button" onclick="saveModalChanges()" class="w-full py-2.5 rounded-xl text-sm font-bold bg-tys-500 hover:bg-tys-600 active:scale-[0.98] text-ink transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-paper-plane text-xs"></i> Order
+                <button type="button" onclick="saveModalChanges()" class="w-full py-3 rounded-xl text-base font-extrabold bg-tys-500 hover:bg-tys-600 active:scale-[0.98] text-ink transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-sm"></i> Order
                 </button>
                 <div class="flex items-stretch gap-1.5">
                     <button type="button" onclick="clearTableData()" class="flex-1 py-2 rounded-lg text-xs font-semibold text-brick-400 border border-brick-800/70 hover:bg-brick-500/10 active:scale-95 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
@@ -1850,10 +1885,6 @@
                     </button>
                     <button type="button" onclick="openTransferModal(activeTableId)" class="flex-1 py-2 rounded-lg text-xs font-semibold text-tys-400 border border-tys-800 hover:bg-tys-500/10 active:scale-95 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
                         <i class="fa-solid fa-right-left"></i> Chuyển / Gộp
-                    </button>
-                    <!-- Thu tiền: chỉ hiện khi bàn đang ngồi (JS bật/tắt theo id này) -->
-                    <button type="button" id="quickPaymentActions" onclick="markAsPaidAndClose()" class="flex-1 py-2 rounded-lg text-xs font-bold text-sage-400 border border-sage-700/60 hover:bg-sage-500/10 active:scale-95 transition flex items-center justify-center gap-1.5 whitespace-nowrap">
-                        <i class="fa-solid fa-hand-holding-dollar"></i> Thu tiền
                     </button>
                     <button type="button" onclick="closeModal()" class="flex-1 py-2 rounded-lg text-xs font-semibold bg-espresso-800 hover:bg-espresso-700 text-stone-300 active:scale-95 transition">Hủy</button>
                 </div>
@@ -3222,7 +3253,26 @@
         function keepItem(i) {
             const o = { name: i.name, price: i.price };
             if (i.note) o.note = i.note;
+            if (i.prepaid) o.prepaid = true;
             return o;
+        }
+        // Món đã thu ở lần thanh toán trước (bàn đã trả rồi mới gọi thêm) -> đánh dấu prepaid để không thu lại lần nữa
+        function prepaidSumOf(items) {
+            return +(items || []).reduce((s, i) => s + (i && i.prepaid ? (Number(i.price) || 0) : 0), 0).toFixed(2);
+        }
+        // Số tiền CÒN PHẢI THU của bàn (bàn chưa trả có món đã thu trước thì trừ phần đó ra)
+        function dueOf(t) {
+            if (!t) return 0;
+            const total = Number(t.total) || 0;
+            return t.status === 'unpaid' ? Math.max(0, +(total - prepaidSumOf(t.items)).toFixed(2)) : total;
+        }
+        // Phần được ghi vào lịch sử ở lần thu này = các món CHƯA prepaid (phần prepaid đã nằm trong dòng lịch sử lần trước)
+        function histPartOf(table) {
+            const all = (table.items || []);
+            const fresh = all.filter(i => !i.prepaid);
+            const total = fresh.length === all.length ? (table.total || 0)
+                : +fresh.reduce((s, i) => s + (Number(i.price) || 0), 0).toFixed(2);
+            return { items: fresh.map(keepItem), total };
         }
         function escapeHtml(str) {
             return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -3352,13 +3402,15 @@
         function findHistoryEntry(id) { return id ? historyData.entries.find(e => e.id === id) : null; }
 
         function addHistoryEntry(tableId, table) {
-            if (!table || (table.total || 0) <= 0) { if (table) table.histId = null; return null; }
+            if (!table) return null;
+            const part = histPartOf(table);
+            if (part.total <= 0) { table.histId = null; return null; }
             const id = newHistoryId();
             trackHistory(id);
             historyData.entries.push({
                 id, tableId,
-                items: (table.items || []).map(keepItem),
-                total: table.total || 0,
+                items: part.items,
+                total: part.total,
                 paymentMethod: table.paymentMethod || 'Tiền mặt',
                 note: table.note || '',
                 startTime: table.startTime || null,
@@ -3384,8 +3436,9 @@
                 } else {
                     const e = findHistoryEntry(table.histId);
                     if (e) {
-                        e.items = (table.items || []).map(keepItem);
-                        e.total = table.total || 0;
+                        const part = histPartOf(table);
+                        e.items = part.items;
+                        e.total = part.total;
                         e.paymentMethod = table.paymentMethod || 'Tiền mặt';
                         e.note = table.note || '';
                         saveHistory();
@@ -3452,7 +3505,7 @@
             return getUnpaidTables().map(t => ({
                 tableId: t.id,
                 items: (t.items || []).map(keepItem),
-                total: t.total || 0,
+                total: dueOf(t),
                 note: t.note || '',
                 startTime: t.startTime || null,
                 minutes: t.startTime ? Math.max(0, Math.floor((now - t.startTime) / 60000)) : null
@@ -3468,7 +3521,7 @@
                     tableId: t.id,
                     status: t.status,
                     items: (t.items || []).map(keepItem),
-                    total: t.total || 0,
+                    total: dueOf(t),
                     paymentMethod: t.paymentMethod || 'Tiền mặt',
                     note: t.note || '',
                     startTime: t.startTime || null,
@@ -4302,7 +4355,8 @@
             const mapDesc = data.note ? escapeHtml(data.note) : '';
 
             const chipHtml = billChip(i, data);
-            const totalHtml = data.total > 0 ? `<span class="text-[13px] font-bold text-tys-400">${data.total}k</span>` : '';
+            const dueNow = dueOf(data);
+            const totalHtml = (data.total > 0 && (dueNow > 0 || data.status !== 'unpaid')) ? `<span class="text-[13px] font-bold text-tys-400">${dueNow}k</span>` : '';
             const guestBadge = guestBadgeHtml(data, !isFiltered);
 
             // Dấu vân tay: đủ mọi thứ ảnh hưởng tới những gì người dùng nhìn thấy trong ô bàn.
@@ -4387,7 +4441,7 @@
 
             // Dấu vân tay của cả danh sách (bộ lọc + từ khoá + nội dung từng bàn hiển thị)
             const sig = currentFilter + '\u0002' + query + '\u0002' + visibleTables.map(v =>
-                v.i + ':' + v.data.status + ':' + (v.data.total | 0) + ':' + v.elapsedMins + ':' +
+                v.i + ':' + v.data.status + ':' + (v.data.total | 0) + ':' + prepaidSumOf(v.data.items) + ':' + v.elapsedMins + ':' +
                 (v.data.startTime || 0) + ':' + (v.data.note || '') + ':' +
                 (v.data.paidGuests || 0) + ':' + (v.data.unpaidGuests || 0) + ':' +
                 (v.data.items || []).map(x => x.name + (x.note || '')).join(',')
@@ -4422,7 +4476,7 @@
                             ${statusBadge}
                         </div>
                         <div class="text-xs text-stone-400 space-y-1">
-                            <div class="text-sm sm:text-xs"><i class="fa-solid fa-coins text-tys-500 mr-1"></i> Tổng: <b class="text-tys-200 font-extrabold">${data.total * 1000}đ</b></div>
+                            <div class="text-sm sm:text-xs"><i class="fa-solid fa-coins text-tys-500 mr-1"></i> ${(data.status === 'unpaid' && prepaidSumOf(data.items) > 0) ? 'Còn thu' : 'Tổng'}: <b class="text-tys-200 font-extrabold">${dueOf(data) * 1000}đ</b></div>
                             ${cardGuests ? `<div class="text-[11px] font-bold flex items-center gap-1"><i class="fa-solid fa-users text-tys-500 mr-1"></i>${cardGuests}</div>` : ''}
                             ${data.startTime ? `<div class="text-sm sm:text-xs font-medium"><i class="fa-regular fa-clock mr-1"></i> Thời gian ngồi: ${elapsedMins} phút</div>` : ''}
                             ${cardDesc.length ? `<div class="text-stone-300 font-medium leading-snug break-words"><i class="fa-solid fa-mug-hot text-tys-500 mr-1"></i>${groupedItemsText(cardDesc)}</div>` : ''}
@@ -4544,6 +4598,8 @@
         }
 
         let selectedStatusInModal = 'empty';
+        let modalOrigStatus = 'empty';      // trạng thái ĐÃ LƯU của bàn lúc mở modal (để biết đang "gọi thêm" trên bàn đã trả)
+        let reopenedByAdd = false;          // true = bàn đang Đã trả bị tự chuyển sang Chưa trả vì vừa gọi thêm món
         let modalItems = [];
         // Nhớ con dấu "ĐÃ TRẢ" đã đóng cho bàn/hóa đơn nào ở lần mở modal hiện tại,
         // để hiệu ứng đóng dấu chỉ chạy 1 lần mỗi lần mở (không chạy lại khi hàm vẽ lại).
@@ -4567,6 +4623,8 @@
             syncPaymentMethodButtons();
 
             selectedStatusInModal = data.status || 'empty';
+            modalOrigStatus = data.status || 'empty';
+            reopenedByAdd = false;
             modalItems = (data.items || []).map(i => ({ ...i }));   // clone: sửa note chưa lưu thì không ảnh hưởng dữ liệu gốc
             editingNoteIdx = null;
             resetBillStamp();           // mỗi lần mở modal -> được đóng dấu lại từ đầu
@@ -4582,9 +4640,7 @@
             // Khu "Gọi món" luôn mở sẵn ở trên cùng, kể cả khi bàn đã có món (kêu thêm món chạm là gọi được).
             toggleOrderPanel(true);
 
-            const quickPaymentActions = document.getElementById('quickPaymentActions');
-            if (data.status === 'unpaid') quickPaymentActions.classList.remove('hidden');
-            else quickPaymentActions.classList.add('hidden');
+            refreshQuickPayButton();
 
             document.getElementById('tableModal').classList.remove('hidden');
             renderTableNode(tableId);
@@ -4759,9 +4815,32 @@
             if (btnQR) btnQR.className = (value === 'Chuyển khoản QR') ? activeClass : inactiveClass;
         }
 
+        // Nút "Thu tiền": CHỈ hiện khi bàn đã LƯU ở trạng thái Chưa trả. Bàn Đã trả mà đang chọn thêm món (chưa bấm Order)
+        // thì vẫn ẩn; bấm Order xong, vào lại bàn (lúc này là Chưa trả) mới hiện nút.
+        function refreshQuickPayButton() {
+            const el = document.getElementById('quickPaymentActions');
+            if (!el) return;
+            const show = modalOrigStatus === 'unpaid';
+            el.classList.remove('hidden');
+            el.style.display = show ? '' : 'none';
+            updateQuickPayAmount();
+        }
+        // Ghi số tiền còn phải thu lên nút Thu tiền (nút to nên thu ngân nhìn là biết thu bao nhiêu)
+        function updateQuickPayAmount() {
+            const amt = document.getElementById('quickPayAmount');
+            if (!amt) return;
+            const reopenedDraft = modalOrigStatus === 'paid' && modalItems.some(i => i._new);
+            let sum = 0, pre = 0;
+            modalItems.forEach(i => { sum += i.price; if (i.prepaid || (reopenedDraft && !i._new)) pre += i.price; });
+            const due = +(sum - pre).toFixed(2);
+            amt.textContent = due > 0 ? (due * 1000).toLocaleString('vi-VN') + 'đ' : '';
+        }
+
         function setSelectStatus(status) {
             selectedStatusInModal = status;
+            reopenedByAdd = false;          // người dùng tự chọn trạng thái -> thôi tự động theo dõi
             updateModalStatusButtons();
+            renderModalOrderList();         // vẽ lại để con dấu / dòng "còn phải thu" khớp trạng thái mới
         }
 
         function updateModalStatusButtons() {
@@ -4801,8 +4880,10 @@
         }
 
         function addPresetItem(name, price) {
-            modalItems.push({ name, price });
+            modalItems.push({ name, price, _new: true });     // _new: món thêm trong lần mở modal này (chưa thu tiền)
+            if (selectedStatusInModal === 'paid' && modalOrigStatus === 'paid') reopenedByAdd = true;
             if (selectedStatusInModal === 'empty' || selectedStatusInModal === 'paid') { selectedStatusInModal = 'unpaid'; updateModalStatusButtons(); }
+            refreshQuickPayButton();
             syncGuestsFromDrinks();     // gọi thêm nước -> tự nâng số khách chưa trả tại bàn
             renderModalOrderList('end');   // món mới nằm cuối phiếu -> tự cuốn tới nó
         }
@@ -4816,6 +4897,13 @@
                 modalGuestsUnpaid = Math.max(0, modalGuestsUnpaid - 1);
                 renderGuestCounters();
             }
+            // Gọi thêm rồi xóa hết món mới -> bàn quay lại Đã trả như cũ (không bị "mở lại" oan)
+            if (reopenedByAdd && !modalItems.some(i => i._new)) {
+                reopenedByAdd = false;
+                selectedStatusInModal = 'paid';
+                updateModalStatusButtons();
+            }
+            refreshQuickPayButton();
             renderModalOrderList();
         }
 
@@ -4864,19 +4952,19 @@
             if (!slip) return;
             const t = activeTableId ? tablesData[activeTableId] : null;
             const old = slip.querySelector('.bill-stamp');
-            if (!t || t.status !== 'paid') { if (old) old.remove(); return; }
+            // Con dấu chỉ hiện khi bàn đã trả VÀ bản nháp trong modal vẫn là Đã trả (gọi thêm món -> gỡ dấu)
+            if (!t || t.status !== 'paid' || selectedStatusInModal !== 'paid') { if (old) old.remove(); return; }
 
             const key = activeTableId + ':' + (t.histId || '');
             if (old && old.dataset.key === key) return;        // đã đóng rồi -> giữ nguyên, không vẽ lại
             if (old) old.remove();
 
-            const method = isCashMethod(t.paymentMethod) ? 'Tiền mặt' : 'CK QR';
             const stamp = document.createElement('div');
             stamp.className = 'bill-stamp';
             stamp.dataset.key = key;
             stamp.setAttribute('role', 'img');
-            stamp.setAttribute('aria-label', `ĐÃ TRẢ · ${method}`);
-            stamp.innerHTML = `<span class="bill-stamp-in" aria-hidden="true">ĐÃ TRẢ<small>· ${method} ·</small></span>`;
+            stamp.setAttribute('aria-label', 'Bàn đã thanh toán');
+            stamp.innerHTML = `<span class="bill-stamp-in" aria-hidden="true">BÀN ĐÃ<br>THANH TOÁN</span>`;
 
             if (stampShownFor !== key) {                        // lần đầu trong lần mở này -> đóng dấu có hiệu ứng
                 stampShownFor = key;
@@ -4916,6 +5004,10 @@
             const prevTop = container.scrollTop;
             container.innerHTML = '';
             let sum = 0;
+            let prepaidSum = 0;
+            // Bàn đã trả + có món mới thêm: các món cũ coi như đã thu trước, chỉ thu phần món mới
+            const reopenedDraft = modalOrigStatus === 'paid' && modalItems.some(i => i._new);
+            const isPrepaidItem = i => !!(i.prepaid || (reopenedDraft && !i._new));
             const guestsNow = (modalGuestsPaid || 0) + (modalGuestsUnpaid || 0);
             if (modalItems.length > 0 || guestsNow > 0) {
                 const head = document.createElement('div');
@@ -4932,14 +5024,17 @@
 
                 modalItems.forEach((item, idx) => {
                     sum += item.price;
+                    const pre = isPrepaidItem(item);
+                    if (pre) prepaidSum += item.price;
                     const editing = editingNoteIdx === idx;
                     const hasNote = !!item.note;
                     const row = document.createElement('div');
                     row.innerHTML = `
-                        <div class="bill-row">
+                        <div class="bill-row${pre ? ' bill-row-prepaid' : ''}">
                             <div class="bill-line">
                                 <span class="bill-name">${item.name}</span>
                                 <span class="bill-leader" aria-hidden="true"></span>
+                                ${pre ? '<span class="bill-prepaid-tag">đã trả</span>' : ''}
                                 <span class="bill-price">${item.price}k</span>
                             </div>
                             <button type="button" onclick="editItemNote(${idx})" aria-label="Ghi chú món" title="Ghi chú món" class="bill-btn ${hasNote ? 'bill-btn-on' : ''}"><i class="${hasNote ? 'fa-solid' : 'fa-regular'} fa-comment-dots"></i></button>
@@ -4956,10 +5051,16 @@
                 const total = document.createElement('div');
                 total.className = 'bill-total';
                 total.innerHTML = `<span class="bill-total-label">Tổng cộng<small>${modalItems.length} món · <span data-bill-guests>${billGuestText()}</span></small></span><span class="bill-total-val">${+sum.toFixed(2)}k</span>`;
+                if (prepaidSum > 0 && selectedStatusInModal !== 'paid') {
+                    const due = +(sum - prepaidSum).toFixed(2);
+                    total.insertAdjacentHTML('beforeend', `<div class="bill-due"><span>Đã trả trước −${+prepaidSum.toFixed(2)}k</span><b>Còn phải thu ${due}k</b></div>`);
+                }
                 container.appendChild(total);
             }
-            document.getElementById('totalAmountDisplay').innerText = `Tổng: ${(sum * 1000).toLocaleString('vi-VN')}đ`;
+            const dueSum = (prepaidSum > 0 && selectedStatusInModal !== 'paid') ? +(sum - prepaidSum).toFixed(2) : sum;
+            document.getElementById('totalAmountDisplay').innerText = (dueSum !== sum ? 'Còn thu: ' : 'Tổng: ') + (dueSum * 1000).toLocaleString('vi-VN') + 'đ';
             syncBillStamp(container);
+            updateQuickPayAmount();
 
             // Vị trí cuộn: innerHTML = '' làm danh sách co lại nên thanh cuộn tự về 0 -> phải đặt lại.
             if (scrollMode === 'top') {
@@ -5034,7 +5135,8 @@
         const SESSION_KEY = 'tys_session_v1';
         const LOCK_KEY = 'tys_login_lock_v1';
         const PASS_MIN = 6;
-        const SESSION_HOURS = 12;        // phiên đăng nhập dài 12 giờ, sau đó phải đăng nhập lại
+        const SESSION_HOURS = 24 * 30;   // ghi nhớ đăng nhập 30 ngày; mỗi lần mở app/dùng lại thì gia hạn tiếp (chỉ đăng xuất khi bấm Đăng xuất, đổi mật khẩu hoặc bị khoá)
+        const LAST_USER_KEY = 'tys_last_user_v1';   // nhớ tên đăng nhập gần nhất để điền sẵn khi phải đăng nhập lại
         const MAX_FAILS = 5;             // sai 5 lần liên tiếp thì tạm khoá 60 giây
         const LOCK_SECONDS = 60;
 
@@ -5207,6 +5309,21 @@
         }
         function clearSession() { try { localStorage.removeItem(SESSION_KEY); } catch (e) {} }
 
+        // Gia hạn phiên (sliding): dùng app càng đều thì càng không bị bắt đăng nhập lại.
+        function renewSession() {
+            try {
+                const s = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+                if (!s || !s.user || !currentUser || s.user !== currentUser.user) return;
+                const now = Date.now();
+                if (s.exp && s.exp - now > (SESSION_HOURS - 1) * 3600000) return;   // vừa gia hạn trong 1 giờ qua thì thôi, đỡ ghi liên tục
+                s.exp = now + SESSION_HOURS * 3600000;
+                localStorage.setItem(SESSION_KEY, JSON.stringify(s));
+            } catch (e) {}
+        }
+        document.addEventListener('visibilitychange', function () { if (!document.hidden) renewSession(); });
+        // Xin trình duyệt giữ dữ liệu lâu dài (tránh bị tự dọn mất phiên đăng nhập khi máy thiếu bộ nhớ)
+        try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+
         function restoreSession() {
             let s = null;
             try { s = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch (e) {}
@@ -5216,6 +5333,8 @@
             if (!acc || !acc.active) { clearSession(); return null; }
             // Chữ ký đổi khi mật khẩu đổi -> phiên cũ tự mất hiệu lực
             if (acc.hash.slice(0, 12) !== s.sig) { clearSession(); return null; }
+            // Còn hạn -> gia hạn thêm để nhân viên dùng đều không phải đăng nhập lại
+            try { s.exp = Date.now() + SESSION_HOURS * 3600000; localStorage.setItem(SESSION_KEY, JSON.stringify(s)); } catch (e) {}
             return acc;
         }
 
@@ -5319,7 +5438,9 @@ function togglePassVisibility(inputId, btn) {
             if (sub) sub.textContent = 'Đăng nhập để bắt đầu ca làm';
 
             const uEl = document.getElementById('loginUser');
-            if (uEl) uEl.value = '';
+            let lastUser = '';
+            try { lastUser = localStorage.getItem(LAST_USER_KEY) || ''; } catch (e) {}
+            if (uEl) uEl.value = lastUser;      // điền sẵn tên đăng nhập gần nhất, chỉ cần gõ mật khẩu
             const pEl = document.getElementById('loginPass');
             if (pEl) pEl.value = '';
 
@@ -5327,7 +5448,7 @@ function togglePassVisibility(inputId, btn) {
             overlay.classList.add('flex');
             clearAuthError();
             updateLoginLockUi();
-            setTimeout(function () { if (uEl) uEl.focus(); }, 120);
+            setTimeout(function () { const f = (uEl && uEl.value && pEl) ? pEl : uEl; if (f) f.focus(); }, 120);
         }
 
         function closeStaffLogin() {
@@ -5409,6 +5530,7 @@ function togglePassVisibility(inputId, btn) {
                 currentUser = acc;
                 currentStaff = acc.name;
                 saveSession(acc);
+                try { localStorage.setItem(LAST_USER_KEY, acc.user); } catch (e) {}
                 passEl.value = '';
                 staffRenderChip();
                 closeStaffLogin();
@@ -6303,6 +6425,7 @@ function togglePassVisibility(inputId, btn) {
                 parts.push('━━━━━━━━━━━━');
                 if (table.note) parts.push('📝 ' + table.note);
                 parts.push('🧾 Cả bàn: ' + nextItems.length + ' món · ' + fmtMoney(table.total));
+                { const pre = prepaidSumOf(table.items); if (pre > 0 && table.status === 'unpaid') parts.push('💵 Đã thu trước ' + fmtMoney(pre) + ' · CÒN THU ' + fmtMoney(dueOf(table))); }
                 parts.push('🕒 ' + fmtTime(Date.now()));
 
                 // hủy/sửa món = khẩn, để thu ngân chỉnh bill ngay
@@ -6799,11 +6922,18 @@ function togglePassVisibility(inputId, btn) {
             const payNow = payNowIntent;
             clearPayNowIntent();
             if (payNow) selectedStatusInModal = 'paid';
+            // Bàn ĐÃ TRẢ mà gọi thêm món: phần cũ đã thu rồi (dòng lịch sử cũ giữ nguyên), chỉ thu + ghi lịch sử phần món mới
+            const reopened = prevStatus === 'paid' && modalItems.some(i => i._new);
+            if (reopened) {
+                modalItems.forEach(i => { if (!i._new) i.prepaid = true; });
+                table.histId = null;
+            }
             table.status = selectedStatusInModal;
             table.items = modalItems.map(function (it) {
-                // Chỉ giữ dữ liệu thật của món; bỏ mọi cờ tạm dùng trong phiên sửa
+                // Chỉ giữ dữ liệu thật của món; bỏ mọi cờ tạm dùng trong phiên sửa (_new)
                 const o = { name: it.name, price: it.price };
                 if (it.note) o.note = it.note;
+                if (it.prepaid) o.prepaid = true;
                 return o;
             });
             table.total = modalItems.reduce((acc, curr) => acc + curr.price, 0);
@@ -6815,7 +6945,7 @@ function togglePassVisibility(inputId, btn) {
             if (prevStatus === 'empty' && selectedStatusInModal !== 'empty') table.startTime = Date.now();
             else if (selectedStatusInModal === 'empty') table.startTime = null;
 
-            syncHistoryOnModalSave(table, prevStatus);
+            syncHistoryOnModalSave(table, reopened ? 'unpaid' : prevStatus);
 
             saveData(); 
             if (adminEntryActive()) {
@@ -6869,6 +6999,7 @@ function togglePassVisibility(inputId, btn) {
                 .map(i => {
                     const o = { name: i.name.slice(0, 80), price: Number(i.price) };
                     if (typeof i.note === 'string' && i.note.trim()) o.note = i.note.trim().slice(0, 60);
+                    if (i.prepaid) o.prepaid = true;
                     return o;
                 });
             let total = Number(t.total);
