@@ -359,24 +359,54 @@
 
         /* ---------- FAB hổ phách (nút "toàn màn hình / hiện toàn bộ sơ đồ") —
            bóng đổ có hướng, mềm mại như ánh sáng thật, viền kim loại mảnh — không quầng sáng ---------- */
-        /* Chia khu Trái / Phải: tab mỏng dính mép màn hình, ở giữa chiều cao, hơi trong suốt để không che sơ đồ */
+        /* Chia khu Trái / Phải — kiểu kính iOS (liquid glass): nền trong mờ, blur + tăng bão hoà, viền sáng mảnh, vệt phản chiếu phía trên */
         .zone-tab {
             position: fixed; top: 50%; transform: translateY(-50%); z-index: 40;
-            width: 22px; padding: 8px 0; border: 1px solid #b9803d;
+            width: 24px; padding: 9px 0; border: 1px solid rgba(255, 255, 255, .55);
             display: flex; flex-direction: column; align-items: center; gap: 6px;
-            background: rgba(58, 42, 26, .82); color: #f0d9a8;
-            -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
-            box-shadow: 0 4px 12px -3px rgba(0, 0, 0, .45);
-            cursor: pointer; transition: background .15s ease, width .15s ease;
+            color: #4a2f12; overflow: hidden; isolation: isolate;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .55) 0%, rgba(255, 255, 255, .22) 45%, rgba(255, 255, 255, .34) 100%);
+            -webkit-backdrop-filter: blur(14px) saturate(180%); backdrop-filter: blur(14px) saturate(180%);
+            box-shadow: 0 6px 18px -4px rgba(40, 25, 8, .35),
+                        inset 0 1px 0 rgba(255, 255, 255, .85),
+                        inset 0 -1px 0 rgba(255, 255, 255, .25),
+                        inset 0 0 10px rgba(255, 255, 255, .25);
+            text-shadow: 0 1px 0 rgba(255, 255, 255, .55);
+            cursor: pointer; transition: background .2s ease, color .2s ease, width .15s ease, box-shadow .2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* vệt sáng cong phía trên giống phản chiếu trên kính */
+        .zone-tab::before {
+            content: ''; position: absolute; inset: 0 0 55% 0; z-index: -1; pointer-events: none;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0));
         }
         .zone-tab i { font-size: 11px; line-height: 1; }
         .zone-tab span { writing-mode: vertical-rl; font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; line-height: 1; }
-        .zone-tab-left { left: 0; border-left: 0; border-radius: 0 12px 12px 0; }
-        .zone-tab-right { right: 0; border-right: 0; border-radius: 12px 0 0 12px; }
-        .zone-tab:active { width: 26px; }
-        .zone-tab.fab-zone-active { background: #c9944a; color: #1d1308; border-color: #f0c987; }
-        html[data-theme="dark"] .zone-tab { background: rgba(42, 30, 19, .85); color: #e1b66e; border-color: #c9944a; }
-        html[data-theme="dark"] .zone-tab.fab-zone-active { background: #e1b66e; color: #1d1308; }
+        .zone-tab-left { left: 0; border-left: 0; border-radius: 0 14px 14px 0; }
+        .zone-tab-right { right: 0; border-right: 0; border-radius: 14px 0 0 14px; }
+        .zone-tab:active { width: 28px; background: linear-gradient(180deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, .42)); }
+        /* đang chọn: kính nhuộm màu hổ phách */
+        .zone-tab.fab-zone-active {
+            color: #3a2208; border-color: rgba(255, 236, 200, .8);
+            background: linear-gradient(180deg, rgba(240, 190, 105, .85) 0%, rgba(201, 148, 74, .6) 55%, rgba(201, 148, 74, .72) 100%);
+            box-shadow: 0 6px 18px -4px rgba(150, 95, 25, .5), inset 0 1px 0 rgba(255, 255, 255, .8), inset 0 0 12px rgba(255, 220, 150, .35);
+        }
+        html[data-theme="dark"] .zone-tab {
+            color: #f6e3bd; border-color: rgba(255, 255, 255, .22); text-shadow: 0 1px 2px rgba(0, 0, 0, .45);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .2) 0%, rgba(255, 255, 255, .07) 45%, rgba(255, 255, 255, .12) 100%);
+            box-shadow: 0 6px 18px -4px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .35), inset 0 -1px 0 rgba(255, 255, 255, .08);
+        }
+        html[data-theme="dark"] .zone-tab::before { background: linear-gradient(180deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, 0)); }
+        html[data-theme="dark"] .zone-tab:active { background: linear-gradient(180deg, rgba(255, 255, 255, .32), rgba(255, 255, 255, .16)); }
+        html[data-theme="dark"] .zone-tab.fab-zone-active {
+            color: #fff3d6; border-color: rgba(255, 225, 160, .55);
+            background: linear-gradient(180deg, rgba(225, 182, 110, .6) 0%, rgba(201, 148, 74, .42) 55%, rgba(201, 148, 74, .5) 100%);
+            box-shadow: 0 6px 18px -4px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 235, 190, .55), inset 0 0 12px rgba(225, 182, 110, .3);
+        }
+        @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+            .zone-tab { background: rgba(245, 235, 220, .92); }
+            html[data-theme="dark"] .zone-tab { background: rgba(58, 42, 26, .92); }
+        }
         .zone-tab.hidden { display: none; }
         .fab-glow {
             box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset,
