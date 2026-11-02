@@ -405,6 +405,32 @@
             .zone-tab { background: rgba(250, 232, 190, .6); }
             html[data-theme="dark"] .zone-tab { background: rgba(92, 66, 34, .6); }
         }
+        /* nền sáng: kính cần viền đôi (tối ngoài, sáng trong) + vệt phản chiếu thì mới nổi khỏi nền trắng */
+        html:not([data-theme="dark"]) .zone-tab {
+            background: linear-gradient(180deg, rgba(255, 236, 180, .50), rgba(246, 200, 110, .26) 55%, rgba(240, 185, 90, .34));
+            -webkit-backdrop-filter: blur(18px) saturate(210%) contrast(1.04);
+            backdrop-filter: blur(18px) saturate(210%) contrast(1.04);
+            border-color: rgba(255, 255, 255, .85);
+            box-shadow: 0 0 0 .75px rgba(184, 128, 36, .55),
+                        0 8px 18px -4px rgba(95, 58, 10, .32),
+                        0 1px 3px rgba(95, 58, 10, .18),
+                        inset 0 1.5px 0 rgba(255, 255, 255, .95),
+                        inset 0 0 0 1px rgba(255, 255, 255, .35),
+                        inset 0 -6px 10px -4px rgba(232, 165, 55, .35);
+        }
+        html:not([data-theme="dark"]) .zone-tab::before {
+            content: ''; position: absolute; inset: 0 0 55% 0; z-index: -1; pointer-events: none;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .65), rgba(255, 255, 255, 0));
+            border-radius: inherit;
+        }
+        html:not([data-theme="dark"]) .zone-tab:active { background: linear-gradient(180deg, rgba(255, 228, 160, .65), rgba(240, 185, 90, .45)); }
+        html:not([data-theme="dark"]) .zone-tab.fab-zone-active {
+            background: linear-gradient(180deg, rgba(252, 208, 100, .72), rgba(232, 160, 50, .55));
+            box-shadow: 0 0 0 .75px rgba(170, 110, 20, .75),
+                        0 8px 18px -4px rgba(120, 70, 10, .4),
+                        inset 0 1.5px 0 rgba(255, 255, 255, .95),
+                        inset 0 -6px 10px -4px rgba(210, 130, 30, .45);
+        }
         /* mobile: dải kéo dài theo chiều cao màn hình, mỏng ở chiều ngang */
         @media (max-width: 639px) {
             .zone-tab { width: 14px; height: clamp(84px, 26vh, 200px); }
