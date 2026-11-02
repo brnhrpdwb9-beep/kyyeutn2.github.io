@@ -446,6 +446,51 @@
             .zone-tab-right { border-radius: 10px 0 0 10px; }
             .zone-tab:active { width: 17px; }
         }
+        /* Nút "Về giữa": cùng kính Liquid Glass với 2 nút Trái / Phải */
+        .glass-fab {
+            position: relative; isolation: isolate; overflow: hidden; border: 0;
+            color: rgba(50, 50, 60, .82);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .55) 0%, rgba(255, 255, 255, .14) 38%, rgba(140, 146, 160, .16) 100%);
+            -webkit-backdrop-filter: blur(20px) saturate(210%) brightness(.97) contrast(1.06);
+            backdrop-filter: blur(20px) saturate(210%) brightness(.97) contrast(1.06);
+            box-shadow: 0 0 0 .75px rgba(40, 45, 60, .22),
+                        0 10px 22px -6px rgba(30, 35, 50, .32),
+                        0 2px 5px rgba(30, 35, 50, .14),
+                        inset 0 0 0 1px rgba(255, 255, 255, .55),
+                        inset 0 1.5px 1px rgba(255, 255, 255, .95),
+                        inset 0 -9px 12px -7px rgba(40, 45, 60, .20),
+                        inset 0 -1px 1px rgba(255, 255, 255, .6);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-fab::before {
+            content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
+            background:
+                radial-gradient(62% 26% at 50% 9%, rgba(255, 255, 255, .95), rgba(255, 255, 255, 0)),
+                radial-gradient(54% 20% at 50% 95%, rgba(255, 255, 255, .5), rgba(255, 255, 255, 0));
+        }
+        .glass-fab::after {
+            content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0) 22%, rgba(255, 255, 255, .5) 40%, rgba(255, 255, 255, 0) 56%);
+        }
+        .glass-fab i { filter: drop-shadow(0 1px 0 rgba(255, 255, 255, .6)); }
+        html[data-theme="dark"] .glass-fab {
+            color: rgba(255, 255, 255, .85);
+            background: linear-gradient(135deg, rgba(255, 255, 255, .20), rgba(255, 255, 255, .06) 55%, rgba(255, 255, 255, .12));
+            -webkit-backdrop-filter: blur(22px) saturate(170%) brightness(1.15);
+            backdrop-filter: blur(22px) saturate(170%) brightness(1.15);
+            box-shadow: 0 0 0 .5px rgba(255, 255, 255, .22),
+                        0 10px 26px -6px rgba(0, 0, 0, .55),
+                        inset 1.5px 1.5px 1.5px -1px rgba(255, 255, 255, .6),
+                        inset -1.5px -1.5px 1.5px -1px rgba(255, 255, 255, .3),
+                        inset 0 0 14px rgba(255, 255, 255, .08);
+        }
+        html[data-theme="dark"] .glass-fab::before { background: linear-gradient(180deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, 0) 50%); }
+        html[data-theme="dark"] .glass-fab::after { opacity: .3; }
+        html[data-theme="dark"] .glass-fab i { filter: none; }
+        @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+            .glass-fab { background: rgba(255, 255, 255, .75); }
+            html[data-theme="dark"] .glass-fab { background: rgba(70, 70, 75, .75); }
+        }
         .zone-tab.hidden { display: none; }
         .fab-glow {
             box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset,
@@ -1589,9 +1634,9 @@
         <i class="fa-solid fa-angles-right"></i><span>Phải</span>
     </button>
 
-    <!-- FAB "Về giữa / Hiện toàn bộ sơ đồ" — control nổi màu hổ phách ấm, đổ bóng dịu -->
+    <!-- FAB "Về giữa / Hiện toàn bộ sơ đồ" — control kính Liquid Glass, đổ bóng dịu -->
     <div id="fabCluster" class="fixed right-3 sm:right-6 bottom-[94px] sm:bottom-[104px] z-40 flex flex-col items-center gap-2.5 transition-transform duration-200 ease-out">
-        <button onclick="resetZoomAndFit()" id="fabRecenter" class="map-fab fab-glow w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-tys-500 text-ink border border-tys-600 flex items-center justify-center active:scale-90 transition" title="Về giữa - Hiện toàn bộ sơ đồ" aria-label="Về giữa">
+        <button onclick="resetZoomAndFit()" id="fabRecenter" class="map-fab glass-fab w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center active:scale-90 transition" title="Về giữa - Hiện toàn bộ sơ đồ" aria-label="Về giữa">
         <i class="fa-solid fa-expand text-base"></i>
     </button>
     </div>
