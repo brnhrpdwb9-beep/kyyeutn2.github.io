@@ -396,6 +396,14 @@
             .zone-tab { background: rgba(250, 232, 190, .55); }
             html[data-theme="dark"] .zone-tab { background: rgba(92, 66, 34, .55); }
         }
+        /* mobile: thò ra dài hơn từ mép màn hình, thấp hơn */
+        @media (max-width: 639px) {
+            .zone-tab { width: 30px; height: 30px; }
+            .zone-tab i { font-size: 11px; }
+            .zone-tab-left { border-radius: 0 15px 15px 0; }
+            .zone-tab-right { border-radius: 15px 0 0 15px; }
+            .zone-tab:active { width: 34px; }
+        }
         .zone-tab.hidden { display: none; }
         .fab-glow {
             box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset,
@@ -1393,11 +1401,11 @@
             </div>
         </div>
 
-        <!-- THANH BÁO: CHẾ ĐỘ NHẬP DỮ LIỆU (chỉ ADMIN, chỉ hiện khi đang bật) -->
+        <!-- THANH BÁO: CHẾ ĐỘ NHẬP DỮ LIỆU (mọi tài khoản đã đăng nhập, chỉ hiện khi đang bật) -->
         <div id="adminEntryBar" class="hidden items-center justify-between gap-2 px-3 py-1.5 bg-tys-500 text-ink">
             <div class="flex items-center gap-2 min-w-0">
                 <i class="fa-solid fa-pen-to-square text-xs shrink-0"></i>
-                <span class="text-[11px] font-extrabold truncate">CHẾ ĐỘ NHẬP DỮ LIỆU · ADMIN</span>
+                <span class="text-[11px] font-extrabold truncate">CHẾ ĐỘ NHẬP DỮ LIỆU</span>
                 <span class="text-[10px] font-semibold opacity-80 truncate hidden sm:inline">Không gửi thông báo · tính như thu ngân đã nhập bill</span>
             </div>
             <button type="button" onclick="setAdminEntryMode(false)" class="shrink-0 px-2.5 py-1 rounded-md bg-ink text-tys-700 text-[10px] font-extrabold active:scale-95 transition">TẮT</button>
@@ -2359,7 +2367,7 @@
         let tablesData = {};
         let activeTableId = null;
         let currentFilter = 'all';
-        // Chế độ nhập dữ liệu của ADMIN (xem khối "CHẾ ĐỘ NHẬP DỮ LIỆU" bên dưới). Luôn tắt khi mở lại trang.
+        // Chế độ nhập dữ liệu của mọi tài khoản (xem khối "CHẾ ĐỘ NHẬP DỮ LIỆU" bên dưới). Luôn tắt khi mở lại trang.
         var adminEntryOn = false;
 
         // ==================================================================================
@@ -5615,8 +5623,8 @@
                 if (!on && display) el.classList.remove(display);
             };
             show('btnAccounts', logged && isAdmin, 'flex');
-            show('btnAdminEntry', logged && isAdmin, 'flex');
-            if (adminEntryOn && !(logged && isAdmin)) adminEntryOn = false;   // đăng xuất / đổi sang nhân viên → tự tắt
+            show('btnAdminEntry', logged, 'flex');   // mọi tài khoản đã đăng nhập đều có
+            if (adminEntryOn && !logged) adminEntryOn = false;   // đăng xuất → tự tắt
             adminEntryRender();
             show('btnChangePass', logged, 'flex');
             show('btnLogout', logged, 'flex');
@@ -7091,15 +7099,15 @@ function togglePassVisibility(inputId, btn) {
         window.addEventListener('online', function () { ackPollWorker(); });
         window.addEventListener('load', function () { ackPollWorker(); });
 
-        // ================== CHẾ ĐỘ NHẬP DỮ LIỆU (CHỈ ADMIN) ==================
-        // Bật từ menu 3 chấm → "Nhập dữ liệu" (chỉ tài khoản ADMIN thấy). Khi đang bật, mọi thao tác bàn trên MÁY NÀY:
+        // ================== CHẾ ĐỘ NHẬP DỮ LIỆU (MỌI TÀI KHOẢN) ==================
+        // Bật từ menu 3 chấm → "Nhập dữ liệu" (mọi tài khoản đã đăng nhập đều thấy). Khi đang bật, mọi thao tác bàn trên MÁY NÀY:
         //   • KHÔNG gửi bất kỳ thông báo nào (Telegram) tới thu ngân: order, gọi thêm, hủy món, hủy bàn,
         //     cập nhật ghi chú/thanh toán, chuyển/gộp bàn;
         //   • được ghi nhận như thu ngân đã bấm "ĐÃ NHẬP" (nhãn ✔ Đã vào bill) → không chờ, không nhắc, không báo động;
         //   • không bị chặn bởi kiểm tra WiFi quán (vì không có dữ liệu nào rời khỏi máy).
         // KHÔNG lưu qua lần mở lại: tải lại trang / đăng xuất / đổi tài khoản là tự tắt, tránh quên tắt rồi
         // order thật của phục vụ bị nuốt mất. Khi đang bật có thanh vàng ở đầu trang.
-        function adminEntryActive() { return !!(adminEntryOn && currentUser && currentUser.admin); }
+        function adminEntryActive() { return !!(adminEntryOn && currentUser && currentStaff); }
 
         function adminEntryRender() {
             const bar = document.getElementById('adminEntryBar');
@@ -7110,8 +7118,8 @@ function togglePassVisibility(inputId, btn) {
 
         function setAdminEntryMode(on, quiet) {
             on = !!on;
-            if (on && !(currentUser && currentUser.admin)) {
-                ackToast('Chỉ ADMIN mới bật được chế độ nhập dữ liệu.', 'alert', 3500);
+            if (on && !(currentUser && currentStaff)) {
+                ackToast('Hãy đăng nhập để bật chế độ nhập dữ liệu.', 'alert', 3500);
                 return;
             }
             if (adminEntryOn === on) { adminEntryRender(); return; }
@@ -7125,7 +7133,7 @@ function togglePassVisibility(inputId, btn) {
         function adminEntryMarkDone(tableId) {
             const data = tablesData[tableId];
             if (!data || data.status === 'empty') return;
-            markBill(tableId, 'done', currentStaff || 'ADMIN', { src: 'admin', rem: 99, alm: 99, ackDone: true });
+            markBill(tableId, 'done', currentStaff || 'NV', { src: 'admin', rem: 99, alm: 99, ackDone: true });
         }
 
         function saveModalChanges() {
