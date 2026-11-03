@@ -6103,7 +6103,7 @@ function togglePassVisibility(inputId, btn) {
         }
 
         // ================== THÔNG BÁO ORDER MỚI TỚI THU NGÂN (TELEGRAM, 2 NHÓM) ==================
-        // KÊNH DUY NHẤT LÀ TELEGRAM. Không còn ntfy.
+        // KÊNH THÔNG BÁO NỘI DUNG LÀ TELEGRAM. ntfy chỉ dùng cho MỘT việc: rung chuông trên máy POS (xem ntfyBell bên dưới).
         // Lý do dùng 2 nhóm: máy POS mở sẵn Telegram ở NHÓM CHÍNH nên tin ở nhóm đó KHÔNG phát âm
         // thanh. Vì vậy mỗi thông báo được Worker gửi thêm vào NHÓM THỨ HAI (cấu hình CHAT_ID_ALERT
         // bên Worker) — nhóm đó mới kêu chuông trên máy POS.
@@ -6111,6 +6111,31 @@ function togglePassVisibility(inputId, btn) {
         const NOTIFY_WORKER_URL = 'https://falling-tooth-d67e.brnhrpdwb9.workers.dev';
         const NOTIFY_KEY = '6dd81ad0b4ba8b3d5fc58d37';   // phải trùng với biến NOTIFY_KEY trong Worker
         // Nhóm phụ (CHAT_ID_ALERT) đặt trong Worker. Thu ngân bấm nút ở nhóm nào cũng được.
+
+        // ---- ntfy: CHỈ ĐỂ KÊU CHUÔNG TRÊN MÁY POS ----
+        // Không mang nội dung order (nội dung vẫn đi Telegram). Mỗi lần có order/gọi thêm món chỉ gửi 1 tin ngắn
+        // "Có order mới" tới topic bên dưới. Máy POS cài app ntfy (hoặc mở ntfy.sh/<topic> trên trình duyệt),
+        // đăng ký ĐÚNG topic này và bật âm thanh thông báo là sẽ có chuông.
+        // Topic là chuỗi khó đoán: ai biết tên topic đều đọc/gửi được, nên đừng chia sẻ công khai.
+        const NTFY_SERVER = 'https://ntfy.sh';
+        const NTFY_TOPIC = 'tys-pos-order-k7q3m9x2d8f4';
+        const NTFY_MESSAGE = 'Có order mới';
+        var ntfyLastBellAt = 0;
+        function ntfyBell() {
+            try {
+                if (!NTFY_TOPIC) return;
+                // Bấm thêm món liên tiếp trong vài giây chỉ kêu 1 lần (Telegram cũng đã gộp các tin này).
+                if (Date.now() - ntfyLastBellAt < 4000) return;
+                ntfyLastBellAt = Date.now();
+                const send = function () {
+                    return fetch(NTFY_SERVER + '/' + encodeURIComponent(NTFY_TOPIC), {
+                        method: 'POST', body: NTFY_MESSAGE, headers: { 'Priority': 'high' }, keepalive: true
+                    });
+                };
+                // Lỗi mạng thoáng qua: thử lại đúng 1 lần sau 3 giây, không đưa vào hộp thư đi để khỏi gửi bù chuông cũ.
+                send().catch(function () { setTimeout(function () { send().catch(function () {}); }, 3000); });
+            } catch (e) { console.warn('ntfy lỗi:', e); }
+        }
 
         // So sánh 2 danh sách món, trả về những món có ở `next` mà không có ở `prev`.
         // Dùng 2 chiều: (prev → next) = món thêm; (next → prev) = món bị hủy.
@@ -6734,6 +6759,7 @@ function togglePassVisibility(inputId, btn) {
                 const added = diffAddedItems(prevItems, nextItems);
                 const removed = diffAddedItems(nextItems, prevItems);
                 if (!added.length && !removed.length) return false;
+                if (added.length) ntfyBell();   // chuông trên máy POS: chỉ khi có món MỚI thêm (hủy món thì không kêu)
 
                 const isFirst = !(prevItems && prevItems.length);
                 let icon, kind, count;
