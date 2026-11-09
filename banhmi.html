@@ -215,6 +215,11 @@ html[data-theme="dark"] .theme-toggle-thumb .thumb-moon { display: flex; color: 
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
 
+#gbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: none; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: #b91c1c; color: #fff; font-size: 13px; font-weight: 700; box-shadow: 0 -6px 24px rgba(0,0,0,.2); }
+#gbar .in { max-width: 1160px; margin: 0 auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+#gbar .msg { flex: 1; min-width: 200px; }
+#gbar button { padding: 9px 14px; border-radius: 8px; border: 0; background: #fff; color: #b91c1c; font-weight: 750; font-size: 12px; }
+#gbar button.g { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.6); }
 </style>
 <script>(function(){var t=null;try{t=localStorage.getItem('tysTheme');}catch(e){}document.documentElement.setAttribute('data-theme',t||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));})();</script>
 </head>
@@ -313,6 +318,107 @@ html[data-theme="dark"] .theme-toggle-thumb .thumb-moon { display: flex; color: 
     function hm(t) { var d = new Date(t); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
     function beep() { try { var c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain(); o.connect(g); g.connect(c.destination); o.frequency.value = 880; g.gain.value = .15; o.start(); o.stop(c.currentTime + .25); if (navigator.vibrate) navigator.vibrate([120, 60, 120]); } catch (e) {} }
     function banner(txt, ok) { var b = $('ban'); b.innerHTML = '<div class="' + (ok ? 'ok' : '') + '">' + esc(txt) + '</div>'; b.style.display = 'block'; clearTimeout(banner.t); banner.t = setTimeout(function () { b.style.display = 'none'; }, 9000); }
+
+    /* ---------- THÔNG BÁO TELEGRAM CHO THU NGÂN (giống các món nước ở index.html) ----------
+       Gửi qua Worker /notify (Worker tự nhân bản sang 2 nhóm, nhóm phụ kêu chuông trên máy POS, tin có nút bấm cho thu ngân).
+       Có hộp thư đi: mất mạng / tắt app mở lại vẫn gửi bù; lỗi thì thử lại 3s, 8s, 20s, 45s, rồi mỗi 60s.
+       Chuông ntfy trên máy POS: topic POS_BELL_TOPIC (phải trùng NTFY_TOPIC trong index.html).
+       XE_ACK_TABLE: nhãn gắn vào tin để Worker hiện nút bấm cho thu ngân. Đặt null nếu không muốn nút / nhắc tự động. */
+    var POS_BELL_TOPIC = 'tys-pos-order-k7q3m9x2d8f4', BELL_MSG = 'Có order mới', XE_ACK_TABLE = 'XE', bellAt = 0;
+    var GUARD = { retry: [3000, 8000, 20000, 45000, 60000], timeout: 12000, maxAge: 30 * 60000, pruneAge: 3 * 3600000, maxInflight: 4 };
+    var OB_KEY = SK + '_outbox', flying = {};
+    var outbox = (function () {
+        try { var a = JSON.parse(localStorage.getItem(OB_KEY) || '[]'), now = Date.now(); return (Array.isArray(a) ? a : []).filter(function (j) { return j && j.id && now - j.at < GUARD.pruneAge; }); } catch (e) { return []; }
+    })();
+    function obSave() { try { localStorage.setItem(OB_KEY, JSON.stringify(outbox.slice(-30))); } catch (e) {} }
+    function ntfyBell() {
+        try {
+            if (Date.now() - bellAt < 4000) return; bellAt = Date.now();
+            var send = function () { return fetch(NTFY + encodeURIComponent(POS_BELL_TOPIC), { method: 'POST', body: BELL_MSG, headers: { Priority: 'high' }, keepalive: true }); };
+            send().catch(function () { setTimeout(function () { send().catch(function () {}); }, 3000); });
+        } catch (e) {}
+    }
+    function jobState(j) { if (j.ok) return 'sent'; if (j.fails > 0 || j.dead || Date.now() - j.at > 8000) return 'unsent'; return 'sending'; }
+    function attempt(job) {
+        flying[job.id] = true; job.tries++;
+        var age = Date.now() - job.at;
+        var message = age > 60000 ? '⏱ GỬI TRỄ ' + Math.round(age / 60000) + ' phút (đơn lúc ' + hm(job.at) + ')\n' + job.msg : job.msg;
+        var ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+        var timer = setTimeout(function () { try { if (ctl) ctl.abort(); } catch (e) {} }, GUARD.timeout), pr;
+        try {
+            pr = fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/notify', {
+                method: 'POST', keepalive: true, signal: ctl ? ctl.signal : undefined, headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ key: NOTIFY_KEY, title: job.title, message: message, priority: job.pr, id: job.id, at: job.at, table: job.table || null, sync: !!job.sync })
+            });
+        } catch (e) { pr = Promise.reject(e); }
+        pr.then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); job.ok = true; job.sentAt = Date.now(); })
+            .catch(function () {
+                job.fails++;
+                var w = GUARD.retry[Math.min(job.tries - 1, GUARD.retry.length - 1)];
+                job.nx = Date.now() + w;
+                setTimeout(function () { try { pump(); } catch (e) {} }, w + 30);
+            })
+            .then(function () { clearTimeout(timer); delete flying[job.id]; pump(); });
+    }
+    function pump() {
+        var now = Date.now(), n = Object.keys(flying).length, q = [];
+        outbox.forEach(function (j) {
+            if (j.ok || j.dead || flying[j.id]) return;
+            if (now - j.at > GUARD.maxAge) { j.dead = true; return; }
+            if (now < (j.nx || 0)) return;
+            q.push(j);
+        });
+        q.sort(function (a, b) { return (b.pr || 4) - (a.pr || 4) || a.at - b.at; });
+        for (var i = 0; i < q.length && n < GUARD.maxInflight; i++, n++) attempt(q[i]);
+        outbox = outbox.filter(function (j) { return !j.ok && !(j.dead && j.silenced); });
+        obSave(); paintWarn();
+    }
+    function retryNow() { outbox.forEach(function (j) { if (!j.ok) { j.dead = false; j.nx = 0; j.at = Math.max(j.at, Date.now() - GUARD.maxAge + 120000); } }); pump(); }
+    function silenceAll() { outbox.forEach(function (j) { if (!j.ok) j.silenced = true; }); pump(); }
+    function paintWarn() {
+        var bad = outbox.filter(function (j) { return !j.silenced && !j.sync && jobState(j) === 'unsent'; }), bar = $('gbar');
+        if (!bar) { bar = document.createElement('div'); bar.id = 'gbar'; document.body.appendChild(bar); }
+        if (!bad.length) { bar.style.display = 'none'; return; }
+        var labels = []; bad.forEach(function (j) { if (labels.indexOf(j.label) < 0) labels.push(j.label); });
+        bar.innerHTML = '<div class="in"><div class="msg">📤 CHƯA GỬI ĐƯỢC cho thu ngân: ' + esc(labels.slice(0, 3).join(', ')) + (labels.length > 3 ? ' +' + (labels.length - 3) : '') + ' — đang thử lại. Hãy báo miệng!</div>' +
+            '<button type="button" data-resend>Gửi lại ngay</button><button type="button" class="g" data-silence>Đã báo miệng</button></div>';
+        bar.style.display = 'block';
+    }
+    /* Gửi 1 thông báo tới thu ngân. opts: id, label, table (gắn nút bấm), sync, noStaff */
+    function sendNotice(title, parts, priority, opts) {
+        opts = opts || {};
+        if (who && !opts.noStaff) parts = parts.concat(['👤 Nhân viên xe: ' + who]);
+        var job = { id: opts.id || ('j' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6)), title: title, msg: parts.join('\n'), pr: priority || 4,
+            at: Date.now(), table: opts.table || null, sync: !!opts.sync, label: opts.label || String(title).slice(0, 28), ok: false, tries: 0, fails: 0, nx: 0 };
+        outbox.push(job); obSave(); pump();
+        return job.id;
+    }
+    function groupLines(ls) { return ls.map(function (l) { return l.q + ' × ' + l.n; }); }
+    /* Khách mua tại xe -> báo thu ngân ngay (tin + nút bấm + chuông máy POS) */
+    function notifySale(x) {
+        try {
+            var n = 0; x.lines.forEach(function (l) { n += l.q; });
+            sendNotice('🥖 XE · BÁN MỚI · ' + n + ' món' + (x.pay === 'bank' ? ' · CHUYỂN KHOẢN' : ' · TIỀN MẶT'), groupLines(x.lines).concat([
+                '━━━━━━━━━━━━', '🧾 ' + n + ' món · ' + money(x.total),
+                x.pay === 'bank' ? '🏦 Chuyển khoản — kiểm tra tiền vào tài khoản' : '💵 Tiền mặt — xe giữ, nộp khi chốt xe',
+                '🕒 ' + hm(x.at)
+            ]), 4, { id: 'n' + x.id, label: 'Bán xe', table: XE_ACK_TABLE });
+            ntfyBell();
+        } catch (e) {}
+    }
+    function notifyUndo(x) {
+        try {
+            if (!x) return;
+            sendNotice('↩️ XE · HỦY ĐƠN VỪA THU · ' + money(x.total), ['❌ Hủy đơn đã báo lúc ' + hm(x.at) + ':'].concat(groupLines(x.lines), ['━━━━━━━━━━━━', '🧾 ' + money(x.total) + (x.pay === 'bank' ? ' · chuyển khoản' : ' · tiền mặt'), '🕒 ' + hm(Date.now())]),
+                5, { id: 'u' + x.id + Date.now().toString(36), label: 'Hủy đơn xe', table: XE_ACK_TABLE });
+        } catch (e) {}
+    }
+    (function () {
+        function wake() { retryNow(); }
+        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') wake(); });
+        window.addEventListener('pageshow', wake); window.addEventListener('online', wake); window.addEventListener('load', wake);
+        setInterval(function () { pump(); }, 3000);
+    })();
 
     /* ---------- Sáng / Tối (dùng chung khóa tysTheme với index.html) ---------- */
     function themeSync() { $('themeToggleBtn').setAttribute('aria-checked', document.documentElement.getAttribute('data-theme') === 'dark' ? 'true' : 'false'); }
@@ -416,11 +522,9 @@ html[data-theme="dark"] .theme-toggle-thumb .thumb-moon { display: flex; color: 
             '<button class="btn gold" data-report><i class="fa-solid fa-paper-plane"></i> Gửi báo cáo chốt xe cho thu ngân</button>';
     }
     function report() {
-        var s = stats(), msg = ['🥖 Bán tại xe: ' + money(s.sum) + ' (' + s.n + ' đơn)', '💵 Tiền mặt cần nộp: ' + money(s.cash), '🏦 Chuyển khoản: ' + money(s.bank), '🪑 Bánh mì qua bàn (đã tính trong bill quán): ' + s.oq + ' cái · ' + money(s.ov), '🕒 ' + hm(Date.now()) + (who ? ' · 👤 ' + who : '')].join('\n');
-        fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/notify', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, keepalive: true,
-            body: JSON.stringify({ key: NOTIFY_KEY, title: '🥖 CHỐT XE BÁNH MÌ', message: msg, priority: 3, id: 'xe' + Date.now().toString(36), at: Date.now(), table: null, sync: false }) })
-            .then(function (r) { if (!r.ok) throw 0; banner('Đã gửi báo cáo cho thu ngân', true); })
-            .catch(function () { banner('Chưa gửi được — chụp màn hình gửi thu ngân'); });
+        var s = stats(), msg = ['🥖 Bán tại xe: ' + money(s.sum) + ' (' + s.n + ' đơn)', '💵 Tiền mặt cần nộp: ' + money(s.cash), '🏦 Chuyển khoản: ' + money(s.bank), '🪑 Bánh mì qua bàn (đã tính trong bill quán): ' + s.oq + ' cái · ' + money(s.ov), '🕒 ' + hm(Date.now()) + (who ? ' · 👤 ' + who : '')];
+        sendNotice('🥖 CHỐT XE BÁNH MÌ', msg, 3, { label: 'Chốt xe', noStaff: true });
+        banner('Đang gửi báo cáo cho thu ngân…', true);
     }
     document.body.addEventListener('click', function (e) {
         var b = e.target.closest('button'); if (!b) return;
@@ -434,15 +538,17 @@ html[data-theme="dark"] .theme-toggle-thumb .thumb-moon { display: flex; color: 
             var ls = Object.keys(S.cart).map(function (k) { return { n: k, q: S.cart[k], p: price(k) }; }), tot = cartTotal();
             if (!ls.length) return;
             S.ledger.push({ id: 'x' + Date.now().toString(36), at: Date.now(), lines: ls, total: tot, pay: pay, by: who });
-            S.cart = {}; banner('Đã thu ' + money(tot) + (pay === 'bank' ? ' (chuyển khoản)' : ''), true); pay = 'cash';
+            notifySale(S.ledger[S.ledger.length - 1]); S.cart = {}; banner('Đã thu ' + money(tot) + (pay === 'bank' ? ' (chuyển khoản)' : ''), true); pay = 'cash';
         }
-        else if (d.undo !== undefined) { if (confirm('Hoàn tác đơn vừa thu?')) S.ledger.pop(); else return; }
+        else if (d.undo !== undefined) { if (confirm('Hoàn tác đơn vừa thu?')) notifyUndo(S.ledger.pop()); else return; }
         else if (d.st) { var p = d.st.split('|'), o = S.orders.filter(function (x) { return x.id === p[0]; })[0]; if (o) { o.st = p[1]; if (p[1] === 'done') pub(TOPIC_OUT, { t: o.t, by: o.by || '', id: o.id, dev: dev, at: Date.now() }); } }
+        else if (d.resend !== undefined) { retryNow(); return; }
+        else if (d.silence !== undefined) { silenceAll(); return; }
         else if (d.report !== undefined) { report(); return; }
         else return;
         save(); render();
     });
-    themeSync(); paintWho(); render();
+    themeSync(); paintWho(); render(); pump();
     (function clk() { var d = new Date(); $('clk').textContent = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ' · ' + ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2); setTimeout(clk, 20000); })();
     if (!who) setTimeout(askWho, 400);
 })();
