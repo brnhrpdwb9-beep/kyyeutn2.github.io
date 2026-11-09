@@ -220,6 +220,73 @@ html[data-theme="dark"] .theme-toggle-thumb .thumb-moon { display: flex; color: 
 #gbar .msg { flex: 1; min-width: 200px; }
 #gbar button { padding: 9px 14px; border-radius: 8px; border: 0; background: #fff; color: #b91c1c; font-weight: 750; font-size: 12px; }
 #gbar button.g { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.6); }
+.sec { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 11px; font-weight: 750; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.sec i { color: var(--accent); margin-right: 6px; }
+.srch { position: relative; margin-bottom: 10px; }
+.srch i { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 12px; }
+.srch input, .fld input { width: 100%; padding: 9px 12px 9px 32px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-2); color: var(--text); font: inherit; font-size: 13px; outline: none; }
+.fld { margin-top: 12px; } .fld input { padding-left: 12px; }
+.fld label { display: block; margin-bottom: 4px; font-size: 10px; font-weight: 750; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.srch input:focus, .fld input:focus { border-color: var(--accent); }
+.menu-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.mi { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-weight: 650; font-size: 13px; text-align: left; transition: border-color .15s, background .15s; }
+.mi:hover { border-color: var(--accent); background: var(--accent-soft); }
+.mi:active { transform: translateY(1px); }
+.mi .nm { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mi .nm i { color: var(--accent); margin-right: 6px; }
+.mi .pr { color: var(--accent); font-weight: 800; flex-shrink: 0; }
+.mi .qty { top: -7px; right: -7px; }
+.payrow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.paybtn { padding: 10px 8px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); font-size: 12px; font-weight: 700; color: var(--muted); }
+.paybtn.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+/* ===== Tờ bill "Món đã gọi" (giống trang order nước) ===== */
+.bill-shadow { position: relative; filter: drop-shadow(0 2px 3px rgba(60,40,15,.20)) drop-shadow(0 6px 10px rgba(60,40,15,.10)); }
+html[data-theme="dark"] .bill-shadow { filter: drop-shadow(0 0 0.6px rgba(225,182,110,.55)) drop-shadow(0 3px 6px rgba(0,0,0,.55)) drop-shadow(0 10px 18px rgba(201,148,74,.10)); }
+.bill-wrap { --bill-tooth: 14px; padding-bottom: calc(var(--bill-tooth) / 2); border-radius: 5px 5px 0 0;
+  background: radial-gradient(rgba(120,90,50,.055) 1px, transparent 1.4px) 0 0 / 5px 5px, linear-gradient(180deg, #fffdf6 0%, #fbf5e6 100%);
+  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--bill-tooth) 100%; mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--bill-tooth) 100%; }
+html[data-theme="dark"] .bill-wrap { background: radial-gradient(rgba(230,196,140,.05) 1px, transparent 1.4px) 0 0 / 5px 5px, linear-gradient(180deg, rgba(255,226,170,.07) 0, rgba(255,226,170,0) 26px), linear-gradient(180deg, #3a2d20 0%, #2c2218 100%); }
+.bill-scroll { min-height: 64px; max-height: 280px; overflow-y: auto; overscroll-behavior: contain; padding: 0 12px; color: #2b2118; font-size: 12px; scrollbar-width: thin; scrollbar-color: #d6c9ae transparent; }
+html[data-theme="dark"] .bill-scroll { color: #f1e6d2; scrollbar-color: #6b5538 transparent; }
+.bill-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 0 6px; font-size: 9.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #8a7a62; border-bottom: 1.5px dashed rgba(90,65,35,.30); }
+.bill-head b { color: #5b3f1c; font-weight: 800; }
+html[data-theme="dark"] .bill-head { color: #a8977a; border-bottom-color: rgba(230,196,140,.28); }
+html[data-theme="dark"] .bill-head b { color: #E1B66E; }
+.bill-row { display: flex; align-items: center; gap: 2px; padding: 5px 0 1px; }
+.bill-line { flex: 1; min-width: 0; display: flex; align-items: baseline; }
+.bill-name { min-width: 0; max-width: 68%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; color: #2b2118; }
+html[data-theme="dark"] .bill-name { color: #f4ead7; }
+.bill-leader { flex: 1; min-width: 14px; margin: 0 6px; border-bottom: 2px dotted rgba(90,65,35,.38); position: relative; top: -3px; }
+html[data-theme="dark"] .bill-leader { border-bottom-color: rgba(230,196,140,.34); }
+.bill-price { flex-shrink: 0; font-weight: 800; color: #7a4a14; font-variant-numeric: tabular-nums; }
+html[data-theme="dark"] .bill-price { color: #E1B66E; }
+.bill-btn { flex-shrink: 0; width: 28px; height: 28px; border-radius: 6px; border: 0; padding: 0; background: transparent; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; color: #a89a82; transition: color .15s, background-color .15s; }
+.bill-btn:hover { background: rgba(120,90,50,.10); color: #4f4a41; }
+.bill-btn.bill-btn-on { color: #b9803d; }
+.bill-btn.bill-btn-x:hover { color: #b23a22; background: rgba(178,58,34,.10); }
+html[data-theme="dark"] .bill-btn { color: #8f7e63; }
+html[data-theme="dark"] .bill-btn:hover { background: rgba(230,196,140,.12); color: #f1e6d2; }
+html[data-theme="dark"] .bill-btn.bill-btn-on { color: #E1B66E; }
+html[data-theme="dark"] .bill-btn.bill-btn-x:hover { color: #ff9b83; background: rgba(217,119,87,.16); }
+.bill-note { display: block; width: calc(100% - 8px); margin: 0 0 1px 8px; padding: 0 0 0 7px; background: none; border: 0; border-left: 2px solid rgba(185,128,61,.45); font: inherit; font-size: 10.5px; line-height: 1.25; font-style: italic; color: #8a5a1f; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html[data-theme="dark"] .bill-note { color: #d9a95c; border-left-color: rgba(225,182,110,.5); }
+.bill-note-input { display: block; width: calc(100% - 8px); margin: 2px 0 3px 8px; padding: 3px 2px; background: transparent; border: 0; border-bottom: 1.5px dashed #b9803d; border-radius: 0; font: inherit; font-size: 11.5px; font-style: italic; color: #2b2118; outline: none; }
+.bill-note-input:focus { border-bottom-style: solid; background: rgba(201,148,74,.08); }
+.bill-note-input::placeholder { color: #b3a58c; }
+html[data-theme="dark"] .bill-note-input { color: #f4ead7; border-bottom-color: #C9944A; }
+html[data-theme="dark"] .bill-note-input::placeholder { color: #7f6f56; }
+.bill-empty { text-align: center; padding: 16px 0 14px; color: #a39580; }
+.bill-empty i { display: block; font-size: 15px; margin-bottom: 5px; opacity: .55; }
+.bill-empty span { font-size: 11px; font-style: italic; }
+html[data-theme="dark"] .bill-empty { color: #8f7e63; }
+.bill-total { position: sticky; bottom: 0; z-index: 2; margin-top: 6px; padding: 7px 0 9px; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; background: linear-gradient(180deg, #fbf6e8, #fbf5e6); border-top: 3px double rgba(90,65,35,.45); }
+html[data-theme="dark"] .bill-total { background: linear-gradient(180deg, #2f241a, #2c2218); border-top-color: rgba(225,182,110,.55); }
+.bill-total-label { font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #5b3f1c; }
+.bill-total-label small { font-weight: 600; letter-spacing: .02em; text-transform: none; color: #9a8a70; margin-left: 4px; }
+html[data-theme="dark"] .bill-total-label { color: #E1B66E; }
+html[data-theme="dark"] .bill-total-label small { color: #a8977a; }
+.bill-total-val { font-size: 19px; font-weight: 800; line-height: 1; color: #1a1510; font-variant-numeric: tabular-nums; }
+html[data-theme="dark"] .bill-total-val { color: #ffe9b8; text-shadow: 0 0 12px rgba(225,182,110,.35); }
 </style>
 <script>(function(){var t=null;try{t=localStorage.getItem('tysTheme');}catch(e){}document.documentElement.setAttribute('data-theme',t||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));})();</script>
 </head>
@@ -308,8 +375,10 @@ html[data-theme="dark"] .theme-toggle-thumb .thumb-moon { display: flex; color: 
     var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
     var dev = (function () { try { var d = localStorage.getItem(SK + '_dev'); if (!d) { d = Math.random().toString(36).slice(2, 9); localStorage.setItem(SK + '_dev', d); } return d; } catch (e) { return 'x'; } })();
     var S; try { S = JSON.parse(localStorage.getItem(SK) || 'null'); } catch (e) {}
-    S = S || {}; S.ledger = S.ledger || []; S.orders = S.orders || []; S.cart = S.cart || {}; S.tab = S.tab || 'sell'; S.seenMv = S.seenMv || {};
-    var pay = 'cash', who = '';
+    S = S || {}; S.ledger = S.ledger || []; S.orders = S.orders || []; S.cart = S.cart || [];
+    if (!Array.isArray(S.cart)) { var oc = S.cart, na = []; Object.keys(oc).forEach(function (k) { for (var q = 0; q < oc[k]; q++) na.push({ n: k, p: 0, note: '' }); }); S.cart = na; }
+    S.cartNote = S.cartNote || ''; S.tab = S.tab || 'sell'; S.seenMv = S.seenMv || {};
+    var pay = 'cash', who = '', editIdx = null, searchQ = '';
     try { who = localStorage.getItem(SK + '_who') || ''; } catch (e) {}
     function save() { var lim = Date.now() - 60 * 864e5; S.ledger = S.ledger.filter(function (x) { return x.at > lim; }).slice(-3000); S.orders = S.orders.slice(-300); try { localStorage.setItem(SK, JSON.stringify(S)); } catch (e) {} }
     function price(n) { var m = XE_MENU.filter(function (x) { return x.name === n; })[0]; return m ? m.price : 0; }
@@ -323,8 +392,8 @@ html[data-theme="dark"] .theme-toggle-thumb .thumb-moon { display: flex; color: 
        Gửi qua Worker /notify (Worker tự nhân bản sang 2 nhóm, nhóm phụ kêu chuông trên máy POS, tin có nút bấm cho thu ngân).
        Có hộp thư đi: mất mạng / tắt app mở lại vẫn gửi bù; lỗi thì thử lại 3s, 8s, 20s, 45s, rồi mỗi 60s.
        Chuông ntfy trên máy POS: topic POS_BELL_TOPIC (phải trùng NTFY_TOPIC trong index.html).
-       XE_ACK_TABLE: nhãn gắn vào tin để Worker hiện nút bấm cho thu ngân. Đặt null nếu không muốn nút / nhắc tự động. */
-    var POS_BELL_TOPIC = 'tys-pos-order-k7q3m9x2d8f4', BELL_MSG = 'Có order mới', XE_ACK_TABLE = 'XE', bellAt = 0;
+       XE_ACK_TABLE: PHẢI là null. Worker và index.html chỉ hiểu số bàn thật (1..TOTAL_TABLES); gắn chữ như 'XE' sẽ lỗi "không có số bàn" khi thu ngân bấm nút. */
+    var POS_BELL_TOPIC = 'tys-pos-order-k7q3m9x2d8f4', BELL_MSG = 'Có order mới', XE_ACK_TABLE = null, bellAt = 0;
     var GUARD = { retry: [3000, 8000, 20000, 45000, 60000], timeout: 12000, maxAge: 30 * 60000, pruneAge: 3 * 3600000, maxInflight: 4 };
     var OB_KEY = SK + '_outbox', flying = {};
     var outbox = (function () {
@@ -393,16 +462,16 @@ html[data-theme="dark"] .theme-toggle-thumb .thumb-moon { display: flex; color: 
         outbox.push(job); obSave(); pump();
         return job.id;
     }
-    function groupLines(ls) { return ls.map(function (l) { return l.q + ' × ' + l.n; }); }
+    function groupLines(ls) { return ls.map(function (l) { return l.q + ' × ' + l.n + (l.note ? ' — 📝 ' + l.note : ''); }); }
     /* Khách mua tại xe -> báo thu ngân ngay (tin + nút bấm + chuông máy POS) */
     function notifySale(x) {
         try {
             var n = 0; x.lines.forEach(function (l) { n += l.q; });
             sendNotice('🥖 XE · BÁN MỚI · ' + n + ' món' + (x.pay === 'bank' ? ' · CHUYỂN KHOẢN' : ' · TIỀN MẶT'), groupLines(x.lines).concat([
-                '━━━━━━━━━━━━', '🧾 ' + n + ' món · ' + money(x.total),
+                '━━━━━━━━━━━━'].concat(x.note ? ['📝 ' + x.note] : [], ['🧾 ' + n + ' món · ' + money(x.total),
                 x.pay === 'bank' ? '🏦 Chuyển khoản — kiểm tra tiền vào tài khoản' : '💵 Tiền mặt — xe giữ, nộp khi chốt xe',
                 '🕒 ' + hm(x.at)
-            ]), 4, { id: 'n' + x.id, label: 'Bán xe', table: XE_ACK_TABLE });
+            ])), 4, { id: 'n' + x.id, label: 'Bán xe', table: XE_ACK_TABLE });
             ntfyBell();
         } catch (e) {}
     }
@@ -473,20 +542,40 @@ html[data-theme="dark"] .theme-toggle-thumb .thumb-moon { display: flex; color: 
     function render() {
         $('tabs').innerHTML = TABS.map(function (t) { return '<button class="chip' + (S.tab === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '"><i class="fa-solid ' + t[1] + '"></i> ' + t[2] + (t[0] === 'orders' && cnt() ? '<b>' + cnt() + '</b>' : '') + '</button>'; }).join('');
         $('body').innerHTML = S.tab === 'sell' ? vSell() : S.tab === 'orders' ? vOrders() : vRev();
+        if (S.tab === 'sell') { filterMenu(); var ni = $('itemNoteInput'); if (ni && S.cart[editIdx]) { ni.value = S.cart[editIdx].note || ''; ni.focus(); } }
     }
-    function cartTotal() { var t = 0; Object.keys(S.cart).forEach(function (n) { t += price(n) * S.cart[n]; }); return t; }
+    function cartTotal() { var t = 0; S.cart.forEach(function (i) { t += (i.p != null && i.p > 0 ? i.p : price(i.n)); }); return t; }
+    function fold(x) { return String(x).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd'); }
+    function filterMenu() { var q = fold(searchQ.trim()), bs = document.querySelectorAll('.mi'); for (var k = 0; k < bs.length; k++) bs[k].style.display = (!q || bs[k].dataset.q.indexOf(q) > -1) ? '' : 'none'; }
     function vSell() {
-        var h = '<div class="sell-layout"><div class="grid">' + XE_MENU.map(function (m) {
-            var q = S.cart[m.name] || 0;
-            return '<button class="item" data-add="' + esc(m.name) + '"><div class="ic"><i class="fa-solid fa-bread-slice"></i></div><b>' + esc(m.name) + '</b><span>' + money(m.price) + '</span>' + (q ? '<i class="qty" style="font-style:normal">' + q + '</i>' : '') + '</button>';
-        }).join('') + '</div>';
-        var ks = Object.keys(S.cart).filter(function (k) { return S.cart[k] > 0; });
-        h += '<div class="card">';
-        if (!ks.length) h += '<div class="mut" style="text-align:center">Chạm món để thêm vào đơn</div>';
+        var cnt = {}; S.cart.forEach(function (i) { cnt[i.n] = (cnt[i.n] || 0) + 1; });
+        var n = S.cart.length, t = cartTotal();
+        var h = '<div class="sell-layout"><div><div class="card"><div class="sec"><span><i class="fa-solid fa-bread-slice"></i>Gọi món</span></div>' +
+            '<div class="srch"><i class="fa-solid fa-magnifying-glass"></i><input id="menuSearch" type="text" placeholder="Tìm món..." autocomplete="off" value="' + esc(searchQ) + '"></div>' +
+            '<div class="menu-grid">' + XE_MENU.map(function (m) {
+                var q = cnt[m.name] || 0;
+                return '<button type="button" class="mi" data-add="' + esc(m.name) + '" data-q="' + esc(fold(m.name)) + '"><span class="nm"><i class="fa-solid fa-circle-plus"></i>' + esc(m.name) + '</span><span class="pr">' + m.price + 'k</span>' + (q ? '<i class="qty" style="font-style:normal">' + q + '</i>' : '') + '</button>';
+            }).join('') + '</div></div></div>';
+        h += '<div class="card"><div class="sec"><span><i class="fa-solid fa-receipt"></i>Món đã gọi</span><b style="color:var(--accent)">Tổng: ' + money(t) + '</b></div>' +
+            '<div class="bill-shadow"><div class="bill-wrap"><div class="bill-scroll">';
+        if (!n) h += '<div class="bill-empty"><i class="fa-solid fa-receipt"></i><span>Chưa chọn món nào</span></div>';
         else {
-            h += ks.map(function (k) { return '<div class="row" style="padding:.2rem 0"><span class="grow" style="font-weight:700;font-size:.88rem">' + esc(k) + '</span><button class="ibtn" data-dec="' + esc(k) + '"><i class="fa-solid fa-minus"></i></button><b style="width:1.5rem;text-align:center">' + S.cart[k] + '</b><button class="ibtn" data-add="' + esc(k) + '"><i class="fa-solid fa-plus"></i></button></div>'; }).join('');
-            h += '<div class="tabs"><button class="chip' + (pay === 'cash' ? ' on' : '') + '" data-pay="cash">Tiền mặt</button><button class="chip' + (pay === 'bank' ? ' on' : '') + '" data-pay="bank">Chuyển khoản</button></div>' +
-                '<button class="btn ok" data-pay="go">THU TIỀN ' + money(cartTotal()) + '</button><button class="btn ghost" data-clear>Xóa đơn</button>';
+            h += '<div class="bill-head"><b>Xe bánh mì</b><span>' + n + ' món</span></div>';
+            S.cart.forEach(function (it, i) {
+                var on = !!it.note, ed = editIdx === i, pr = it.p > 0 ? it.p : price(it.n);
+                h += '<div class="bill-row"><div class="bill-line"><span class="bill-name">' + esc(it.n) + '</span><span class="bill-leader"></span><span class="bill-price">' + pr + 'k</span></div>' +
+                    '<button type="button" class="bill-btn' + (on ? ' bill-btn-on' : '') + '" data-note="' + i + '" aria-label="Ghi chú món" title="Ghi chú món"><i class="' + (on ? 'fa-solid' : 'fa-regular') + ' fa-comment-dots"></i></button>' +
+                    '<button type="button" class="bill-btn bill-btn-x" data-rm="' + i + '" aria-label="Xóa món" title="Xóa món"><i class="fa-solid fa-xmark"></i></button></div>' +
+                    (ed ? '<input type="text" id="itemNoteInput" maxlength="60" placeholder="Ghi chú món (VD: không rau, thêm ớt)" class="bill-note-input">'
+                        : (on ? '<button type="button" class="bill-note" data-note="' + i + '">↳ ' + esc(it.note) + '</button>' : ''));
+            });
+            h += '<div class="bill-total"><span class="bill-total-label">Tổng cộng<small>' + n + ' món</small></span><span class="bill-total-val">' + t + 'k</span></div>';
+        }
+        h += '</div></div></div>';
+        if (n) {
+            h += '<div class="fld"><label>Ghi chú đơn</label><input type="text" id="cartNoteInput" maxlength="80" placeholder="Ghi chú" value="' + esc(S.cartNote) + '"></div>' +
+                '<div class="payrow"><button type="button" class="paybtn' + (pay === 'cash' ? ' on' : '') + '" data-pay="cash">💵 Tiền mặt</button><button type="button" class="paybtn' + (pay === 'bank' ? ' on' : '') + '" data-pay="bank">📱 Chuyển khoản</button></div>' +
+                '<button class="btn ok" data-pay="go">THU TIỀN ' + money(t) + '</button><button class="btn ghost" data-clear>Xóa đơn</button>';
         }
         h += '</div></div>';
         if (S.ledger.length) { var l = S.ledger[S.ledger.length - 1]; h += '<button class="btn ghost" data-undo><i class="fa-solid fa-rotate-left"></i> Hoàn tác đơn vừa thu (' + hm(l.at) + ' · ' + money(l.total) + ')</button>'; }
@@ -530,15 +619,17 @@ html[data-theme="dark"] .theme-toggle-thumb .thumb-moon { display: flex; color: 
         var b = e.target.closest('button'); if (!b) return;
         var d = b.dataset;
         if (d.tab) S.tab = d.tab;
-        else if (d.add) S.cart[d.add] = (S.cart[d.add] || 0) + 1;
-        else if (d.dec) { S.cart[d.dec] = Math.max(0, (S.cart[d.dec] || 0) - 1); if (!S.cart[d.dec]) delete S.cart[d.dec]; }
-        else if (d.clear !== undefined) S.cart = {};
+        else if (d.add) { S.cart.push({ n: d.add, p: price(d.add), note: '' }); }
+        else if (d.rm !== undefined) { S.cart.splice(+d.rm, 1); editIdx = null; }
+        else if (d.note !== undefined) { editIdx = (editIdx === +d.note) ? null : +d.note; }
+                else if (d.clear !== undefined) { S.cart = []; S.cartNote = ''; editIdx = null; }
         else if (d.pay === 'cash' || d.pay === 'bank') pay = d.pay;
         else if (d.pay === 'go') {
-            var ls = Object.keys(S.cart).map(function (k) { return { n: k, q: S.cart[k], p: price(k) }; }), tot = cartTotal();
+            var gm = {}, ls = []; S.cart.forEach(function (it) { var k = it.n + '|' + (it.note || ''); if (!gm[k]) { gm[k] = { n: it.n, q: 0, p: (it.p > 0 ? it.p : price(it.n)), note: it.note || '' }; ls.push(gm[k]); } gm[k].q++; });
+            var tot = cartTotal();
             if (!ls.length) return;
-            S.ledger.push({ id: 'x' + Date.now().toString(36), at: Date.now(), lines: ls, total: tot, pay: pay, by: who });
-            notifySale(S.ledger[S.ledger.length - 1]); S.cart = {}; banner('Đã thu ' + money(tot) + (pay === 'bank' ? ' (chuyển khoản)' : ''), true); pay = 'cash';
+            S.ledger.push({ id: 'x' + Date.now().toString(36), at: Date.now(), lines: ls, total: tot, pay: pay, by: who, note: S.cartNote || '' });
+            notifySale(S.ledger[S.ledger.length - 1]); S.cart = []; S.cartNote = ''; editIdx = null; banner('Đã thu ' + money(tot) + (pay === 'bank' ? ' (chuyển khoản)' : ''), true); pay = 'cash';
         }
         else if (d.undo !== undefined) { if (confirm('Hoàn tác đơn vừa thu?')) notifyUndo(S.ledger.pop()); else return; }
         else if (d.st) { var p = d.st.split('|'), o = S.orders.filter(function (x) { return x.id === p[0]; })[0]; if (o) { o.st = p[1]; if (p[1] === 'done') pub(TOPIC_OUT, { t: o.t, by: o.by || '', id: o.id, dev: dev, at: Date.now() }); } }
@@ -548,6 +639,14 @@ html[data-theme="dark"] .theme-toggle-thumb .thumb-moon { display: flex; color: 
         else return;
         save(); render();
     });
+    document.body.addEventListener('input', function (e) {
+        var t = e.target;
+        if (t.id === 'itemNoteInput') { var it = S.cart[editIdx]; if (it) { it.note = t.value.slice(0, 60); save(); } }
+        else if (t.id === 'cartNoteInput') { S.cartNote = t.value.slice(0, 80); save(); }
+        else if (t.id === 'menuSearch') { searchQ = t.value; filterMenu(); }
+    });
+    document.body.addEventListener('keydown', function (e) { if (e.target.id === 'itemNoteInput' && (e.key === 'Enter' || e.key === 'Escape')) { e.preventDefault(); editIdx = null; render(); } });
+    document.body.addEventListener('focusout', function (e) { if (e.target.id === 'itemNoteInput') { var i0 = editIdx; setTimeout(function () { if (editIdx === i0 && i0 != null) { editIdx = null; render(); } }, 200); } });
     themeSync(); paintWho(); render(); pump();
     (function clk() { var d = new Date(); $('clk').textContent = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ' · ' + ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2); setTimeout(clk, 20000); })();
     if (!who) setTimeout(askWho, 400);
