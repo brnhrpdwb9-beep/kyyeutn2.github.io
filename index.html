@@ -8649,9 +8649,45 @@ function togglePassVisibility(inputId, btn) {
         try { var c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain(); o.connect(g); g.connect(c.destination); o.frequency.value = 880; g.gain.value = .15; o.start(); o.stop(c.currentTime + .25); if (navigator.vibrate) navigator.vibrate([120, 60, 120]); } catch (e) {}
     }
     try {
-        var es = new EventSource(NTFY + TOPIC_OUT + '/sse?since=2m');
-        es.onmessage = function (e) { try { var m = JSON.parse(e.data); if (m.event !== 'message') return; var d = JSON.parse(m.message); if (d && d.t && d.dev !== dev) banner('🥖 Bánh mì bàn ' + d.t + ' đã xong — mang ra bàn'); } catch (x) {} };
+        var seen = {};
+        try { seen = JSON.parse(localStorage.getItem(SK + '_seenReady') || '{}'); } catch (e) {}
+        var es = new EventSource(NTFY + TOPIC_OUT + '/sse?since=10m');
+        es.onmessage = function (e) { try {
+            var m = JSON.parse(e.data); if (m.event !== 'message') return; var d = JSON.parse(m.message);
+            if (!d || !d.t || d.dev === dev || !d.at) return;
+            var key = (d.id || d.t) + '@' + d.at;
+            if (seen[key]) return;                       // chống lặp khi mở lại trang / nối lại SSE
+            seen[key] = Date.now();
+            Object.keys(seen).forEach(function (k) { if (Date.now() - seen[k] > 3600000) delete seen[k]; });
+            try { localStorage.setItem(SK + '_seenReady', JSON.stringify(seen)); } catch (e) {}
+            if (Date.now() - d.at > 5 * 60000) return;   // tin quá cũ: bỏ qua
+            var me = staff(), txt = 'Bánh mì bàn ' + d.t + ' đã xong';
+            if (!d.by || d.by === me) banner('🥖 ' + txt + ' — mang ra bàn');
+            else if (typeof ackToast === 'function') ackToast('🥖 ' + txt + ' (của ' + d.by + ')', 'info', 4000);
+        } catch (x) {} };
     } catch (e) {}
+    function hasBm(t) { try { return (t.items || []).some(function (i) { return !!bm(i.name); }); } catch (e) { return false; } }
+    var _et = window.executeTransferOrMerge;
+    if (typeof _et === 'function') window.executeTransferOrMerge = function () {
+        var src = null, tgt = null, mode = null;
+        try { src = transferSourceId; mode = transferMode; tgt = parseInt(document.getElementById('targetTableSelect').value); if (!(src && hasBm(tablesData[src]))) src = null; } catch (e) { src = null; }
+        var r = _et.apply(this, arguments);
+        try {
+            if (src && tgt && tgt !== src && (!tablesData[src] || tablesData[src].status === 'empty')) {
+                var id = 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+                if (lastQuickPayState) lastQuickPayState.xeMv = { id: id, from: src, to: tgt };
+                pub(TOPIC_IN, { mv: 1, id: id, at: Date.now(), from: src, to: tgt, mode: mode, by: staff(), dev: dev });
+            }
+        } catch (e) { console.warn('xe move lỗi', e); }
+        return r;
+    };
+    var _uq = window.undoQuickPay;
+    if (typeof _uq === 'function') window.undoQuickPay = function () {
+        var mv = null; try { mv = lastQuickPayState && lastQuickPayState.xeMv; } catch (e) {}
+        var r = _uq.apply(this, arguments);
+        try { if (mv) pub(TOPIC_IN, { mv: 1, id: 'u' + mv.id, undoOf: mv.id, at: Date.now(), from: mv.to, to: mv.from, by: staff(), dev: dev }); } catch (e) {}
+        return r;
+    };
     var _nc = window.notifyCashier;
     if (typeof _nc === 'function') window.notifyCashier = function (tableId, prev, next, table) {
         var r = _nc.apply(this, arguments);
