@@ -1646,6 +1646,10 @@
                         <span class="text-xs font-bold">Đăng xuất</span>
                     </button>
                     <div class="hidden h-px bg-tys-900 mx-1" id="menuAuthDivider"></div>
+                    <button onclick="closeMoreMenu(); openUiPrefs()" id="btnUiPrefs" role="menuitem" class="relative flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Cài đặt giao diện">
+                        <i class="fa-solid fa-sliders w-4 text-center text-sm"></i>
+                        <span class="text-xs font-bold">Cài đặt giao diện</span>
+                    </button>
                     <button onclick="closeMoreMenu(); openHandoverModal()" id="btnHandover" role="menuitem" class="relative flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Bàn giao máy">
                         <i class="fa-solid fa-right-left w-4 text-center text-sm"></i>
                         <span class="text-xs font-bold">Bàn giao máy</span>
@@ -8396,5 +8400,218 @@ function togglePassVisibility(inputId, btn) {
         tick();
     })();
     </script>
+<!-- ============================================================
+     CÀI ĐẶT GIAO DIỆN CÁ NHÂN — chỉnh cỡ chữ TỪNG PHẦN, phông chữ, độ đậm, giao diện sáng/tối, giảm hiệu ứng.
+     - Lưu theo TỪNG TÀI KHOẢN (chưa đăng nhập thì lưu theo thiết bị); tài khoản chưa chỉnh sẽ dùng bản của thiết bị.
+     - Cỡ chữ áp qua biến CSS (--fs-*) nên đổi là thấy ngay, kể cả nội dung vẽ lại về sau.
+     - Muốn thêm/bớt phần chỉnh riêng: sửa mảng SEC bên dưới (id, tên, vùng chọn CSS, câu mẫu).
+     ============================================================ -->
+<style id="uiPrefsCss">
+    html body.font-sans { font-family: var(--ui-font, 'Plus Jakarta Sans', sans-serif); }
+    html.ui-calm *, html.ui-calm *::before, html.ui-calm *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+    #uiPrefsModal input[type=range] { accent-color: #C9944A; width: 100%; height: 28px; margin: 0; }
+    html body .up-btn { width: 36px; height: 36px; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; border: 1px solid rgba(201,148,74,.45); background: transparent; color: inherit; font-size: 12px; }
+    html body .up-btn:active { transform: scale(.92); }
+    html body .up-chip { padding: 8px 12px; border-radius: 12px; border: 1px solid rgba(201,148,74,.45); background: transparent; color: inherit; font-size: 12px; font-weight: 700; line-height: 1.2; }
+    html body .up-chip:active { transform: scale(.95); }
+    html body .up-chip.on { background: #C9944A; border-color: #C9944A; color: #1a1510; }
+    #uiPrefsModal.up-peek { background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    #uiPrefsModal.up-peek #uiPrefsCard { opacity: .08; pointer-events: none; }
+</style>
+
+<div id="uiPrefsModal" role="dialog" aria-modal="true" aria-label="Cài đặt giao diện" onclick="if(event.target===this)closeUiPrefs()" class="fixed inset-0 z-[230] bg-stone-100/50 backdrop-blur-sm hidden flex items-end sm:items-center justify-center">
+    <div id="uiPrefsCard" class="w-full sm:max-w-md max-h-[90vh] flex flex-col bg-espresso-900 text-stone-200 border border-tys-800 rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden transition-opacity">
+        <div class="flex items-center gap-2 px-4 pt-4 pb-3 border-b border-tys-900 shrink-0">
+            <div class="min-w-0 flex-1">
+                <h3 class="text-sm font-extrabold text-tys-100 leading-tight"><i class="fa-solid fa-sliders mr-1.5 text-tys-400"></i>Cài đặt giao diện</h3>
+                <p id="upWho" class="text-[11px] text-stone-400 truncate mt-0.5"></p>
+            </div>
+            <button type="button" id="upPeek" class="up-btn !w-auto px-3 gap-1.5 text-[11px] font-bold" title="Giữ để xem giao diện thật phía sau"><i class="fa-solid fa-eye"></i>Giữ để xem</button>
+            <button type="button" onclick="closeUiPrefs()" class="up-btn" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="upBody" class="flex-1 overflow-y-auto p-3 space-y-3"></div>
+        <div class="flex items-center gap-2 px-3 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] border-t border-tys-900 shrink-0">
+            <button type="button" id="upResetAll" class="up-chip"><i class="fa-solid fa-rotate-left mr-1.5"></i>Đặt lại tất cả</button>
+            <button type="button" onclick="closeUiPrefs()" class="up-chip on flex-1 text-center">Xong</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    'use strict';
+    var KEY = 'tys_ui_prefs_v1:', DEVICE = '_device', R = document.documentElement;
+
+    /* Các phần có thể chỉnh cỡ chữ riêng. sel = vùng giao diện thuộc phần đó. */
+    var SEC = [
+        { id: 'head',  icon: 'fa-store',            name: 'Đầu trang & đồng hồ',          sel: '#mastheadBar,#adminEntryBar', sample: 'TYS COFFEE · 12:30:45', px: 15 },
+        { id: 'map',   icon: 'fa-diagram-project',  name: 'Sơ đồ bàn',                    sel: '#mapView,#fabCluster,.zone-tab', sample: 'Bàn 12 · 45.000đ · 18 phút', px: 13 },
+        { id: 'list',  icon: 'fa-list-ul',          name: 'Danh sách bàn',                sel: '#listView', sample: 'Bàn 7 — 2 món · 90.000đ', px: 13 },
+        { id: 'nav',   icon: 'fa-grip',             name: 'Thanh nút dưới cùng',          sel: '#mobileActionBar', sample: 'Tất cả · Cần thu · Đã trả', px: 12 },
+        { id: 'order', icon: 'fa-receipt',          name: 'Chi tiết bàn, gọi món & bill', sel: '#tableModal,#transferModal', sample: 'Cà phê sữa x2 · 50.000đ', px: 13 },
+        { id: 'hist',  icon: 'fa-flag-checkered',   name: 'Lịch sử, chốt ca & báo cáo',   sel: '#historyModal,#closeShiftModal,#reportModal,#handoverModal', sample: 'Ca sáng · Tổng thu 1.250.000đ', px: 13 },
+        { id: 'acct',  icon: 'fa-users-gear',       name: 'Tài khoản & hệ thống',         sel: '#myAccountModal,#changePassModal,#accountsModal,#installModal,#resetModal', sample: 'Tên đăng nhập · Mật khẩu', px: 13 },
+        { id: 'toast', icon: 'fa-bell',             name: 'Thông báo nổi',                sel: '.atoast', sample: 'Bàn 5 vừa gọi thêm món', px: 12 }
+    ];
+    var FONTS = {
+        'default': ['Mặc định', "'Plus Jakarta Sans',sans-serif"],
+        sys:       ['Hệ thống', "system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif"],
+        read:      ['Dễ đọc',   "Verdana,Tahoma,'Segoe UI',sans-serif"],
+        serif:     ['Có chân',  "Georgia,'Times New Roman',serif"]
+    };
+    var WTS = [[-100, 'Nhẹ'], [0, 'Chuẩn'], [100, 'Đậm'], [200, 'Rất đậm']];
+    var PRESETS = [[100, 'Mặc định'], [90, 'Gọn'], [115, 'Lớn'], [135, 'Rất lớn']];
+    var MIN = 70, MAX = 200;
+
+    var P, uid = DEVICE;
+    function who() { try { return (typeof currentUser !== 'undefined' && currentUser && currentUser.user) || DEVICE; } catch (e) { return DEVICE; } }
+    function read(k) { try { return JSON.parse(localStorage.getItem(KEY + k) || 'null'); } catch (e) { return null; } }
+    function load(u) {
+        var p = read(u) || read(DEVICE) || {};
+        return { all: +p.all || 100, s: p.s || {}, font: FONTS[p.font] ? p.font : 'default', wt: +p.wt || 0, calm: !!p.calm };
+    }
+    function save() { try { localStorage.setItem(KEY + uid, JSON.stringify(P)); } catch (e) {} }
+    function clamp(v) { return Math.max(MIN, Math.min(MAX, Math.round(v / 5) * 5)); }
+
+    /* ---------- Áp dụng: chỉ đổi biến CSS, không phải duyệt lại giao diện ---------- */
+    function apply() {
+        var a = P.all / 100;
+        R.style.setProperty('--fs-all', a);
+        SEC.forEach(function (s) { R.style.setProperty('--fs-' + s.id, (a * (P.s[s.id] || 100) / 100).toFixed(3)); });
+        R.style.setProperty('--fw-add', P.wt);
+        R.style.setProperty('--ui-font', FONTS[P.font][1]);
+        R.classList.toggle('ui-calm', P.calm);
+    }
+
+    /* ---------- Gắn cỡ chữ co giãn cho mọi phần tử có chữ (kể cả nội dung vẽ lại về sau) ---------- */
+    var T = new WeakSet(), SKIP = { SCRIPT: 1, STYLE: 1, BR: 1, LINK: 1, META: 1, IMG: 1, CANVAS: 1 };
+    function hasText(e) { for (var n = e.firstChild; n; n = n.nextSibling) if (n.nodeType === 3 && n.nodeValue.trim()) return true; return false; }
+    function secVar(e) { for (var i = 0; i < SEC.length; i++) if (e.closest(SEC[i].sel)) return '--fs-' + SEC[i].id; return '--fs-all'; }
+    function wants(e) { var t = e.tagName; return t === 'I' || t === 'INPUT' || t === 'SELECT' || t === 'TEXTAREA' || hasText(e); }
+    function scan(list) {
+        var jobs = [], seen = new Map(), i, e, c, p, pv, v;
+        for (i = 0; i < list.length; i++) {            /* pha 1: chỉ ĐỌC */
+            e = list[i];
+            if (e.nodeType !== 1 || T.has(e) || SKIP[e.tagName] || e.namespaceURI !== 'http://www.w3.org/1999/xhtml' || !wants(e) || e.closest('#uiPrefsModal')) continue;
+            c = getComputedStyle(e); v = { fs: c.fontSize, fw: c.fontWeight };
+            p = e.parentElement; T.add(e);
+            if (p && T.has(p)) {                        /* kế thừa y hệt cha đã co giãn → khỏi gắn lại (tránh nhân đôi) */
+                pv = seen.get(p) || (function (cp) { return { fs: cp.fontSize, fw: cp.fontWeight }; })(getComputedStyle(p));
+                if (pv.fs === v.fs && pv.fw === v.fw) { seen.set(e, v); continue; }
+            }
+            seen.set(e, v); jobs.push([e, v, secVar(e)]);
+        }
+        for (i = 0; i < jobs.length; i++) {             /* pha 2: chỉ GHI */
+            jobs[i][0].style.fontSize = 'calc(' + jobs[i][1].fs + ' * var(' + jobs[i][2] + '))';
+            jobs[i][0].style.fontWeight = 'clamp(300,calc(' + jobs[i][1].fw + ' + var(--fw-add)),900)';
+        }
+    }
+    new MutationObserver(function (ms) {
+        var l = [];
+        ms.forEach(function (m) {
+            var t = m.target;
+            if (t.nodeType !== 1 || t.closest('#uiPrefsModal')) return;
+            l.push(t);
+            m.addedNodes.forEach(function (n) {
+                if (n.nodeType !== 1) return;
+                l.push(n);
+                var d = n.getElementsByTagName('*');
+                for (var j = 0; j < d.length; j++) l.push(d[j]);
+            });
+        });
+        if (l.length) scan(l);
+    }).observe(document.body, { childList: true, subtree: true });
+
+    /* ---------- Giao diện hộp cài đặt ---------- */
+    function get(k) { return k === 'all' ? P.all : (P.s[k] || 100); }
+    function put(k, v) {
+        v = clamp(v);
+        if (k === 'all') P.all = v; else if (v === 100) delete P.s[k]; else P.s[k] = v;
+        save(); apply(); paint();
+    }
+    function row(k, icon, name, sample, px) {
+        return '<div class="rounded-2xl border border-tys-900 bg-espresso-950/70 p-3" data-row="' + k + '">' +
+            '<div class="flex items-center gap-2"><i class="fa-solid ' + icon + ' w-4 text-center text-sm text-tys-400"></i>' +
+            '<span class="flex-1 min-w-0 text-xs font-bold text-tys-100">' + name + '</span>' +
+            '<span data-val class="text-[11px] font-extrabold tabular-nums text-tys-400"></span>' +
+            '<button type="button" class="up-btn !w-7 !h-7" data-a="rst" data-k="' + k + '" aria-label="Đặt lại phần này"><i class="fa-solid fa-rotate-left"></i></button></div>' +
+            '<div class="flex items-center gap-1.5 mt-2"><button type="button" class="up-btn" data-a="dec" data-k="' + k + '" aria-label="Giảm"><i class="fa-solid fa-minus"></i></button>' +
+            '<input type="range" min="' + MIN + '" max="' + MAX + '" step="5" data-k="' + k + '" aria-label="' + name + '">' +
+            '<button type="button" class="up-btn" data-a="inc" data-k="' + k + '" aria-label="Tăng"><i class="fa-solid fa-plus"></i></button></div>' +
+            '<div class="mt-2 px-2.5 py-1.5 rounded-lg bg-espresso-900 border border-tys-900 truncate" style="font-size:calc(' + px + 'px * var(--fs-' + k + '));font-weight:600">' + sample + '</div></div>';
+    }
+    function title(t) { return '<div class="px-1 pt-1 text-[10px] font-extrabold uppercase tracking-widest text-stone-400">' + t + '</div>'; }
+    function chips(group, items) {
+        return '<div class="flex flex-wrap gap-1.5">' + items.map(function (it) {
+            return '<button type="button" class="up-chip" data-g="' + group + '" data-v="' + it[0] + '"' + (it[2] ? ' style="' + it[2] + '"' : '') + '>' + it[1] + '</button>';
+        }).join('') + '</div>';
+    }
+    function build() {
+        var h = title('Toàn bộ ứng dụng') + row('all', 'fa-text-height', 'Cỡ chữ chung', 'Aa — Cà phê sữa · 25.000đ', 14) +
+            '<div class="px-1">' + chips('preset', PRESETS.map(function (p) { return [p[0], p[1]]; })) + '</div>' +
+            title('Chỉnh riêng từng phần <span class="normal-case font-semibold tracking-normal">(nhân thêm với cỡ chung)</span>');
+        SEC.forEach(function (s) { h += row(s.id, s.icon, s.name, s.sample, s.px); });
+        h += title('Kiểu chữ') + '<div class="rounded-2xl border border-tys-900 bg-espresso-950/70 p-3 space-y-2.5">' +
+            '<div class="text-[11px] font-bold text-stone-400">Phông chữ</div>' +
+            chips('font', Object.keys(FONTS).map(function (k) { return [k, FONTS[k][0], 'font-family:' + FONTS[k][1]]; })) +
+            '<div class="text-[11px] font-bold text-stone-400 pt-1">Độ đậm chữ</div>' +
+            chips('wt', WTS.map(function (w) { return [w[0], w[1]]; })) + '</div>' +
+            title('Giao diện & hiệu ứng') + '<div class="rounded-2xl border border-tys-900 bg-espresso-950/70 p-3 space-y-2.5">' +
+            '<div class="text-[11px] font-bold text-stone-400">Màu giao diện</div>' +
+            chips('theme', [['light', '<i class="fa-solid fa-sun mr-1.5"></i>Sáng'], ['dark', '<i class="fa-solid fa-moon mr-1.5"></i>Tối']]) +
+            '<div class="text-[11px] font-bold text-stone-400 pt-1">Chuyển động</div>' +
+            chips('calm', [['0', 'Đầy đủ'], ['1', 'Giảm hiệu ứng (đỡ chói, đỡ rối mắt)']]) + '</div>' +
+            '<p class="px-1 pb-1 text-[11px] leading-relaxed text-stone-400">Cài đặt được lưu theo từng tài khoản trên máy này, tự áp dụng mỗi lần đăng nhập.</p>';
+        document.getElementById('upBody').innerHTML = h;
+    }
+    function paint() {
+        var body = document.getElementById('upBody'); if (!body) return;
+        body.querySelectorAll('[data-row]').forEach(function (r) {
+            var k = r.getAttribute('data-row'), v = get(k), fin = Math.round(P.all * (k === 'all' ? 100 : v) / 100);
+            r.querySelector('input').value = v;
+            r.querySelector('[data-val]').textContent = (k === 'all' || P.all === 100) ? v + '%' : v + '% → ' + fin + '%';
+        });
+        var theme = R.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        var cur = { preset: String(P.all), font: P.font, wt: String(P.wt), theme: theme, calm: P.calm ? '1' : '0' };
+        body.querySelectorAll('.up-chip[data-g]').forEach(function (b) { b.classList.toggle('on', cur[b.getAttribute('data-g')] === b.getAttribute('data-v')); });
+        uid = who();
+        document.getElementById('upWho').textContent = uid === DEVICE ? 'Đang chỉnh cho: thiết bị này (chưa đăng nhập)' : 'Đang chỉnh cho tài khoản: ' + uid;
+    }
+    document.getElementById('upBody').addEventListener('input', function (e) {
+        if (e.target.type === 'range') put(e.target.getAttribute('data-k'), +e.target.value);
+    });
+    document.getElementById('upBody').addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b) return;
+        var a = b.getAttribute('data-a'), k = b.getAttribute('data-k'), g = b.getAttribute('data-g'), v = b.getAttribute('data-v');
+        if (a === 'dec') put(k, get(k) - 5); else if (a === 'inc') put(k, get(k) + 5); else if (a === 'rst') put(k, 100);
+        else if (g === 'preset') { P.all = +v; save(); apply(); paint(); }
+        else if (g === 'font') { P.font = v; save(); apply(); paint(); }
+        else if (g === 'wt') { P.wt = +v; save(); apply(); paint(); }
+        else if (g === 'calm') { P.calm = v === '1'; save(); apply(); paint(); }
+        else if (g === 'theme') { try { applyTheme(v); } catch (x) { R.setAttribute('data-theme', v); } paint(); }
+    });
+    document.getElementById('upResetAll').addEventListener('click', function () {
+        P = { all: 100, s: {}, font: 'default', wt: 0, calm: false }; save(); apply(); paint();
+    });
+    var peek = document.getElementById('upPeek'), modal = document.getElementById('uiPrefsModal');
+    function peekOff() { modal.classList.remove('up-peek'); }
+    peek.addEventListener('pointerdown', function () { modal.classList.add('up-peek'); document.addEventListener('pointerup', peekOff, { once: true }); document.addEventListener('pointercancel', peekOff, { once: true }); });
+    peek.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+    window.openUiPrefs = function () { uid = who(); P = load(uid); apply(); build(); paint(); modal.classList.remove('hidden'); };
+    window.closeUiPrefs = function () { peekOff(); modal.classList.add('hidden'); };
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeUiPrefs(); });
+
+    /* ---------- Khởi động + đổi tài khoản thì nạp lại cài đặt của người đó ---------- */
+    P = load(uid = who()); apply();
+    scan(document.body.getElementsByTagName('*'));
+    setInterval(function () {
+        var u = who(); if (u === uid) return;
+        uid = u; P = load(u); apply();
+        if (!modal.classList.contains('hidden')) { build(); paint(); }
+    }, 1500);
+})();
+</script>
+
 </body>
 </html>
