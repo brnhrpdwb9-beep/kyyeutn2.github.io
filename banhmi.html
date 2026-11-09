@@ -222,7 +222,7 @@
     var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
     var dev = (function () { try { var d = localStorage.getItem(SK + '_dev'); if (!d) { d = Math.random().toString(36).slice(2, 9); localStorage.setItem(SK + '_dev', d); } return d; } catch (e) { return 'x'; } })();
     var S; try { S = JSON.parse(localStorage.getItem(SK) || 'null'); } catch (e) {}
-    S = S || {}; S.ledger = S.ledger || []; S.orders = S.orders || []; S.cart = S.cart || {}; S.tab = S.tab || 'sell';
+    S = S || {}; S.ledger = S.ledger || []; S.orders = S.orders || []; S.cart = S.cart || {}; S.tab = S.tab || 'sell'; S.seenMv = S.seenMv || {};
     var pay = 'cash', who = '';
     try { who = localStorage.getItem(SK + '_who') || ''; } catch (e) {}
     function save() { var lim = Date.now() - 60 * 864e5; S.ledger = S.ledger.filter(function (x) { return x.at > lim; }).slice(-3000); S.orders = S.orders.slice(-300); try { localStorage.setItem(SK, JSON.stringify(S)); } catch (e) {} }
@@ -258,11 +258,26 @@
         if (S.tab !== 'orders') banner('🥖 Đơn mới bàn ' + o.t);
         render();
     }
+    /* Chuyển/gộp bàn từ quán: đổi nhãn bàn của các đơn chưa giao; hoàn tác thì trả lại */
+    function onMove(m) {
+        if (!m || !m.id || S.seenMv[m.id]) return;
+        S.seenMv[m.id] = 1;
+        var ks = Object.keys(S.seenMv); if (ks.length > 300) ks.slice(0, ks.length - 300).forEach(function (k) { delete S.seenMv[k]; });
+        var n = 0;
+        S.orders.forEach(function (o) {
+            if (o.st === 'gone') return;
+            if (m.undoOf) { if (o.mvId === m.undoOf) { o.t = m.to; o.mvId = null; o.from = null; n++; } }
+            else if (String(o.t) === String(m.from)) { o.from = o.from || String(o.t); o.t = m.to; o.mvId = m.id; n++; }
+        });
+        save();
+        if (n) { beep(); banner(m.undoOf ? '↩️ Hoàn tác: bàn ' + m.from + ' → bàn ' + m.to : '🔀 ' + (m.mode === 'merge' ? 'Gộp' : 'Chuyển') + ' bàn ' + m.from + ' → bàn ' + m.to + ' (' + n + ' đơn)'); }
+        render();
+    }
     try {
         var es = new EventSource(NTFY + TOPIC_IN + '/sse?since=12h');
         es.onopen = function () { $('dot').className = 'dot ok'; $('st').textContent = 'Đang nhận đơn từ quán'; };
         es.onerror = function () { $('dot').className = 'dot bad'; $('st').textContent = 'Mất kết nối — đang thử lại'; };
-        es.onmessage = function (e) { try { var m = JSON.parse(e.data); if (m.event === 'message') onOrder(JSON.parse(m.message)); } catch (x) {} };
+        es.onmessage = function (e) { try { var m = JSON.parse(e.data); if (m.event === 'message') { var d = JSON.parse(m.message); if (d && d.mv) onMove(d); else onOrder(d); } } catch (x) {} };
     } catch (e) {}
 
     /* ---------- Giao diện ---------- */
@@ -296,7 +311,7 @@
         if (!os.length) return '<div class="empty">Chưa có đơn từ quán.<br>Khi phục vụ gọi bánh mì cho bàn, đơn sẽ hiện ở đây.</div>';
         return os.map(function (o) {
             var b = o.st === 'new' ? ['cook', 'Nhận làm', 'gold'] : o.st === 'cook' ? ['done', 'Xong — báo phục vụ', 'ok'] : ['gone', 'Đã giao ✓', 'ghost'];
-            return '<div class="card' + (o.st === 'new' ? ' hot' : '') + '"><div class="row"><b>BÀN ' + esc(o.t) + '</b><span class="mut grow">' + hm(o.at) + (o.by ? ' · ' + esc(o.by) : '') + '</span><span class="lab">' + (o.st === 'new' ? 'Mới' : o.st === 'cook' ? 'Đang làm' : 'Đã xong') + '</span></div>' +
+            return '<div class="card' + (o.st === 'new' ? ' hot' : '') + '"><div class="row"><b>BÀN ' + esc(o.t) + '</b>' + (o.from ? '<span class="lab">từ bàn ' + esc(o.from) + '</span>' : '') + '<span class="mut grow">' + hm(o.at) + (o.by ? ' · ' + esc(o.by) : '') + '</span><span class="lab">' + (o.st === 'new' ? 'Mới' : o.st === 'cook' ? 'Đang làm' : 'Đã xong') + '</span></div>' +
                 (o.a && o.a.length ? '<div style="margin-top:.4rem;font-weight:700;font-size:.9rem">' + lines(o.a) + '</div>' : '') +
                 (o.r && o.r.length ? '<div class="bad" style="margin-top:.4rem;font-weight:700;font-size:.9rem">❌ HỦY:<br>' + lines(o.r) + '</div>' : '') +
                 '<button class="btn ' + b[2] + '" data-st="' + o.id + '|' + b[0] + '">' + b[1] + '</button></div>';
@@ -341,7 +356,7 @@
             S.cart = {}; banner('Đã thu ' + money(tot) + (pay === 'bank' ? ' (chuyển khoản)' : ''), true); pay = 'cash';
         }
         else if (d.undo !== undefined) { if (confirm('Hoàn tác đơn vừa thu?')) S.ledger.pop(); else return; }
-        else if (d.st) { var p = d.st.split('|'), o = S.orders.filter(function (x) { return x.id === p[0]; })[0]; if (o) { o.st = p[1]; if (p[1] === 'done') pub(TOPIC_OUT, { t: o.t, dev: dev, at: Date.now() }); } }
+        else if (d.st) { var p = d.st.split('|'), o = S.orders.filter(function (x) { return x.id === p[0]; })[0]; if (o) { o.st = p[1]; if (p[1] === 'done') pub(TOPIC_OUT, { t: o.t, by: o.by || '', id: o.id, dev: dev, at: Date.now() }); } }
         else if (d.report !== undefined) { report(); return; }
         else return;
         save(); render();
