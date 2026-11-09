@@ -1646,6 +1646,10 @@
                         <span class="text-xs font-bold">Đăng xuất</span>
                     </button>
                     <div class="hidden h-px bg-tys-900 mx-1" id="menuAuthDivider"></div>
+                    <button onclick="closeMoreMenu(); location.href='banhmi.html'" id="btnXe" role="menuitem" class="relative flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Trang xe bánh mì">
+                        <i class="fa-solid fa-bread-slice w-4 text-center text-sm"></i>
+                        <span class="text-xs font-bold">Trang xe bánh mì</span>
+                    </button>
                     <button onclick="closeMoreMenu(); openUiPrefs()" id="btnUiPrefs" role="menuitem" class="relative flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition" aria-label="Cài đặt giao diện">
                         <i class="fa-solid fa-sliders w-4 text-center text-sm"></i>
                         <span class="text-xs font-bold">Cài đặt giao diện</span>
@@ -2733,6 +2737,11 @@
         // Muốn thêm/sửa/xoá món hay đổi món best seller, chỉ cần chỉnh mảng này —
         // giao diện tự cập nhật, không cần sửa chỗ khác.
         const MENU_DATA = [
+            // XE BÁNH MÌ — nhóm 'Bánh mì' (SỬA TÊN / GIÁ Ở ĐÂY cho đúng thực đơn xe; price tính nghìn đồng)
+            { name: 'Bánh Mì Thịt', price: 20, category: 'Bánh mì' },
+            { name: 'Bánh Mì Chả', price: 18, category: 'Bánh mì' },
+            { name: 'Bánh Mì Trứng Ốp La', price: 18, category: 'Bánh mì' },
+            { name: 'Bánh Mì Đặc Biệt', price: 25, category: 'Bánh mì' },
             // PHÊ PHIN
             { name: 'Cà Phê Đen Đá', price: 22, category: 'Phê phin', bestSeller: 1 },
             { name: 'Cà Phê Sữa Đá', price: 25, category: 'Phê phin', bestSeller: 2 },
@@ -8613,5 +8622,48 @@ function togglePassVisibility(inputId, btn) {
 })();
 </script>
 
+<!-- ============================================================
+     CẦU NỐI XE BÁNH MÌ (trang xe nằm ở file riêng banhmi.html)
+     - Phục vụ gọi món thuộc nhóm 'Bánh mì' → đơn tự bay sang máy xe (ntfy).
+     - Xe bấm "Xong" → máy này hiện banner "bánh mì bàn X đã xong".
+     PHẢI GIỐNG banhmi.html: TOPIC_IN, TOPIC_OUT.
+     ============================================================ -->
+<div id="xeBanner" class="fixed top-0 inset-x-0 z-[240] hidden px-3 pt-[calc(0.5rem+env(safe-area-inset-top))]"></div>
+<script>
+(function () {
+    'use strict';
+    var TOPIC_IN = 'tys-xe-order-b4n8m1q6w3', TOPIC_OUT = 'tys-xe-ready-b4n8m1q6w3', NTFY = 'https://ntfy.sh/', CAT = 'Bánh mì', SK = 'tys_xe_v1';
+    var dev = (function () { try { var d = localStorage.getItem(SK + '_dev'); if (!d) { d = Math.random().toString(36).slice(2, 9); localStorage.setItem(SK + '_dev', d); } return d; } catch (e) { return 'x'; } })();
+    function bm(n) { try { return MENU_DATA.filter(function (m) { return m.category === CAT && m.name === n; })[0]; } catch (e) { return null; } }
+    function staff() { try { return currentStaff || ''; } catch (e) { return ''; } }
+    function pub(topic, obj, tries) {
+        tries = tries || 0;
+        fetch(NTFY + topic, { method: 'POST', body: JSON.stringify(obj), headers: { Priority: '4' }, keepalive: true }).then(function (r) { if (!r.ok) throw 0; })
+            .catch(function () { if (tries < 4) setTimeout(function () { pub(topic, obj, tries + 1); }, [3000, 8000, 20000, 40000][tries]); });
+    }
+    function banner(txt) {
+        var b = document.getElementById('xeBanner');
+        b.innerHTML = '<div class="max-w-md mx-auto rounded-2xl px-4 py-3 text-sm font-extrabold shadow-xl bg-sage-400 text-white"></div>';
+        b.firstChild.textContent = txt; b.classList.remove('hidden');
+        clearTimeout(banner.t); banner.t = setTimeout(function () { b.classList.add('hidden'); }, 12000);
+        try { var c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain(); o.connect(g); g.connect(c.destination); o.frequency.value = 880; g.gain.value = .15; o.start(); o.stop(c.currentTime + .25); if (navigator.vibrate) navigator.vibrate([120, 60, 120]); } catch (e) {}
+    }
+    try {
+        var es = new EventSource(NTFY + TOPIC_OUT + '/sse?since=2m');
+        es.onmessage = function (e) { try { var m = JSON.parse(e.data); if (m.event !== 'message') return; var d = JSON.parse(m.message); if (d && d.t && d.dev !== dev) banner('🥖 Bánh mì bàn ' + d.t + ' đã xong — mang ra bàn'); } catch (x) {} };
+    } catch (e) {}
+    var _nc = window.notifyCashier;
+    if (typeof _nc === 'function') window.notifyCashier = function (tableId, prev, next, table) {
+        var r = _nc.apply(this, arguments);
+        try {
+            if (!table || table.status === 'empty') return r;
+            var grp = function (list) { var m = {}; list.forEach(function (i) { var b = bm(i.name); if (!b) return; var k = i.name + '|' + (i.note || ''); (m[k] = m[k] || { n: i.name, q: 0, p: b.price, note: i.note || '' }).q++; }); return Object.keys(m).map(function (k) { return m[k]; }); };
+            var a = grp(diffAddedItems(prev, next)), rm = grp(diffAddedItems(next, prev));
+            if (a.length || rm.length) pub(TOPIC_IN, { id: 'o' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), at: Date.now(), t: tableId, by: staff(), a: a, r: rm, dev: dev });
+        } catch (e) { console.warn('xe forward lỗi', e); }
+        return r;
+    };
+})();
+</script>
 </body>
 </html>
