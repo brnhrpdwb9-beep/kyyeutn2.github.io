@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>TYS FOOD - XE BÁNH MÌ</title>
+<meta name="theme-color" content="#ffffff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TYS FOOD">
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+    :root { --bg:#f7f5f0; --card:#fff; --tx:#1a1510; --mut:#6e685d; --bd:#e3d2b8; --gold:#C9944A; --ok:#3f7a2e; --bad:#d2492c; --ink:#1a1510; }
+    html[data-theme="dark"] { --bg:#0d0a07; --card:#1a1510; --tx:#f5f2ec; --mut:#a89a82; --bd:#4a3623; --ok:#5fbf6e; --bad:#e8836a; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; margin: 0; }
+    body { background: radial-gradient(120% 60% at 50% 0%, color-mix(in srgb, var(--gold) 10%, var(--bg)), var(--bg) 60%); background-attachment: fixed; color: var(--tx); font-family: 'Plus Jakarta Sans', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden; font-size: 1rem; }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    .hd { flex-shrink: 0; background: var(--card); box-shadow: 0 6px 24px -12px rgba(26,21,16,.35); position: relative; z-index: 5; }
+    .mast { position: relative; display: flex; align-items: center; justify-content: center; padding: calc(.7rem + env(safe-area-inset-top)) 3.2rem .7rem; border-bottom: 1px solid var(--bd); background: linear-gradient(180deg, color-mix(in srgb, var(--gold) 14%, var(--card)), var(--card)); }
+    .mast .back { position: absolute; left: .6rem; top: calc(.7rem + env(safe-area-inset-top)); }
+    .mast .whoBtn { position: absolute; right: .6rem; top: calc(.7rem + env(safe-area-inset-top)); max-width: 34%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .brand { display: flex; align-items: center; gap: .7rem; }
+    .logo { width: 3.1rem; height: 3.1rem; border-radius: .9rem; border: 1.5px solid var(--gold); background: var(--bg); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; box-shadow: 0 0 0 4px color-mix(in srgb, var(--gold) 18%, transparent), 0 8px 18px -8px rgba(201,148,74,.8); }
+    .logo img { width: 100%; height: 100%; object-fit: contain; padding: .25rem; }
+    .logo .fb { display: none; font-size: 1.3rem; color: var(--gold); }
+    .logo.nolog img { display: none; } .logo.nolog .fb { display: block; }
+    .bn { font-weight: 800; font-size: 1.35rem; letter-spacing: .14em; line-height: 1; }
+    .bn em { font-style: normal; color: var(--gold); }
+    .bs { margin-top: .3rem; font-size: .62rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: var(--mut); font-variant-numeric: tabular-nums; }
+    .tools { display: flex; align-items: center; gap: .4rem; padding: .5rem .75rem 0; }
+    .st { font-size: .7rem; font-weight: 700; color: var(--mut); }
+    .hd .tabs { padding: .5rem .75rem .6rem; margin: 0; }
+    .row { display: flex; align-items: center; gap: .5rem; }
+    .grow { flex: 1; min-width: 0; }
+    .ttl { font-weight: 800; font-size: .95rem; }
+    .mut { color: var(--mut); font-size: .72rem; }
+    .ibtn { min-width: 2.25rem; height: 2.25rem; padding: 0 .5rem; border-radius: .75rem; border: 1px solid var(--bd); background: transparent; font-size: .8rem; font-weight: 700; flex-shrink: 0; }
+    .ibtn:active, .btn:active, .item:active, .chip:active { transform: scale(.95); }
+    .dot { width: .65rem; height: .65rem; border-radius: 50%; background: #8c8579; flex-shrink: 0; }
+    .dot.ok { background: var(--ok); } .dot.bad { background: var(--bad); }
+    .tabs { display: flex; gap: .4rem; margin-top: .5rem; }
+    .chip { position: relative; flex: 1; text-align: center; padding: .55rem .4rem; border-radius: .75rem; border: 1px solid var(--bd); background: transparent; font-size: .75rem; font-weight: 700; }
+    .chip.on { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+    .hd .chip i { display: block; font-size: 1rem; margin-bottom: .2rem; }
+    .hd .chip b { position: absolute; top: -.35rem; right: .35rem; margin: 0; } .chip b { margin-left: .3rem; padding: 0 .35rem; border-radius: 99px; background: var(--bad); color: #fff; font-size: .65rem; }
+    #body { flex: 1; overflow-y: auto; padding: .75rem .75rem calc(1rem + env(safe-area-inset-bottom)); }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+    .card { box-shadow: 0 6px 16px -12px rgba(26,21,16,.4); background: var(--card); border: 1px solid var(--bd); border-radius: 1rem; padding: .75rem; margin-bottom: .5rem; }
+    .card.hot { border-color: var(--gold); border-width: 2px; }
+    .item { position: relative; text-align: left; background: var(--card); border: 1px solid var(--bd); border-radius: 1rem; padding: .75rem; }
+    .item { box-shadow: 0 6px 16px -10px rgba(26,21,16,.45); }
+    .ic { width: 2.1rem; height: 2.1rem; border-radius: .7rem; margin-bottom: .55rem; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--gold) 20%, transparent); color: var(--gold); }
+    .item b { display: block; font-size: .9rem; } .item span { display: block; margin-top: .25rem; color: var(--gold); font-size: .78rem; font-weight: 700; }
+    .qty { position: absolute; top: .5rem; right: .5rem; min-width: 1.4rem; height: 1.4rem; padding: 0 .25rem; border-radius: 99px; background: var(--gold); color: var(--ink); font-size: .75rem; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+    .btn { width: 100%; margin-top: .5rem; padding: .75rem; border: 0; border-radius: .75rem; font-weight: 800; font-size: .88rem; }
+    .btn.gold { background: var(--gold); color: var(--ink); } .btn.ok { background: var(--ok); color: #fff; }
+    .btn.ghost { background: transparent; border: 1px solid var(--bd); color: var(--mut); font-weight: 600; font-size: .75rem; padding: .5rem; }
+    .lab { font-size: .65rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: var(--mut); }
+    .big { font-size: 1.6rem; font-weight: 800; margin-top: .25rem; }
+    .sp { display: flex; justify-content: space-between; padding: .15rem 0; font-size: .85rem; }
+    .bad { color: var(--bad); } .empty { text-align: center; color: var(--mut); font-size: .78rem; margin-top: 2rem; }
+    #ban { position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding: calc(.5rem + env(safe-area-inset-top)) .75rem 0; display: none; }
+    #ban div { max-width: 28rem; margin: 0 auto; padding: .75rem 1rem; border-radius: 1rem; font-weight: 800; font-size: .88rem; box-shadow: 0 10px 30px rgba(0,0,0,.3); background: var(--gold); color: var(--ink); }
+    #ban div.ok { background: var(--ok); color: #fff; }
+        .theme-toggle-btn {
+            position: relative;
+            flex-shrink: 0;
+            width: 56px;
+            height: 30px;
+            padding: 0;
+            border: none;
+            background: none;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .theme-toggle-track {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7px;
+            background: linear-gradient(180deg, #fdf6ea 0%, #f3e6cf 100%);
+            border: 1px solid rgba(26, 21, 16, 0.10);
+            box-shadow: inset 0 1px 3px rgba(26,21,16,0.10), 0 1px 2px rgba(26,21,16,0.05);
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        .theme-toggle-track .track-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            position: relative;
+            z-index: 1;
+        }
+        .theme-toggle-track .track-icon.icon-sun { color: #C9944A; }
+        .theme-toggle-track .track-icon.icon-sun svg { width: 14px; height: 14px; }
+        .theme-toggle-track .track-icon.icon-moon { color: #b9afa0; font-size: 12px; opacity: 0.7; }
+        .theme-toggle-thumb {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 32% 28%, #fffdf7 0%, #ffe9b8 45%, #E1B66E 100%);
+            box-shadow: 0 2px 5px rgba(26,21,16,0.25), 0 0 0 1px rgba(225,182,110,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateX(0);
+            transition: transform 0.35s cubic-bezier(0.34, 1.4, 0.64, 1), background 0.4s ease, box-shadow 0.4s ease;
+        }
+        html[data-theme="dark"] .theme-toggle-track {
+            background: linear-gradient(180deg, #241c14 0%, #15110c 100%);
+            border-color: rgba(230, 196, 140, 0.16);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5), 0 0 12px 1px rgba(201,148,74,0.14);
+        }
+        html[data-theme="dark"] .theme-toggle-track .track-icon.icon-sun { color: #6e685d; opacity: 0.55; }
+        html[data-theme="dark"] .theme-toggle-track .track-icon.icon-moon { color: #E1B66E; opacity: 1; }
+        html[data-theme="dark"] .theme-toggle-thumb {
+            transform: translateX(26px);
+            background: radial-gradient(circle at 32% 28%, #3a2e20 0%, #241c14 100%);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5), 0 0 0 1px rgba(230,196,140,0.25), 0 0 10px 1px rgba(201,148,74,0.35);
+        }
+        .theme-toggle-thumb .thumb-sun { display: flex; align-items: center; justify-content: center; width: 14px; height: 14px; color: #a9793a; }
+        .theme-toggle-thumb .thumb-sun svg { width: 13px; height: 13px; }
+        .theme-toggle-thumb .thumb-moon { display: none; align-items: center; justify-content: center; width: 14px; height: 14px; color: #E1B66E; font-size: 12px; }
+        html[data-theme="dark"] .theme-toggle-thumb .thumb-sun { display: none; }
+        html[data-theme="dark"] .theme-toggle-thumb .thumb-moon { display: flex; }
+</style>
+<script>(function(){var t=null;try{t=localStorage.getItem('tysTheme');}catch(e){}document.documentElement.setAttribute('data-theme',t||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));})();</script>
+</head>
+<body>
+<!-- ============================================================
+     TRANG XE BÁNH MÌ — file RIÊNG, đặt CÙNG THƯ MỤC với index.html. Mở máy xe bằng banhmi.html (thêm vào màn hình chính cho tiện).
+     - "Bán tại xe": khách đi ngang mua bánh mì, thu tiền, ghi sổ riêng của xe (lưu trên máy xe).
+     - "Đơn từ quán": phục vụ gọi món có BÁNH MÌ trong index.html thì đơn tự bay sang đây (ntfy). Xe bấm Nhận làm → Xong
+       thì máy phục vụ hiện banner "bánh mì bàn X đã xong". Tiền các đơn này vẫn thu trong bill bàn ở quán.
+     - "Doanh thu": tổng kết riêng của xe trong ngày + gửi báo cáo chốt xe cho thu ngân (qua Worker Telegram sẵn có).
+     PHẢI GIỐNG index.html: TOPIC_IN, TOPIC_OUT, NOTIFY_WORKER_URL, NOTIFY_KEY.
+     XE_MENU: món xe bán trực tiếp (price = nghìn đồng). Món bánh mì để phục vụ gọi nằm ở MENU_DATA trong index.html — giữ tên khớp nhau.
+     ============================================================ -->
+<div class="hd">
+    <div class="mast">
+        <button class="ibtn back" onclick="location.href='index.html'" aria-label="Về quán"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="brand">
+            <div class="logo" id="logo">
+                <img src="logo.png" alt="TYS FOOD" onerror="if(this.src.endsWith('logo.png')){this.src='logo.jpg';}else if(this.src.endsWith('logo.jpg')){this.src='logo.webp';}else{this.onerror=null;document.getElementById('logo').classList.add('nolog');}">
+                <i class="fa-solid fa-bread-slice fb"></i>
+            </div>
+            <div><div class="bn">TYS <em>FOOD</em></div><div class="bs">Xe bánh mì · <span id="clk">--:--</span></div></div>
+        </div>
+        <button class="ibtn whoBtn" id="who" title="Đổi tên nhân viên"></button>
+    </div>
+    <div class="tools">
+        <span id="dot" class="dot" title="Kết nối nhận đơn từ quán"></span><span class="st grow" id="st">Đang kết nối…</span>
+        <button type="button" id="themeToggleBtn" class="theme-toggle-btn"  aria-label="Chuyển giao diện sáng / tối" role="switch" aria-checked="false">
+                        <span class="theme-toggle-track">
+                            <span class="track-icon icon-sun">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="12" cy="12" r="4.6" fill="currentColor"/>
+                                    <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                                        <line x1="12" y1="1.5" x2="12" y2="4"/>
+                                        <line x1="12" y1="20" x2="12" y2="22.5"/>
+                                        <line x1="4.22" y1="4.22" x2="5.93" y2="5.93"/>
+                                        <line x1="18.07" y1="18.07" x2="19.78" y2="19.78"/>
+                                        <line x1="1.5" y1="12" x2="4" y2="12"/>
+                                        <line x1="20" y1="12" x2="22.5" y2="12"/>
+                                        <line x1="4.22" y1="19.78" x2="5.93" y2="18.07"/>
+                                        <line x1="18.07" y1="5.93" x2="19.78" y2="4.22"/>
+                                    </g>
+                                </svg>
+                            </span>
+                            <span class="track-icon icon-moon">
+                                <i class="fa-solid fa-moon"></i>
+                            </span>
+                            <span class="theme-toggle-thumb">
+                                <span class="thumb-sun">
+                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="12" cy="12" r="4.6" fill="currentColor"/>
+                                        <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                                            <line x1="12" y1="1.5" x2="12" y2="4"/>
+                                            <line x1="12" y1="20" x2="12" y2="22.5"/>
+                                            <line x1="4.22" y1="4.22" x2="5.93" y2="5.93"/>
+                                            <line x1="18.07" y1="18.07" x2="19.78" y2="19.78"/>
+                                            <line x1="1.5" y1="12" x2="4" y2="12"/>
+                                            <line x1="20" y1="12" x2="22.5" y2="12"/>
+                                            <line x1="4.22" y1="19.78" x2="5.93" y2="18.07"/>
+                                            <line x1="18.07" y1="5.93" x2="19.78" y2="4.22"/>
+                                        </g>
+                                    </svg>
+                                </span>
+                                <span class="thumb-moon">
+                                    <i class="fa-solid fa-moon"></i>
+                                </span>
+                            </span>
+                        </span>
+                    </button>
+    </div>
+    <div class="tabs" id="tabs"></div>
+</div>
+<div id="body"></div>
+<div id="ban"></div>
+
+<script>
+(function () {
+    'use strict';
+    var TOPIC_IN = 'tys-xe-order-b4n8m1q6w3', TOPIC_OUT = 'tys-xe-ready-b4n8m1q6w3', NTFY = 'https://ntfy.sh/', SK = 'tys_xe_v1';
+    var NOTIFY_WORKER_URL = 'https://falling-tooth-d67e.brnhrpdwb9.workers.dev', NOTIFY_KEY = '6dd81ad0b4ba8b3d5fc58d37';
+    var XE_MENU = [
+        { name: 'Bánh Mì Thịt', price: 20 }, { name: 'Bánh Mì Chả', price: 18 },
+        { name: 'Bánh Mì Trứng Ốp La', price: 18 }, { name: 'Bánh Mì Đặc Biệt', price: 25 }
+    ];
+    var $ = function (id) { return document.getElementById(id); };
+    var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+    var dev = (function () { try { var d = localStorage.getItem(SK + '_dev'); if (!d) { d = Math.random().toString(36).slice(2, 9); localStorage.setItem(SK + '_dev', d); } return d; } catch (e) { return 'x'; } })();
+    var S; try { S = JSON.parse(localStorage.getItem(SK) || 'null'); } catch (e) {}
+    S = S || {}; S.ledger = S.ledger || []; S.orders = S.orders || []; S.cart = S.cart || {}; S.tab = S.tab || 'sell';
+    var pay = 'cash', who = '';
+    try { who = localStorage.getItem(SK + '_who') || ''; } catch (e) {}
+    function save() { var lim = Date.now() - 60 * 864e5; S.ledger = S.ledger.filter(function (x) { return x.at > lim; }).slice(-3000); S.orders = S.orders.slice(-300); try { localStorage.setItem(SK, JSON.stringify(S)); } catch (e) {} }
+    function price(n) { var m = XE_MENU.filter(function (x) { return x.name === n; })[0]; return m ? m.price : 0; }
+    function unit(i) { return i.p != null ? i.p : price(i.n); }
+    function money(k) { return ((k || 0) * 1000).toLocaleString('vi-VN') + 'đ'; }
+    function hm(t) { var d = new Date(t); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+    function beep() { try { var c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain(); o.connect(g); g.connect(c.destination); o.frequency.value = 880; g.gain.value = .15; o.start(); o.stop(c.currentTime + .25); if (navigator.vibrate) navigator.vibrate([120, 60, 120]); } catch (e) {} }
+    function banner(txt, ok) { var b = $('ban'); b.innerHTML = '<div class="' + (ok ? 'ok' : '') + '">' + esc(txt) + '</div>'; b.style.display = 'block'; clearTimeout(banner.t); banner.t = setTimeout(function () { b.style.display = 'none'; }, 9000); }
+
+    /* ---------- Sáng / Tối (dùng chung khóa tysTheme với index.html) ---------- */
+    function themeSync() { $('themeToggleBtn').setAttribute('aria-checked', document.documentElement.getAttribute('data-theme') === 'dark' ? 'true' : 'false'); }
+    $('themeToggleBtn').onclick = function () {
+        var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+        try { localStorage.setItem('tysTheme', t); } catch (e) {}
+        themeSync(); if (navigator.vibrate) { try { navigator.vibrate(20); } catch (e) {} }
+    };
+    /* ---------- Tên nhân viên ---------- */
+    function askWho() { var n = prompt('Tên nhân viên xe:', who || ''); if (n && n.trim()) { who = n.trim().slice(0, 30); try { localStorage.setItem(SK + '_who', who); } catch (e) {} } paintWho(); }
+    function paintWho() { $('who').innerHTML = '<i class="fa-solid fa-user" style="margin-right:.3rem"></i>' + esc(who || 'Đặt tên'); }
+    $('who').onclick = askWho;
+
+    /* ---------- Nhận đơn từ quán / báo xong qua ntfy ---------- */
+    function pub(topic, obj, tries) {
+        tries = tries || 0;
+        fetch(NTFY + topic, { method: 'POST', body: JSON.stringify(obj), headers: { Priority: '4' }, keepalive: true }).then(function (r) { if (!r.ok) throw 0; })
+            .catch(function () { if (tries < 4) setTimeout(function () { pub(topic, obj, tries + 1); }, [3000, 8000, 20000, 40000][tries]); });
+    }
+    function onOrder(o) {
+        if (!o || !o.id || S.orders.some(function (x) { return x.id === o.id; })) return;
+        o.st = 'new'; S.orders.push(o); save(); beep();
+        if (S.tab !== 'orders') banner('🥖 Đơn mới bàn ' + o.t);
+        render();
+    }
+    try {
+        var es = new EventSource(NTFY + TOPIC_IN + '/sse?since=12h');
+        es.onopen = function () { $('dot').className = 'dot ok'; $('st').textContent = 'Đang nhận đơn từ quán'; };
+        es.onerror = function () { $('dot').className = 'dot bad'; $('st').textContent = 'Mất kết nối — đang thử lại'; };
+        es.onmessage = function (e) { try { var m = JSON.parse(e.data); if (m.event === 'message') onOrder(JSON.parse(m.message)); } catch (x) {} };
+    } catch (e) {}
+
+    /* ---------- Giao diện ---------- */
+    var TABS = [['sell', 'fa-cart-shopping', 'Bán tại xe'], ['orders', 'fa-bell-concierge', 'Đơn từ quán'], ['rev', 'fa-chart-simple', 'Doanh thu']];
+    var cnt = function () { return S.orders.filter(function (o) { return o.st === 'new' || o.st === 'cook'; }).length; };
+    function render() {
+        $('tabs').innerHTML = TABS.map(function (t) { return '<button class="chip' + (S.tab === t[0] ? ' on' : '') + '" data-tab="' + t[0] + '"><i class="fa-solid ' + t[1] + '"></i> ' + t[2] + (t[0] === 'orders' && cnt() ? '<b>' + cnt() + '</b>' : '') + '</button>'; }).join('');
+        $('body').innerHTML = S.tab === 'sell' ? vSell() : S.tab === 'orders' ? vOrders() : vRev();
+    }
+    function cartTotal() { var t = 0; Object.keys(S.cart).forEach(function (n) { t += price(n) * S.cart[n]; }); return t; }
+    function vSell() {
+        var h = '<div class="grid">' + XE_MENU.map(function (m) {
+            var q = S.cart[m.name] || 0;
+            return '<button class="item" data-add="' + esc(m.name) + '"><div class="ic"><i class="fa-solid fa-bread-slice"></i></div><b>' + esc(m.name) + '</b><span>' + money(m.price) + '</span>' + (q ? '<i class="qty" style="font-style:normal">' + q + '</i>' : '') + '</button>';
+        }).join('') + '</div>';
+        var ks = Object.keys(S.cart).filter(function (k) { return S.cart[k] > 0; });
+        h += '<div class="card" style="margin-top:.75rem">';
+        if (!ks.length) h += '<div class="mut" style="text-align:center">Chạm món để thêm vào đơn</div>';
+        else {
+            h += ks.map(function (k) { return '<div class="row" style="padding:.2rem 0"><span class="grow" style="font-weight:700;font-size:.88rem">' + esc(k) + '</span><button class="ibtn" data-dec="' + esc(k) + '"><i class="fa-solid fa-minus"></i></button><b style="width:1.5rem;text-align:center">' + S.cart[k] + '</b><button class="ibtn" data-add="' + esc(k) + '"><i class="fa-solid fa-plus"></i></button></div>'; }).join('');
+            h += '<div class="tabs"><button class="chip' + (pay === 'cash' ? ' on' : '') + '" data-pay="cash">Tiền mặt</button><button class="chip' + (pay === 'bank' ? ' on' : '') + '" data-pay="bank">Chuyển khoản</button></div>' +
+                '<button class="btn ok" data-pay="go">THU TIỀN ' + money(cartTotal()) + '</button><button class="btn ghost" data-clear>Xóa đơn</button>';
+        }
+        h += '</div>';
+        if (S.ledger.length) { var l = S.ledger[S.ledger.length - 1]; h += '<button class="btn ghost" data-undo><i class="fa-solid fa-rotate-left"></i> Hoàn tác đơn vừa thu (' + hm(l.at) + ' · ' + money(l.total) + ')</button>'; }
+        return h;
+    }
+    function lines(a) { return (a || []).map(function (i) { return i.q + ' × ' + esc(i.n) + (i.note ? ' <span style="color:var(--gold);font-weight:600">— ' + esc(i.note) + '</span>' : ''); }).join('<br>'); }
+    function vOrders() {
+        var os = S.orders.filter(function (o) { return o.st !== 'gone'; }).sort(function (a, b) { return b.at - a.at; });
+        if (!os.length) return '<div class="empty">Chưa có đơn từ quán.<br>Khi phục vụ gọi bánh mì cho bàn, đơn sẽ hiện ở đây.</div>';
+        return os.map(function (o) {
+            var b = o.st === 'new' ? ['cook', 'Nhận làm', 'gold'] : o.st === 'cook' ? ['done', 'Xong — báo phục vụ', 'ok'] : ['gone', 'Đã giao ✓', 'ghost'];
+            return '<div class="card' + (o.st === 'new' ? ' hot' : '') + '"><div class="row"><b>BÀN ' + esc(o.t) + '</b><span class="mut grow">' + hm(o.at) + (o.by ? ' · ' + esc(o.by) : '') + '</span><span class="lab">' + (o.st === 'new' ? 'Mới' : o.st === 'cook' ? 'Đang làm' : 'Đã xong') + '</span></div>' +
+                (o.a && o.a.length ? '<div style="margin-top:.4rem;font-weight:700;font-size:.9rem">' + lines(o.a) + '</div>' : '') +
+                (o.r && o.r.length ? '<div class="bad" style="margin-top:.4rem;font-weight:700;font-size:.9rem">❌ HỦY:<br>' + lines(o.r) + '</div>' : '') +
+                '<button class="btn ' + b[2] + '" data-st="' + o.id + '|' + b[0] + '">' + b[1] + '</button></div>';
+        }).join('');
+    }
+    function stats() {
+        var d0 = new Date().setHours(0, 0, 0, 0), by = {}, cash = 0, bank = 0, sum = 0, n = 0, oq = 0, ov = 0;
+        var row = function (k) { return by[k] || (by[k] = { a: 0, b: 0 }); };
+        S.ledger.filter(function (x) { return x.at >= d0; }).forEach(function (x) { sum += x.total; if (x.pay === 'bank') bank += x.total; else cash += x.total; n++; x.lines.forEach(function (l) { row(l.n).a += l.q; }); });
+        S.orders.filter(function (o) { return o.at >= d0; }).forEach(function (o) {
+            (o.a || []).forEach(function (i) { row(i.n).b += i.q; oq += i.q; ov += unit(i) * i.q; });
+            (o.r || []).forEach(function (i) { row(i.n).b -= i.q; oq -= i.q; ov -= unit(i) * i.q; });
+        });
+        return { sum: sum, cash: cash, bank: bank, n: n, oq: oq, ov: ov, by: by };
+    }
+    function vRev() {
+        var s = stats();
+        return '<div class="card"><div class="lab">Hôm nay · bán tại xe</div><div class="big">' + money(s.sum) + '</div><div class="mut" style="margin-top:.25rem">' + s.n + ' đơn · Tiền mặt ' + money(s.cash) + ' · Chuyển khoản ' + money(s.bank) + '</div></div>' +
+            '<div class="card"><div class="lab">Bánh mì qua bàn (thu ở quán)</div><div class="big" style="font-size:1.15rem">' + s.oq + ' cái · ' + money(s.ov) + '</div><div class="mut">Đã nằm trong bill bàn — KHÔNG thu lại ở xe, chỉ để đối chiếu.</div></div>' +
+            '<div class="card">' + (Object.keys(s.by).map(function (k) { return '<div class="sp"><span>' + esc(k) + '</span><span class="mut">xe ' + s.by[k].a + ' · bàn ' + s.by[k].b + '</span></div>'; }).join('') || '<span class="mut">Chưa có số liệu</span>') + '</div>' +
+            '<button class="btn gold" data-report><i class="fa-solid fa-paper-plane"></i> Gửi báo cáo chốt xe cho thu ngân</button>';
+    }
+    function report() {
+        var s = stats(), msg = ['🥖 Bán tại xe: ' + money(s.sum) + ' (' + s.n + ' đơn)', '💵 Tiền mặt cần nộp: ' + money(s.cash), '🏦 Chuyển khoản: ' + money(s.bank), '🪑 Bánh mì qua bàn (đã tính trong bill quán): ' + s.oq + ' cái · ' + money(s.ov), '🕒 ' + hm(Date.now()) + (who ? ' · 👤 ' + who : '')].join('\n');
+        fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/notify', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, keepalive: true,
+            body: JSON.stringify({ key: NOTIFY_KEY, title: '🥖 CHỐT XE BÁNH MÌ', message: msg, priority: 3, id: 'xe' + Date.now().toString(36), at: Date.now(), table: null, sync: false }) })
+            .then(function (r) { if (!r.ok) throw 0; banner('Đã gửi báo cáo cho thu ngân', true); })
+            .catch(function () { banner('Chưa gửi được — chụp màn hình gửi thu ngân'); });
+    }
+    document.body.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b) return;
+        var d = b.dataset;
+        if (d.tab) S.tab = d.tab;
+        else if (d.add) S.cart[d.add] = (S.cart[d.add] || 0) + 1;
+        else if (d.dec) { S.cart[d.dec] = Math.max(0, (S.cart[d.dec] || 0) - 1); if (!S.cart[d.dec]) delete S.cart[d.dec]; }
+        else if (d.clear !== undefined) S.cart = {};
+        else if (d.pay === 'cash' || d.pay === 'bank') pay = d.pay;
+        else if (d.pay === 'go') {
+            var ls = Object.keys(S.cart).map(function (k) { return { n: k, q: S.cart[k], p: price(k) }; }), tot = cartTotal();
+            if (!ls.length) return;
+            S.ledger.push({ id: 'x' + Date.now().toString(36), at: Date.now(), lines: ls, total: tot, pay: pay, by: who });
+            S.cart = {}; banner('Đã thu ' + money(tot) + (pay === 'bank' ? ' (chuyển khoản)' : ''), true); pay = 'cash';
+        }
+        else if (d.undo !== undefined) { if (confirm('Hoàn tác đơn vừa thu?')) S.ledger.pop(); else return; }
+        else if (d.st) { var p = d.st.split('|'), o = S.orders.filter(function (x) { return x.id === p[0]; })[0]; if (o) { o.st = p[1]; if (p[1] === 'done') pub(TOPIC_OUT, { t: o.t, dev: dev, at: Date.now() }); } }
+        else if (d.report !== undefined) { report(); return; }
+        else return;
+        save(); render();
+    });
+    themeSync(); paintWho(); render();
+    (function clk() { var d = new Date(); $('clk').textContent = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ' · ' + ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2); setTimeout(clk, 20000); })();
+    if (!who) setTimeout(askWho, 400);
+})();
+</script>
+</body>
+</html>
