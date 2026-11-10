@@ -944,27 +944,7 @@
             pointer-events: none;
             transition: opacity 0.2s ease;
         }
-        .guest-badge .gb-item {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            padding: 1px 6px;
-            border-radius: 999px;
-            font-size: 9px;
-            font-weight: 800;
-            line-height: 1.3;
-            white-space: nowrap;
-            background: #f5f2ec;
-            color: #4a3623;
-            border: 1px solid #e3d2b8;
-            box-shadow: 0 2px 6px -1px rgba(26, 21, 16, 0.35);
-        }
         .guest-badge.is-dim { opacity: 0.2; }
-        html[data-theme="dark"] .guest-badge .gb-item {
-            background: #1E170D;
-            color: #E7CD9C;
-            border-color: #4a3623;
-        }
 
         /* =====================================================================
            ĐĂNG NHẬP NHÂN VIÊN — mỗi người một tài khoản riêng
@@ -1129,16 +1109,16 @@
         .tbadge, .bchip,
         .guest-badge .gb-item, html[data-theme="dark"] .guest-badge .gb-item {
             --lamp: #E1B66E;
-            display: flex; align-items: center; gap: 5px;
-            padding: 2px 9px 2px 7px; border-radius: 999px;
-            font: 700 9.5px/1.3 system-ui, -apple-system, 'Segoe UI', sans-serif;
+            display: flex; align-items: center; gap: .5em;
+            padding: .2em .9em .2em .7em; border-radius: 999px;
+            font: 700 var(--fs-badge, 10px)/1.3 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
             letter-spacing: 0; text-transform: none; white-space: nowrap;
             background: #2a1f14; color: #f6e7c8;
             border: 1px solid rgba(225, 182, 110, .34);
             box-shadow: 0 2px 6px -1px rgba(20, 12, 4, .5);
         }
         .tbadge::before, .bchip::before {                /* đèn báo */
-            content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%;
+            content: ""; flex: none; width: .65em; height: .65em; border-radius: 50%;
             background: var(--lamp);
             box-shadow: 0 0 0 2px color-mix(in srgb, var(--lamp) 26%, transparent), 0 0 7px var(--lamp);
             animation: lampBreath 2.4s ease-in-out infinite;
@@ -1163,12 +1143,12 @@
             background: #e9f5df; color: #2c6320; border-color: rgba(63, 122, 46, .42);
         }
         .tbadge-paid::before {
-            content: "✓"; width: 11px; height: 11px; border-radius: 50%; animation: none; box-shadow: none;
-            background: #3f7a2e; color: #fff; font-size: 7.5px; font-weight: 900; line-height: 11px; text-align: center;
+            content: "✓"; width: 1.4em; height: 1.4em; border-radius: 50%; animation: none; box-shadow: none;
+            background: #3f7a2e; color: #fff; font-size: .8em; font-weight: 900; line-height: 1.4em; text-align: center;
         }
 
         /* --- Số khách (góc trên-trái ô bàn) --- */
-        .guest-badge .gb-item, html[data-theme="dark"] .guest-badge .gb-item { gap: 4px; padding: 1px 8px 1px 6px; }
+        .guest-badge .gb-item, html[data-theme="dark"] .guest-badge .gb-item { gap: .4em; padding: .1em .8em .1em .6em; }
         .guest-badge .gb-item i { color: #E1B66E; }
 
         /* --- Dưới ô bàn: trạng thái thu ngân --- */
@@ -1183,7 +1163,7 @@
             --bc: #E1B66E; background: #3b2a10; color: #ffe6a8;
         }
         .bchip-claimed::before {
-            width: 8px; height: 8px; background: transparent; box-shadow: none;
+            width: .85em; height: .85em; background: transparent; box-shadow: none;
             border: 2px solid rgba(225, 182, 110, .3); border-top-color: #E1B66E;
             animation: lampSpin .8s linear infinite;
         }
@@ -1192,8 +1172,8 @@
             --bc: #5fbf6e; background: #2f7d3b; color: #fff; border-color: rgba(255, 255, 255, .35);
         }
         .bchip-done::before {
-            content: "✓"; width: 11px; height: 11px; border-radius: 50%; animation: none; box-shadow: none;
-            background: #fff; color: #2f7d3b; font-size: 7.5px; font-weight: 900; line-height: 11px; text-align: center;
+            content: "✓"; width: 1.4em; height: 1.4em; border-radius: 50%; animation: none; box-shadow: none;
+            background: #fff; color: #2f7d3b; font-size: .8em; font-weight: 900; line-height: 1.4em; text-align: center;
         }
         .bchip-done.bchip-anim { animation: bchipPop .42s cubic-bezier(.2, 1.2, .3, 1) both, bchipRing .9s ease-out .15s 1; }
         @keyframes bchipPop {
@@ -1212,6 +1192,35 @@
         html:not([data-theme="dark"]) .bchip-guard { border-color: var(--bc); }
         html:not([data-theme="dark"]) .guest-badge .gb-item { background: #fffaf0; color: #4a3320; border-color: rgba(169, 121, 58, .45); }
         html:not([data-theme="dark"]) .guest-badge .gb-item i { color: #a9793a; }
+
+
+        /* =====================================================================
+           CỠ CHỮ TRÊN SƠ ĐỒ — bù theo mức thu phóng
+           Sơ đồ rộng 2100px bị thu nhỏ (scale) nên chữ cỡ cố định trở nên không đọc được.
+           updateMapTransform() gán data-lod cho #mapWrapper:
+             near (scale >= 0.85): đủ chi tiết, chữ cỡ gốc
+             mid  (0.45 - 0.85)  : chữ to hơn, bỏ chữ "Bàn", ghi chú và đồng hồ nhỏ
+             far  (< 0.45)       : chỉ số bàn + tiền thật to, nhãn trạng thái to hơn
+           Bàn dài (ghép) dùng cùng cỡ chữ.
+           ===================================================================== */
+        #mapWrapper { --fs-num: 36px; --fs-main: 14px; --fs-sub: 12px; --fs-label: 10px; --fs-note: 10px; --fs-badge: 10px; }
+        #mapWrapper[data-lod="mid"] { --fs-num: 48px; --fs-main: 17px; --fs-sub: 14px; --fs-badge: 12px; }
+        #mapWrapper[data-lod="far"] { --fs-num: 56px; --fs-main: 22px; --fs-sub: 18px; --fs-badge: 14px; }
+        .tb-label { font-size: var(--fs-label); font-weight: 700; text-transform: uppercase; letter-spacing: .18em; line-height: 1; opacity: .7; }
+        .tb-num { font-size: var(--fs-num); font-weight: 800; line-height: 1; letter-spacing: -.025em; margin-top: 2px; }
+        .tb-row { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 4px; line-height: 1; white-space: nowrap; }
+        .tb-main { font-size: var(--fs-main); }
+        .tb-sub { font-size: var(--fs-sub); }
+        .tb-ico { font-size: .9em; }
+        .tb-note {
+            margin-top: 3px; width: 100%; padding: 0 2px; text-align: center;
+            font-size: var(--fs-note); line-height: 1.15; font-weight: 600; opacity: .85;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word;
+        }
+        #mapWrapper[data-lod="mid"] .tb-label, #mapWrapper[data-lod="far"] .tb-label,
+        #mapWrapper[data-lod="mid"] .tb-note,  #mapWrapper[data-lod="far"] .tb-note,
+        #mapWrapper[data-lod="mid"] .tb-clock, #mapWrapper[data-lod="far"] .tb-clock,
+        #mapWrapper[data-lod="far"] .tb-sub { display: none; }
 
         @media (prefers-reduced-motion: reduce) {
             .tbadge::before, .bchip::before, .tbadge-over, .bchip-done.bchip-anim { animation: none; }
@@ -2893,6 +2902,8 @@
             const cx = MAP_BASE_WIDTH / 2;
             const cy = MAP_BASE_HEIGHT / 2;
             wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${scale}) translate(${cx}px, ${cy}px) rotate(180deg) translate(${-cx}px, ${-cy}px)`;
+            const lod = scale < 0.45 ? 'far' : (scale < 0.85 ? 'mid' : 'near');
+            if (wrapper.dataset.lod !== lod) wrapper.dataset.lod = lod;
         }
 
         // Ẩn / hiện cả cụm nút nổi của sơ đồ (Về giữa + chia khu Trái / Phải) cùng lúc
@@ -3700,7 +3711,7 @@
             const total = guestPaidOf(t) + guestUnpaidOf(t);
             if (!total) return '';
             return `<div class="guest-badge${dim ? ' is-dim' : ''}">`
-                 + `<span class="gb-item" title="Tổng ${total} khách"><i class="fa-solid fa-users text-[8px]"></i>${total}</span>`
+                 + `<span class="gb-item" title="Tổng ${total} khách"><i class="fa-solid fa-users tb-ico"></i>${total}</span>`
                  + `</div>`;
         }
 
@@ -4696,7 +4707,7 @@
             let elapsedMins = 0;
             if (data.startTime && data.status !== 'empty') {
                 elapsedMins = Math.floor((Date.now() - data.startTime) / (1000 * 60));
-                timerText = `<span class="text-[11px] opacity-75 font-semibold tabular-nums"><i class="fa-regular fa-clock"></i> ${elapsedMins}p</span>`;
+                timerText = `<span class="tb-sub opacity-75 font-semibold tabular-nums"><i class="fa-regular fa-clock tb-clock"></i> ${elapsedMins}p</span>`;
             }
 
             // Đã scale các kích thước UI con bên trong nút bấm cho hợp lý.
@@ -4707,7 +4718,7 @@
                     numColor = "text-tys-50";
                     // Có nhãn số khách ở góc trên-trái -> đẩy "Quá 45p" sang góc trên-phải (căng 2 nhãn ra 2 bên); không có thì giữ giữa như cũ
                     const posClass45 = 'left-1/2 -translate-x-1/2';   // nhãn số khách đã dời sang cạnh phải ô bàn nên không còn đụng nhau
-                    badgeHTML = `<span class="absolute -top-2 ${posClass45} tbadge tbadge-over flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-triangle-exclamation text-[8px]"></i> Quá 45p</span>`;
+                    badgeHTML = `<span class="absolute -top-2 ${posClass45} tbadge tbadge-over flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-triangle-exclamation tb-ico"></i> Quá 45p</span>`;
                 } else if (elapsedMins >= 30) {
                     bgStyle = "bg-brick-900 border-brick-600 text-brick-100 pulse-unpaid";
                     numColor = "text-brick-100";
@@ -4744,7 +4755,7 @@
 
             const chipHtml = billChip(i, data);
             const dueNow = dueOf(data);
-            const totalHtml = (data.total > 0 && (dueNow > 0 || data.status !== 'unpaid')) ? `<span class="text-[13px] font-bold text-tys-400">${dueNow}k</span>` : '';
+            const totalHtml = (data.total > 0 && (dueNow > 0 || data.status !== 'unpaid')) ? `<span class="tb-main font-bold text-tys-400">${dueNow}k</span>` : '';
             const guestBadge = guestBadgeHtml(data, !isFiltered);
 
             // Dấu vân tay: đủ mọi thứ ảnh hưởng tới những gì người dùng nhìn thấy trong ô bàn.
@@ -4757,15 +4768,15 @@
             // Nút bấm từ 68px tăng thành 102px
             container.innerHTML = `
                 ${guestBadge}
-                <button type="button" ${lt ? `style="width:${longW}px;height:${longH}px"` : ''} class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} ${selectedClass} flex flex-col items-center justify-center p-1.5 transition-all">
+                <button type="button" ${lt ? `style="width:${longW}px;height:${longH}px"` : ''} class="table-btn relative w-[102px] h-[102px] rounded-2xl border border-solid ${bgStyle} ${opacityClass} ${selectedClass} flex flex-col items-center justify-center p-1 transition-all">
                     ${badgeHTML}${chipHtml}
-                    <span class="text-[10px] font-bold uppercase tracking-[0.18em] leading-none opacity-60 ${numColor}">Bàn</span>
-                    <span class="text-[36px] font-extrabold leading-none tracking-tight tabular-nums ${numColor} mt-0.5">${i}</span>
-                    ${(data.total > 0 || timerText) ? `<div class="flex items-center justify-center gap-1.5 mt-1.5 leading-none">
+                    <span class="tb-label ${numColor}">Bàn</span>
+                    <span class="tb-num tabular-nums ${numColor}">${i}</span>
+                    ${(data.total > 0 || timerText) ? `<div class="tb-row">
                         ${totalHtml}
                         ${timerText}
                     </div>` : ''}
-                    ${mapDesc ? `<div class="mt-1 w-full px-0.5 text-center text-[9px] leading-[1.15] font-semibold opacity-80 line-clamp-2 break-words">${mapDesc}</div>` : ''}
+                    ${mapDesc ? `<div class="tb-note">${mapDesc}</div>` : ''}
                 </button>
             `;
 
