@@ -1508,8 +1508,70 @@
             .bill-stamp.bill-stamp-anim, .bill-shadow.bill-thud { animation: none; }
         }
     </style>
+
+<!-- BIỂU TƯỢNG TYS -->
+<style>
+    .tys-mark { display: block; width: 31px; height: 30px; color: #B68D0A; }
+    html[data-theme="dark"] .tys-mark { color: #C9A44A; }
+    .tys-mark.tys-mark-lg { width: 54px; height: 53px; margin: 4px auto 0; }
+
+    /* Đầu trang theo tinh thần thẻ thành viên: biểu tượng + chữ ép kim đặt thẳng trên nền, đồng hồ nhỏ giãn chữ.
+       Kích thước px cố định (không dùng 100%) để Safari iPhone không làm méo. */
+    :root { --f1: #6E5216; --f2: #A9852F; --f3: #C8A24C; --f4: #9A772A; --f5: #634912; --tys-clock: #8a7a62; }
+    html[data-theme="dark"] { --f1: #9A7428; --f2: #DDBE72; --f3: #F6E2A8; --f4: #C99E48; --f5: #8C6820; --tys-clock: #a8977a; }
+    .tys-f1 { stop-color: var(--f1); } .tys-f2 { stop-color: var(--f2); } .tys-f3 { stop-color: var(--f3); }
+    .tys-f4 { stop-color: var(--f4); } .tys-f5 { stop-color: var(--f5); }
+    .tys-brand { display: flex; align-items: center; gap: 12px; }
+    .tys-brand-mark { display: block; flex: none; width: 33px; height: 32.2px; }
+    .tys-brand-txt { display: flex; flex-direction: column; align-items: flex-start; }
+    /* Chữ thương hiệu: font của trang, đậm, giãn chữ vừa, tô vàng ép kim cùng tông biểu tượng */
+    .tys-brand-word { margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 17px; line-height: 1; font-weight: 800;
+        letter-spacing: .06em; white-space: nowrap; color: var(--f2);
+        background: linear-gradient(135deg, var(--f1) 0%, var(--f2) 38%, var(--f3) 50%, var(--f4) 64%, var(--f5) 100%);
+        -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .tys-brand-clock { margin: 5px 0 0; font-size: 10px; line-height: 1; font-weight: 500; letter-spacing: .02em;
+        color: var(--tys-clock); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    /* GIAO DIỆN TỐI: phát sáng nhiều lớp, tiết chế (không kiểu neon)
+       1) viền sáng mảnh sát nét  2) quầng vàng ấm  3) ánh sáng mềm phía sau cả cụm, "thở" chậm 6 giây */
+    .tys-brand { position: relative; isolation: isolate; }
+    html[data-theme="dark"] .tys-brand::before {
+        content: ''; position: absolute; z-index: -1; left: -26px; right: -30px; top: -16px; bottom: -16px; pointer-events: none;
+        background: radial-gradient(closest-side, rgba(222, 182, 96, .20), rgba(201, 148, 74, .08) 55%, transparent 100%);
+        animation: tysBreath 6s ease-in-out infinite; }
+    html[data-theme="dark"] .tys-brand-mark {
+        filter: drop-shadow(0 0 .6px rgba(255, 233, 176, .75)) drop-shadow(0 0 5px rgba(232, 188, 98, .45)) drop-shadow(0 0 16px rgba(201, 148, 74, .30)); }
+    html[data-theme="dark"] .tys-brand-word {
+        filter: drop-shadow(0 0 .5px rgba(255, 235, 185, .55)) drop-shadow(0 0 6px rgba(226, 182, 92, .38)) drop-shadow(0 0 18px rgba(201, 148, 74, .20)); }
+    @keyframes tysBreath { 0%, 100% { opacity: .72; transform: scale(.97); } 50% { opacity: 1; transform: scale(1.03); } }
+    @media (prefers-reduced-motion: reduce) { html[data-theme="dark"] .tys-brand::before { animation: none; } }
+    @media (min-width: 640px) {
+        .tys-brand { gap: 14px; } .tys-brand-mark { width: 39px; height: 38px; }
+        .tys-brand-word { font-size: 21px; } .tys-brand-clock { font-size: 11px; margin-top: 6px; }
+    }
+</style>
 </head>
 <body class="h-screen flex flex-col font-sans antialiased overflow-hidden bg-espresso-950">
+    <!-- BIỂU TƯỢNG TYS (1 màu, theo color của thẻ chứa). Dùng: <svg class="tys-mark"><use href="#tysMark"/></svg> -->
+    <svg width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
+        <defs>
+            
+            <symbol id="tysMark" viewBox="0 0 1277.4 1245.4">
+                <path transform="matrix(1.000000 0 0 1.000000 66.720 66.720)" fill="currentColor" fill-rule="evenodd" d="M250.8,1083.0C244.5,1078.4 243.9,1054.4 243.0,778.0C242.0,478.0 242.0,478.0 168.0,476.0C84.2,473.7 75.1,471.3 51.2,444.9C17.9,407.9 20.9,388.5 63.0,369.6C180.5,316.8 322.1,230.9 418.2,154.2C460.5,120.5 464.0,116.0 464.0,96.2C464.0,40.9 520.1,8.9 570.8,35.2C581.7,40.9 594.9,44.0 608.0,44.0C634.8,44.0 637.9,51.6 619.0,71.3C608.3,82.5 604.2,90.8 602.1,106.0C599.7,123.0 596.4,128.8 579.6,145.0C560.0,164.0 560.0,164.0 560.0,237.2C560.0,337.1 550.8,369.8 509.7,415.5C481.9,446.4 424.6,475.8 391.8,475.9C371.3,476.1 372.0,465.5 372.0,784.4C372.0,1053.1 371.4,1083.4 365.7,1085.6C353.2,1090.4 257.8,1088.2 250.8,1083.0ZM584.8,1083.2C581.3,1079.7 580.0,1044.0 580.0,947.7C580.0,816.9 580.0,816.9 571.0,810.7C504.9,764.9 470.4,688.1 470.1,586.0C470.0,526.0 470.0,526.0 510.4,524.9C557.3,523.6 556.7,523.2 563.2,559.6C576.8,636.3 632.5,637.9 652.8,562.1C658.9,539.3 662.3,539.6 682.0,564.6C690.8,575.7 704.8,588.3 713.0,592.5C732.0,602.2 731.9,603.9 709.6,622.1C668.2,656.1 666.4,675.4 698.7,740.0C721.4,785.4 721.4,785.4 712.3,791.7C681.9,812.6 684.0,801.0 684.0,947.7C684.0,1074.1 683.7,1079.9 676.3,1083.9C665.2,1089.8 590.8,1089.2 584.8,1083.2ZM753.0,1083.4C746.4,1076.8 745.7,857.9 752.3,853.8C754.7,852.4 760.5,854.8 765.3,859.2C790.6,882.6 800.7,880.9 968.0,824.7C1046.3,798.3 1053.9,787.0 1038.1,719.2C1011.1,602.8 933.7,497.9 882.8,508.7C873.5,510.7 863.3,512.7 860.0,513.1C850.2,514.6 851.0,75.4 860.9,57.4C876.5,28.9 882.2,27.7 1004.6,28.9C1114.0,30.0 1114.0,30.0 1115.1,99.5C1115.9,147.3 1114.8,170.7 1111.6,174.5C1103.5,184.2 1072.4,181.4 1054.9,169.2C1005.6,135.1 954.0,180.3 980.3,234.6C988.6,251.8 988.6,251.8 963.1,288.9C939.8,322.7 908.0,391.8 908.0,408.5C908.0,430.4 941.6,444.0 995.8,444.0C1057.6,444.0 1093.3,478.6 1062.0,508.0C1040.6,528.1 1051.1,551.7 1085.1,560.2C1117.5,568.3 1116.0,558.6 1116.0,762.6C1116.0,973.5 1114.0,989.2 1080.6,1043.2C1055.4,1083.8 1046.9,1085.8 894.1,1087.2C788.5,1088.2 756.9,1087.4 753.0,1083.4ZM999.7,774.1C938.5,740.8 851.8,525.9 897.5,520.7C934.9,516.4 1027.0,675.6 1029.0,748.0C1029.9,780.5 1022.9,786.7 999.7,774.1ZM739.8,540.7C721.1,528.8 692.5,494.3 684.6,474.0C681.2,465.2 680.2,403.9 680.9,246.0C682.0,30.0 682.0,30.0 738.0,30.0C794.0,30.0 794.0,30.0 797.1,62.0C803.4,128.5 794.2,517.0 785.6,545.0C782.3,555.8 760.4,553.8 739.8,540.7ZM977.3,337.7C973.6,328.0 981.3,318.0 992.4,318.0C1007.7,318.0 1006.4,341.5 991.0,343.3C983.5,344.1 979.1,342.4 977.3,337.7ZM1002.6,224.7C987.7,208.3 999.4,180.0 1021.1,180.0C1030.6,180.0 1048.0,197.5 1048.0,207.1C1048.0,227.5 1016.3,239.8 1002.6,224.7Z"/>
+            </symbol>
+            <symbol id="tysMarkTight" viewBox="95.27 92.57 1087.46 1062.41">
+                <path transform="matrix(1.000000 0 0 1.000000 66.720 66.720)" fill="currentColor" fill-rule="evenodd" d="M250.8,1083.0C244.5,1078.4 243.9,1054.4 243.0,778.0C242.0,478.0 242.0,478.0 168.0,476.0C84.2,473.7 75.1,471.3 51.2,444.9C17.9,407.9 20.9,388.5 63.0,369.6C180.5,316.8 322.1,230.9 418.2,154.2C460.5,120.5 464.0,116.0 464.0,96.2C464.0,40.9 520.1,8.9 570.8,35.2C581.7,40.9 594.9,44.0 608.0,44.0C634.8,44.0 637.9,51.6 619.0,71.3C608.3,82.5 604.2,90.8 602.1,106.0C599.7,123.0 596.4,128.8 579.6,145.0C560.0,164.0 560.0,164.0 560.0,237.2C560.0,337.1 550.8,369.8 509.7,415.5C481.9,446.4 424.6,475.8 391.8,475.9C371.3,476.1 372.0,465.5 372.0,784.4C372.0,1053.1 371.4,1083.4 365.7,1085.6C353.2,1090.4 257.8,1088.2 250.8,1083.0ZM584.8,1083.2C581.3,1079.7 580.0,1044.0 580.0,947.7C580.0,816.9 580.0,816.9 571.0,810.7C504.9,764.9 470.4,688.1 470.1,586.0C470.0,526.0 470.0,526.0 510.4,524.9C557.3,523.6 556.7,523.2 563.2,559.6C576.8,636.3 632.5,637.9 652.8,562.1C658.9,539.3 662.3,539.6 682.0,564.6C690.8,575.7 704.8,588.3 713.0,592.5C732.0,602.2 731.9,603.9 709.6,622.1C668.2,656.1 666.4,675.4 698.7,740.0C721.4,785.4 721.4,785.4 712.3,791.7C681.9,812.6 684.0,801.0 684.0,947.7C684.0,1074.1 683.7,1079.9 676.3,1083.9C665.2,1089.8 590.8,1089.2 584.8,1083.2ZM753.0,1083.4C746.4,1076.8 745.7,857.9 752.3,853.8C754.7,852.4 760.5,854.8 765.3,859.2C790.6,882.6 800.7,880.9 968.0,824.7C1046.3,798.3 1053.9,787.0 1038.1,719.2C1011.1,602.8 933.7,497.9 882.8,508.7C873.5,510.7 863.3,512.7 860.0,513.1C850.2,514.6 851.0,75.4 860.9,57.4C876.5,28.9 882.2,27.7 1004.6,28.9C1114.0,30.0 1114.0,30.0 1115.1,99.5C1115.9,147.3 1114.8,170.7 1111.6,174.5C1103.5,184.2 1072.4,181.4 1054.9,169.2C1005.6,135.1 954.0,180.3 980.3,234.6C988.6,251.8 988.6,251.8 963.1,288.9C939.8,322.7 908.0,391.8 908.0,408.5C908.0,430.4 941.6,444.0 995.8,444.0C1057.6,444.0 1093.3,478.6 1062.0,508.0C1040.6,528.1 1051.1,551.7 1085.1,560.2C1117.5,568.3 1116.0,558.6 1116.0,762.6C1116.0,973.5 1114.0,989.2 1080.6,1043.2C1055.4,1083.8 1046.9,1085.8 894.1,1087.2C788.5,1088.2 756.9,1087.4 753.0,1083.4ZM999.7,774.1C938.5,740.8 851.8,525.9 897.5,520.7C934.9,516.4 1027.0,675.6 1029.0,748.0C1029.9,780.5 1022.9,786.7 999.7,774.1ZM739.8,540.7C721.1,528.8 692.5,494.3 684.6,474.0C681.2,465.2 680.2,403.9 680.9,246.0C682.0,30.0 682.0,30.0 738.0,30.0C794.0,30.0 794.0,30.0 797.1,62.0C803.4,128.5 794.2,517.0 785.6,545.0C782.3,555.8 760.4,553.8 739.8,540.7ZM977.3,337.7C973.6,328.0 981.3,318.0 992.4,318.0C1007.7,318.0 1006.4,341.5 991.0,343.3C983.5,344.1 979.1,342.4 977.3,337.7ZM1002.6,224.7C987.7,208.3 999.4,180.0 1021.1,180.0C1030.6,180.0 1048.0,197.5 1048.0,207.1C1048.0,227.5 1016.3,239.8 1002.6,224.7Z"/>
+            </symbol>
+            <!-- Vàng ép kim như trên thẻ thành viên: vệt sáng chéo giữa hai mảng vàng trầm -->
+            <linearGradient id="tysFoil" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" class="tys-f1"/><stop offset=".38" class="tys-f2"/><stop offset=".5" class="tys-f3"/>
+                <stop offset=".64" class="tys-f4"/><stop offset="1" class="tys-f5"/>
+            </linearGradient>
+            <symbol id="tysMarkFoil" viewBox="95.27 92.57 1087.46 1062.41">
+                <path transform="matrix(1.000000 0 0 1.000000 66.720 66.720)" fill="url(#tysFoil)" fill-rule="evenodd" d="M250.8,1083.0C244.5,1078.4 243.9,1054.4 243.0,778.0C242.0,478.0 242.0,478.0 168.0,476.0C84.2,473.7 75.1,471.3 51.2,444.9C17.9,407.9 20.9,388.5 63.0,369.6C180.5,316.8 322.1,230.9 418.2,154.2C460.5,120.5 464.0,116.0 464.0,96.2C464.0,40.9 520.1,8.9 570.8,35.2C581.7,40.9 594.9,44.0 608.0,44.0C634.8,44.0 637.9,51.6 619.0,71.3C608.3,82.5 604.2,90.8 602.1,106.0C599.7,123.0 596.4,128.8 579.6,145.0C560.0,164.0 560.0,164.0 560.0,237.2C560.0,337.1 550.8,369.8 509.7,415.5C481.9,446.4 424.6,475.8 391.8,475.9C371.3,476.1 372.0,465.5 372.0,784.4C372.0,1053.1 371.4,1083.4 365.7,1085.6C353.2,1090.4 257.8,1088.2 250.8,1083.0ZM584.8,1083.2C581.3,1079.7 580.0,1044.0 580.0,947.7C580.0,816.9 580.0,816.9 571.0,810.7C504.9,764.9 470.4,688.1 470.1,586.0C470.0,526.0 470.0,526.0 510.4,524.9C557.3,523.6 556.7,523.2 563.2,559.6C576.8,636.3 632.5,637.9 652.8,562.1C658.9,539.3 662.3,539.6 682.0,564.6C690.8,575.7 704.8,588.3 713.0,592.5C732.0,602.2 731.9,603.9 709.6,622.1C668.2,656.1 666.4,675.4 698.7,740.0C721.4,785.4 721.4,785.4 712.3,791.7C681.9,812.6 684.0,801.0 684.0,947.7C684.0,1074.1 683.7,1079.9 676.3,1083.9C665.2,1089.8 590.8,1089.2 584.8,1083.2ZM753.0,1083.4C746.4,1076.8 745.7,857.9 752.3,853.8C754.7,852.4 760.5,854.8 765.3,859.2C790.6,882.6 800.7,880.9 968.0,824.7C1046.3,798.3 1053.9,787.0 1038.1,719.2C1011.1,602.8 933.7,497.9 882.8,508.7C873.5,510.7 863.3,512.7 860.0,513.1C850.2,514.6 851.0,75.4 860.9,57.4C876.5,28.9 882.2,27.7 1004.6,28.9C1114.0,30.0 1114.0,30.0 1115.1,99.5C1115.9,147.3 1114.8,170.7 1111.6,174.5C1103.5,184.2 1072.4,181.4 1054.9,169.2C1005.6,135.1 954.0,180.3 980.3,234.6C988.6,251.8 988.6,251.8 963.1,288.9C939.8,322.7 908.0,391.8 908.0,408.5C908.0,430.4 941.6,444.0 995.8,444.0C1057.6,444.0 1093.3,478.6 1062.0,508.0C1040.6,528.1 1051.1,551.7 1085.1,560.2C1117.5,568.3 1116.0,558.6 1116.0,762.6C1116.0,973.5 1114.0,989.2 1080.6,1043.2C1055.4,1083.8 1046.9,1085.8 894.1,1087.2C788.5,1088.2 756.9,1087.4 753.0,1083.4ZM999.7,774.1C938.5,740.8 851.8,525.9 897.5,520.7C934.9,516.4 1027.0,675.6 1029.0,748.0C1029.9,780.5 1022.9,786.7 999.7,774.1ZM739.8,540.7C721.1,528.8 692.5,494.3 684.6,474.0C681.2,465.2 680.2,403.9 680.9,246.0C682.0,30.0 682.0,30.0 738.0,30.0C794.0,30.0 794.0,30.0 797.1,62.0C803.4,128.5 794.2,517.0 785.6,545.0C782.3,555.8 760.4,553.8 739.8,540.7ZM977.3,337.7C973.6,328.0 981.3,318.0 992.4,318.0C1007.7,318.0 1006.4,341.5 991.0,343.3C983.5,344.1 979.1,342.4 977.3,337.7ZM1002.6,224.7C987.7,208.3 999.4,180.0 1021.1,180.0C1030.6,180.0 1048.0,197.5 1048.0,207.1C1048.0,227.5 1016.3,239.8 1002.6,224.7Z"/>
+            </symbol>
+        </defs>
+    </svg>
+
 
     <header id="mainHeader" class="bg-espresso-900 shrink-0 z-40">
 
@@ -1518,18 +1580,11 @@
         <div id="mastheadBar" class="relative border-b border-tys-800/60 px-2 sm:px-4 py-2 sm:py-2.5">
             <button type="button" id="staffChip" onclick="onStaffChipClick()" aria-label="Đổi tài khoản" class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 max-w-[38%] truncate px-2.5 py-1.5 rounded-lg bg-espresso-950/70 border border-tys-900 text-tys-300 text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition"></button>
             <div class="max-w-[1700px] mx-auto flex items-center justify-center">
-                <div class="flex items-center space-x-2.5 sm:space-x-3">
-                    <div class="logo-glow w-12 h-12 rounded-xl bg-espresso-950 p-1.5 flex items-center justify-center border border-tys-700 shadow-sm shadow-tys-900/10 overflow-hidden shrink-0">
-                        <img src="logo.png" 
-                             alt="TYS Coffee Logo" 
-                             class="w-full h-full object-contain rounded-md" 
-                             onerror="if(this.src.endsWith('logo.png')){this.src='logo.jpg';}else if(this.src.endsWith('logo.jpg')){this.src='logo.webp';}else{this.onerror=null;this.src='https://placehold.co/150x150/f7f5f0/2e2013?text=TYS';}">
-                    </div>
-                    <div>
-                        <h1 class="brand-serif font-semibold text-base sm:text-xl tracking-tight leading-none text-tys-100">
-                            TYS COFFEE
-                        </h1>
-                        <p class="text-[10px] sm:text-[11px] text-stone-400 mt-0.5 sm:mt-1 font-medium tabular-nums" id="liveClock">--:--:--</p>
+                <div class="tys-brand">
+                    <svg class="tys-brand-mark" role="img" aria-label="TYS"><use href="#tysMarkFoil"/></svg>
+                    <div class="tys-brand-txt">
+                        <h1 class="tys-brand-word">TYS COFFEE</h1>
+                        <p class="tys-brand-clock" id="liveClock">--:--:--</p>
                     </div>
                 </div>
             </div>
@@ -2261,13 +2316,8 @@
 
             <!-- Đầu thẻ: logo + tên quán -->
             <div class="px-6 pt-6 pb-4 text-center">
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-espresso-950 p-2 border border-tys-700 flex items-center justify-center overflow-hidden mb-3">
-                    <img src="logo.png" alt="TYS Coffee"
-                         class="w-full h-full object-contain rounded-lg"
-                         onerror="if(this.src.endsWith('logo.png')){this.src='logo.jpg';}else if(this.src.endsWith('logo.jpg')){this.src='logo.webp';}else{this.onerror=null;this.src='https://placehold.co/150x150/f7f5f0/2e2013?text=TYS';}">
-                </div>
-                <h2 class="brand-serif text-lg font-extrabold text-tys-100 leading-tight">TYS COFFEE</h2>
-                <p class="text-[11px] text-stone-400 font-semibold mt-1" id="authSubtitle">Đăng nhập để bắt đầu ca làm</p>
+                <svg class="tys-mark tys-mark-lg" role="img" aria-label="TYS Coffee"><use href="#tysMark"/></svg>
+                <p class="text-[11px] text-stone-400 font-semibold mt-3" id="authSubtitle">Đăng nhập để bắt đầu ca làm</p>
             </div>
 
             <!-- Biểu mẫu đăng nhập -->
@@ -2338,6 +2388,16 @@
                 <!-- Tab GỬI ĐI -->
                 <div id="hoPaneExport" class="space-y-3">
                     <div id="hoExportSummary" class="rounded-xl border border-tys-900 bg-espresso-950 p-2.5 text-xs space-y-1"></div>
+                    <!-- Gửi thẳng cho tài khoản khác (không cần sao chép mã) -->
+                    <div id="hoDirectBox" class="rounded-xl border border-tys-700 bg-tys-900/40 p-2.5 space-y-2">
+                        <div class="text-[11px] font-bold text-tys-300 uppercase tracking-wide"><i class="fa-solid fa-paper-plane mr-1"></i>Gửi thẳng cho tài khoản</div>
+                        <div class="flex gap-2">
+                            <select id="hoDirectTo" class="flex-1 min-w-0 bg-espresso-950 border border-tys-900 rounded-lg px-2 py-2 text-xs text-stone-200 focus:outline-none focus:border-tys-600"></select>
+                            <button id="hoDirectBtn" onclick="hoDirectSend()" class="shrink-0 px-4 py-2 rounded-xl bg-tys-500 text-ink text-xs font-bold active:scale-95 transition disabled:opacity-40"><i class="fa-solid fa-paper-plane mr-1"></i>Gửi</button>
+                        </div>
+                        <p id="hoDirectMsg" class="text-[11px] leading-snug text-stone-500">Người nhận đang mở trang sẽ thấy ngay. Chưa mở thì sẽ hiện khi đăng nhập (trong 12 giờ).</p>
+                    </div>
+                    <div class="text-[10px] text-stone-500 text-center">hoặc dùng mã bàn giao (khi mất mạng)</div>
                     <textarea id="hoExportCode" readonly rows="3" onclick="this.select()" style="user-select:text;-webkit-user-select:text" class="w-full text-[10px] font-mono rounded-lg bg-espresso-950 border border-tys-900 p-2 text-stone-300 resize-none break-all"></textarea>
                     <div class="grid grid-cols-2 gap-2">
                         <button id="hoBtnCopy" onclick="hoCopyCode()" class="py-2.5 rounded-xl bg-tys-500 text-ink text-xs font-bold active:scale-95 transition"><i class="fa-regular fa-copy mr-1"></i>Sao chép mã</button>
@@ -2349,6 +2409,11 @@
 
                 <!-- Tab NHẬN VỀ -->
                 <div id="hoPaneImport" class="space-y-3 hidden">
+                    <!-- Gói bàn vừa được gửi thẳng tới tài khoản này -->
+                    <div id="hoIncoming" class="hidden rounded-xl border border-tys-600 bg-tys-900/40 p-2.5 text-xs text-stone-200 space-y-2">
+                        <div class="flex items-start gap-2"><i class="fa-solid fa-inbox text-tys-400 mt-0.5"></i><div id="hoIncomingText" class="leading-snug"></div></div>
+                        <button onclick="hoIncomingDismiss()" class="text-[11px] font-bold text-stone-500 hover:text-brick-300 transition"><i class="fa-solid fa-xmark mr-1"></i>Bỏ qua gói này</button>
+                    </div>
                     <textarea id="hoImportCode" rows="4" oninput="hoPreviewImport()" placeholder="Dán mã bàn giao" style="user-select:text;-webkit-user-select:text" class="w-full text-[10px] font-mono rounded-lg bg-espresso-950 border border-tys-900 p-2 text-stone-200 resize-none break-all"></textarea>
                     <div class="grid grid-cols-2 gap-2">
                         <button onclick="hoPasteClipboard()" class="py-2 rounded-xl bg-espresso-950/70 border border-tys-800 text-tys-300 text-xs font-bold active:scale-95 transition"><i class="fa-regular fa-paste mr-1"></i>Dán từ clipboard</button>
@@ -7091,12 +7156,13 @@ function togglePassVisibility(inputId, btn) {
             const timer = setTimeout(function () { try { if (ctl) ctl.abort(); } catch (e) {} }, 24000);
             const pending = ackHasPending();
             const waitSec = pending ? 20 : 10;   // đang có bàn chờ thu ngân -> giữ kết nối lâu hơn
-            fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/acks?key=' + encodeURIComponent(NOTIFY_KEY) + '&since=' + wAckId + '&wait=' + waitSec, { signal: ctl ? ctl.signal : undefined, cache: 'no-store' })
+            fetch(NOTIFY_WORKER_URL.replace(/\/+$/, '') + '/acks?key=' + encodeURIComponent(NOTIFY_KEY) + '&since=' + wAckId + '&wait=' + waitSec + (window.tysSyncQS ? window.tysSyncQS() : ''), { signal: ctl ? ctl.signal : undefined, cache: 'no-store' })
                 .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
                 .then(function (d) {
                     if (!d || !d.ok) return;
                     ackPollOkAt = Date.now();
                     wAckFail = 0;   // thành công -> xoá backoff
+                    try { if (d.sync && window.tysSyncFeed) window.tysSyncFeed(d.sync); } catch (e) {}   // ORDER 2 NGƯỜI: thay đổi bàn đi kèm
                     (d.rows || []).forEach(function (row) {
                         if (row.id > wAckId) wAckId = row.id;
                         if (!row.ack) return;
@@ -8712,5 +8778,762 @@ function togglePassVisibility(inputId, btn) {
     };
 })();
 </script>
+
+<!-- ============================================================
+     BÀN GIAO TRỰC TIẾP GIỮA CÁC TÀI KHOẢN (qua Worker của quán, không cần sao chép / dán mã)
+     - Người giao: Thêm → Bàn giao máy → "Gửi thẳng cho tài khoản" → chọn người nhận → Gửi.
+     - Người nhận: đang mở trang thì popup "Nhận về" tự bật lên kèm danh sách bàn, chọn Gộp / Thay
+       rồi bấm "Nhận vào máy này". Chưa mở trang thì khi đăng nhập (trong 12 giờ) sẽ tự hiện ra.
+     - Người giao thấy thông báo khi người nhận đã nhận (hoặc bỏ qua).
+     - Chỉ gửi đúng 1 lần khi bấm Gửi; không có cập nhật định kỳ lên máy chủ. Máy người nhận chỉ
+       "chờ thư" khi đang mở trang (giống cách trang chờ tin "đã nhập bill" từ /acks).
+     - Worker cần bản có /handover (xem file worker-handover.js).
+     - Dữ liệu dùng lại đúng định dạng mã bàn giao TYS1 nên phần nhận / hoàn tác giữ nguyên.
+     ============================================================ -->
+<script>
+(function () {
+    'use strict';
+    var DEV_KEY = 'tys_ho_dev';
+    var WAIT = 20;                        // giây Worker giữ kết nối khi chờ
+
+    function base() { try { return String(NOTIFY_WORKER_URL || '').replace(/\/+$/, ''); } catch (e) { return ''; } }
+    function key() { try { return NOTIFY_KEY; } catch (e) { return ''; } }
+    function $(id) { return document.getElementById(id); }
+    function me() { try { return currentUser || null; } catch (e) { return null; } }
+    function accounts() { try { return authAccounts || []; } catch (e) { return []; } }
+    function nameOf(u) { var a = accounts().find(function (x) { return x.user === u; }); return a ? a.name : u; }
+    function esc(s) { try { return escapeHtml(String(s)); } catch (e) { return String(s).replace(/[&<>"]/g, ''); } }
+    function toast(t, tone, ms) { try { ackToast(t, tone, ms); } catch (e) {} }
+    function hhmm(ts) { try { return fmtTime(ts); } catch (e) { return ''; } }
+    function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+    var myDev = (function () {
+        var d = null;
+        try { d = localStorage.getItem(DEV_KEY); } catch (e) {}
+        if (!d) { d = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); try { localStorage.setItem(DEV_KEY, d); } catch (e) {} }
+        return d;
+    })();
+
+    function getJson(path, ms, signal) {
+        var ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+        var t = setTimeout(function () { try { ctl && ctl.abort(); } catch (e) {} }, ms);
+        if (signal && ctl) signal.addEventListener('abort', function () { ctl.abort(); });
+        return fetch(base() + path, { cache: 'no-store', signal: ctl ? ctl.signal : undefined })
+            .then(function (r) { return r.json(); })
+            .finally(function () { clearTimeout(t); });
+    }
+    function postJson(path, obj, tries) {
+        tries = tries || 0;
+        return fetch(base() + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({ key: key() }, obj)) })
+            .then(function (r) { return r.json().catch(function () { return { ok: false, error: 'HTTP ' + r.status }; }); })
+            .then(function (j) { if (!j || !j.ok) { var e = new Error((j && (j.message || j.error)) || 'lỗi'); e.fatal = j && (j.error === 'outside-network' || j.error === 'forbidden' || /không hợp lệ/.test(j.error || '')); throw e; } return j; })
+            .catch(function (e) {
+                if (e.fatal || tries >= 2) throw e;
+                return sleep([1500, 4000][tries]).then(function () { return postJson(path, obj, tries + 1); });
+            });
+    }
+
+    // ================= GỬI =================
+    function setMsg(text, tone) {
+        var el = $('hoDirectMsg'); if (!el) return;
+        el.textContent = text || '';
+        el.className = 'text-[11px] leading-snug ' + (tone === 'ok' ? 'text-sage-400 font-semibold' : tone === 'bad' ? 'text-brick-300 font-semibold' : 'text-stone-500');
+    }
+
+    function fillRecipients() {
+        var sel = $('hoDirectTo'); if (!sel) return;
+        var u = me(), keep = sel.value;
+        var list = accounts().filter(function (a) { return a.active !== false; });
+        sel.innerHTML = '<option value="">Chọn người nhận…</option>' + list.map(function (a) {
+            var self = u && a.user === u.user;
+            return '<option value="' + esc(a.user) + '">' + esc(a.name) + (self ? ' (tôi, máy khác)' : '') + '</option>';
+        }).join('');
+        if (keep) sel.value = keep;
+    }
+
+    var waiting = {};          // id gói đã gửi → { to, n, at }
+    var statusRunning = false;
+
+    function watchStatus() {
+        if (statusRunning) return;
+        statusRunning = true;
+        (async function loop() {
+            var fails = 0;
+            while (true) {
+                var now = Date.now();
+                Object.keys(waiting).forEach(function (id) { if (now - waiting[id].at > 30 * 60000) delete waiting[id]; });
+                var ids = Object.keys(waiting);
+                if (!ids.length) break;
+                try {
+                    var j = await getJson('/handover/status?key=' + encodeURIComponent(key()) + '&ids=' + encodeURIComponent(ids.join(',')) + '&wait=' + WAIT, (WAIT + 6) * 1000);
+                    fails = 0;
+                    ((j && j.rows) || []).forEach(function (r) {
+                        var w = waiting[r.id]; if (!w) return;
+                        delete waiting[r.id];
+                        var who = r.by_name || nameOf(w.to);
+                        if (r.st === 'd') {
+                            toast(who + ': đã nhận ' + w.n + ' bàn vào sơ đồ', 'ok', 8000);
+                            setMsg(who + ' đã nhận ' + w.n + ' bàn lúc ' + hhmm(r.done_ts) + '.', 'ok');
+                        } else {
+                            toast(who + ': đã bỏ qua gói ' + w.n + ' bàn bạn gửi', 'alert', 8000);
+                            setMsg(who + ' đã bỏ qua gói bàn này.', 'bad');
+                        }
+                    });
+                } catch (e) {
+                    fails++;
+                    await sleep(Math.min(30000, 3000 * fails));
+                }
+            }
+            statusRunning = false;
+        })();
+    }
+
+    window.hoDirectSend = function () {
+        var u = me(), sel = $('hoDirectTo'), btn = $('hoDirectBtn');
+        if (!base()) { setMsg('Chưa cấu hình máy chủ (NOTIFY_WORKER_URL).', 'bad'); return; }
+        if (!u) { setMsg('Cần đăng nhập trước khi gửi.', 'bad'); return; }
+        var to = sel && sel.value;
+        if (!to) { setMsg('Chọn tài khoản nhận trước.', 'bad'); return; }
+        var tables = hoCollectTables(), c = hoCount(tables);
+        if (!c.n) { setMsg('Hiện không có bàn nào đang có khách để gửi.', 'bad'); return; }
+        if (!confirm('Gửi ' + c.n + ' bàn (' + c.unpaid + ' chưa trả · ' + c.paid + ' đã trả) cho ' + nameOf(to) + '?')) return;
+
+        var code = hoEncode({ app: 'tys-coffee', v: 1, exportedAt: Date.now(), tables: tables });
+        btn.disabled = true;
+        setMsg('Đang gửi cho ' + nameOf(to) + '…');
+        postJson('/handover', { from: u.user, fromName: u.name, dev: myDev, to: to, code: code, c: c.n })
+            .then(function (j) {
+                waiting[j.id] = { to: to, n: c.n, at: Date.now() };
+                setMsg('Đã gửi ' + c.n + ' bàn cho ' + nameOf(to) + ' lúc ' + hhmm(j.at || Date.now()) + '. Đang chờ ' + nameOf(to) + ' bấm nhận…', 'ok');
+                toast('Đã gửi ' + c.n + ' bàn cho ' + nameOf(to), 'ok', 4000);
+                watchStatus();
+            })
+            .catch(function (e) {
+                setMsg('Không gửi được: ' + (e && e.message ? e.message : 'mất mạng') + '. Bấm Gửi lại, hoặc dùng mã bàn giao bên dưới.', 'bad');
+            })
+            .finally(function () { btn.disabled = false; });
+    };
+
+    // Mở popup bàn giao thì nạp danh sách người nhận
+    if (typeof renderHandoverExport === 'function') {
+        var origRender = renderHandoverExport;
+        renderHandoverExport = function () { origRender.apply(this, arguments); fillRecipients(); };
+    }
+
+    // ================= NHẬN =================
+    var incoming = null;       // gói đang chờ người nhận bấm
+
+    // Mốc gói mới nhất đã hiện TRONG PHIÊN NÀY. Tải lại trang thì gói chưa nhận / chưa bỏ qua sẽ hiện lại.
+    var sinceMem = {};
+    function sinceOf(user) { return sinceMem[user] || 0; }
+    function setSince(user, ts) { if (ts > sinceOf(user)) sinceMem[user] = ts; }
+
+    function showIncoming(r) {
+        var code = String(r.code || '');
+        try { hoDecode(code); } catch (e) { return false; }             // dữ liệu hỏng thì bỏ qua
+        incoming = { id: r.id, code: code, from: r.frm, fromName: r.frm_name || nameOf(r.frm), at: r.ts, c: r.c };
+        openHandoverModal('import');
+        $('hoImportCode').value = code;
+        hoPreviewImport();
+        var b = $('hoIncoming');
+        if (b) {
+            $('hoIncomingText').innerHTML = '<b>' + esc(incoming.fromName) + '</b> vừa gửi <b>' + (incoming.c || '') + ' bàn</b> lúc ' + esc(hhmm(incoming.at)) +
+                '. Chọn <b>Gộp</b> hoặc <b>Thay</b> rồi bấm <b>Nhận vào máy này</b>.';
+            b.classList.remove('hidden');
+        }
+        toast(incoming.fromName + ': gửi ' + (incoming.c || '') + ' bàn cho bạn, bấm Nhận để vào sơ đồ', 'info', 8000);
+        return true;
+    }
+
+    function hideIncoming() {
+        incoming = null;
+        var b = $('hoIncoming'); if (b) b.classList.add('hidden');
+    }
+
+    window.hoIncomingDismiss = function () {
+        var pkg = incoming;
+        hideIncoming();
+        $('hoImportCode').value = ''; hoPreviewImport();
+        var u = me();
+        if (pkg) postJson('/handover/ack', { id: pkg.id, st: 'x', byName: u ? u.name : '' }).catch(function () {});
+    };
+
+    if (typeof hoApplyImport === 'function') {
+        var origApply = hoApplyImport;
+        hoApplyImport = function () {
+            var pkg = (incoming && $('hoImportCode').value === incoming.code) ? incoming : null;
+            origApply.apply(this, arguments);
+            if (!pkg) return;
+            hideIncoming();
+            var u = me();
+            postJson('/handover/ack', { id: pkg.id, st: 'd', byName: u ? u.name : '' }).catch(function () {});
+        };
+    }
+
+    // Vòng chờ gói mới cho tài khoản đang đăng nhập. Chỉ chạy khi trang đang hiển thị.
+    var inboxUser = '', inboxCtl = null, inboxRunning = false;
+    function inboxLoop() {
+        if (inboxRunning) return;
+        inboxRunning = true;
+        (async function () {
+            var fails = 0;
+            while (true) {
+                var u = me();
+                if (!u || !base() || document.visibilityState !== 'visible') break;
+                var user = u.user;
+                inboxUser = user;
+                inboxCtl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+                try {
+                    var j = await getJson('/handover/inbox?key=' + encodeURIComponent(key()) + '&to=' + encodeURIComponent(user) +
+                        '&dev=' + encodeURIComponent(myDev) + '&since=' + sinceOf(user) + '&wait=' + WAIT, (WAIT + 6) * 1000, inboxCtl && inboxCtl.signal);
+                    fails = 0;
+                    var rows = (j && j.ok && j.rows) || [];
+                    if (rows.length && me() && me().user === user) {
+                        var r = rows[0];                                   // mới nhất
+                        rows.forEach(function (x) { setSince(user, x.ts); });
+                        showIncoming(r);
+                    } else if (j && !j.ok) {
+                        await sleep(15000);                                // Worker chưa có /handover hoặc sai khoá
+                    }
+                } catch (e) {
+                    if (inboxUser !== user) continue;                      // đổi tài khoản giữa chừng
+                    fails++;
+                    await sleep(Math.min(30000, 3000 * fails));
+                }
+            }
+            inboxRunning = false;
+        })();
+    }
+    function restartInbox() {
+        var u = me(), user = u ? u.user : '';
+        if (user !== inboxUser && inboxCtl) { try { inboxCtl.abort(); } catch (e) {} }
+        inboxLoop();
+    }
+    setInterval(restartInbox, 3000);                                        // đăng nhập / đổi tài khoản
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') restartInbox(); });
+    window.addEventListener('online', restartInbox);
+    restartInbox();
+})();
+</script>
+
+<!-- ============================================================
+     ORDER 2 NGƯỜI: ORDER CHÍNH + ORDER PHỤ DÙNG CHUNG SƠ ĐỒ BÀN
+     - Bật: Thêm → "Order 2 người" → chọn người order phụ → Bắt đầu. Máy người phụ hỏi xác nhận rồi tải sơ đồ chung.
+     - Mỗi lần ai đó LƯU một bàn (gọi món, thu tiền, dọn bàn, chuyển / gộp…), máy chỉ gửi đúng BÀN VỪA ĐỔI
+       lên Worker kèm số phiên bản. Không có đồng bộ định kỳ.
+     - Máy kia nhận thay đổi qua kết nối /acks sẵn có (không mở thêm kết nối), sau khoảng 1–2 giây.
+     - 2 người sửa cùng 1 bàn cùng lúc: Worker từ chối bản đến sau, máy đó tự GỘP (giữ món cả 2 người thêm,
+       bỏ đúng món mỗi người xoá) rồi gửi lại. Popup bàn đang mở cũng được gộp ngay, nên tin báo thu ngân
+       vẫn chỉ gồm đúng phần món của người bấm Order.
+     - Nhãn nhỏ dưới ô bàn cho biết bàn do ai mở.
+     - Lịch sử thu tiền / chốt ca vẫn ghi trên máy người bấm thu tiền.
+     - Worker cần bản có /sync (xem file worker-them.js).
+     ============================================================ -->
+<script>
+(function () {
+    'use strict';
+    var LS = 'tys_sync_v1';
+    var BACKUP_KEY = 'cafe_tables_tys_sync_backup';
+
+    function base() { try { return String(NOTIFY_WORKER_URL || '').replace(/\/+$/, ''); } catch (e) { return ''; } }
+    function key() { try { return NOTIFY_KEY; } catch (e) { return ''; } }
+    function $(id) { return document.getElementById(id); }
+    function me() { try { return currentUser || null; } catch (e) { return null; } }
+    function accounts() { try { return authAccounts || []; } catch (e) { return []; } }
+    function nameOf(u) { var a = accounts().find(function (x) { return x.user === u; }); return a ? a.name : (u || ''); }
+    function esc(s) { try { return escapeHtml(String(s)); } catch (e) { return String(s).replace(/[&<>"]/g, ''); } }
+    function toast(t, tone, ms) { try { ackToast(t, tone, ms); } catch (e) {} }
+    function nTables() { try { return TOTAL_TABLES; } catch (e) { return 31; } }
+    function rid() { return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+
+    var myDev = (function () {
+        var d = null;
+        try { d = localStorage.getItem('tys_ho_dev'); } catch (e) {}
+        if (!d) { d = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); try { localStorage.setItem('tys_ho_dev', d); } catch (e) {} }
+        return d;
+    })();
+
+    // ---------- Trạng thái đồng bộ (lưu trong máy để tải lại trang vẫn tiếp tục) ----------
+    // sid: phiên · joined: máy này đã vào phiên · ver/base: phiên bản + nội dung bàn theo máy chủ lần cuối biết
+    // opener: ai mở bàn · ss: id thay đổi cuối đã áp dụng · req: yêu cầu đang gửi dở (gửi lại y nguyên nếu rớt mạng)
+    var S = (function () { try { return JSON.parse(localStorage.getItem(LS) || 'null') || {}; } catch (e) { return {}; } })();
+    function fix() { S.ver = S.ver || {}; S.base = S.base || {}; S.opener = S.opener || {}; S.ss = S.ss || 0; }
+    fix();
+    function persist() { try { localStorage.setItem(LS, JSON.stringify(S)); } catch (e) {} }
+    function inSession() { var u = me(); return !!(S.sid && S.joined && u && (u.user === S.main || u.user === S.helper)); }
+
+    // ---------- Chuẩn hoá dữ liệu 1 bàn (chỉ phần cần đồng bộ) ----------
+    function emptyT(i) { return { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '', paidGuests: 0, unpaidGuests: 0 }; }
+    function clean(i, t) {
+        if (!t || !t.status || t.status === 'empty') return emptyT(i);
+        var items = (Array.isArray(t.items) ? t.items : []).map(function (x) {
+            var o = { name: String(x.name || ''), price: Number(x.price) || 0 };
+            if (x.note) o.note = String(x.note);
+            if (x.prepaid) o.prepaid = true;
+            return o;
+        });
+        var pg = 0, ug = 0;
+        try { pg = guestPaidOf(t); ug = guestUnpaidOf(t); } catch (e) { pg = t.paidGuests | 0; ug = t.unpaidGuests | 0; }
+        return { id: i, status: t.status, items: items, total: Number(t.total) || 0, startTime: t.startTime || null,
+            paymentMethod: t.paymentMethod || 'Tiền mặt', note: t.note || '', paidGuests: pg, unpaidGuests: ug };
+    }
+    function parseData(i, d) { if (typeof d === 'string') { try { d = JSON.parse(d); } catch (e) { d = null; } } return clean(i, d); }
+    function same(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
+
+    // ---------- GỘP 3 CHIỀU: base (bản gốc) · mine (máy này) · theirs (máy chủ / người kia) ----------
+    function ik(x) { return x.name + '|' + x.price + '|' + (x.note || '') + '|' + (x.prepaid ? 1 : 0); }
+    function countBy(list) { var c = {}; (list || []).forEach(function (x) { var k = ik(x); c[k] = (c[k] || 0) + 1; }); return c; }
+    // Kết quả = món của theirs + món mine THÊM so với base − món mine XOÁ so với base. Giữ nguyên đối tượng của mine (cờ _new).
+    function mergeItems(b, m, t) {
+        var cb = countBy(b), cm = countBy(m);
+        var out = (t || []).slice();
+        Object.keys(cb).forEach(function (k) {
+            var d = cb[k] - (cm[k] || 0);
+            for (var j = out.length - 1; j >= 0 && d > 0; j--) if (ik(out[j]) === k) { out.splice(j, 1); d--; }
+        });
+        var rc = {};
+        (m || []).forEach(function (x) { var k = ik(x); rc[k] = (rc[k] || 0) + 1; if (rc[k] > (cb[k] || 0)) out.push(x); });
+        return out;
+    }
+    var RANK = { unpaid: 3, paid: 2, empty: 1 };
+    function pick(b, m, t) { return m !== b ? m : t; }
+    function mergeT(i, b, m, t) {
+        b = b || emptyT(i);
+        var items = mergeItems(b.items, m.items, t.items);
+        var st = m.status === b.status ? t.status : (t.status === b.status ? m.status : ((RANK[m.status] || 0) >= (RANK[t.status] || 0) ? m.status : t.status));
+        if (st === 'empty' && items.length) st = 'unpaid';           // một người dọn bàn, người kia vừa gọi thêm -> giữ món mới
+        if (st === 'empty') return emptyT(i);
+        var starts = [m.startTime, t.startTime].filter(Boolean);
+        return {
+            id: i, status: st, items: items.map(function (x) { var o = { name: x.name, price: x.price }; if (x.note) o.note = x.note; if (x.prepaid) o.prepaid = true; return o; }),
+            total: items.reduce(function (a, x) { return a + (Number(x.price) || 0); }, 0),
+            startTime: starts.length ? Math.min.apply(null, starts) : Date.now(),
+            paymentMethod: pick(b.paymentMethod, m.paymentMethod, t.paymentMethod),
+            note: pick(b.note, m.note, t.note),
+            paidGuests: Math.max(0, t.paidGuests + m.paidGuests - b.paidGuests),
+            unpaidGuests: Math.max(0, t.unpaidGuests + m.unpaidGuests - b.unpaidGuests)
+        };
+    }
+
+    // ---------- Ghi dữ liệu bàn từ đồng bộ vào máy (không kích hoạt gửi lại) ----------
+    var applying = false;
+    var origSave = saveData;
+    function setLocal(i, c) {
+        var old = tablesData[i] || {};
+        var o = Object.assign({}, c);
+        if (c.status !== 'empty' && old.histId) o.histId = old.histId;   // dòng lịch sử thu tiền là của riêng máy này
+        tablesData[i] = o;
+    }
+    function commitLocal(ids) {
+        applying = true;
+        try { origSave(); } finally { applying = false; }
+        ids.forEach(function (i) { try { renderTableNode(i); } catch (e) {} });
+        try { var lv = $('listView'); if (lv && !lv.classList.contains('hidden')) renderListView(); } catch (e) {}
+    }
+
+    // ---------- Popup bàn đang mở: gộp thay đổi của người kia ngay khi đến ----------
+    var modalBase = null;    // nội dung bàn lúc mở popup (hoặc lần gộp gần nhất)
+    function modalOpenFor(i) { var md = $('tableModal'); return md && !md.classList.contains('hidden') && activeTableId === i; }
+    if (typeof openModal === 'function') {
+        var origOpen = openModal;
+        openModal = function (id) { var r = origOpen.apply(this, arguments); try { modalBase = clean(id, tablesData[id]); } catch (e) {} return r; };
+    }
+    function mergeIntoModal(i, theirs, who) {
+        if (!modalOpenFor(i) || !modalBase) return;
+        var b = modalBase;
+        try {
+            modalItems = mergeItems(b.items, modalItems, theirs.items);
+            modalGuestsPaid = Math.max(0, theirs.paidGuests + (modalGuestsPaid - b.paidGuests));
+            modalGuestsUnpaid = Math.max(0, theirs.unpaidGuests + (modalGuestsUnpaid - b.unpaidGuests));
+            if (selectedStatusInModal === b.status) selectedStatusInModal = theirs.status;
+            // Người kia vừa dọn bàn nhưng máy này còn món mới đang gọi -> bàn vẫn là Chưa trả (không để "trống mà có món")
+            if (selectedStatusInModal === 'empty' && modalItems.length) selectedStatusInModal = 'unpaid';
+            modalOrigStatus = theirs.status;
+            var pm = $('paymentMethodSelect'), nt = $('tableNoteInput');
+            if (pm && pm.value === b.paymentMethod) { pm.value = theirs.paymentMethod; try { syncPaymentMethodButtons(); } catch (e) {} }
+            if (nt && nt.value === b.note) nt.value = theirs.note;
+            modalBase = theirs;
+            renderGuestCounters(); updateModalStatusButtons(); renderModalOrderList(); refreshQuickPayButton();
+        } catch (e) { console.warn('gộp popup lỗi', e); }
+        toast((who ? nameOf(who) : 'Người kia') + ': vừa cập nhật bàn ' + i + ', đã gộp vào bill đang mở', 'info', 5000);
+    }
+
+    // ---------- GỬI: chỉ các bàn khác với bản máy chủ ----------
+    var timer = null, inflight = false, failN = 0, buffer = [], netWarnAt = 0;
+    function schedule(ms) { clearTimeout(timer); timer = setTimeout(flush, ms == null ? 250 : ms); }
+    function collect() {
+        var out = [];
+        for (var i = 1; i <= nTables(); i++) {
+            var c = clean(i, tablesData[i]);
+            if (!same(c, S.base[i] || emptyT(i))) out.push({ tbl: i, base: S.ver[i] || 0, rid: rid(), data: c });
+        }
+        return out;
+    }
+    function flush() {
+        if (inflight || !inSession() || !base()) return;
+        if (!S.req) {
+            var ch = collect();
+            if (!ch.length) return;
+            S.req = { sid: S.sid, changes: ch };
+            persist();
+        }
+        var req = S.req;
+        inflight = true;
+        fetch(base() + '/sync', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key: key(), sid: req.sid, by: me().user, dev: myDev, changes: req.changes }) })
+            .then(function (r) { return r.json().catch(function () { return { ok: false, error: 'HTTP ' + r.status }; }); })
+            .then(function (j) {
+                inflight = false;
+                if (j && j.error === 'no-session') { S.req = null; endLocal('Order 2 người đã kết thúc'); return; }
+                if (j && j.error === 'outside-network') {
+                    if (Date.now() - netWarnAt > 60000) { netWarnAt = Date.now(); toast('Chưa đồng bộ được bàn: máy không ở trong wifi quán', 'alert', 6000); }
+                    failN++; schedule(Math.min(30000, 3000 * failN)); return;
+                }
+                if (!j || !j.ok) throw new Error((j && j.error) || 'lỗi');
+                failN = 0;
+                var sent = {}; req.changes.forEach(function (c) { sent[c.tbl] = c.data; });
+                var touched = [];
+                (j.applied || []).forEach(function (a) {
+                    if (a.ver > (S.ver[a.tbl] || 0)) { S.ver[a.tbl] = a.ver; S.base[a.tbl] = sent[a.tbl]; }
+                    if (a.opener !== undefined) S.opener[a.tbl] = a.opener;
+                    touched.push(a.tbl);
+                });
+                (j.conflicts || []).forEach(function (c) {
+                    var theirs = parseData(c.tbl, c.data), mine = clean(c.tbl, tablesData[c.tbl]);
+                    var merged = mergeT(c.tbl, S.base[c.tbl], mine, theirs);
+                    S.ver[c.tbl] = c.ver; S.base[c.tbl] = theirs; S.opener[c.tbl] = c.opener || null;
+                    setLocal(c.tbl, merged);
+                    mergeIntoModal(c.tbl, theirs, null);
+                    touched.push(c.tbl);
+                    toast('Bàn ' + c.tbl + ': người kia vừa sửa cùng lúc, đã gộp món của cả hai', 'info', 5000);
+                });
+                S.req = null;
+                persist();
+                if ((j.conflicts || []).length) commitLocal(touched); else touched.forEach(function (i) { try { renderTableNode(i); } catch (e) {} });
+                applyEvents(buffer.splice(0));
+                schedule(50);
+            })
+            .catch(function (e) { inflight = false; failN++; console.warn('đồng bộ bàn lỗi:', e); schedule(Math.min(30000, 2000 * failN)); });
+    }
+    saveData = function () { origSave.apply(this, arguments); if (!applying && inSession()) schedule(); };
+
+    // ---------- NHẬN: thay đổi đi kèm /acks ----------
+    function applyEvents(evs) {
+        if (!evs.length) return;
+        if (inflight) { buffer = buffer.concat(evs); return; }    // chờ kết quả lần gửi đang chạy rồi mới áp dụng
+        var touched = [], dirty = false;
+        evs.forEach(function (e) {
+            if (e.id <= S.ss) return;
+            S.ss = e.id;
+            if (e.kind === 'end') { if (e.sid === S.sid && S.joined) endLocal(nameOf(e.by_user) + ' đã kết thúc order 2 người'); return; }
+            if (e.kind !== 'tbl' || e.sid !== S.sid || !inSession()) return;
+            var i = Number(e.tbl);
+            if (e.dev === myDev || e.ver <= (S.ver[i] || 0)) return;
+            var theirs = parseData(i, e.data), mine = clean(i, tablesData[i]), b = S.base[i] || emptyT(i);
+            if (same(mine, b)) setLocal(i, theirs);
+            else { setLocal(i, mergeT(i, b, mine, theirs)); dirty = true; }
+            S.ver[i] = e.ver; S.base[i] = theirs; S.opener[i] = e.opener || null;
+            mergeIntoModal(i, theirs, e.by_user);
+            touched.push(i);
+        });
+        persist();
+        if (touched.length) commitLocal(touched);
+        if (dirty) schedule();
+    }
+
+    var asked = {};
+    window.tysSyncQS = function () { return '&sync=1&ss=' + (S.ss || 0); };
+    window.tysSyncFeed = function (sy) {
+        if (!sy) return;
+        setTimeout(paintIndicator, 0);
+        handleSess(sy.sess || null, Number(sy.last) || 0);
+        applyEvents((sy.ev || []).slice().sort(function (a, b) { return a.id - b.id; }));
+    };
+
+    // last = id thay đổi mới nhất máy chủ biết lúc trả lời. Chỉ kết luận "phiên đã đóng" khi máy chủ đã thấy
+    // cả lệnh mở phiên của mình (last >= S.startEv); nếu không, đó là câu trả lời cũ đã chờ từ trước khi mở phiên.
+    function handleSess(sess, last) {
+        var u = me();
+        var seenMine = last >= (S.startEv || 0);
+        if (!sess) { if (S.sid && S.joined && seenMine && !starting) endLocal('Order 2 người đã kết thúc'); return; }
+        if (sess.id === S.sid) { S.main = sess.main; S.helper = sess.helper; return; }
+        if (starting || joining) return;
+        if (S.sid && S.joined && seenMine) endLocal('');                 // phiên cũ đã được thay bằng phiên mới
+        if (!u || (u.user !== sess.main && u.user !== sess.helper) || asked[sess.id]) return;
+        asked[sess.id] = 1;
+        var role = u.user === sess.helper ? 'order phụ' : 'order chính';
+        var ok = confirm(nameOf(sess.main) + ' đã bật ORDER 2 NGƯỜI (' + nameOf(sess.helper) + ' làm order phụ).\n\n' +
+            'Bạn là ' + role + '. Máy này sẽ tải sơ đồ bàn chung. Bàn đang có trên máy được sao lưu, bàn chỉ máy này có sẽ được thêm vào sơ đồ chung.\n\nVào ca ngay?');
+        if (ok) join();
+    }
+
+    var joining = false;
+    function join() {
+        joining = true;
+        fetch(base() + '/sync/state?key=' + encodeURIComponent(key()), { cache: 'no-store' })
+            .then(function (r) { return r.json(); })
+            .then(function (j) {
+                if (!j || !j.ok || !j.sess) { toast('Phiên order 2 người không còn mở', 'alert'); return; }
+                try { localStorage.setItem(BACKUP_KEY, JSON.stringify({ at: Date.now(), tables: tablesData })); } catch (e) {}
+                var srv = {};
+                (j.tables || []).forEach(function (r) { srv[r.tbl] = r; });
+                var ids = [], keepLocal = 0;
+                S = { sid: j.sess.id, joined: true, main: j.sess.main, helper: j.sess.helper, ver: {}, base: {}, opener: {}, ss: j.last || 0, startEv: j.last || 0 };
+                for (var i = 1; i <= nTables(); i++) {
+                    var r = srv[i], theirs = r ? parseData(i, r.data) : emptyT(i), mine = clean(i, tablesData[i]);
+                    S.ver[i] = r ? Number(r.ver) : 0; S.base[i] = theirs; S.opener[i] = r ? r.opener : null;
+                    if (theirs.status === 'empty' && mine.status !== 'empty') { keepLocal++; continue; }   // bàn chỉ máy này có -> giữ, sẽ gửi lên
+                    if (!same(theirs, mine)) { setLocal(i, theirs); ids.push(i); }
+                }
+                persist();
+                commitLocal(ids);
+                try { renderMap(); } catch (e) {}
+                paintIndicator();
+                toast('Đã vào ORDER 2 NGƯỜI cùng ' + nameOf(me().user === S.main ? S.helper : S.main) + (keepLocal ? ' · thêm ' + keepLocal + ' bàn từ máy này' : ''), 'ok', 6000);
+                schedule(100);
+            })
+            .catch(function () { toast('Không tải được sơ đồ chung, thử lại sau', 'alert'); asked = {}; })
+            .then(function () { joining = false; });
+    }
+
+    var starting = false;
+    function start(helper) {
+        var u = me();
+        if (!u || !helper) return Promise.reject(new Error('thiếu thông tin'));
+        starting = true;
+        var tables = {};
+        for (var i = 1; i <= nTables(); i++) tables[i] = clean(i, tablesData[i]);
+        return fetch(base() + '/sync/start', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key: key(), main: u.user, helper: helper, dev: myDev, tables: tables }) })
+            .then(function (r) { return r.json().catch(function () { return { ok: false, error: 'Worker chưa có chức năng order 2 người (HTTP ' + r.status + ')' }; }); })
+            .then(function (j) {
+                if (!j || !j.ok) throw new Error((j && (j.message || j.error)) || 'lỗi');
+                S = { sid: j.sid, joined: true, main: j.main, helper: j.helper, ver: {}, base: {}, opener: {}, ss: j.ev || 0, startEv: j.ev || 0 };
+                for (var i = 1; i <= nTables(); i++) { S.ver[i] = 1; S.base[i] = tables[i]; S.opener[i] = tables[i].status !== 'empty' ? u.user : null; }
+                asked[j.sid] = 1;
+                persist();
+                try { renderMap(); } catch (e) {}
+                paintIndicator();
+                toast('Đã bật ORDER 2 NGƯỜI · ' + nameOf(helper) + ' làm order phụ. Máy ' + nameOf(helper) + ' sẽ được hỏi vào ca.', 'ok', 7000);
+            })
+            .finally(function () { starting = false; });
+    }
+
+    function stop() {
+        if (!S.sid) return Promise.resolve();
+        return fetch(base() + '/sync/end', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key: key(), sid: S.sid, by: me() ? me().user : '', dev: myDev }) })
+            .then(function (r) { return r.json(); })
+            .then(function () { endLocal('Đã kết thúc order 2 người. Bàn vẫn giữ nguyên trên máy.'); })
+            .catch(function () { toast('Không kết thúc được (mất mạng?), thử lại', 'alert'); });
+    }
+
+    function endLocal(msg) {
+        var had = S.sid && S.joined;
+        S = { ss: S.ss || 0 };
+        fix(); persist();
+        document.querySelectorAll('.sync-owner').forEach(function (el) { el.remove(); });
+        paintIndicator();
+        if (had && msg) toast(msg, 'info', 6000);
+    }
+
+    // ---------- Nhãn "ai mở bàn" dưới ô bàn ----------
+    if (typeof renderTableNode === 'function') {
+        var origNode = renderTableNode;
+        renderTableNode = function (i) {
+            var r = origNode.apply(this, arguments);
+            try { paintOwner(i); } catch (e) {}
+            return r;
+        };
+    }
+    function paintOwner(i) {
+        var box = $('table-node-' + i); if (!box) return;
+        var btn = box.querySelector('.table-btn'); if (!btn) return;
+        var tag = btn.querySelector('.sync-owner');
+        var who = inSession() && tablesData[i] && tablesData[i].status !== 'empty' ? S.opener[i] : null;
+        if (!who) { if (tag) tag.remove(); return; }
+        if (!tag) {
+            tag = document.createElement('span');
+            tag.className = 'sync-owner';
+            tag.style.cssText = 'position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);z-index:3;white-space:nowrap;' +
+                'padding:1px 8px;border-radius:999px;font:700 10px/1.5 inherit;letter-spacing:.02em;pointer-events:none;box-shadow:0 2px 6px -1px rgba(20,12,4,.45)';
+            btn.appendChild(tag);
+        }
+        var mine = me() && who === me().user;
+        tag.textContent = nameOf(who);
+        tag.style.background = mine ? '#C9944A' : '#2a1f14';
+        tag.style.color = mine ? '#1a1510' : '#f6e7c8';
+        tag.style.border = mine ? '1px solid #C9944A' : '1px solid rgba(225,182,110,.4)';
+    }
+
+    // ---------- Nhãn trên đầu trang + nút trong menu ⋯ ----------
+    function paintIndicator() {
+        var bar = $('mastheadBar'); if (!bar) return;
+        var el = $('syncPill');
+        if (!inSession()) { if (el) el.remove(); return; }
+        if (!el) {
+            el = document.createElement('button');
+            el.id = 'syncPill'; el.type = 'button';
+            el.onclick = openSyncModal;
+            el.className = 'absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 max-w-[26%] truncate px-2.5 py-1.5 rounded-lg bg-tys-500 text-ink text-[10px] font-extrabold';
+            bar.appendChild(el);
+        }
+        var u = me(), other = u && u.user === S.main ? S.helper : S.main;
+        el.innerHTML = '<i class="fa-solid fa-user-group mr-1"></i>' + esc(nameOf(other));
+        el.title = 'Order 2 người: ' + nameOf(S.main) + ' (chính) · ' + nameOf(S.helper) + ' (phụ)';
+    }
+
+    function addMenuItem() {
+        var menu = $('moreMenu'); if (!menu || $('btnSync2')) return;
+        var b = document.createElement('button');
+        b.id = 'btnSync2'; b.type = 'button'; b.setAttribute('role', 'menuitem');
+        b.className = 'relative flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition';
+        b.innerHTML = '<i class="fa-solid fa-user-group w-4 text-center text-sm"></i><span class="text-xs font-bold">Order 2 người</span>';
+        b.onclick = function () { try { closeMoreMenu(); } catch (e) {} openSyncModal(); };
+        var after = $('btnHistory');
+        if (after && after.nextSibling) menu.insertBefore(b, after.nextSibling); else menu.appendChild(b);
+    }
+
+    function openSyncModal() {
+        var old = $('syncModal'); if (old) old.remove();
+        var u = me();
+        var wrap = document.createElement('div');
+        wrap.id = 'syncModal';
+        wrap.className = 'fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4';
+        wrap.onclick = function (e) { if (e.target === wrap) wrap.remove(); };
+        var body;
+        if (inSession()) {
+            var mineIsMain = u && u.user === S.main;
+            body = '<div class="rounded-xl border border-tys-700 bg-tys-900/40 p-3 text-xs text-stone-200 space-y-1.5">' +
+                '<div><i class="fa-solid fa-star text-tys-400 mr-1.5"></i>Order chính: <b>' + esc(nameOf(S.main)) + '</b>' + (mineIsMain ? ' (bạn)' : '') + '</div>' +
+                '<div><i class="fa-solid fa-user text-tys-400 mr-1.5"></i>Order phụ: <b>' + esc(nameOf(S.helper)) + '</b>' + (!mineIsMain ? ' (bạn)' : '') + '</div>' +
+                '<div class="text-[11px] text-stone-500 pt-1">Mỗi lần lưu bàn, máy chỉ gửi bàn vừa đổi. Hai người sửa cùng bàn thì món của cả hai được gộp, không ai đè mất của ai.</div></div>' +
+                '<button id="syncStopBtn" class="w-full py-2.5 rounded-xl border border-brick-800/70 text-brick-400 text-xs font-bold active:scale-95 transition"><i class="fa-solid fa-power-off mr-1"></i>Kết thúc order 2 người</button>' +
+                '<p class="text-[10px] text-stone-500 text-center">Kết thúc xong, bàn vẫn giữ nguyên trên cả hai máy.</p>';
+        } else {
+            var opts = accounts().filter(function (a) { return a.active !== false && (!u || a.user !== u.user); })
+                .map(function (a) { return '<option value="' + esc(a.user) + '">' + esc(a.name) + '</option>'; }).join('');
+            body = '<p class="text-xs text-stone-400 leading-relaxed">Khi khách đông: bạn làm <b class="text-tys-300">order chính</b>, mời thêm một người làm <b class="text-tys-300">order phụ</b>. Hai máy dùng chung sơ đồ bàn, ai lưu bàn nào thì máy kia thấy bàn đó sau 1–2 giây.</p>' +
+                '<label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider">Người order phụ</label>' +
+                '<select id="syncHelper" class="w-full bg-espresso-950 border border-tys-900 rounded-lg px-2 py-2.5 text-sm text-stone-200 focus:outline-none focus:border-tys-600"><option value="">Chọn người…</option>' + opts + '</select>' +
+                '<p id="syncMsg" class="text-[11px] text-stone-500 min-h-[1em]"></p>' +
+                '<button id="syncStartBtn" class="w-full py-2.5 rounded-xl bg-tys-500 text-ink text-xs font-bold active:scale-95 transition disabled:opacity-40"><i class="fa-solid fa-play mr-1"></i>Bắt đầu order 2 người</button>';
+        }
+        wrap.innerHTML = '<div class="bg-espresso-900 border border-tys-800 w-full max-w-md rounded-t-2xl sm:rounded-2xl shadow-xl modal-fade-in">' +
+            '<div class="flex items-center justify-between gap-2 px-4 pt-3 pb-2"><div class="flex items-center gap-2"><div class="w-8 h-8 rounded-lg bg-tys-500 text-ink flex items-center justify-center"><i class="fa-solid fa-user-group text-sm"></i></div>' +
+            '<h3 class="text-sm font-bold text-tys-100">Order 2 người</h3></div>' +
+            '<button id="syncClose" class="w-8 h-8 rounded-lg text-stone-400 hover:bg-espresso-800 flex items-center justify-center" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button></div>' +
+            '<div class="px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] space-y-3">' + body + '</div></div>';
+        document.body.appendChild(wrap);
+        $('syncClose').onclick = function () { wrap.remove(); };
+        var sb = $('syncStartBtn');
+        if (sb) sb.onclick = function () {
+            var h = $('syncHelper').value, msg = $('syncMsg');
+            if (!u) { msg.textContent = 'Cần đăng nhập trước.'; return; }
+            if (!h) { msg.textContent = 'Chọn người order phụ.'; return; }
+            sb.disabled = true; msg.textContent = 'Đang bật…';
+            start(h).then(function () { wrap.remove(); }).catch(function (e) {
+                msg.className = 'text-[11px] text-brick-300 font-semibold'; msg.textContent = 'Không bật được: ' + (e && e.message ? e.message : 'mất mạng'); sb.disabled = false;
+            });
+        };
+        var stb = $('syncStopBtn');
+        if (stb) stb.onclick = function () { if (confirm('Kết thúc order 2 người?')) { stb.disabled = true; stop().then(function () { wrap.remove(); }); } };
+    }
+
+    addMenuItem();
+    // Lưới an toàn: 5 giây kiểm tra 1 lần có bàn nào lệch / yêu cầu gửi dở không (chỉ so trong máy, không gọi máy chủ nếu không có gì đổi)
+    setInterval(function () { paintIndicator(); if (inSession() && !inflight) schedule(0); }, 5000);
+    setTimeout(paintIndicator, 1500);
+    if (inSession()) { paintIndicator(); try { renderMap(); } catch (e) {} schedule(500); }
+})();
+</script>
+<!-- ============================================================
+     VUỐT ĐỂ TẮT THÔNG BÁO NHANH
+     - Thông báo trên cùng (thu ngân đã nhập bill, đồng bộ…): vuốt LÊN hoặc sang ngang để tắt ngay. Chạm vẫn tắt như cũ.
+     - Thông báo "1-Chạm" ở dưới (có nút Hoàn tác): vuốt XUỐNG hoặc sang ngang để tắt. Bấm Hoàn tác vẫn bình thường.
+     ============================================================ -->
+<style>
+    .atoast-sh, #quickPayToastCard { touch-action: none; will-change: transform; }
+    .swipe-dragging { transition: none !important; }
+    .swipe-back { transition: transform .22s cubic-bezier(.2,.8,.2,1), opacity .22s ease !important; }
+    .swipe-out { transition: transform .2s ease-in, opacity .2s ease-in !important; }
+</style>
+<script>
+(function () {
+    'use strict';
+    var TH = 70;            // px kéo đủ xa thì tắt
+    var drag = null;
+
+    function targetOf(el) {
+        if (!el || !el.closest) return null;
+        var top = el.closest('.atoast-sh');
+        if (top) return { el: top, kind: 'top' };
+        var qp = el.closest('#quickPayToastCard');
+        if (qp) return { el: qp, kind: 'bottom' };
+        return null;
+    }
+
+    function dismiss(t, dx, dy) {
+        var el = t.el;
+        var w = window.innerWidth || 400;
+        var tx = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? w : -w) : 0;
+        var ty = tx ? dy : (t.kind === 'top' ? -160 : 160);
+        el.classList.remove('swipe-dragging');
+        el.classList.add('swipe-out');
+        el.style.transform = 'translate(' + tx + 'px,' + ty + 'px)';
+        el.style.opacity = '0';
+        setTimeout(function () {
+            if (t.kind === 'top') { el.remove(); return; }
+            var box = document.getElementById('quickPayToast');
+            if (box) box.classList.add('hidden');
+            el.classList.remove('swipe-out');
+            el.style.transform = ''; el.style.opacity = '';
+        }, 200);
+    }
+
+    document.addEventListener('pointerdown', function (e) {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        var t = targetOf(e.target);
+        if (!t) return;
+        drag = { t: t, id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, dy: 0, moved: false };
+    }, true);
+
+    document.addEventListener('pointermove', function (e) {
+        if (!drag || e.pointerId !== drag.id) return;
+        var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+        if (!drag.moved) {
+            if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;   // chưa kéo: để chạm / bấm nút hoạt động bình thường
+            drag.moved = true;
+            drag.t.el.classList.add('swipe-dragging');
+            drag.t.el.style.animation = 'none';     // hiệu ứng trượt vào giữ khung cuối sẽ đè lên vị trí kéo -> tắt
+        }
+        // Thông báo trên: chỉ cho kéo lên; thông báo dưới: chỉ cho kéo xuống (ngang thì cả hai)
+        var vy = drag.t.kind === 'top' ? Math.min(0, dy) : Math.max(0, dy);
+        drag.dx = dx; drag.dy = vy;
+        var dist = Math.max(Math.abs(dx), Math.abs(vy));
+        drag.t.el.style.transform = 'translate(' + dx + 'px,' + vy + 'px)';
+        drag.t.el.style.opacity = String(Math.max(0.25, 1 - dist / 220));
+    }, true);
+
+    function end(e) {
+        if (!drag || e.pointerId !== drag.id) return;
+        var d = drag; drag = null;
+        if (!d.moved) return;
+        // Chặn cú "chạm" sinh ra sau khi kéo (không tắt nhầm, không bấm nhầm Hoàn tác)
+        var stop = function (ev) { ev.stopPropagation(); ev.preventDefault(); document.removeEventListener('click', stop, true); };
+        document.addEventListener('click', stop, true);
+        setTimeout(function () { document.removeEventListener('click', stop, true); }, 350);
+        if (Math.abs(d.dx) > TH || Math.abs(d.dy) > TH * 0.6) { dismiss(d.t, d.dx, d.dy); return; }
+        var el = d.t.el;
+        el.classList.remove('swipe-dragging');
+        el.classList.add('swipe-back');
+        el.style.transform = ''; el.style.opacity = '';
+        setTimeout(function () { el.classList.remove('swipe-back'); }, 240);
+    }
+    document.addEventListener('pointerup', end, true);
+    document.addEventListener('pointercancel', end, true);
+})();
+</script>
 </body>
 </html>
+
