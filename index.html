@@ -9592,8 +9592,9 @@ function togglePassVisibility(inputId, btn) {
 </script>
 <!-- ============================================================
      GIÁM SÁT BÀN TRỰC TIẾP CHO ADMIN
-     - Mọi máy đã đăng nhập: khi LƯU bàn thì gửi đúng bàn vừa đổi lên Worker (/mon); lúc mở trang / đổi tài khoản
-       gửi một lần cả sơ đồ. Không gửi định kỳ.
+     - CHỈ KHI ADMIN BẬT GIÁM SÁT (mở màn "Giám sát bàn"): mọi máy đã đăng nhập gửi ngay cả sơ đồ, sau đó mỗi lần
+       LƯU bàn thì gửi đúng bàn vừa đổi (/mon). Đóng màn giám sát = tắt: mọi máy ngừng gửi, không tốn tài nguyên máy chủ.
+       ADMIN tắt máy / mất mạng không kịp tắt -> Worker tự tắt sau 90 giây.
      - ADMIN: Thêm → "Giám sát bàn". Xem theo BÀN (gộp mọi máy, báo LỆCH nếu cùng bàn mà 2 máy ghi khác nhau)
        hoặc theo MÁY (từng nhân viên đang giữ bàn nào, cập nhật lần cuối khi nào). Tự cập nhật ~1–2 giây,
        chỉ kết nối máy chủ khi màn giám sát đang mở.
@@ -9646,12 +9647,21 @@ function togglePassVisibility(inputId, btn) {
             items: (t.items || []).map(function (x) { var o = { name: x.name, price: Number(x.price) || 0 }; if (x.note) o.note = x.note; if (x.prepaid) o.prepaid = true; return o; }) };
     }
 
-    // ================= MÁY NHÂN VIÊN: báo bàn vừa đổi =================
+    // ================= MÁY NHÂN VIÊN: báo bàn vừa đổi (CHỈ khi ADMIN đang bật giám sát) =================
+    // monOn do Worker báo kèm trong kết nối /acks sẵn có. Tắt giám sát -> không gửi gì lên máy chủ.
+    var monOn = false;
     var sent = {}, sentUser = '', timer = null, busy = false, failN = 0;
-    function schedule(ms) { clearTimeout(timer); timer = setTimeout(report, ms == null ? 1500 : ms); }
+    function schedule(ms) { if (!monOn) return; clearTimeout(timer); timer = setTimeout(report, ms == null ? 1500 : ms); }
+    function setMonOn(on) {
+        on = !!on;
+        if (on === monOn) return;
+        monOn = on;
+        if (on) { sentUser = ''; sent = {}; schedule(200); }          // vừa bật -> gửi ngay cả sơ đồ
+        else { clearTimeout(timer); }
+    }
     function report() {
         var u = me();
-        if (!u || !base() || busy) return;
+        if (!monOn || !u || !base() || busy) return;
         var full = u.user !== sentUser;
         var cur = {}, changes = [];
         for (var i = 1; i <= nTables(); i++) {
@@ -9673,7 +9683,14 @@ function togglePassVisibility(inputId, btn) {
     }
     var origSave = saveData;
     saveData = function () { var r = origSave.apply(this, arguments); schedule(); return r; };
-    setInterval(function () { var u = me(); if (u && u.user !== sentUser && !busy) schedule(300); }, 3000);   // vừa đăng nhập / đổi tài khoản
+    setInterval(function () { var u = me(); if (monOn && u && u.user !== sentUser && !busy) schedule(300); }, 3000);   // vừa đăng nhập / đổi tài khoản
+    // Nhận cờ bật / tắt giám sát kèm theo /acks (cùng chỗ order 2 người nhận thay đổi bàn)
+    var prevFeed = window.tysSyncFeed;
+    window.tysSyncFeed = function (sy) {
+        if (prevFeed) { try { prevFeed(sy); } catch (e) {} }
+        // Máy ADMIN đang mở màn giám sát: bỏ qua cờ "tắt" cũ do kết nối chờ mở từ trước lúc bật trả về muộn
+        if (sy && typeof sy.mon === 'boolean') setMonOn(sy.mon || open);
+    };
 
     // ================= ADMIN: màn giám sát =================
     var store = {}, devs = {}, since = 0, open = false, polling = false, view = 'table', lastAt = 0;
@@ -9844,17 +9861,40 @@ function togglePassVisibility(inputId, btn) {
             '<div class="flex p-1 rounded-xl bg-espresso-950/70 border border-tys-900">' +
             '<button id="monTabTable" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-table-cells-large mr-1"></i>Theo bàn</button>' +
             '<button id="monTabDev" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-mobile-screen mr-1"></i>Theo máy</button></div></div>' +
-            '<div id="monBody" class="flex-1 overflow-y-auto px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] space-y-2"></div></div>';
+            '<div id="monBody" class="flex-1 overflow-y-auto px-4 space-y-2"></div>' +
+            '<div class="px-4 pt-2 pb-[calc(0.75rem+env(safe-area-inset-bottom))] border-t border-tys-900 shrink-0 flex items-center gap-2">' +
+            '<p class="mon-t10 text-stone-500 flex-1">Đang giám sát: các máy gửi bàn khi lưu. Đóng màn này là tắt giám sát, các máy ngừng gửi.</p>' +
+            '<button id="monStop" class="shrink-0 px-3 py-2 rounded-xl border border-brick-800/70 text-brick-400 text-xs font-bold active:scale-95 transition"><i class="fa-solid fa-power-off mr-1"></i>Tắt</button></div></div>';
         document.body.appendChild(w);
         $('monClose').onclick = closeMonitor;
+        $('monStop').onclick = closeMonitor;
         $('monTabTable').onclick = function () { setView('table'); };
         $('monTabDev').onclick = function () { setView('dev'); };
         open = true;
+        store = {}; devs = {}; since = 0;
         setView(view);
-        report();          // máy ADMIN cũng báo bàn của chính mình ngay
-        poll();
+        setLiveText('Đang bật giám sát…');
+        monCtl('on').then(function () {
+            setMonOn(true);  // máy ADMIN cũng gửi bàn của chính mình
+            setTimeout(function () { poll(); }, 600);   // chờ các máy kịp gửi sơ đồ
+        }).catch(function () { setLiveText('Không bật được giám sát (Worker chưa cập nhật bản 7?)'); });
     }
-    function closeMonitor() { open = false; var m = $('monModal'); if (m) m.remove(); }
+    function closeMonitor() {
+        open = false;
+        var m = $('monModal'); if (m) m.remove();
+        monCtl('off').catch(function () {});        // tắt giám sát -> mọi máy ngừng gửi
+        setMonOn(false);
+    }
+    function monCtl(what) {
+        var u = me();
+        return fetch(base() + '/mon/' + what, { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
+            body: JSON.stringify({ key: key(), by: u ? u.user : '' }) })
+            .then(function (r) { return r.json(); })
+            .then(function (j) { if (!j || !j.ok) throw new Error((j && j.error) || 'lỗi'); return j; });
+    }
+    function setLiveText(t) { var el = $('monLive'); if (el) el.textContent = t; }
+    // Đóng trang / chuyển app khi đang giám sát -> tắt luôn (nếu không gửi được, Worker tự tắt sau 90 giây)
+    window.addEventListener('pagehide', function () { if (open) { try { monCtl('off'); } catch (e) {} } });
     window.openMonitor = openMonitor;
     setInterval(function () { if (open) render(); }, 30000);   // cập nhật chữ "x phút trước"
 
