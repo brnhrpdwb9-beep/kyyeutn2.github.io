@@ -1549,6 +1549,46 @@
         .tys-brand-word { font-size: 21px; } .tys-brand-clock { font-size: 11px; margin-top: 6px; }
     }
 </style>
+
+<!-- ============================================================
+     IPHONE CÓ DYNAMIC ISLAND / TAI THỎ (mở dạng app từ màn hình chính)
+     Mọi thứ sát mép trên phải nằm dưới vùng an toàn; sát mép dưới phải tránh vạch Home.
+     Máy không có tai thỏ: env(...) = 0 nên không thay đổi gì.
+     ============================================================ -->
+<style>
+    :root { --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px); }
+    /* Nút tài khoản + nhãn Order 2 người: canh giữa theo PHẦN NỘI DUNG của đầu trang, không tính phần Dynamic Island */
+    #staffChip, #syncPill { top: calc(50% + var(--sat) / 2) !important; }
+    /* Popup canh giữa / trượt từ dưới: chừa Dynamic Island phía trên và vạch Home phía dưới */
+    @media (max-width: 639px) {
+        #tableModal, #transferModal, #closeShiftModal, #resetModal, #installModal, #myAccountModal,
+        #changePassModal, #accountsModal, #staffLogin {
+            padding-top: max(0.5rem, calc(var(--sat) + 8px)) !important;
+            padding-bottom: max(0.5rem, calc(var(--sab) + 8px)) !important; }
+        #historyModal, #handoverModal, #uiPrefsModal, #syncModal { padding-top: calc(var(--sat) + 8px) !important; }
+    }
+    #tableModal > div { max-height: min(95vh, calc(100dvh - var(--sat) - var(--sab) - 16px)) !important; }
+    #historyModal > div { max-height: min(92vh, calc(100dvh - var(--sat) - 8px)) !important; }
+    #handoverModal > div, #uiPrefsCard, #installModal > div, #closeShiftModal > div, #accountsModal > div {
+        max-height: min(90vh, calc(100dvh - var(--sat) - var(--sab) - 16px)) !important; }
+    @media (max-width: 639px) {
+        /* sheet trượt từ đáy: nút cuối không bị vạch Home đè */
+        #historyModal > div, #handoverModal > div { padding-bottom: var(--sab); }
+    }
+</style>
+
+<!-- ============================================================
+     THANH CÔNG CỤ SAFARI (iPhone, mở bằng trình duyệt)
+     Safari không cho vẽ phần tử cố định bên dưới thanh của nó, nên thanh nút đáy của trang luôn nằm ngay trên thanh Safari.
+     Để thanh Safari trông như nổi đè lên trang (không hở một dải khác màu), mọi lớp nền nằm dưới thanh Safari
+     dùng CÙNG MÀU với thanh nút đáy, theo giao diện sáng / tối. Màu gợi ý cho trình duyệt (theme-color) cũng đổi theo.
+     ============================================================ -->
+<style>
+    html { background-color: #f7f5f0; }
+    html[data-theme="dark"] { background-color: #0f0c09; }
+    html:not([data-theme="dark"]) #mobileActionBar { background-color: rgba(247, 245, 240, .95); }
+    html[data-theme="dark"] #mobileActionBar { background-color: rgba(15, 12, 9, .95); }
+</style>
 </head>
 <body class="h-screen flex flex-col font-sans antialiased overflow-hidden bg-espresso-950">
     <!-- BIỂU TƯỢNG TYS (1 màu, theo color của thẻ chứa). Dùng: <svg class="tys-mark"><use href="#tysMark"/></svg> -->
@@ -7042,7 +7082,8 @@ function togglePassVisibility(inputId, btn) {
                     box.style.cssText = 'position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;width:min(92vw,380px);pointer-events:none';
                     document.body.appendChild(box);
                 }
-                box.style.top = (window.__guardBarH ? window.__guardBarH + 8 : 10) + 'px';   // né thanh cảnh báo đỏ
+                // né thanh cảnh báo đỏ (thanh đó đã tự chừa Dynamic Island) — không có thanh thì chừa Dynamic Island / tai thỏ
+                box.style.top = window.__guardBarH ? (window.__guardBarH + 8) + 'px' : 'calc(10px + env(safe-area-inset-top, 0px))';
                 const tone2 = ({ ok: 'ok', info: 'info', alert: 'alert' })[tone] || 'plain';
                 const dur = ms || 6000;
 
@@ -9534,6 +9575,291 @@ function togglePassVisibility(inputId, btn) {
     document.addEventListener('pointercancel', end, true);
 })();
 </script>
+
+<script>
+/* theme-color theo giao diện: Safari / Chrome tô thanh trình duyệt cùng màu nền trang */
+(function () {
+    function sync() {
+        var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (!m) { m = document.createElement('meta'); m.name = 'theme-color'; document.head.appendChild(m); }
+        var c = dark ? '#0f0c09' : '#f7f5f0';
+        if (m.content !== c) m.content = c;
+    }
+    try { new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }); } catch (e) {}
+    sync();
+})();
+</script>
+<!-- ============================================================
+     GIÁM SÁT BÀN TRỰC TIẾP CHO ADMIN
+     - Mọi máy đã đăng nhập: khi LƯU bàn thì gửi đúng bàn vừa đổi lên Worker (/mon); lúc mở trang / đổi tài khoản
+       gửi một lần cả sơ đồ. Không gửi định kỳ.
+     - ADMIN: Thêm → "Giám sát bàn". Xem theo BÀN (gộp mọi máy, báo LỆCH nếu cùng bàn mà 2 máy ghi khác nhau)
+       hoặc theo MÁY (từng nhân viên đang giữ bàn nào, cập nhật lần cuối khi nào). Tự cập nhật ~1–2 giây,
+       chỉ kết nối máy chủ khi màn giám sát đang mở.
+     - Chỉ xem, không sửa được bàn của máy khác.
+     - Worker cần bản 7 (có /mon).
+     ============================================================ -->
+<style>
+    /* Màn giám sát bàn: cỡ chữ + bố cục riêng (không phụ thuộc Tailwind tự sinh class) */
+    #monModal .mon-t9 { font-size: 9.5px; line-height: 1.3; } #monModal .mon-t10 { font-size: 10.5px; line-height: 1.35; }
+    #monModal .mon-t11 { font-size: 11px; line-height: 1.4; } #monModal .mon-val { font-size: 16px; line-height: 1.15; }
+    #monModal .mon-sum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+    #monModal .mon-chips { display: flex; flex-wrap: wrap; gap: 6px; } #monModal .mon-g6 { gap: 6px; }
+    #monModal .mon-pulse { animation: monPulse 1.6s ease-in-out infinite; }
+    @keyframes monPulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+    @media (prefers-reduced-motion: reduce) { #monModal .mon-pulse { animation: none; } }
+</style>
+<script>
+(function () {
+    'use strict';
+    function base() { try { return String(NOTIFY_WORKER_URL || '').replace(/\/+$/, ''); } catch (e) { return ''; } }
+    function key() { try { return NOTIFY_KEY; } catch (e) { return ''; } }
+    function $(id) { return document.getElementById(id); }
+    function me() { try { return currentUser || null; } catch (e) { return null; } }
+    function accounts() { try { return authAccounts || []; } catch (e) { return []; } }
+    function nameOf(u) { var a = accounts().find(function (x) { return x.user === u; }); return a ? a.name : (u || '?'); }
+    function esc(s) { try { return escapeHtml(String(s)); } catch (e) { return String(s).replace(/[&<>"]/g, ''); } }
+    function money(k) { try { return fmtMoney(k); } catch (e) { return (k || 0) + 'k'; } }
+    function nTables() { try { return TOTAL_TABLES; } catch (e) { return 31; } }
+    function itemsText(items) { try { return groupedItemsText(items); } catch (e) { return (items || []).map(function (x) { return x.name; }).join(', '); } }
+    function due(t) { try { return dueOf(t); } catch (e) { return t.total || 0; } }
+    function ago(ts) {
+        var s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+        if (s < 60) return 'vừa xong';
+        if (s < 3600) return Math.floor(s / 60) + ' phút trước';
+        return Math.floor(s / 3600) + ' giờ trước';
+    }
+    var myDev = (function () {
+        var d = null;
+        try { d = localStorage.getItem('tys_ho_dev'); } catch (e) {}
+        if (!d) { d = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); try { localStorage.setItem('tys_ho_dev', d); } catch (e) {} }
+        return d;
+    })();
+
+    function clean(i, t) {
+        if (!t || !t.status || t.status === 'empty') return { status: 'empty' };
+        var pg = 0, ug = 0;
+        try { pg = guestPaidOf(t); ug = guestUnpaidOf(t); } catch (e) {}
+        return { status: t.status, total: Number(t.total) || 0, startTime: t.startTime || null, note: t.note || '',
+            paymentMethod: t.paymentMethod || '', paidGuests: pg, unpaidGuests: ug,
+            items: (t.items || []).map(function (x) { var o = { name: x.name, price: Number(x.price) || 0 }; if (x.note) o.note = x.note; if (x.prepaid) o.prepaid = true; return o; }) };
+    }
+
+    // ================= MÁY NHÂN VIÊN: báo bàn vừa đổi =================
+    var sent = {}, sentUser = '', timer = null, busy = false, failN = 0;
+    function schedule(ms) { clearTimeout(timer); timer = setTimeout(report, ms == null ? 1500 : ms); }
+    function report() {
+        var u = me();
+        if (!u || !base() || busy) return;
+        var full = u.user !== sentUser;
+        var cur = {}, changes = [];
+        for (var i = 1; i <= nTables(); i++) {
+            var js = JSON.stringify(clean(i, tablesData[i]));
+            cur[i] = js;
+            if (full ? JSON.parse(js).status !== 'empty' : js !== sent[i]) changes.push({ tbl: i, data: JSON.parse(js) });
+        }
+        if (!full && !changes.length) return;
+        busy = true;
+        fetch(base() + '/mon', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key: key(), dev: myDev, user: u.user, name: u.name, full: full, changes: changes }) })
+            .then(function (r) { return r.json(); })
+            .then(function (j) {
+                if (!j || !j.ok) throw new Error((j && j.error) || 'lỗi');
+                failN = 0; sent = cur; sentUser = u.user;
+            })
+            .catch(function () { failN++; schedule(Math.min(60000, 4000 * failN)); })
+            .then(function () { busy = false; });
+    }
+    var origSave = saveData;
+    saveData = function () { var r = origSave.apply(this, arguments); schedule(); return r; };
+    setInterval(function () { var u = me(); if (u && u.user !== sentUser && !busy) schedule(300); }, 3000);   // vừa đăng nhập / đổi tài khoản
+
+    // ================= ADMIN: màn giám sát =================
+    var store = {}, devs = {}, since = 0, open = false, polling = false, view = 'table', lastAt = 0;
+
+    function isAdmin() { var u = me(); return !!(u && u.admin); }
+
+    function addMenuItem() {
+        var menu = $('moreMenu'); if (!menu || $('btnMonitor')) return;
+        var b = document.createElement('button');
+        b.id = 'btnMonitor'; b.type = 'button'; b.setAttribute('role', 'menuitem');
+        b.className = 'relative items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition';
+        b.style.display = 'none';
+        b.innerHTML = '<i class="fa-solid fa-display w-4 text-center text-sm"></i><span class="text-xs font-bold">Giám sát bàn</span>' +
+            '<span class="ml-auto w-2 h-2 rounded-full bg-sage-500"></span>';
+        b.onclick = function () { try { closeMoreMenu(); } catch (e) {} openMonitor(); };
+        var after = $('btnAccounts');
+        if (after && after.nextSibling) menu.insertBefore(b, after.nextSibling); else menu.insertBefore(b, menu.firstChild);
+    }
+    setInterval(function () { var b = $('btnMonitor'); if (b) b.style.display = isAdmin() ? 'flex' : 'none'; }, 1500);
+
+    function poll() {
+        if (polling) return;
+        polling = true;
+        (async function () {
+            var fails = 0;
+            while (open && isAdmin() && document.visibilityState === 'visible') {
+                try {
+                    var r = await fetch(base() + '/mon/state?key=' + encodeURIComponent(key()) + '&since=' + since + '&wait=20', { cache: 'no-store' });
+                    var j = await r.json();
+                    if (!j || !j.ok) throw new Error((j && j.error) || 'lỗi');
+                    fails = 0;
+                    (j.devs || []).forEach(function (d) { devs[d.dev] = d; });
+                    (j.rows || []).forEach(function (row) {
+                        var d = null; try { d = JSON.parse(row.data); } catch (e) {}
+                        store[row.dev + '|' + row.tbl] = { dev: row.dev, tbl: row.tbl, user: row.user, data: d || { status: 'empty' }, ts: row.ts };
+                        if (row.ts > since) since = row.ts;
+                    });
+                    lastAt = Date.now();
+                    render();
+                } catch (e) {
+                    fails++;
+                    setLive(false);
+                    await new Promise(function (res) { setTimeout(res, Math.min(20000, 3000 * fails)); });
+                }
+            }
+            polling = false;
+        })();
+    }
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && open) poll(); });
+
+    function setLive(ok) {
+        var el = $('monLive'); if (!el) return;
+        el.innerHTML = ok
+            ? '<span class="inline-block w-2 h-2 rounded-full bg-sage-500 mr-1.5 mon-pulse"></span>Trực tiếp · ' + new Date(lastAt).toLocaleTimeString('vi-VN')
+            : '<span class="inline-block w-2 h-2 rounded-full bg-brick-500 mr-1.5"></span>Mất kết nối, đang thử lại…';
+    }
+
+    function statusBadge(t) {
+        if (t.status === 'paid') return '<span class="px-1.5 py-0.5 rounded-full mon-t9 font-bold bg-sage-200 text-sage-300">Đã trả</span>';
+        return '<span class="px-1.5 py-0.5 rounded-full mon-t9 font-bold bg-brick-200 text-brick-ink">Chưa trả</span>';
+    }
+    function sig(t) { return JSON.stringify([t.status, (t.items || []).map(function (x) { return x.name + '|' + x.price; }).sort(), t.total]); }
+    function mins(t) { return t.startTime ? Math.max(0, Math.round((Date.now() - t.startTime) / 60000)) : null; }
+    function who(e) { return nameOf(e.user) + (e.dev === myDev ? ' (máy này)' : ''); }
+
+    function render() {
+        if (!open) return;
+        setLive(true);
+        var live = Object.keys(store).map(function (k) { return store[k]; })
+            .filter(function (e) { return e.data && e.data.status && e.data.status !== 'empty'; });
+        // Tóm tắt
+        var tablesBusy = {}, sumDue = 0, unpaid = 0, paid = 0;
+        var byTbl = {};
+        live.forEach(function (e) { (byTbl[e.tbl] = byTbl[e.tbl] || []).push(e); });
+        var conflicts = 0;
+        Object.keys(byTbl).forEach(function (t) {
+            var list = byTbl[t].sort(function (a, b) { return b.ts - a.ts; });
+            var newest = list[0].data;
+            if (newest.status === 'unpaid') { unpaid++; sumDue += due(newest); } else paid++;
+            var sigs = {}; list.forEach(function (e) { sigs[sig(e.data)] = 1; });
+            if (Object.keys(sigs).length > 1) conflicts++;
+        });
+        var activeDevs = Object.keys(devs).map(function (k) { return devs[k]; }).filter(function (d) { return Date.now() - d.ts < 12 * 3600000; });
+        $('monSummary').innerHTML =
+            card('Bàn có khách', Object.keys(byTbl).length, '') + card('Chưa trả', unpaid, 'text-brick-300') +
+            card('Cần thu', money(sumDue), 'text-tys-300') + card('Máy hoạt động', activeDevs.length, '');
+        $('monConflict').classList.toggle('hidden', !conflicts);
+        $('monConflict').innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1.5"></i>' + conflicts + ' bàn đang LỆCH giữa các máy (cùng số bàn nhưng món / tiền khác nhau). Kiểm tra lại với nhân viên.';
+
+        var html = '';
+        if (view === 'table') {
+            var ids = Object.keys(byTbl).map(Number).sort(function (a, b) { return a - b; });
+            if (!ids.length) html = empty();
+            ids.forEach(function (t) {
+                var list = byTbl[t].sort(function (a, b) { return b.ts - a.ts; });
+                var sigs = {}; list.forEach(function (e) { sigs[sig(e.data)] = 1; });
+                var lech = Object.keys(sigs).length > 1;
+                var top = list[0].data, m = mins(top);
+                html += '<div class="rounded-xl border ' + (lech ? 'border-brick-600' : 'border-tys-900') + ' bg-espresso-950 p-2.5">' +
+                    '<div class="flex items-center gap-2">' +
+                    '<span class="w-8 h-8 rounded-lg bg-tys-500 text-ink text-sm font-extrabold flex items-center justify-center shrink-0">' + t + '</span>' +
+                    '<div class="min-w-0 flex-1"><div class="flex items-center mon-g6 flex-wrap">' + statusBadge(top) +
+                    (lech ? '<span class="px-1.5 py-0.5 rounded-full mon-t9 font-extrabold bg-brick-700 text-tys-50">LỆCH ' + list.length + ' MÁY</span>' : '') +
+                    (m !== null ? '<span class="mon-t10 text-stone-500">ngồi ' + m + ' phút</span>' : '') + '</div>' +
+                    '<div class="mon-t11 text-stone-300 truncate mt-0.5">' + esc(itemsText(top.items)) + '</div></div>' +
+                    '<div class="text-right shrink-0"><div class="text-sm font-extrabold text-tys-300 tabular-nums">' + money(top.status === 'unpaid' ? due(top) : top.total) + '</div></div></div>';
+                list.forEach(function (e, idx) {
+                    if (!lech && idx > 0) return;
+                    html += '<div class="flex items-center justify-between gap-2 mt-1.5 pt-1.5 border-t border-tys-900 mon-t10">' +
+                        '<span class="text-stone-400 truncate"><i class="fa-solid fa-user mr-1 text-tys-500"></i>' + esc(who(e)) + (lech ? ' · ' + esc(itemsText(e.data.items)) : '') + '</span>' +
+                        '<span class="text-stone-500 shrink-0">' + (lech ? money(e.data.total) + ' · ' : '') + ago(e.ts) + '</span></div>';
+                });
+                if (top.note) html += '<div class="mon-t10 text-stone-500 mt-1"><i class="fa-regular fa-note-sticky mr-1"></i>' + esc(top.note) + '</div>';
+                html += '</div>';
+            });
+        } else {
+            var list2 = activeDevs.sort(function (a, b) { return b.ts - a.ts; });
+            if (!list2.length) html = empty();
+            list2.forEach(function (d) {
+                var mine = live.filter(function (e) { return e.dev === d.dev; }).sort(function (a, b) { return a.tbl - b.tbl; });
+                var s = 0; mine.forEach(function (e) { if (e.data.status === 'unpaid') s += due(e.data); });
+                html += '<div class="rounded-xl border border-tys-900 bg-espresso-950 p-2.5">' +
+                    '<div class="flex items-center justify-between gap-2">' +
+                    '<div class="min-w-0"><div class="text-sm font-bold text-tys-100 truncate"><i class="fa-solid fa-mobile-screen mr-1.5 text-tys-500"></i>' + esc(nameOf(d.user)) + (d.dev === myDev ? ' <span class="mon-t10 text-stone-500">(máy này)</span>' : '') + '</div>' +
+                    '<div class="mon-t10 text-stone-500">Mã máy ' + esc(String(d.dev).slice(-5)) + ' · cập nhật ' + ago(d.ts) + '</div></div>' +
+                    '<div class="text-right shrink-0"><div class="mon-t10 text-stone-500">' + mine.length + ' bàn</div><div class="text-sm font-extrabold text-tys-300 tabular-nums">' + money(s) + '</div></div></div>';
+                if (mine.length) {
+                    html += '<div class="mon-chips mt-2">';
+                    mine.forEach(function (e) {
+                        var paidT = e.data.status === 'paid';
+                        html += '<span class="px-2 py-1 rounded-lg mon-t11 font-bold border ' + (paidT ? 'border-sage-700 text-sage-300' : 'border-brick-600 text-brick-300') + '">B' + e.tbl + ' · ' + money(paidT ? e.data.total : due(e.data)) + '</span>';
+                    });
+                    html += '</div>';
+                } else html += '<div class="mon-t11 text-stone-500 mt-1.5">Không giữ bàn nào có khách.</div>';
+                html += '</div>';
+            });
+        }
+        $('monBody').innerHTML = html;
+    }
+    function card(label, val, cls) {
+        return '<div class="rounded-xl border border-tys-900 bg-espresso-950 px-2 py-2 text-center"><div class="mon-val font-extrabold tabular-nums ' + cls + '">' + val + '</div><div class="mon-t9 font-bold uppercase tracking-wide text-stone-500 mt-0.5">' + label + '</div></div>';
+    }
+    function empty() { return '<div class="text-center text-stone-500 text-xs py-8"><i class="fa-solid fa-mug-saucer text-2xl block mb-2 opacity-60"></i>Chưa có bàn nào có khách trên các máy.</div>'; }
+
+    function setView(v) {
+        view = v;
+        [['monTabTable', 'table'], ['monTabDev', 'dev']].forEach(function (x) {
+            var el = $(x[0]); if (!el) return;
+            el.classList.toggle('bg-tys-500', x[1] === v); el.classList.toggle('text-ink', x[1] === v); el.classList.toggle('text-stone-400', x[1] !== v);
+        });
+        render();
+    }
+
+    function openMonitor() {
+        if (!isAdmin()) return;
+        var old = $('monModal'); if (old) old.remove();
+        var w = document.createElement('div');
+        w.id = 'monModal';
+        w.className = 'fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4';
+        w.onclick = function (e) { if (e.target === w) closeMonitor(); };
+        w.innerHTML = '<div class="bg-espresso-900 border border-tys-800 w-full max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl flex flex-col modal-fade-in" style="max-height:min(92vh,calc(100dvh - env(safe-area-inset-top,0px) - 8px))">' +
+            '<div class="flex items-center justify-between gap-2 px-4 pt-3 pb-2 shrink-0"><div class="flex items-center gap-2 min-w-0">' +
+            '<div class="w-8 h-8 rounded-lg bg-tys-500 text-ink flex items-center justify-center shrink-0"><i class="fa-solid fa-display text-sm"></i></div>' +
+            '<div class="min-w-0"><h3 class="text-sm font-bold text-tys-100 leading-tight">Giám sát bàn</h3><p id="monLive" class="mon-t10 text-stone-500 leading-tight mt-0.5">Đang tải…</p></div></div>' +
+            '<button id="monClose" class="w-8 h-8 rounded-lg text-stone-400 hover:bg-espresso-800 flex items-center justify-center" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button></div>' +
+            '<div class="px-4 pb-2 shrink-0 space-y-2"><div id="monSummary" class="mon-sum"></div>' +
+            '<div id="monConflict" class="hidden rounded-xl border border-brick-600 bg-brick-950 text-brick-300 mon-t11 font-semibold p-2"></div>' +
+            '<div class="flex p-1 rounded-xl bg-espresso-950/70 border border-tys-900">' +
+            '<button id="monTabTable" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-table-cells-large mr-1"></i>Theo bàn</button>' +
+            '<button id="monTabDev" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-mobile-screen mr-1"></i>Theo máy</button></div></div>' +
+            '<div id="monBody" class="flex-1 overflow-y-auto px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] space-y-2"></div></div>';
+        document.body.appendChild(w);
+        $('monClose').onclick = closeMonitor;
+        $('monTabTable').onclick = function () { setView('table'); };
+        $('monTabDev').onclick = function () { setView('dev'); };
+        open = true;
+        setView(view);
+        report();          // máy ADMIN cũng báo bàn của chính mình ngay
+        poll();
+    }
+    function closeMonitor() { open = false; var m = $('monModal'); if (m) m.remove(); }
+    window.openMonitor = openMonitor;
+    setInterval(function () { if (open) render(); }, 30000);   // cập nhật chữ "x phút trước"
+
+    addMenuItem();
+})();
+</script>
 </body>
 </html>
-
