@@ -9593,23 +9593,25 @@ function togglePassVisibility(inputId, btn) {
 <!-- ============================================================
      GIÁM SÁT BÀN TRỰC TIẾP CHO ADMIN
      - CHỈ KHI ADMIN BẬT GIÁM SÁT (mở màn "Giám sát bàn"): mọi máy đã đăng nhập gửi ngay cả sơ đồ, sau đó mỗi lần
-       LƯU bàn thì gửi đúng bàn vừa đổi (/mon). Đóng màn giám sát = tắt: mọi máy ngừng gửi, không tốn tài nguyên máy chủ.
+       LƯU bàn thì gửi đúng bàn vừa đổi (/mon). ADMIN bấm Tắt: mọi máy ngừng gửi, không tốn tài nguyên máy chủ.
        ADMIN tắt máy / mất mạng không kịp tắt -> Worker tự tắt sau 90 giây.
-     - ADMIN: Thêm → "Giám sát bàn". Xem theo BÀN (gộp mọi máy, báo LỆCH nếu cùng bàn mà 2 máy ghi khác nhau)
-       hoặc theo MÁY (từng nhân viên đang giữ bàn nào, cập nhật lần cuối khi nào). Tự cập nhật ~1–2 giây,
-       chỉ kết nối máy chủ khi màn giám sát đang mở.
-     - Chỉ xem, không sửa được bàn của máy khác.
+     - Đang giám sát, SƠ ĐỒ của ADMIN hiện bàn mới nhất từ mọi máy (chỉ xem): nhãn tên nhân viên dưới ô bàn,
+       nhãn LỆCH khi 2 máy ghi khác nhau; bấm bàn mở bảng chi tiết, không gọi món / thu tiền được.
+       Thanh "Đang giám sát · Danh sách · Tắt" ngay dưới đầu trang.
+     - ADMIN: Thêm → "Giám sát bàn". Danh sách theo BÀN (báo LỆCH) hoặc theo MÁY. Tự cập nhật ~1–2 giây.
      - Worker cần bản 7 (có /mon).
      ============================================================ -->
 <style>
     /* Màn giám sát bàn: cỡ chữ + bố cục riêng (không phụ thuộc Tailwind tự sinh class) */
-    #monModal .mon-t9 { font-size: 9.5px; line-height: 1.3; } #monModal .mon-t10 { font-size: 10.5px; line-height: 1.35; }
-    #monModal .mon-t11 { font-size: 11px; line-height: 1.4; } #monModal .mon-val { font-size: 16px; line-height: 1.15; }
-    #monModal .mon-sum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-    #monModal .mon-chips { display: flex; flex-wrap: wrap; gap: 6px; } #monModal .mon-g6 { gap: 6px; }
-    #monModal .mon-pulse { animation: monPulse 1.6s ease-in-out infinite; }
+    .mon-t9 { font-size: 9.5px; line-height: 1.3; } .mon-t10 { font-size: 10.5px; line-height: 1.35; }
+    .mon-t11 { font-size: 11px; line-height: 1.4; } .mon-val { font-size: 16px; line-height: 1.15; }
+    .mon-sum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+    .mon-chips { display: flex; flex-wrap: wrap; gap: 6px; } .mon-g6 { gap: 6px; }
+    .mon-pulse { animation: monPulse 1.6s ease-in-out infinite; }
+    /* Đang giám sát: ẩn nhãn order 2 người trên ô bàn (nhãn giám sát thay thế) */
+    body.mon-view .sync-owner { display: none; }
     @keyframes monPulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
-    @media (prefers-reduced-motion: reduce) { #monModal .mon-pulse { animation: none; } }
+    @media (prefers-reduced-motion: reduce) { .mon-pulse { animation: none; } }
 </style>
 <script>
 (function () {
@@ -9625,6 +9627,7 @@ function togglePassVisibility(inputId, btn) {
     function nTables() { try { return TOTAL_TABLES; } catch (e) { return 31; } }
     function itemsText(items) { try { return groupedItemsText(items); } catch (e) { return (items || []).map(function (x) { return x.name; }).join(', '); } }
     function due(t) { try { return dueOf(t); } catch (e) { return t.total || 0; } }
+    function toast(t, tone, ms) { try { ackToast(t, tone, ms); } catch (e) {} }
     function ago(ts) {
         var s = Math.max(0, Math.round((Date.now() - ts) / 1000));
         if (s < 60) return 'vừa xong';
@@ -9689,11 +9692,14 @@ function togglePassVisibility(inputId, btn) {
     window.tysSyncFeed = function (sy) {
         if (prevFeed) { try { prevFeed(sy); } catch (e) {} }
         // Máy ADMIN đang mở màn giám sát: bỏ qua cờ "tắt" cũ do kết nối chờ mở từ trước lúc bật trả về muộn
-        if (sy && typeof sy.mon === 'boolean') setMonOn(sy.mon || open);
+        if (sy && typeof sy.mon === 'boolean') setMonOn(sy.mon || active);
     };
 
-    // ================= ADMIN: màn giám sát =================
-    var store = {}, devs = {}, since = 0, open = false, polling = false, view = 'table', lastAt = 0;
+    // ================= ADMIN: GIÁM SÁT (trên SƠ ĐỒ + màn danh sách) =================
+    // Bật giám sát: sơ đồ của ADMIN hiện bàn mới nhất từ mọi máy (chỉ xem), có nhãn tên nhân viên giữ bàn và nhãn LỆCH.
+    // Giám sát chạy độc lập với màn danh sách: đóng danh sách vẫn giám sát trên sơ đồ. Tắt bằng thanh "Đang giám sát".
+    var store = {}, devs = {}, since = 0, active = false, open = false, polling = false, starting = false, view = 'table', lastAt = 0;
+    var MON_FLAG = 'tys_mon_admin';
 
     function isAdmin() { var u = me(); return !!(u && u.admin); }
 
@@ -9704,32 +9710,223 @@ function togglePassVisibility(inputId, btn) {
         b.className = 'relative items-center gap-3 w-full px-3 py-2.5 rounded-xl text-tys-300 hover:bg-espresso-800 active:scale-95 transition';
         b.style.display = 'none';
         b.innerHTML = '<i class="fa-solid fa-display w-4 text-center text-sm"></i><span class="text-xs font-bold">Giám sát bàn</span>' +
-            '<span class="ml-auto w-2 h-2 rounded-full bg-sage-500"></span>';
+            '<span id="btnMonitorDot" class="ml-auto w-2 h-2 rounded-full bg-stone-500"></span>';
         b.onclick = function () { try { closeMoreMenu(); } catch (e) {} openMonitor(); };
         var after = $('btnAccounts');
         if (after && after.nextSibling) menu.insertBefore(b, after.nextSibling); else menu.insertBefore(b, menu.firstChild);
     }
-    setInterval(function () { var b = $('btnMonitor'); if (b) b.style.display = isAdmin() ? 'flex' : 'none'; }, 1500);
+    setInterval(function () {
+        var b = $('btnMonitor'); if (b) b.style.display = isAdmin() ? 'flex' : 'none';
+        var dot = $('btnMonitorDot'); if (dot) { dot.classList.toggle('bg-sage-500', active); dot.classList.toggle('bg-stone-500', !active); }
+        // Tải lại trang khi đang giám sát -> tự bật lại
+        var flag = null; try { flag = localStorage.getItem(MON_FLAG); } catch (e) {}
+        if (flag && isAdmin() && !active && !starting) startMon(true).catch(function () {});
+        if (active && !isAdmin()) stopMon(true);    // đăng xuất / đổi sang tài khoản nhân viên
+    }, 1500);
+
+    // ---------- Dữ liệu gộp từ các máy ----------
+    function liveEntries() {
+        return Object.keys(store).map(function (k) { return store[k]; })
+            .filter(function (e) { return e.data && e.data.status && e.data.status !== 'empty'; });
+    }
+    function byTable() {
+        var m = {};
+        liveEntries().forEach(function (e) { (m[e.tbl] = m[e.tbl] || []).push(e); });
+        Object.keys(m).forEach(function (t) { m[t].sort(function (a, b) { return b.ts - a.ts; }); });
+        return m;
+    }
+    function sig(t) { return JSON.stringify([t.status, (t.items || []).map(function (x) { return x.name + '|' + x.price; }).sort(), t.total]); }
+    function isLech(list) { var s = {}; list.forEach(function (e) { s[sig(e.data)] = 1; }); return Object.keys(s).length > 1; }
+    function mins(t) { return t.startTime ? Math.max(0, Math.round((Date.now() - t.startTime) / 60000)) : null; }
+    function who(e) { return nameOf(e.user) + (e.dev === myDev ? ' (máy này)' : ''); }
+
+    // ---------- SƠ ĐỒ ở chế độ xem giám sát (không đụng dữ liệu thật của máy ADMIN) ----------
+    var viewData = null, viewInfo = {};
+    function emptyFull(i) { return { id: i, status: 'empty', items: [], total: 0, startTime: null, paymentMethod: 'Tiền mặt', note: '', paidGuests: 0, unpaidGuests: 0 }; }
+    function buildView() {
+        var v = {}; viewInfo = {};
+        for (var i = 1; i <= nTables(); i++) v[i] = emptyFull(i);
+        var bt = byTable();
+        Object.keys(bt).forEach(function (t) {
+            var list = bt[t], n = Number(t);
+            v[n] = Object.assign(emptyFull(n), list[0].data, { id: n });
+            var users = []; list.forEach(function (e) { var nm = nameOf(e.user); if (users.indexOf(nm) < 0) users.push(nm); });
+            viewInfo[n] = { users: users, lech: isLech(list) };
+        });
+        viewData = v;
+    }
+    // Vẽ sơ đồ / danh sách / số đếm bằng dữ liệu giám sát: tạm thay tablesData trong lúc vẽ rồi trả lại ngay
+    function withView(fn, ctx, args) {
+        if (!active || !viewData) return fn.apply(ctx, args);
+        var real = tablesData;
+        tablesData = viewData;
+        try { return fn.apply(ctx, args); } finally { tablesData = real; }
+    }
+    var origNode = renderTableNode;
+    renderTableNode = function (i) { var r = withView(origNode, this, arguments); try { paintMonTag(i); } catch (e) {} return r; };
+    var origList = renderListView;
+    renderListView = function () { return withView(origList, this, arguments); };
+    var origStats = updateDashboardStats;
+    updateDashboardStats = function () { return withView(origStats, this, arguments); };
+
+    function paintMonTag(i) {
+        var box = $('table-node-' + i); if (!box) return;
+        var btn = box.querySelector('.table-btn'); if (!btn) return;
+        var tag = btn.querySelector('.mon-owner');
+        var info = active && viewData && viewData[i] && viewData[i].status !== 'empty' ? viewInfo[i] : null;
+        if (!info) { if (tag) tag.remove(); return; }
+        if (!tag) {
+            tag = document.createElement('span');
+            tag.className = 'mon-owner';
+            tag.style.cssText = 'position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);z-index:3;white-space:nowrap;max-width:150%;overflow:hidden;text-overflow:ellipsis;' +
+                'padding:1px 8px;border-radius:999px;font:700 10px/1.5 inherit;pointer-events:none;box-shadow:0 2px 6px -1px rgba(20,12,4,.45)';
+            btn.appendChild(tag);
+        }
+        tag.textContent = (info.lech ? 'LỆCH · ' : '') + info.users.join(' / ');
+        tag.style.background = info.lech ? '#b23a22' : '#2a1f14';
+        tag.style.color = info.lech ? '#fff' : '#f6e7c8';
+        tag.style.border = info.lech ? '1px solid #e2724c' : '1px solid rgba(225,182,110,.4)';
+    }
+    function applyView() {
+        try { renderMap(); } catch (e) {}
+        try { var lv = $('listView'); if (lv && !lv.classList.contains('hidden')) renderListView(true); } catch (e) {}
+        try { updateDashboardStats(); } catch (e) {}
+    }
+
+    // Đang giám sát: bấm bàn chỉ xem chi tiết, không mở gọi món / không thu tiền nhanh (tránh ghi đè bàn của nhân viên)
+    var origOpenModal = openModal;
+    openModal = function (id) { if (active) { showReadOnly(id); return; } return origOpenModal.apply(this, arguments); };
+    var origQuick = triggerQuickStateTransition;
+    triggerQuickStateTransition = function () {
+        if (active) { toast('Đang giám sát: sơ đồ chỉ để xem. Tắt giám sát để thao tác bàn của máy này.', 'info', 4000); return; }
+        return origQuick.apply(this, arguments);
+    };
+
+    function statusBadge(t) {
+        if (t.status === 'paid') return '<span class="px-1.5 py-0.5 rounded-full mon-t9 font-bold bg-sage-200 text-sage-300">Đã trả</span>';
+        return '<span class="px-1.5 py-0.5 rounded-full mon-t9 font-bold bg-brick-200 text-brick-ink">Chưa trả</span>';
+    }
+
+    function showReadOnly(t) {
+        var old = $('monRO'); if (old) old.remove();
+        var list = byTable()[t] || [], lech = list.length > 1 && isLech(list);
+        var body = '';
+        if (!list.length) body = '<div class="text-center text-stone-500 text-xs py-6">Bàn ' + t + ' đang trống trên mọi máy.</div>';
+        if (lech) body += '<div class="rounded-xl border border-brick-600 bg-brick-950 text-brick-300 mon-t11 font-semibold p-2"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i>Bàn này đang LỆCH giữa ' + list.length + ' máy. Kiểm tra lại với nhân viên.</div>';
+        list.forEach(function (e) {
+            var d = e.data, m = mins(d);
+            body += '<div class="rounded-xl border border-tys-900 bg-espresso-950 p-2.5 space-y-1.5">' +
+                '<div class="flex items-center justify-between gap-2"><span class="text-sm font-bold text-tys-100 truncate"><i class="fa-solid fa-user mr-1.5 text-tys-500"></i>' + esc(who(e)) + '</span>' +
+                '<span class="mon-t10 text-stone-500 shrink-0">cập nhật ' + ago(e.ts) + '</span></div>' +
+                '<div class="flex items-center mon-g6 flex-wrap">' + statusBadge(d) + (m !== null ? '<span class="mon-t10 text-stone-500">ngồi ' + m + ' phút</span>' : '') +
+                ((d.paidGuests || d.unpaidGuests) ? '<span class="mon-t10 text-stone-500">· ' + ((d.paidGuests || 0) + (d.unpaidGuests || 0)) + ' khách</span>' : '') + '</div>' +
+                '<div class="space-y-0.5">' + (d.items || []).map(function (x) {
+                    return '<div class="flex justify-between gap-2 mon-t11"><span class="text-stone-300 min-w-0">' + esc(x.name) + (x.prepaid ? ' <span class="text-stone-500">(đã thu)</span>' : '') +
+                        (x.note ? '<span class="block text-tys-400 italic">' + esc(x.note) + '</span>' : '') + '</span><span class="text-tys-300 font-bold tabular-nums shrink-0">' + x.price + 'k</span></div>';
+                }).join('') + '</div>' +
+                '<div class="flex justify-between pt-1.5 border-t border-tys-900"><span class="mon-t10 text-stone-500 uppercase tracking-wide font-bold">' + (d.status === 'unpaid' ? 'Còn thu' : 'Tổng') + '</span>' +
+                '<span class="text-sm font-extrabold text-tys-300 tabular-nums">' + money(d.status === 'unpaid' ? due(d) : d.total) + '</span></div>' +
+                (d.note ? '<div class="mon-t10 text-stone-500"><i class="fa-regular fa-note-sticky mr-1"></i>' + esc(d.note) + '</div>' : '') + '</div>';
+        });
+        var w = document.createElement('div');
+        w.id = 'monRO';
+        w.className = 'fixed inset-0 z-[60] bg-stone-100/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4';
+        w.onclick = function (e) { if (e.target === w) w.remove(); };
+        w.innerHTML = '<div id="monModal-ro" class="bg-espresso-900 border border-tys-800 w-full max-w-md rounded-t-2xl sm:rounded-2xl shadow-xl flex flex-col modal-fade-in" style="max-height:min(88vh,calc(100dvh - env(safe-area-inset-top,0px) - 8px))">' +
+            '<div class="flex items-center justify-between gap-2 px-4 pt-3 pb-2 shrink-0"><div class="flex items-center gap-2">' +
+            '<div class="w-9 h-9 rounded-lg bg-tys-500 text-ink font-extrabold flex items-center justify-center">B' + t + '</div>' +
+            '<div><h3 class="text-sm font-bold text-tys-100 leading-tight">Bàn ' + t + '</h3><p class="mon-t10 text-stone-500">Giám sát · chỉ xem</p></div></div>' +
+            '<button id="monROClose" class="w-8 h-8 rounded-lg text-stone-400 hover:bg-espresso-800 flex items-center justify-center" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button></div>' +
+            '<div class="flex-1 overflow-y-auto px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] space-y-2">' + body + '</div></div>';
+        document.body.appendChild(w);
+        w.classList.add('mon-scope');
+        $('monROClose').onclick = function () { w.remove(); };
+    }
+
+    // ---------- Thanh "Đang giám sát" dưới đầu trang ----------
+    function paintBar() {
+        var bar = $('monBar');
+        if (!active) { if (bar) bar.remove(); return; }
+        if (!bar) {
+            bar = document.createElement('div');
+            bar.id = 'monBar';
+            bar.className = 'shrink-0 flex items-center gap-2 border-b border-tys-800 bg-tys-900/40 text-tys-300';
+            bar.style.cssText = 'padding:6px 10px;font-size:11.5px;font-weight:700';
+            bar.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-sage-500 mon-pulse" style="flex:none"></span>' +
+                '<span id="monBarTxt" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Đang giám sát…</span>' +
+                '<button id="monBarList" type="button" class="rounded-lg border border-tys-700 text-tys-300" style="padding:4px 9px;font-size:11px;font-weight:800">Danh sách</button>' +
+                '<button id="monBarStop" type="button" class="rounded-lg border border-brick-800/70 text-brick-400" style="padding:4px 9px;font-size:11px;font-weight:800"><i class="fa-solid fa-power-off mr-1"></i>Tắt</button>';
+            var hd = $('mainHeader');
+            if (hd && hd.parentNode) hd.parentNode.insertBefore(bar, hd.nextSibling); else document.body.prepend(bar);
+            $('monBarList').onclick = function () { openMonitor(); };
+            $('monBarStop').onclick = function () { stopMon(); };
+            bar.classList.add('mon-scope');
+        }
+        var bt = byTable(), n = Object.keys(bt).length, lech = 0;
+        Object.keys(bt).forEach(function (t) { if (isLech(bt[t])) lech++; });
+        var nd = Object.keys(devs).filter(function (k) { return Date.now() - devs[k].ts < 12 * 3600000; }).length;
+        $('monBarTxt').textContent = 'Đang giám sát · ' + nd + ' máy · ' + n + ' bàn có khách' + (lech ? ' · ' + lech + ' bàn LỆCH' : '');
+    }
+
+    // ---------- Bật / tắt ----------
+    function startMon(resume) {
+        if (active || starting || !isAdmin()) return Promise.resolve();
+        starting = true;
+        return monCtl('on').then(function () {
+            active = true; store = {}; devs = {}; since = 0;
+            buildView();
+            try { localStorage.setItem(MON_FLAG, '1'); } catch (e) {}
+            document.body.classList.add('mon-view');
+            setMonOn(true);                 // máy ADMIN cũng gửi bàn của chính mình
+            paintBar(); applyView();
+            setTimeout(poll, 600);          // chờ các máy kịp gửi sơ đồ
+            if (!resume) toast('Đã bật giám sát: sơ đồ đang hiện bàn của mọi máy (chỉ xem)', 'ok', 5000);
+        }).catch(function (e) {
+            if (!resume) toast('Không bật được giám sát (Worker chưa cập nhật bản 7?)', 'alert', 6000);
+            try { localStorage.removeItem(MON_FLAG); } catch (x) {}
+            throw e;
+        }).finally(function () { starting = false; });
+    }
+    function stopMon(silent) {
+        if (!active) return;
+        active = false; viewData = null; viewInfo = {}; store = {}; devs = {};
+        try { localStorage.removeItem(MON_FLAG); } catch (e) {}
+        document.body.classList.remove('mon-view');
+        document.querySelectorAll('.mon-owner').forEach(function (el) { el.remove(); });
+        var ro = $('monRO'); if (ro) ro.remove();
+        closePanel();
+        paintBar(); applyView();
+        setMonOn(false);
+        monCtl('off').catch(function () {});        // mọi máy ngừng gửi
+        if (!silent) toast('Đã tắt giám sát: sơ đồ trở về bàn của máy này', 'info', 4000);
+    }
 
     function poll() {
         if (polling) return;
         polling = true;
         (async function () {
             var fails = 0;
-            while (open && isAdmin() && document.visibilityState === 'visible') {
+            while (active && isAdmin() && document.visibilityState === 'visible') {
                 try {
                     var r = await fetch(base() + '/mon/state?key=' + encodeURIComponent(key()) + '&since=' + since + '&wait=20', { cache: 'no-store' });
                     var j = await r.json();
                     if (!j || !j.ok) throw new Error((j && j.error) || 'lỗi');
+                    if (!active) break;
                     fails = 0;
+                    if (j.on === false) {               // giám sát đã hết hạn (vd. khoá máy quá 90 giây) -> bật lại
+                        await monCtl('on'); store = {}; devs = {}; since = 0; continue;
+                    }
                     (j.devs || []).forEach(function (d) { devs[d.dev] = d; });
+                    var changed = false;
                     (j.rows || []).forEach(function (row) {
                         var d = null; try { d = JSON.parse(row.data); } catch (e) {}
                         store[row.dev + '|' + row.tbl] = { dev: row.dev, tbl: row.tbl, user: row.user, data: d || { status: 'empty' }, ts: row.ts };
                         if (row.ts > since) since = row.ts;
+                        changed = true;
                     });
                     lastAt = Date.now();
-                    render();
+                    if (changed || !viewData) { buildView(); applyView(); }
+                    paintBar(); render();
                 } catch (e) {
                     fails++;
                     setLive(false);
@@ -9739,7 +9936,7 @@ function togglePassVisibility(inputId, btn) {
             polling = false;
         })();
     }
-    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && open) poll(); });
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && active) poll(); });
 
     function setLive(ok) {
         var el = $('monLive'); if (!el) return;
@@ -9748,30 +9945,16 @@ function togglePassVisibility(inputId, btn) {
             : '<span class="inline-block w-2 h-2 rounded-full bg-brick-500 mr-1.5"></span>Mất kết nối, đang thử lại…';
     }
 
-    function statusBadge(t) {
-        if (t.status === 'paid') return '<span class="px-1.5 py-0.5 rounded-full mon-t9 font-bold bg-sage-200 text-sage-300">Đã trả</span>';
-        return '<span class="px-1.5 py-0.5 rounded-full mon-t9 font-bold bg-brick-200 text-brick-ink">Chưa trả</span>';
-    }
-    function sig(t) { return JSON.stringify([t.status, (t.items || []).map(function (x) { return x.name + '|' + x.price; }).sort(), t.total]); }
-    function mins(t) { return t.startTime ? Math.max(0, Math.round((Date.now() - t.startTime) / 60000)) : null; }
-    function who(e) { return nameOf(e.user) + (e.dev === myDev ? ' (máy này)' : ''); }
-
+    // ---------- Màn danh sách ----------
     function render() {
-        if (!open) return;
-        setLive(true);
-        var live = Object.keys(store).map(function (k) { return store[k]; })
-            .filter(function (e) { return e.data && e.data.status && e.data.status !== 'empty'; });
-        // Tóm tắt
-        var tablesBusy = {}, sumDue = 0, unpaid = 0, paid = 0;
-        var byTbl = {};
-        live.forEach(function (e) { (byTbl[e.tbl] = byTbl[e.tbl] || []).push(e); });
-        var conflicts = 0;
+        if (!open || !$('monBody')) return;
+        if (lastAt) setLive(true);
+        var live = liveEntries(), byTbl = byTable();
+        var sumDue = 0, unpaid = 0, conflicts = 0;
         Object.keys(byTbl).forEach(function (t) {
-            var list = byTbl[t].sort(function (a, b) { return b.ts - a.ts; });
-            var newest = list[0].data;
-            if (newest.status === 'unpaid') { unpaid++; sumDue += due(newest); } else paid++;
-            var sigs = {}; list.forEach(function (e) { sigs[sig(e.data)] = 1; });
-            if (Object.keys(sigs).length > 1) conflicts++;
+            var newest = byTbl[t][0].data;
+            if (newest.status === 'unpaid') { unpaid++; sumDue += due(newest); }
+            if (isLech(byTbl[t])) conflicts++;
         });
         var activeDevs = Object.keys(devs).map(function (k) { return devs[k]; }).filter(function (d) { return Date.now() - d.ts < 12 * 3600000; });
         $('monSummary').innerHTML =
@@ -9785,11 +9968,8 @@ function togglePassVisibility(inputId, btn) {
             var ids = Object.keys(byTbl).map(Number).sort(function (a, b) { return a - b; });
             if (!ids.length) html = empty();
             ids.forEach(function (t) {
-                var list = byTbl[t].sort(function (a, b) { return b.ts - a.ts; });
-                var sigs = {}; list.forEach(function (e) { sigs[sig(e.data)] = 1; });
-                var lech = Object.keys(sigs).length > 1;
-                var top = list[0].data, m = mins(top);
-                html += '<div class="rounded-xl border ' + (lech ? 'border-brick-600' : 'border-tys-900') + ' bg-espresso-950 p-2.5">' +
+                var list = byTbl[t], lech = isLech(list), top = list[0].data, m = mins(top);
+                html += '<div data-tbl="' + t + '" class="mon-row rounded-xl border ' + (lech ? 'border-brick-600' : 'border-tys-900') + ' bg-espresso-950 p-2.5" style="cursor:pointer">' +
                     '<div class="flex items-center gap-2">' +
                     '<span class="w-8 h-8 rounded-lg bg-tys-500 text-ink text-sm font-extrabold flex items-center justify-center shrink-0">' + t + '</span>' +
                     '<div class="min-w-0 flex-1"><div class="flex items-center mon-g6 flex-wrap">' + statusBadge(top) +
@@ -9821,7 +10001,7 @@ function togglePassVisibility(inputId, btn) {
                     html += '<div class="mon-chips mt-2">';
                     mine.forEach(function (e) {
                         var paidT = e.data.status === 'paid';
-                        html += '<span class="px-2 py-1 rounded-lg mon-t11 font-bold border ' + (paidT ? 'border-sage-700 text-sage-300' : 'border-brick-600 text-brick-300') + '">B' + e.tbl + ' · ' + money(paidT ? e.data.total : due(e.data)) + '</span>';
+                        html += '<span data-tbl="' + e.tbl + '" class="mon-row px-2 py-1 rounded-lg mon-t11 font-bold border ' + (paidT ? 'border-sage-700 text-sage-300' : 'border-brick-600 text-brick-300') + '" style="cursor:pointer">B' + e.tbl + ' · ' + money(paidT ? e.data.total : due(e.data)) + '</span>';
                     });
                     html += '</div>';
                 } else html += '<div class="mon-t11 text-stone-500 mt-1.5">Không giữ bàn nào có khách.</div>';
@@ -9829,6 +10009,7 @@ function togglePassVisibility(inputId, btn) {
             });
         }
         $('monBody').innerHTML = html;
+        $('monBody').querySelectorAll('.mon-row').forEach(function (el) { el.onclick = function () { showReadOnly(Number(el.getAttribute('data-tbl'))); }; });
     }
     function card(label, val, cls) {
         return '<div class="rounded-xl border border-tys-900 bg-espresso-950 px-2 py-2 text-center"><div class="mon-val font-extrabold tabular-nums ' + cls + '">' + val + '</div><div class="mon-t9 font-bold uppercase tracking-wide text-stone-500 mt-0.5">' + label + '</div></div>';
@@ -9846,11 +10027,15 @@ function togglePassVisibility(inputId, btn) {
 
     function openMonitor() {
         if (!isAdmin()) return;
+        if (!active) startMon(false).then(openPanel).catch(function () {});
+        else openPanel();
+    }
+    function openPanel() {
         var old = $('monModal'); if (old) old.remove();
         var w = document.createElement('div');
         w.id = 'monModal';
         w.className = 'fixed inset-0 z-50 bg-stone-100/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4';
-        w.onclick = function (e) { if (e.target === w) closeMonitor(); };
+        w.onclick = function (e) { if (e.target === w) closePanel(); };
         w.innerHTML = '<div class="bg-espresso-900 border border-tys-800 w-full max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl flex flex-col modal-fade-in" style="max-height:min(92vh,calc(100dvh - env(safe-area-inset-top,0px) - 8px))">' +
             '<div class="flex items-center justify-between gap-2 px-4 pt-3 pb-2 shrink-0"><div class="flex items-center gap-2 min-w-0">' +
             '<div class="w-8 h-8 rounded-lg bg-tys-500 text-ink flex items-center justify-center shrink-0"><i class="fa-solid fa-display text-sm"></i></div>' +
@@ -9863,28 +10048,18 @@ function togglePassVisibility(inputId, btn) {
             '<button id="monTabDev" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition"><i class="fa-solid fa-mobile-screen mr-1"></i>Theo máy</button></div></div>' +
             '<div id="monBody" class="flex-1 overflow-y-auto px-4 space-y-2"></div>' +
             '<div class="px-4 pt-2 pb-[calc(0.75rem+env(safe-area-inset-bottom))] border-t border-tys-900 shrink-0 flex items-center gap-2">' +
-            '<p class="mon-t10 text-stone-500 flex-1">Đang giám sát: các máy gửi bàn khi lưu. Đóng màn này là tắt giám sát, các máy ngừng gửi.</p>' +
+            '<p class="mon-t10 text-stone-500 flex-1">Đóng danh sách vẫn giám sát trên sơ đồ. Bấm Tắt để ngừng giám sát, các máy ngừng gửi.</p>' +
             '<button id="monStop" class="shrink-0 px-3 py-2 rounded-xl border border-brick-800/70 text-brick-400 text-xs font-bold active:scale-95 transition"><i class="fa-solid fa-power-off mr-1"></i>Tắt</button></div></div>';
         document.body.appendChild(w);
-        $('monClose').onclick = closeMonitor;
-        $('monStop').onclick = closeMonitor;
+        $('monClose').onclick = closePanel;
+        $('monStop').onclick = function () { stopMon(); };
         $('monTabTable').onclick = function () { setView('table'); };
         $('monTabDev').onclick = function () { setView('dev'); };
         open = true;
-        store = {}; devs = {}; since = 0;
         setView(view);
-        setLiveText('Đang bật giám sát…');
-        monCtl('on').then(function () {
-            setMonOn(true);  // máy ADMIN cũng gửi bàn của chính mình
-            setTimeout(function () { poll(); }, 600);   // chờ các máy kịp gửi sơ đồ
-        }).catch(function () { setLiveText('Không bật được giám sát (Worker chưa cập nhật bản 7?)'); });
+        if (!lastAt) setLiveText('Đang chờ dữ liệu từ các máy…');
     }
-    function closeMonitor() {
-        open = false;
-        var m = $('monModal'); if (m) m.remove();
-        monCtl('off').catch(function () {});        // tắt giám sát -> mọi máy ngừng gửi
-        setMonOn(false);
-    }
+    function closePanel() { open = false; var m = $('monModal'); if (m) m.remove(); }
     function monCtl(what) {
         var u = me();
         return fetch(base() + '/mon/' + what, { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
@@ -9893,10 +10068,9 @@ function togglePassVisibility(inputId, btn) {
             .then(function (j) { if (!j || !j.ok) throw new Error((j && j.error) || 'lỗi'); return j; });
     }
     function setLiveText(t) { var el = $('monLive'); if (el) el.textContent = t; }
-    // Đóng trang / chuyển app khi đang giám sát -> tắt luôn (nếu không gửi được, Worker tự tắt sau 90 giây)
-    window.addEventListener('pagehide', function () { if (open) { try { monCtl('off'); } catch (e) {} } });
     window.openMonitor = openMonitor;
-    setInterval(function () { if (open) render(); }, 30000);   // cập nhật chữ "x phút trước"
+    window.tysMonStop = function () { stopMon(); };
+    setInterval(function () { if (open) render(); if (active) paintBar(); }, 30000);   // cập nhật chữ "x phút trước"
 
     addMenuItem();
 })();
